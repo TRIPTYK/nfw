@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Express = require("express");
+var AuthRouter = require("./auth.route");
+var UserRouter = require("./user.route");
+var router = Express.Router();
+router.get('/status', function (req, res) { res.send(200); });
+router.use('/auth/', AuthRouter);
+router.use('/users/', UserRouter);
+module.exports = router;

@@ -1,5 +1,4 @@
 import * as Express from "express";
-import { Request, Response } from "express";
 import * as BodyParser from "body-parser";
 import * as Morgan from "morgan";
 import * as Cors from "cors";
@@ -7,12 +6,12 @@ import * as Compression from "compression";
 import * as Passport from "passport";
 import * as ErrorHandler from "errorhandler";
 import * as ExpressValidator from "express-validator";
-import * as ServiceErrorHandler from "./../api/services/error-handler";
+import * as ServiceErrorHandler from "../api/services/error-handler.service";
 import * as Strategies from "./passport.config";
 
-const Router = require('./../api/routes/v1');
+import { HTTPLogs, api, env, environments } from "./environment.config";
 
-const { HTTPLogs, api, env, environments } = require('./environment.config');
+const Router = require('./../api/routes/v1');
 
 /**
  * Instanciate Express application
