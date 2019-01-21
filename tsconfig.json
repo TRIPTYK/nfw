@@ -6,7 +6,8 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": true
+    "sourceMap": false,
+    "outDir": "./dist/"
   },
   "exclude" : [
     "**/**/node_modules",
