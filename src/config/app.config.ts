@@ -7,8 +7,8 @@ import * as Passport from "passport";
 import * as ErrorHandler from "errorhandler";
 import * as ExpressValidator from "express-validator";
 import * as ServiceErrorHandler from "../api/services/error-handler.service";
-import * as Strategies from "./passport.config";
 
+import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, api, env, environments } from "./environment.config";
 
 const Router = require('./../api/routes/v1');
@@ -69,14 +69,16 @@ app.use( Morgan(HTTPLogs) );
  */
 if(env.toUpperCase() === environments.DEVELOPMENT)
 {
-  app.use( ErrorHandler( { log : ServiceErrorHandler.notify } ));
+  app.use( ServiceErrorHandler.exit );
 }
 else
 {
-  app.use( ErrorHandler( { log : ServiceErrorHandler.log } ));
+  app.use( ServiceErrorHandler.log, ServiceErrorHandler.exit );
 }
+
+app.use( ServiceErrorHandler.notFound );
 
 /**
  * Exports Express
  */
-module.exports = app;
+export { app };

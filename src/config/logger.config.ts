@@ -27,10 +27,6 @@ if (process.env.NODE_ENV !== 'production') {
   logger.add(new Winston.transports.Console({ format: Winston.format.simple() }));
 }
 
-logger.stream = {
-  write: (message) => {
-    logger.info(message.trim());
-  },
-};
+logger.stream({ write: (message) => { logger.info(message.trim()); } });
 
-module.exports = logger;
+export { logger };
