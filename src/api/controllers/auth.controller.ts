@@ -1,7 +1,6 @@
 import * as HttpStatus from "http-status";
 import * as Moment from "moment-timezone";
 
-import { RefreshToken } from "./../models/refresh-token.model";
 import { User } from "./../models/user.model";
 import { UserRepository } from "./../repositories/user.repository";
 import { RefreshTokenRepository } from "./../repositories/refresh-token.repository";
@@ -37,7 +36,7 @@ class AuthController {
    *
    * @private
    */
-  private _generateTokenResponse(user, accessToken) {
+  private _generateTokenResponse(user : User, accessToken : string) {
     const tokenType = 'Bearer';
     const repository = new RefreshTokenRepository();
     const refreshToken = repository.generate(user).token;
