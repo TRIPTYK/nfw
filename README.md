@@ -70,6 +70,16 @@ And put your configuration :
 
 More info about [ormconfig file](http://typeorm.io/#/using-ormconfig).
 
+Warning : if you will use typeorm cli commands (by example for migrations), you should install typeorm globaly :
+
+`$ npm i typeorm -g`
+
+### Database migration
+
+A TypeORM migration is a DB synchronizing. If your schema has pending changes, migration tool allow you to synchronize it.
+
+More info about [typeorm migration](http://typeorm.io/#/migrations)
+
 ## Compilation
 
 The production project is generated in the *dist* directory, after Typescript compilation.
