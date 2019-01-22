@@ -1,4 +1,5 @@
-import * as User from "./../models/user.model";
+import { Request, Response } from "express";
+import { UserRepository } from "./../repositories/user.repository";
 
 /**
  * Load user and append to req
@@ -12,13 +13,15 @@ import * as User from "./../models/user.model";
  *  
  * @public
  */
-exports.load = async (req, res, next, id) => {
+const load = async (req: Request, res: Response, next: Function, id: number) => {
   try {
-    const user = await User.get(id);
-    req.locals = { user };
+    const userRepository = new UserRepository();
+    req['locals']['user'] = await userRepository.get(id);
     return next();
   } 
   catch (error) {
     return next(error);
   }
 };
+
+export { load };

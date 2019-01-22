@@ -13,7 +13,6 @@ export class RefreshToken {
   constructor(token: String, user: User, expires: Date) 
   { 
     this.token = token;
-    this.users.push(user);
     this.expires = expires;
   }
 
