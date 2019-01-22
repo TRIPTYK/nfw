@@ -16,7 +16,7 @@ const LOGGED_USER = '_loggedUser';
  * 
  * @private
  */
-const _handleJWT = (req, res, next, roles, role) => async (err, user, info) => {
+const _handleJWT = (req, res, next: Function, roles, role: string) => async (err : Error, user: User, info) => {
 
   const error = err || info;
 
@@ -32,7 +32,7 @@ const _handleJWT = (req, res, next, roles, role) => async (err, user, info) => {
 
   if (role === LOGGED_USER) 
   {
-    if (user.role !== 'admin' && req.params.userId !== user._id.toString()) 
+    if (user.role !== 'admin' && req.params.userId !== user.id.toString()) 
     {
       return next(Boom.forbidden('Forbidden area'));
     }

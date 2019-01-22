@@ -1,14 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { omitBy, isNil } from "lodash";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad } from "typeorm";
 import { env, jwtSecret, jwtExpirationInterval } from "../../config/environment.config";
-import { UserRepository } from "./../repositories/user.repository";
 
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
-
-// TODO: implémenter le hook pre save user pour le hash du mot de passe
 
 const roles = ['admin', 'user', 'ghost'];
 
@@ -28,6 +24,8 @@ export class User {
     
   }
   
+  private temporaryPassword;
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -47,6 +45,9 @@ export class User {
     unique: true
   })
   email: string;
+
+  @Column("simple-json")
+  services: { facebook : string, google: string }
 
   @Column()
   firstname: string;
@@ -72,6 +73,30 @@ export class User {
     default: Date.now()
   })
   createdAt: Date;
+
+  @AfterLoad() 
+  storeTemporaryPassword() : void {
+    this.temporaryPassword = this.password;
+  }
+
+  @BeforeUpdate()
+  async hashPassword() {
+    try {
+
+      if (this.temporaryPassword === this.password) return true;
+  
+      const rounds = env === 'test' ? 1 : 10;
+  
+      const hash = await Bcrypt.hash(this.password, rounds);
+  
+      this.password = hash;
+  
+      return true;
+    } 
+    catch (error) {
+      throw Boom.badImplementation(error.message);
+    }
+  }
 
   /**
    * 
@@ -104,16 +129,20 @@ export class User {
    * 
    * @param password 
    */
-  async passwordMatches(password) {
+  async passwordMatches(password: string) {
     return Bcrypt.compare(password, this.password);
   }
 
+  
+
   /**
-   * TODO: gérer erreur Mysql et non pas mongodb
+   * TODO: gérer erreur Mysql
    * @param error 
    */
   static checkDuplicateEmail(error: Error) {
-    if (error.name === 'MongoError' /*&& error.code === 11000*/) {
+    console.log("CheckDuplicateEmailERROR");
+    console.log(error);
+    if (error.name === 'MongoError' /*&& error.code === 1062*/) {
       return Boom.conflict(
         'Validation error', 
         { 

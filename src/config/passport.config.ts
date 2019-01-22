@@ -2,7 +2,7 @@ import { Strategy as JwtStrategy } from "passport-jwt";
 import * as BearerStrategy from "passport-http-bearer";
 import * as AuthProviders from "./../api/services/auth-providers.service";
 import * as User from "./../api/models/user.model";
-
+import { UserRepository } from "./../api/repositories/user.repository";
 import { jwtSecret } from "./environment.config";
 import { ExtractJwt } from "passport-jwt";
 
@@ -20,8 +20,8 @@ const jwtOptions = {
  */
 const jwt = async (payload, next) => {
   try {
-    //const user = await User.findOne( payload.sub );
-    const user = {};
+    const userRepository = new UserRepository();
+    const user = await userRepository.getRepository().findOne( payload.sub );
     if (user) return next(null, user);
     return next(null, false);
   } 
@@ -37,10 +37,10 @@ const jwt = async (payload, next) => {
  */
 const oAuth = service => async (token, next) => {
   try {
+    const userRepository = new UserRepository();
     const userData = await AuthProviders[service](token);
-    //const user = await User.oAuthLogin(userData);
-    //return next(null, user);
-    return next(null, true)
+    const user = await userRepository.oAuthLogin(userData);
+    return next(null, user);
   } 
   catch (err) {
     return next(err);

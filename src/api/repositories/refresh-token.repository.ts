@@ -25,7 +25,7 @@ export class RefreshTokenRepository implements IRepository {
   /**
    * 
    */
-  constructor() { this.init() }
+  constructor() { this.init(); }
 
   /**
    * 
@@ -38,7 +38,7 @@ export class RefreshTokenRepository implements IRepository {
   /**
    * 
    */
-  getRepository()  {
+  getRepository() : Repository<RefreshToken> {
     return this.repository;
   }
 
@@ -46,7 +46,7 @@ export class RefreshTokenRepository implements IRepository {
    * 
    * @param user 
    */
-  generate(user : User) {
+  generate(user : User) : RefreshToken {
 
     try {
 
