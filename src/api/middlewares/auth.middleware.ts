@@ -16,7 +16,7 @@ const LOGGED_USER = '_loggedUser';
  * 
  * @private
  */
-const _handleJWT = (req, res, next, roles) => async (err, user, info) => {
+const _handleJWT = (req, res, next, roles, role) => async (err, user, info) => {
 
   const error = err || info;
 
@@ -30,7 +30,7 @@ const _handleJWT = (req, res, next, roles) => async (err, user, info) => {
     return next(Boom.badImplementation(e.message));
   }
 
-  if (roles === LOGGED_USER) 
+  if (role === LOGGED_USER) 
   {
     if (user.role !== 'admin' && req.params.userId !== user._id.toString()) 
     {
@@ -55,7 +55,7 @@ const _handleJWT = (req, res, next, roles) => async (err, user, info) => {
  * 
  * @param roles 
  */
-const authorize = (roles = User.roles) => (req, res, next) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles) )(req, res, next);
+const authorize = (role : string) => (roles = User.roles) => (req, res, next) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles, role) ) (req, res, next);
 
 /**
  * 

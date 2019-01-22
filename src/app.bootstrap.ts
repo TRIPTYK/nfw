@@ -1,6 +1,6 @@
-import * as Logger from "./config/logger.config";
+import { logger as Logger } from "./config/logger.config";
 import { port, env } from "./config/environment.config";
-import * as App from "./config/app.config";
+import { app as App } from "./config/app.config";
 
 /** Listen to requests */
 App.listen( port, () => Logger.info(`HTTP server is now running on port ${port} (${env})`));
@@ -8,4 +8,4 @@ App.listen( port, () => Logger.info(`HTTP server is now running on port ${port} 
 /**
  * Exports Express
  */
-module.exports = App;
+export { App };
