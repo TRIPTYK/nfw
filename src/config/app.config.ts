@@ -4,7 +4,6 @@ import * as Morgan from "morgan";
 import * as Cors from "cors";
 import * as Compression from "compression";
 import * as Passport from "passport";
-import * as ErrorHandler from "errorhandler";
 import * as ExpressValidator from "express-validator";
 import * as ServiceErrorHandler from "../api/services/error-handler.service";
 

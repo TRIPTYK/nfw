@@ -5,11 +5,13 @@ import { Connection, Repository } from "typeorm";
  */
 interface IRepository {
 
-  /** */
+  /** 
+   * TypeORM connection to MySQL server 
+   * */
   connection : Connection;
 
   /**
-   * 
+   * Current repository
    */
   repository : Repository<any>;
 
@@ -23,7 +25,7 @@ interface IRepository {
   init: Function
 
   /**
-   * 
+   * Repository getter
    */
   getRepository: Function;
 

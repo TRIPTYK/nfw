@@ -50,7 +50,7 @@ export class UserController {
    * 
    * @public
    */
-  async create (req: Request, res : Response, next) {
+  async create (req: Request, res : Response, next: Function) {
     try {
       const user = this.repository.getRepository().create(req.body);
       const savedUser = await this.repository.getRepository().save(user);
@@ -71,7 +71,7 @@ export class UserController {
    * 
    * @public
    */
-  async replace (req: Request, res : Response, next) {
+  async replace (req: Request, res : Response, next: Function) {
     try {
       const user = await this.repository.getRepository().findOne(req.params.userId);
       this.repository.getRepository().merge(user, req.body);
@@ -92,7 +92,7 @@ export class UserController {
    * 
    * @public
    */
-  async update (req: Request, res : Response, next) {
+  async update (req: Request, res : Response, next: Function) {
 
     try {
       const user = await this.repository.getRepository().findOne(req.params.userId);
@@ -115,7 +115,7 @@ export class UserController {
    * 
    * @public
    */
-  async list (req: Request, res : Response, next) {
+  async list (req: Request, res : Response, next: Function) {
     try {
       const users = await this.repository.list(req.query);
       const transformedUsers = users.map(user => user.transform());
@@ -130,14 +130,12 @@ export class UserController {
    * Delete user
    * @public
    */
-  async remove (req: Request, res : Response, next) {
+  async remove (req: Request, res : Response, next: Function) {
 
     try {
       const { user } = req['locals'];
-      user
-        .remove()
-        .then( () => res.status(HttpStatus.NO_CONTENT).end() )
-        .catch( e => next(e) );
+      await this.repository.getRepository().remove(user);
+      res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
     catch(e) {
       next(e)

@@ -22,7 +22,7 @@ export class RefreshToken {
   @Column()
   token: String;
 
-  @ManyToMany(type => User)
+  @ManyToMany(type => User, { eager : true })
   @JoinTable()
   users: User[];
 

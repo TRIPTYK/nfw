@@ -50,15 +50,17 @@ router
    * @apiHeader {String} Athorization  User's access token
    *
    * @apiParam  {String}             email     User's email
-   * @apiParam  {String{6..128}}     password  User's password
-   * @apiParam  {String{..128}}      [name]    User's name
+   * @apiParam  {String{8..16}}     password   User's password
+   * @apiParam  {String{..32}}      [name]     User's username
    * @apiParam  {String=user,admin}  [role]    User's role
    *
-   * @apiSuccess (Created 201) {String}  id         User's id
-   * @apiSuccess (Created 201) {String}  name       User's name
-   * @apiSuccess (Created 201) {String}  email      User's email
-   * @apiSuccess (Created 201) {String}  role       User's role
-   * @apiSuccess (Created 201) {Date}    createdAt  Timestamp
+   * @apiSuccess (Created 201) {String}  user.id         User's id
+   * @apiSuccess (Created 201) {String}  user.username   User's name
+   * @apiSuccess (Created 201) {String}  user.email      User's email
+   * @apiSuccess (Created 201) {String}  user.role       User's role
+   * @apiSuccess (Created 201) {String}  user.firstname  User's firstname
+   * @apiSuccess (Created 201) {String}  user.lastname   User's lastname
+   * @apiSuccess (Created 201) {Date}    user.createdAt  Timestamp
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data

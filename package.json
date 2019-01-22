@@ -4,7 +4,7 @@
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
   "main": "app.bootstrap.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "bcrypt": "^3.0.3",
     "body-parser": "^1.18.3",
     "boom": "^7.3.0",
+    "chai": "^4.2.0",
     "compression": "^1.7.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
@@ -43,6 +44,7 @@
     "joi": "^14.3.1",
     "jwt-simple": "^0.5.5",
     "lodash": "^4.17.11",
+    "mocha": "^5.2.0",
     "moment-timezone": "^0.5.23",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",
@@ -51,7 +53,9 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
+    "request": "^2.88.0",
     "typeorm": "^0.2.12",
+    "uuid": "^3.3.2",
     "winston": "^3.1.0"
   }
 }

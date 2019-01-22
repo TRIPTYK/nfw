@@ -4,6 +4,7 @@ import { connection as DBConnection } from "./../../config/environment.config";
 import { omitBy, isNil } from "lodash";
 import { Moment } from "moment-timezone";
 import { IRepository } from "./../interfaces/IRepository.interface";
+import { uuidv4 } from "uuid/v4";
 
 import * as Boom from "boom";
 
@@ -36,7 +37,7 @@ export class UserRepository implements IRepository {
   /**
    * 
    */
-  getRepository()  {
+  getRepository() : Repository<User>  {
     return this.repository;
   }
   
@@ -45,7 +46,7 @@ export class UserRepository implements IRepository {
    *
    * @param {Number} id - The id of user
    * 
-   * @returns {Object|Error}
+   * @returns {User}
    */
   async get(id: number) {
 
@@ -111,5 +112,27 @@ export class UserRepository implements IRepository {
     }
 
     return { user, accessToken: user.token() };
+  }
+
+  /**
+   * 
+   * @param param0 
+   */
+  async oAuthLogin({service, id, email, username, picture }) {
+
+    const user = await this.repository
+      .createQueryBuilder("user")
+      .where("user.services @> :service OR user.email = :email", { service: service, email : email })
+      .orderBy("user.createdAt", "DESC")
+      .getOne();
+
+    if (user) {
+      user.services[service] = id;
+      if (!user.username) user.username = username;
+      if (!user.picture) user.picture = picture;
+      return this.repository.save(user);
+    }
+    const password = uuidv4();
+    return this.repository.create({ services: { [service]: id }, email, password, username, picture });
   }
 }
