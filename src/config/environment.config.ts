@@ -1,5 +1,5 @@
 import * as Dotenv from "dotenv";
-import * as DBConfig from "./typeorm.config";
+import { TypeORMConfiguration } from "./typeorm.config";
 
 /**
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in 
@@ -15,7 +15,7 @@ const env = process.env.NODE_ENV;
 const port = process.env.PORT;
 const jwtSecret = process.env.JWT_SECRET;
 const jwtExpirationInterval = process.env.JWT_EXPIRATION_MINUTES;
-const connection = DBConfig.connection();
+const connection = (async function(TypeORMConfiguration) { return await TypeORMConfiguration.getConnection() } ) (TypeORMConfiguration);
 const api = process.env.API_VERSION;
 const logs = process.env.NODE_ENV === 'production' ? 'combined' : 'development';
 const HTTPLogs = process.env.NODE_ENV === 'production' ? 'production' : 'dev';

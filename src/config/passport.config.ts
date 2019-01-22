@@ -3,7 +3,7 @@ import * as BearerStrategy from "passport-http-bearer";
 import * as AuthProviders from "./../api/services/auth-providers.service";
 import * as User from "./../api/models/user.model";
 
-import { jswtSecret } from "./environment.config";
+import { jwtSecret } from "./environment.config";
 import { ExtractJwt } from "passport-jwt";
 
 const jwtOptions = {
@@ -47,6 +47,14 @@ const oAuth = service => async (token, next) => {
   }
 };
 
-exports.jwt = new JwtStrategy(jwtOptions, jwt);
-exports.facebook = new BearerStrategy(oAuth('facebook'));
-exports.google = new BearerStrategy(oAuth('google'));
+/**
+ * 
+ */
+const strategies = {
+  jwt : new JwtStrategy(jwtOptions, jwt),
+  facebook : new BearerStrategy(oAuth('facebook')),
+  google : new BearerStrategy(oAuth('google'))
+}
+
+
+export { jwt, oAuth, strategies };
