@@ -1,17 +1,46 @@
 import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
+import { Boom } from "boom";
 
 import { User } from "./../models/user.model";
 import { RefreshToken } from "./../models/refresh-token.model";
 
-import { connection } from "./../../config/environment.config";
+import { Connection, Repository } from "typeorm";
+import { connection as DBConnection } from "./../../config/environment.config";
+import { IRepository } from "./../interfaces/IRepository.interface";
 
 /**
  * 
  */
-export class RefreshTokenRepository {
+export class RefreshTokenRepository implements IRepository {
 
-  constructor () { }
+  /** */
+  connection : Connection;
+
+  /**
+   * 
+   */
+  repository : Repository<RefreshToken>;
+
+  /**
+   * 
+   */
+  constructor() { this.init() }
+
+  /**
+   * 
+   */
+  async init() {
+    this.connection = await DBConnection;
+    this.repository = this.connection.getRepository(RefreshToken);
+  }
+
+  /**
+   * 
+   */
+  getRepository()  {
+    return this.repository;
+  }
 
   /**
    * 
@@ -26,13 +55,13 @@ export class RefreshTokenRepository {
     
       const tokenObject = new RefreshToken( token, user, expires );
   
-      connection.then( (con) => con.getRepository(RefreshToken).save(tokenObject) ); // TODO: implements async
+      this.repository.save(tokenObject);
         
       return tokenObject;
     }
     catch(e)
     {
-      // TODO:
+      throw Boom.badImplementation(e);
     }
     
   }
