@@ -2,7 +2,7 @@ import * as Passport from "passport";
 import * as Boom from "boom";
 
 import { User } from "./../models/user.model";
-import { ES6Promisify } from "es6-promisify";
+import { promisify } from "es6-promisify";
 
 const ADMIN = 'admin';
 const LOGGED_USER = '_loggedUser';
@@ -16,21 +16,21 @@ const LOGGED_USER = '_loggedUser';
  * 
  * @private
  */
-const _handleJWT = (req, res, next: Function, roles, role: string) => async (err : Error, user: User, info) => {
+const _handleJWT = (req, res, next: Function, roles) => async (err : Error, user: User, info) => {
 
   const error = err || info;
 
-  const logIn = ES6Promisify.promisify(req.logIn);
+  const logIn = promisify(req.logIn);
 
   try {
     if (error || !user) throw error;
     await logIn(user, { session: false });
   } 
   catch (e) {
-    return next(Boom.badImplementation(e.message));
+    return next(Boom.forbidden(e.message));
   }
-
-  if (role === LOGGED_USER) 
+  
+  if (roles === LOGGED_USER) 
   {
     if (user.role !== 'admin' && req.params.userId !== user.id.toString()) 
     {
@@ -45,17 +45,18 @@ const _handleJWT = (req, res, next: Function, roles, role: string) => async (err
   {
     return next(Boom.badRequest(err.message));
   }
-
+  
   req.user = user;
 
   return next();
+
 };
 
 /**
  * 
  * @param roles 
  */
-const authorize = (role : string) => (roles = User.roles) => (req, res, next) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles, role) ) (req, res, next);
+const authorize = (roles = User.roles) => (req, res, next) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles) ) (req, res, next);
 
 /**
  * 

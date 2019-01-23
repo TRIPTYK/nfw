@@ -1,16 +1,16 @@
-import { Strategy as JwtStrategy } from "passport-jwt";
 import * as BearerStrategy from "passport-http-bearer";
 import * as AuthProviders from "./../api/services/auth-providers.service";
-import * as User from "./../api/models/user.model";
+import { Strategy as JwtStrategy } from "passport-jwt";
 import { UserRepository } from "./../api/repositories/user.repository";
 import { jwtSecret } from "./environment.config";
 import { ExtractJwt } from "passport-jwt";
+import { getCustomRepository, getRepository } from "typeorm";
+import { User } from "./../api/models/user.model";
 
 const jwtOptions = {
   secretOrKey: jwtSecret,
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer')
 };
-
 
 /**
  * @param {*} payload 
@@ -18,10 +18,10 @@ const jwtOptions = {
  * 
  * @public
  */
-const jwt = async (payload, next) => {
+const jwt = async (payload, next: Function) => {
   try {
-    const userRepository = new UserRepository();
-    const user = await userRepository.getRepository().findOne( payload.sub );
+    const userRepository = getRepository(User);
+    const user = await userRepository.findOne( payload.sub );
     if (user) return next(null, user);
     return next(null, false);
   } 
@@ -35,9 +35,9 @@ const jwt = async (payload, next) => {
  * 
  * @public
  */
-const oAuth = service => async (token, next) => {
+const oAuth = service => async (token, next: Function) => {
   try {
-    const userRepository = new UserRepository();
+    const userRepository = getCustomRepository(UserRepository);
     const userData = await AuthProviders[service](token);
     const user = await userRepository.oAuthLogin(userData);
     return next(null, user);
