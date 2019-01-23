@@ -42,6 +42,7 @@ Adapt your own configuration in tsconfig.json.
   ]
 }
 ```
+
 More info about the [tsconfig file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).
 
 ## TypeORM configuration
