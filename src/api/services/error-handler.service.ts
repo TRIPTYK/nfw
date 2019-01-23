@@ -2,6 +2,15 @@ import { logger as Logger } from "./../../config/logger.config";
 import * as Notifier from "node-notifier";
 import * as Boom from "boom";
 
+const _getErrorCode = (error) : number => {
+
+  if(typeof(error.httpStatusCode) !== 'undefined') return error.httpStatusCode;
+  if(typeof(error.status) !== 'undefined') return error.status;
+  if(error.isBoom) return error.output.statusCode;
+
+  return 500;
+};
+
 /**
  * Write errors in a log file
  * 
@@ -31,7 +40,6 @@ const notify = (err, str, req) => {
   });
 };
 
-
 /**
  * Display clean error for final user
  * 
@@ -41,8 +49,8 @@ const notify = (err, str, req) => {
  * @param {*} next 
  */
 const exit = (err, req, res, next) => {
-  let code = typeof(err.httpStatusCode) !== 'undefined' ? err.httpStatusCode : 500;
-  res.status(code);
+  if(!err.httpStatusCode && !err.status && !err.isBoom) err = Boom.expectationFailed(err.message);
+  res.status( _getErrorCode(err) );
   res.json(err);
 };
 
