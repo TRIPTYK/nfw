@@ -107,6 +107,60 @@ A logs directory must be present on root of dist directory.
 
 Todo
 
-## Deploy
+## Deploy with PM2
 
-Todo
+Project implements a basic [PM2](https://github.com/Unitech/PM2/) configuration to allow easy deployment.
+
+First, install PM2 globaly :
+
+`npm i pm2 -g`
+
+Note that PM2 should also be installed on other server environments, and that your SSH public key must be granted by the destination server.
+
+### Setup
+
+Configure the *ecosystem.config.js* file with your environments informations.
+
+```javascript
+deploy : {
+  staging : {
+    path : 'path-to-your-SSH-public-key',
+    user : 'node',
+    host : '212.83.163.1',
+    ref  : 'origin/master',
+    repo : 'git@github.com:repo.git',
+    path : '/var/www/staging',
+    'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env staging'
+  },
+  production : {
+    path : 'path-to-your-SSH-public-key',
+    user : 'node',
+    host : '212.83.163.1',
+    ref  : 'origin/master',
+    repo : 'git@github.com:repo.git',
+    path : '/var/www/production',
+    'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
+  }
+}
+```
+More info about PM2 [ecosystem.config.js](https://pm2.io/doc/en/runtime/reference/ecosystem-file/) file.
+
+### Deploy
+
+```bash
+# Setup deployment at remote location
+pm2 deploy production setup
+
+# Update remote version
+pm2 deploy production update
+
+# Revert to -1 deployment
+pm2 deploy production revert 1
+
+# execute a command on remote servers
+pm2 deploy production exec "pm2 reload all"
+```
+
+More info about [PM2 deploy](https://pm2.io/doc/en/runtime/guide/easy-deploy-with-ssh/).
+
+More info about [PM2](http://pm2.keymetrics.io/docs/usage/quick-start/).
