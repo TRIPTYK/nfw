@@ -1,6 +1,6 @@
 # 3rd party Typescript boilerplate
 
-This repository contains badass 3rd party REST API boilerplate [Express.js](http://expressjs.com/en/4x/api.html), [Typescript](https://github.com/Microsoft/TypeScript) and[TypeORM](https://github.com/typeorm/typeorm) based.
+This repository contains badass 3rd party REST API boilerplate [Express.js](http://expressjs.com/en/4x/api.html), [Typescript](https://github.com/Microsoft/TypeScript) and [TypeORM](https://github.com/typeorm/typeorm) based.
 
 As a starter project, he implements some classic features :
 
@@ -8,7 +8,7 @@ As a starter project, he implements some classic features :
 * Routes validation
 * Logger
 * Error handling
-* ORM couch MySQL based
+* ORM couch
 
 ## Start with
 
@@ -22,7 +22,7 @@ Adapt your own configuration in tsconfig.json.
 {
   "compilerOptions": {
     "lib": ["dom", "es5", "es6"],
-    "target": "es5",
+    "target": "es2017",
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
@@ -49,6 +49,7 @@ And put your configuration :
 ```javascript
 {
   "type": "mysql",
+  "name": "default",
   "host": "localhost",
   "port": 3306,
   "username": "root",
@@ -78,7 +79,7 @@ Warning : if you will use typeorm cli commands (by example for migrations), you 
 
 A TypeORM migration is a DB synchronizing. If your schema has pending changes, migration tool allow you to synchronize it.
 
-More info about [typeorm migration](http://typeorm.io/#/migrations)
+More info about [typeorm migration](http://typeorm.io/#/migrations).
 
 ## Compilation
 
@@ -101,3 +102,11 @@ Run compilation on watching :
 A logs directory must be present on root of dist directory.
 
 `$ mkdir ./dist/logs`
+
+## Tests
+
+Todo
+
+## Deploy
+
+Todo
