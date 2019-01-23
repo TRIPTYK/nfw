@@ -10,7 +10,7 @@ import * as ServiceErrorHandler from "../api/services/error-handler.service";
 import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, api, env, environments } from "./environment.config";
 
-const Router = require('./../api/routes/v1');
+const ProxyRouter = require('./../api/routes/v1');
 
 /**
  * Instanciate Express application
@@ -55,7 +55,7 @@ app.use( ExpressValidator() );
 /**
  * Set Router(s) on paths
  */
-app.use(`/api/${api}`, Router);
+app.use(`/api/${api}`, ProxyRouter);
 
 /**
  * Request logging with Morgan
