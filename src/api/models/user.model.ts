@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert } from "typeorm";
 import { env, jwtSecret, jwtExpirationInterval } from "../../config/environment.config";
+import { DateUtils } from "typeorm/util/DateUtils";
 
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
@@ -12,16 +13,13 @@ const roles = ['admin', 'user', 'ghost'];
 export class User {
 
   /**
-   * 
    * @param payload 
    */
   constructor(payload: Object) { 
-
     for(let key in payload)
     {
       this[key] = payload[key];
     }
-    
   }
   
   private temporaryPassword;
@@ -36,7 +34,7 @@ export class User {
   username: string;
 
   @Column({
-    length: 32
+    length: 128
   })
   password: string
 
@@ -46,7 +44,9 @@ export class User {
   })
   email: string;
 
-  @Column("simple-json")
+  @Column({
+    type : "simple-json"
+  })
   services: { facebook : string, google: string }
 
   @Column()
@@ -58,7 +58,8 @@ export class User {
   lastname: string;
 
   @Column({
-    length: 32
+    length: 32,
+    default: ""
   })
   picture: string;
 
@@ -70,15 +71,17 @@ export class User {
   role: "admin" | "user" | "ghost";
 
   @Column({
-    default: Date.now()
+    type: Date,
+    default: DateUtils.mixedDateToDateString( new Date() )
   })
-  createdAt: Date;
+  createdAt;
 
   @AfterLoad() 
   storeTemporaryPassword() : void {
     this.temporaryPassword = this.password;
   }
 
+  @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
     try {
@@ -101,10 +104,10 @@ export class User {
   /**
    * 
    */
-  transform() {
+  public transform() {
 
     const transformed = {};
-    const fields = ['id', 'username', 'email', 'firstname', 'lastname' , 'picture', 'role', 'createdAt'];
+    const fields = ['id', 'username', 'email', 'firstname', 'lastname' , 'services', 'picture', 'role', 'createdAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -133,23 +136,18 @@ export class User {
     return Bcrypt.compare(password, this.password);
   }
 
-  
-
   /**
-   * TODO: gérer erreur Mysql
    * @param error 
    */
-  static checkDuplicateEmail(error: Error) {
-    console.log("CheckDuplicateEmailERROR");
-    console.log(error);
-    if (error.name === 'MongoError' /*&& error.code === 1062*/) {
+  static checkDuplicateEmail(error) {
+    if (error.name === 'QueryFailedError' && error.errno === 1062) {
       return Boom.conflict(
         'Validation error', 
         { 
           errors: [{
             field: 'email',
             location: 'body',
-            messages: ['"Email" already exists'],
+            messages: ['"Email or Username" already exists'],
           }]
         });
     }
@@ -159,7 +157,5 @@ export class User {
   /**
    * 
    */
-  static roles() {
-    return roles;
-  }
+  static roles = roles;
 }

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { UserRepository } from "./../repositories/user.repository";
+import { getCustomRepository } from "typeorm";
+import { User } from "./../models/user.model";
 
 /**
  * Load user and append to req
@@ -15,8 +17,8 @@ import { UserRepository } from "./../repositories/user.repository";
  */
 const load = async (req: Request, res: Response, next: Function, id: number) => {
   try {
-    const userRepository = new UserRepository();
-    req['locals']['user'] = await userRepository.get(id);
+    const repository = getCustomRepository(UserRepository);
+    req['locals'] = new User(await repository.one(id));
     return next();
   } 
   catch (error) {

@@ -6,8 +6,10 @@ const listUsers = {
   query: {
     page: Joi.number().min(1),
     perPage: Joi.number().min(1).max(100),
-    name: Joi.string(),
+    username: Joi.string(),
     email: Joi.string(),
+    firstname: Joi.string(),
+    lastname: Joi.string(),
     role: Joi.string().valid(User.roles),
   },
 };
@@ -35,7 +37,7 @@ const replaceUser = {
     role: Joi.string().valid(User.roles),
   },
   params: {
-    userId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+    userId: Joi.string().regex(/^[0-9]{0,4}$/).required(),
   },
 };
 
@@ -50,7 +52,7 @@ const updateUser = {
     role: Joi.string().valid(User.roles),
   },
   params: {
-    userId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+    userId: Joi.string().regex(/^[0-9]{0,4}$/).required(),
   },
 };
 
