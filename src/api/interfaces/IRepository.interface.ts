@@ -1,13 +1,13 @@
 import { Connection, Repository } from "typeorm";
 
 /**
- * 
+ * Define required members for TypeORM CustomRepository
  */
 interface IRepository {
 
   /** 
-   * TypeORM connection to MySQL server 
-   * */
+   * TypeORM connection to database server 
+   */
   connection : Connection;
 
   /**
@@ -16,18 +16,9 @@ interface IRepository {
   repository : Repository<any>;
 
   /**
-   * async method called by constructor to properties setting
-   * 
-   * connection as connection from environment.config
-   * repository as local repository type
-   * 
+   * Getter
    */
-  init: Function
-
-  /**
-   * Repository getter
-   */
-  getRepository: Function;
+  get: Function;
 
 }
 

@@ -1,58 +1,29 @@
 import { User } from "./../models/user.model";
-import { Connection, Repository } from "typeorm";
-import { connection as DBConnection } from "./../../config/environment.config";
+import { Repository, EntityRepository, getRepository } from "typeorm";
 import { omitBy, isNil } from "lodash";
 import { Moment } from "moment-timezone";
-import { IRepository } from "./../interfaces/IRepository.interface";
 import { uuidv4 } from "uuid/v4";
 
 import * as Boom from "boom";
 
-/**
- * 
- */
-export class UserRepository implements IRepository {
+@EntityRepository(User)
+export class UserRepository extends Repository<User>  {
 
   /** */
-  connection : Connection;
+  constructor() { super(); }
 
   /**
-   * 
-   */
-  repository : Repository<User>;
-
-  /**
-   * 
-   */
-  constructor() { this.init() }
-
-  /**
-   * 
-   */
-  async init() {
-    this.connection = await DBConnection;
-    this.repository = this.connection.getRepository(User);
-  }
-
-  /**
-   * 
-   */
-  getRepository() : Repository<User>  {
-    return this.repository;
-  }
-  
-  /**
-   * Get user
+   * Get one user
    *
-   * @param {Number} id - The id of user
+   * @param {number} id - The id of user
    * 
    * @returns {User}
    */
-  async get(id: number) {
+  async one(id: number) {
 
     try {
 
-      let user = await this.repository.findOne(id); 
+      let user = await getRepository(User).findOne(id); 
 
       if (!user) 
       {
@@ -61,25 +32,27 @@ export class UserRepository implements IRepository {
 
       return user;
     } 
-    catch (error) {
-      throw Boom.badImplementation(error.message);
-    }
+    catch (e) { throw Boom.expectationFailed(e.message); }
   }
 
   /**
+   * Get a list of users according to current query parameters
    * 
    */
-  list({ page = 1, perPage = 30, username, email, role }) {
-
-    const options = omitBy({ username, email, role }, isNil);
-
-    return this.repository
-      .createQueryBuilder("user")
-      .where("user.username = :username OR user.email = :email OR user.role = :role", { username: options.username, email : options.email, role: options.role })
-      .orderBy("user.createdAt", "DESC")
-      .offset(perPage * (page - 1))
-      .limit(perPage)
-      .execute();
+  list({ page = 1, perPage = 30, username, email, lastname, firstname, role }) {
+    
+    try {
+      const repository = getRepository(User);
+      const options = omitBy({ username, email, lastname, firstname, role }, isNil);
+  
+      return repository.find({
+        where: options,
+        skip: ( page - 1 ) * perPage,
+        take: perPage
+      });
+    }
+    catch(e) { throw Boom.expectationFailed(e.message); }
+    
   }
 
   /**
@@ -94,15 +67,14 @@ export class UserRepository implements IRepository {
     const { email, password, refreshObject } = options;
 
     if (!email) throw Boom.badRequest('An email is required to generate a token');
-    if (!password) throw Boom.badRequest('A password is required to authorize a token generating');
     
-    const user = await this.repository.findOne({ email });
+    const user = await this.findOne({ email });
 
     if (!user) 
     {
       throw Boom.notFound('User not found');
     }
-    else if (await user.passwordMatches(password) === false) 
+    else if (password && await user.passwordMatches(password) === false) 
     {
       throw Boom.unauthorized('Password must match to authorize a token generating');
     }
@@ -118,21 +90,28 @@ export class UserRepository implements IRepository {
    * 
    * @param param0 
    */
-  async oAuthLogin({service, id, email, username, picture }) {
+  async oAuthLogin({ service, id, email, username, picture }) {
 
-    const user = await this.repository
-      .createQueryBuilder("user")
-      .where("user.services @> :service OR user.email = :email", { service: service, email : email })
-      .orderBy("user.createdAt", "DESC")
-      .getOne();
+    try {
 
-    if (user) {
-      user.services[service] = id;
-      if (!user.username) user.username = username;
-      if (!user.picture) user.picture = picture;
-      return this.repository.save(user);
+      const userRepository = getRepository(User);
+
+      const user = await userRepository.findOne({
+        where: { email : email },
+      });
+
+      if (user) {
+        user.services[service] = id;
+        if (!user.username) user.username = username;
+        if (!user.picture) user.picture = picture;
+        return userRepository.save(user);
+      }
+
+      const password = uuidv4();
+
+      return userRepository.create({ services: { [service]: id }, email, password, username, picture });
     }
-    const password = uuidv4();
-    return this.repository.create({ services: { [service]: id }, email, password, username, picture });
+
+    catch(e) { throw Boom.expectationFailed(e.message); }
   }
 }
