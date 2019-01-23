@@ -14,6 +14,12 @@ As a starter project, he implements some classic features :
 
 `$ git clone https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git`
 
+### Logs
+
+A logs directory must be present on root of dist directory.
+
+`$ mkdir ./dist/logs`
+
 ## Typescript configuration
 
 Adapt your own configuration in tsconfig.json.
@@ -97,12 +103,6 @@ Run compilation on watching :
 
 `$ tsc --watch`
 
-## Logs
-
-A logs directory must be present on root of dist directory.
-
-`$ mkdir ./dist/logs`
-
 ## Tests
 
 Todo
@@ -113,7 +113,7 @@ Project implements a basic [PM2](https://github.com/Unitech/PM2/) configuration 
 
 First, install PM2 globaly :
 
-`npm i pm2 -g`
+`$ npm i pm2 -g`
 
 Note that PM2 should also be installed on other server environments, and that your SSH public key must be granted by the destination server.
 
@@ -149,16 +149,16 @@ More info about PM2 [ecosystem.config.js](https://pm2.io/doc/en/runtime/referenc
 
 ```bash
 # Setup deployment at remote location
-pm2 deploy production setup
+$ pm2 deploy production setup
 
 # Update remote version
-pm2 deploy production update
+$ pm2 deploy production update
 
 # Revert to -1 deployment
-pm2 deploy production revert 1
+$ pm2 deploy production revert 1
 
 # execute a command on remote servers
-pm2 deploy production exec "pm2 reload all"
+$ pm2 deploy production exec "pm2 reload all"
 ```
 
 More info about [PM2 deploy](https://pm2.io/doc/en/runtime/guide/easy-deploy-with-ssh/).
