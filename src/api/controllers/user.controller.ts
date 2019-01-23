@@ -1,25 +1,18 @@
 import { Request, Response } from "express";
 import { User } from "./../models/user.model";
 import { UserRepository } from "./../repositories/user.repository";
+import { getConnection, Connection, getRepository, getCustomRepository } from "typeorm";
+import { typeorm as TypeORM } from "./../../config/environment.config";
 
 import * as HttpStatus from "http-status";
 
 export class UserController {
   
-  /**
-   * 
-   */
-  repository : UserRepository ;
-
-  /**
-   * 
-   */
-  constructor() { this.init(); }
+  /** */
+  connection: Connection;
 
   /** */
-  async init() {
-    this.repository = new UserRepository();
-  }
+  constructor() { this.connection = getConnection(TypeORM.name); }
 
   /**
    * Get serialized user
@@ -29,7 +22,7 @@ export class UserController {
    * 
    * @public
    */
-  get(req: Request, res : Response) { res.json( req['locals'].user.transform() ) }
+  get(req: Request, res : Response) { res.json( req['locals'].transform() ); }
 
   /**
    * Get logged in user info
@@ -52,14 +45,13 @@ export class UserController {
    */
   async create (req: Request, res : Response, next: Function) {
     try {
-      const user = this.repository.getRepository().create(req.body);
-      const savedUser = await this.repository.getRepository().save(user);
+      const repository = getRepository(User);
+      const user = new User(req.body);
+      const savedUser = await repository.save(user);
       res.status( HttpStatus.CREATED );
-      res.json( savedUser[0].transform() );
+      res.json( savedUser.transform() );
     } 
-    catch (error) {
-      next( User.checkDuplicateEmail(error) );
-    }
+    catch (e) { next( User.checkDuplicateEmail(e) ); }
   }
 
   /**
@@ -72,15 +64,17 @@ export class UserController {
    * @public
    */
   async replace (req: Request, res : Response, next: Function) {
+
     try {
-      const user = await this.repository.getRepository().findOne(req.params.userId);
-      this.repository.getRepository().merge(user, req.body);
-      this.repository.getRepository().save(user);
+      const repository = getRepository(User);
+      const user = await repository.findOne(req.params.userId);
+      repository.merge(user, req.body);
+      repository.save(user);
       res.json( user.transform() );
+      
     } 
-    catch (error) {
-      next(User.checkDuplicateEmail(error));
-    }
+    catch (e) { next( User.checkDuplicateEmail(e) ); }
+
   }
 
   /**
@@ -95,14 +89,13 @@ export class UserController {
   async update (req: Request, res : Response, next: Function) {
 
     try {
-      const user = await this.repository.getRepository().findOne(req.params.userId);
-      this.repository.getRepository().merge(user, req.body);
-      this.repository.getRepository().save(user);
+      const repository = getRepository(User);
+      const user = await repository.findOne(req.params.userId);
+      repository.merge(user, req.body);
+      repository.save(user);
       res.json( user.transform() );
     }
-    catch(e) {
-      next(User.checkDuplicateEmail(e));
-    }
+    catch(e) { next( User.checkDuplicateEmail(e) ); }
     
   };
 
@@ -116,14 +109,14 @@ export class UserController {
    * @public
    */
   async list (req: Request, res : Response, next: Function) {
+
     try {
-      const users = await this.repository.list(req.query);
+      const repository = getCustomRepository(UserRepository);
+      const users = await repository.list(req.query);;
       const transformedUsers = users.map(user => user.transform());
       res.json(transformedUsers);
     } 
-    catch (error) {
-      next(error);
-    }
+    catch (e) { next(e); }
   }
 
   /**
@@ -133,13 +126,12 @@ export class UserController {
   async remove (req: Request, res : Response, next: Function) {
 
     try {
-      const { user } = req['locals'];
-      await this.repository.getRepository().remove(user);
+      const user = req['locals'];
+      const repository = getRepository(User);
+      await repository.remove(user);
       res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
-    catch(e) {
-      next(e)
-    }
+    catch(e) { next(e); }
     
   }
 }

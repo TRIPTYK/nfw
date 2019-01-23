@@ -1,48 +1,23 @@
 import * as HttpStatus from "http-status";
-import * as Moment from "moment-timezone";
 
 import { User } from "./../models/user.model";
-import { UserRepository } from "./../repositories/user.repository";
-import { RefreshTokenRepository } from "./../repositories/refresh-token.repository";
+import { RefreshToken } from "./../models/refresh-token.model";
 import { Request, Response } from "express";
-import { jwtExpirationInterval } from "./../../config/environment.config";
+import { getConnection, Connection, getRepository, getCustomRepository } from "typeorm";
+import { UserRepository } from "./../repositories/user.repository";
+import { typeorm as TypeORM } from "./../../config/environment.config";
+import { generateTokenResponse } from "./../utils/auth.util";
 
 /**
  * 
  */
 class AuthController {
 
-  /**
-   * 
-   */
-  repository : UserRepository ;
+  /** */
+  connection : Connection ;
 
-  /**
-   * 
-   */
-  constructor() { this.init(); }
-  
-  async init() {
-    this.repository = new UserRepository();
-  }
-
- /**
-   * Build a token response and return it
-   *
-   * @param {Object} user
-   * @param {String} accessToken
-   *
-   * @returns A formated object with tokens
-   *
-   * @private
-   */
-  private _generateTokenResponse(user : User, accessToken : string) {
-    const tokenType = 'Bearer';
-    const repository = new RefreshTokenRepository();
-    const refreshToken = repository.generate(user).token;
-    const expiresIn = Moment().add(jwtExpirationInterval, 'minutes');
-    return { tokenType, accessToken, refreshToken, expiresIn };
-  }
+  /** */
+  constructor() { this.connection = getConnection(TypeORM.name); }
 
   /**
    * Create and save a new user
@@ -58,11 +33,12 @@ class AuthController {
   async register(req: Request, res : Response, next: Function) { 
 
     try {
+      const repository = getRepository(User);
       const user = new User(req.body);
-      this.repository.getRepository().save(user);
+      repository.save(user);
 
       const userTransformed = user.transform();
-      const token = this._generateTokenResponse(user, user.token());
+      const token = generateTokenResponse(user, user.token());
       res.status(HttpStatus.CREATED);
       return res.json({ token, user: userTransformed });
     } 
@@ -86,8 +62,9 @@ class AuthController {
   async login(req: Request, res : Response, next: Function) {
 
     try {
-      const { user, accessToken } = await this.repository.findAndGenerateToken(req.body);
-      const token = this._generateTokenResponse(user, accessToken);
+      const repository = getCustomRepository(UserRepository);
+      const { user, accessToken } = await repository.findAndGenerateToken(req.body);
+      const token = generateTokenResponse(user, accessToken);
       const userTransformed = user.transform();
       return res.json({ token, user: userTransformed });
     } 
@@ -112,7 +89,7 @@ class AuthController {
     try {
       const user = req.body;
       const accessToken = user.token();
-      const token = this._generateTokenResponse(user, accessToken);
+      const token = generateTokenResponse(user, accessToken);
       const userTransformed = user.transform();
       return res.json({ token, user: userTransformed });
     } 
@@ -136,17 +113,20 @@ class AuthController {
 
     try {
 
-      const refreshTokenRepository = new RefreshTokenRepository();
+      const refreshTokenRepository = getRepository(RefreshToken);
+      const userRepository = getCustomRepository(UserRepository);
 
       const { email, refreshToken } = req.body;
       
-      const refreshObject = await refreshTokenRepository.repository.find({
+      const u = await userRepository.findOne({ email : email });
+
+      const refreshObject = await refreshTokenRepository.find({
         token: refreshToken,
       });
-      refreshTokenRepository.repository.remove(refreshObject);
+      refreshTokenRepository.remove(refreshObject);
 
-      const { user, accessToken } = await this.repository.findAndGenerateToken({ email, refreshObject });
-      const response = this._generateTokenResponse(user, accessToken);
+      const { user, accessToken } = await userRepository.findAndGenerateToken({ email, refreshObject });
+      const response = generateTokenResponse(user, accessToken);
       return res.json(response);
     } 
     catch (error) {
