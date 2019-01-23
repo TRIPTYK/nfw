@@ -1,32 +1,28 @@
 import "reflect-metadata";
 
 import { createConnection, Connection } from "typeorm";
+import { typeorm as TypeORM } from "./environment.config";
 import { User } from "../api/models/user.model";
 import { RefreshToken } from "../api/models/refresh-token.model";
 
 class TypeORMConfiguration {
   private static connection : Connection;
-  constructor () {}
-  static async getConnection() 
-  {
-    if(this.connection)
-    {
-      return this.connection;
-    }
-
+  constructor () { }
+  public static async connect() 
+  { 
     this.connection = await createConnection({
       type: "mysql",
-      host: "localhost",
-      port: 3306,
-      username: "root",
-      password: "e2q2mak7",
-      database: "3rd_party_ts_boilerplate",
+      name: TypeORM.name,
+      host: TypeORM.host,
+      port: parseInt(TypeORM.port),
+      username: TypeORM.user,
+      password: TypeORM.pwd,
+      database: TypeORM.database,
       entities: [ User, RefreshToken ],
       synchronize: true,
       logging: false
     });
-
-    return this.connection;
+    return await this.connection;
   }
 }
 
