@@ -4,21 +4,27 @@ This repository contains badass 3rd party REST API boilerplate [Express.js](http
 
 As a starter project, he implements some classic features :
 
-* User authentification
+* ORM couch
+* User's management
+* Authentification
 * Routes validation
 * Logger
 * Error handling
-* ORM couch
+* File upload
 
 ## Start with
 
-`$ git clone https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git`
+```bash
+$ git clone https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git
+```
 
 ### Logs
 
 A logs directory must be present on root of dist directory.
 
-`$ mkdir ./dist/logs`
+```bash
+$ mkdir ./dist/logs
+```
 
 ## Typescript configuration
 
@@ -49,7 +55,9 @@ More info about the [tsconfig file](https://www.typescriptlang.org/docs/handbook
 
 Create your ormconfig.json file :
 
-`$ touch ormconfig.json`
+```bash
+$ touch ormconfig.json
+```
 
 And put your configuration :
 
@@ -80,7 +88,9 @@ More info about [ormconfig file](http://typeorm.io/#/using-ormconfig).
 
 Warning : if you will use typeorm cli commands (by example for migrations), you should install typeorm globaly :
 
-`$ npm i typeorm -g`
+```bash
+$ npm i typeorm -g
+```
 
 ### Database migration
 
@@ -94,15 +104,21 @@ The production project is generated in the *dist* directory, after Typescript co
 
 Install Typescript globaly :
 
-`$ npm i typescript -g`
+```bash
+$ npm i typescript -g
+```
 
 Run compilation one time :
 
-`$ tsc`
+```bash
+$ tsc
+```
 
 Run compilation on watching :
 
-`$ tsc --watch`
+```bash
+$ tsc --watch
+```
 
 ## Tests
 
@@ -114,7 +130,9 @@ Project implements a basic [PM2](https://github.com/Unitech/PM2/) configuration 
 
 First, install PM2 globaly :
 
-`$ npm i pm2 -g`
+```bash
+$ npm i pm2 -g
+```
 
 Note that PM2 should also be installed on other server environments, and that your SSH public key must be granted by the destination server.
 
