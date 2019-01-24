@@ -6,24 +6,37 @@ As a starter project, he implements some classic features :
 
 * ORM couch
 * User's management
+* Document's management
 * Authentification
 * Routes validation
+* File upload
 * Logger
 * Error handling
-* File upload
 
 ## Start with
 
+Clone the boilerplate on your machine :
+
 ```bash
-$ git clone https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git
+$ git clone https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git your-project-name/
 ```
 
-### Logs
-
-A logs directory must be present on root of dist directory.
+Remove .git directory :
 
 ```bash
-$ mkdir ./dist/logs
+$ cd your-project-name/
+$ rm -rf .git
+```
+Install dependencies :
+
+```bash
+$ npm install
+```
+
+Finaly, init the *dist* directory which go good (create directory and sub-directories, copy .env files) :
+
+```bash
+$ npm run distify
 ```
 
 ## Typescript configuration
@@ -50,6 +63,28 @@ Adapt your own configuration in tsconfig.json.
 ```
 
 More info about the [tsconfig file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).
+
+## Compilation
+
+The production project is generated in the *dist* directory, after Typescript compilation.
+
+Install Typescript globaly :
+
+```bash
+$ npm i typescript -g
+```
+
+Run compilation one time :
+
+```bash
+$ tsc
+```
+
+Run compilation on watching :
+
+```bash
+$ tsc --watch
+```
 
 ## TypeORM configuration
 
@@ -97,28 +132,6 @@ $ npm i typeorm -g
 A TypeORM migration is a DB synchronizing. If your schema has pending changes, migration tool allow you to synchronize it.
 
 More info about [typeorm migration](http://typeorm.io/#/migrations).
-
-## Compilation
-
-The production project is generated in the *dist* directory, after Typescript compilation.
-
-Install Typescript globaly :
-
-```bash
-$ npm i typescript -g
-```
-
-Run compilation one time :
-
-```bash
-$ tsc
-```
-
-Run compilation on watching :
-
-```bash
-$ tsc --watch
-```
 
 ## Tests
 
