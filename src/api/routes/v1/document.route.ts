@@ -1,10 +1,11 @@
 import * as Express from "express";
 import * as Validate from "express-validation";
 
-import { DocumentController } from "../../controllers/document.controller";
-import { authorize, ADMIN, LOGGED_USER } from "../../middlewares/auth.middleware";
-import { listDocuments, createDocument, replaceDocument, updateDocument } from "../../validations/document.validation";
-import { set as Multer } from "../../../config/multer.config";
+import { DocumentController } from "./../../controllers/document.controller";
+import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
+import { listDocuments, createDocument, replaceDocument, updateDocument } from "./../../validations/document.validation";
+import { set as Multer } from "./../../../config/multer.config";
+import { resize } from "./../../middlewares/document.middleware";
 
 const router = Express.Router();
 const documentController = new DocumentController();
@@ -62,7 +63,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(upload.single('document'), documentController.create);
+  .post(upload.single('document'), resize, documentController.create);
 
 router
   .route('/:documentId')
@@ -121,7 +122,7 @@ router
    * @apiError (Forbidden 403)    Forbidden         Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound          File does not exist
    */
-  .put(authorize(LOGGED_USER), upload.single('document'), documentController.update)
+  .put(authorize(LOGGED_USER), upload.single('document'), resize, documentController.update)
 
   /**
    * @api {patch} v1/documents/:id Update User
@@ -153,7 +154,7 @@ router
    * @apiError (Forbidden 403)    Forbidden         Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound          File does not exist
    */
-  .patch(authorize(LOGGED_USER), upload.single('document'), documentController.update)
+  .patch(authorize(LOGGED_USER), upload.single('document'), resize, documentController.update)
 
   /**
    * @api {patch} v1/documents/:id Delete File

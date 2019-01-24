@@ -1,7 +1,11 @@
+import * as Boom from "boom";
+import * as Jimp from "jimp";
+
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { Document } from "./../models/document.model";
-import * as Boom from "boom";
+import { jimp as JimpConfiguration } from "./../../config/environment.config";
+import { imageMimeTypes } from "./../enums/mime-type.enum";
 
 /**
  * Create Document and append it to req
@@ -26,4 +30,55 @@ const create = (req: Request, res: Response, next: Function) => {
   catch (e) { return next( Boom.expectationFailed(e.message) ); }
 };
 
-export { create };
+/**
+ * Resize image according to .env file directives
+ * 
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ * 
+ * @returns {Function}
+ *  
+ * @public
+ * 
+ */
+const resize = async (req: Request, res: Response, next: Function) => {
+  try {
+    // If image optimization is activated and is image mime type
+    if(JimpConfiguration.isActive === 1 && imageMimeTypes.lastIndexOf(req['file'].mimetype) !== -1)
+    {
+      let destination = req['file'].destination;
+      console.log(req['file']);
+
+      // Read original file
+      const image = await Jimp.read(req['file'].path);
+
+      // Clone in 3 files according to 3 sizes
+      let xsImage = image.clone(), mdImage = image.clone(), xlImage = image.clone();
+
+      // Resize and write file in server
+      xsImage
+        .resize(JimpConfiguration.xs, Jimp.AUTO)
+        .write( destination + '/xs/' + req['file'].filename, function(err, doc){
+          if(err) throw Boom.expectationFailed(err.message);
+        });
+
+      mdImage
+        .resize(JimpConfiguration.md, Jimp.AUTO)
+        .write( destination + '/md/' + req['file'].filename, function(err, doc){
+          if(err) throw Boom.expectationFailed(err.message);
+        });
+
+      xlImage
+        .resize(JimpConfiguration.xl, Jimp.AUTO)
+        .write( destination + '/xl/' + req['file'].filename, function(err, doc){
+          if(err) throw Boom.expectationFailed(err.message);
+        });
+    }
+
+    return next();
+  } 
+  catch (e) { return next( Boom.expectationFailed(e.message) ); }
+};
+
+export { create, resize };

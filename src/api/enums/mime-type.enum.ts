@@ -10,4 +10,11 @@ const mimeTypes = [
   "text/csv"
 ];
 
-export { mimeTypes };
+const imageMimeTypes = [
+  "image/bmp", 
+  "image/gif", 
+  "image/jpeg", 
+  "image/png"
+];
+
+export { mimeTypes, imageMimeTypes };
