@@ -21,9 +21,7 @@ const load = async (req: Request, res: Response, next: Function, id: number) => 
     req['locals'] = new User(await repository.one(id));
     return next();
   } 
-  catch (error) {
-    return next(error);
-  }
+  catch (e) { return next(Boom.expectationFailed(e.message)); }
 };
 
 export { load };

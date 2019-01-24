@@ -4,7 +4,13 @@ import { createConnection, Connection } from "typeorm";
 import { typeorm as TypeORM } from "./environment.config";
 import { User } from "../api/models/user.model";
 import { RefreshToken } from "../api/models/refresh-token.model";
+import { Document } from "../api/models/document.model";
 
+/**
+ * Define TypeORM default configuration
+ * 
+ * @inheritdoc https://http://typeorm.io
+ */
 class TypeORMConfiguration {
   private static connection : Connection;
   constructor () { }
@@ -18,7 +24,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [ User, RefreshToken ],
+      entities: [ User, RefreshToken, Document],
       synchronize: true,
       logging: false
     });

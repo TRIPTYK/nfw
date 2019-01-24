@@ -1,6 +1,7 @@
 import * as Express from "express";
 import { router as AuthRouter } from "./auth.route";
 import { router as UserRouter } from "./user.route";
+import { router as DocumentRouter } from "./document.route";
 import { Request, Response } from "express";
 
 const router = Express.Router();
@@ -27,5 +28,10 @@ router.use('/auth/', AuthRouter);
  * Users routes
  */
 router.use('/users/', UserRouter);
+
+/**
+ * Files routes
+ */
+router.use('/documents/', DocumentRouter);
 
 module.exports = router;

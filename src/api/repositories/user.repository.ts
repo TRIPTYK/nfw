@@ -103,13 +103,14 @@ export class UserRepository extends Repository<User>  {
       if (user) {
         user.services[service] = id;
         if (!user.username) user.username = username;
-        if (!user.picture) user.picture = picture;
+        //if (!user.documents) user.documents = document; // TODO: manage picture
         return userRepository.save(user);
       }
 
       const password = uuidv4();
 
-      return userRepository.create({ services: { [service]: id }, email, password, username, picture });
+      // return userRepository.create({ services: { [service]: id }, email, password, username, picture }); // TODO: manage picture
+      return userRepository.create({ services: { [service]: id }, email, password, username });
     }
 
     catch(e) { throw Boom.expectationFailed(e.message); }

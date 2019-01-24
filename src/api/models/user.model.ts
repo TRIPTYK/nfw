@@ -1,26 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert } from "typeorm";
-import { env, jwtSecret, jwtExpirationInterval } from "../../config/environment.config";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany } from "typeorm";
+import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environment.config";
 import { DateUtils } from "typeorm/util/DateUtils";
+import { Document } from "./../models/document.model";
+import { roles } from "./../enums/role.enum";
 
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
 
-const roles = ['admin', 'user', 'ghost'];
-
 @Entity()
 export class User {
 
   /**
-   * @param payload 
+   * @param payload Object data to assign
    */
-  constructor(payload: Object) { 
-    for(let key in payload)
-    {
-      this[key] = payload[key];
-    }
-  }
+  constructor(payload: Object) { Object.assign(this, payload); }
   
   private temporaryPassword;
 
@@ -57,15 +52,12 @@ export class User {
   })
   lastname: string;
 
-  @Column({
-    length: 32,
-    default: ""
-  })
-  picture: string;
+  @OneToMany(type => Document, document => document.user)
+  documents: Document[];
 
   @Column({
     type: "enum",
-    enum: ["admin", "user", "ghost"],
+    enum: roles,
     default: "ghost"
   })
   role: "admin" | "user" | "ghost";
@@ -75,6 +67,18 @@ export class User {
     default: DateUtils.mixedDateToDateString( new Date() )
   })
   createdAt;
+
+  @Column({
+    type: Date,
+    default: null
+  })
+  updatedAt;
+
+  @Column({
+    type: Date,
+    default: null
+  })
+  deletedAt;
 
   @AfterLoad() 
   storeTemporaryPassword() : void {
@@ -104,7 +108,7 @@ export class User {
   /**
    * 
    */
-  public transform() {
+  public whitelist() {
 
     const transformed = {};
     const fields = ['id', 'username', 'email', 'firstname', 'lastname' , 'services', 'picture', 'role', 'createdAt'];
@@ -153,9 +157,4 @@ export class User {
     }
     return error;
   }
-
-  /**
-   * 
-   */
-  static roles = roles;
 }

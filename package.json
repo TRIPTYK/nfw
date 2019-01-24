@@ -2,7 +2,7 @@
   "name": "3rd-party-ts-boilerplate",
   "version": "0.0.1",
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
-  "main": "app.bootstrap.js",
+  "main": "./dist/app.bootstrap.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec"
   },

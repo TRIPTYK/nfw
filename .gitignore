@@ -63,5 +63,8 @@ typings/
 # NVM local directory
 nvm/
 
+# Todo file
+todo
+
 # ORM configuration
 ormconfig.json

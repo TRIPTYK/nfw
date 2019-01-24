@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { User } from "./../models/user.model";
 
 @Entity()
@@ -22,9 +22,9 @@ export class RefreshToken {
   @Column()
   token: String;
 
-  @ManyToMany(type => User, { eager : true })
-  @JoinTable()
-  users: User[];
+  @OneToOne(type => User)
+  @JoinColumn()
+  user: User;
 
   @Column()
   expires: Date;
