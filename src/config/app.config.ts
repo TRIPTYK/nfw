@@ -6,6 +6,7 @@ import * as Compression from "compression";
 import * as Passport from "passport";
 import * as ExpressValidator from "express-validator";
 import * as ServiceErrorHandler from "../api/services/error-handler.service";
+import * as Helmet from "helmet";
 
 import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, authorized, api, env, environments } from "./environment.config";
@@ -32,6 +33,11 @@ app.use( Express.static('public') );
  */
 app.use( BodyParser.json() );
 app.use( BodyParser.urlencoded( { extended : true } ) );
+
+/**
+ * Enable and set Helmet security middleware
+ */
+app.use( Helmet() );
 
 /**
  * Enable CORS - Cross Origin Resource Sharing
