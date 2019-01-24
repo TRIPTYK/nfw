@@ -18,8 +18,8 @@ import { app as App } from "./config/app.config";
 if(https.isActive === 1)
 {
   let credentials = {  
-    key: Fs.readFileSync("my-api.key", "utf8"),
-    cert: Fs.readFileSync("my-api.cert", "utf8")
+    key: Fs.readFileSync(https.key, "utf8"),
+    cert: Fs.readFileSync(https.cert, "utf8")
   };
   
   HTTPS
