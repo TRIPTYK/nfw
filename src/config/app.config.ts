@@ -8,7 +8,7 @@ import * as ExpressValidator from "express-validator";
 import * as ServiceErrorHandler from "../api/services/error-handler.service";
 
 import { strategies as Strategies } from "./passport.config";
-import { HTTPLogs, api, env, environments } from "./environment.config";
+import { HTTPLogs, authorized, api, env, environments } from "./environment.config";
 
 const ProxyRouter = require('./../api/routes/v1');
 
@@ -36,7 +36,12 @@ app.use( BodyParser.urlencoded( { extended : true } ) );
 /**
  * Enable CORS - Cross Origin Resource Sharing
  */
-app.use( Cors() );
+let CORSOptions = {
+  origin: authorized,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+app.use( Cors( CORSOptions) );
 
 /**
  * Passport configuration

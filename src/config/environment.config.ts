@@ -12,6 +12,8 @@ Dotenv.config( { path : `${process.cwd()}/${environment}.env` } );
 
 const env                   = process.env.NODE_ENV;
 const port                  = process.env.PORT;
+const url                   = process.env.URL;
+const authorized            = process.env.AUTHORIZED.trim().split(',');
 const jwtSecret             = process.env.JWT_SECRET;
 const jwtExpirationInterval = process.env.JWT_EXPIRATION_MINUTES;
 const api                   = process.env.API_VERSION;
@@ -33,4 +35,4 @@ const jimp                  = {
   xl: parseInt(process.env.JIMP_SIZE_XL),
 };
 
-export { env, environments, port, jwtSecret, jwtExpirationInterval, api, logs, HTTPLogs, typeorm, jimp };
+export { env, environments, port, url, authorized, jwtSecret, jwtExpirationInterval, api, logs, HTTPLogs, typeorm, jimp };
