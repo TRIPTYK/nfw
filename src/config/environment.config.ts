@@ -26,5 +26,11 @@ const typeorm               = {
   user: process.env.TYPEORM_USER, 
   pwd: process.env.TYPEORM_PWD 
 };
+const jimp                  = {
+  isActive: parseInt(process.env.JIMP_IS_ACTIVE),
+  xs: parseInt(process.env.JIMP_SIZE_XS),
+  md: parseInt(process.env.JIMP_SIZE_MD),
+  xl: parseInt(process.env.JIMP_SIZE_XL),
+};
 
-export { env, environments, port, jwtSecret, jwtExpirationInterval, api, logs, HTTPLogs, typeorm };
+export { env, environments, port, jwtSecret, jwtExpirationInterval, api, logs, HTTPLogs, typeorm, jimp };
