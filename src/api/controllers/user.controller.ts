@@ -22,7 +22,7 @@ export class UserController {
    * 
    * @public
    */
-  get(req: Request, res : Response) { res.json( req['locals'].transform() ); }
+  get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
 
   /**
    * Get logged in user info
@@ -32,7 +32,7 @@ export class UserController {
    * 
    * @public
    */
-  loggedIn (req: Request, res : Response) { res.json( req['user'].transform() ) }
+  loggedIn (req: Request, res : Response) { res.json( req['user'].whitelist() ) }
 
   /**
    * Create new user
@@ -49,32 +49,9 @@ export class UserController {
       const user = new User(req.body);
       const savedUser = await repository.save(user);
       res.status( HttpStatus.CREATED );
-      res.json( savedUser.transform() );
+      res.json( savedUser.whitelist() );
     } 
     catch (e) { next( User.checkDuplicateEmail(e) ); }
-  }
-
-  /**
-   * Replace existing user
-   * 
-   * @param {Object} req
-   * @param {Object} res
-   * @param {Function} next
-   * 
-   * @public
-   */
-  async replace (req: Request, res : Response, next: Function) {
-
-    try {
-      const repository = getRepository(User);
-      const user = await repository.findOne(req.params.userId);
-      repository.merge(user, req.body);
-      repository.save(user);
-      res.json( user.transform() );
-      
-    } 
-    catch (e) { next( User.checkDuplicateEmail(e) ); }
-
   }
 
   /**
@@ -93,7 +70,7 @@ export class UserController {
       const user = await repository.findOne(req.params.userId);
       repository.merge(user, req.body);
       repository.save(user);
-      res.json( user.transform() );
+      res.json( user.whitelist() );
     }
     catch(e) { next( User.checkDuplicateEmail(e) ); }
     
@@ -113,7 +90,7 @@ export class UserController {
     try {
       const repository = getCustomRepository(UserRepository);
       const users = await repository.list(req.query);;
-      const transformedUsers = users.map(user => user.transform());
+      const transformedUsers = users.map(user => user.whitelist());
       res.json(transformedUsers);
     } 
     catch (e) { next(e); }

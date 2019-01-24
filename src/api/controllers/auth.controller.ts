@@ -37,7 +37,7 @@ class AuthController {
       const user = new User(req.body);
       repository.save(user);
 
-      const userTransformed = user.transform();
+      const userTransformed = user.whitelist();
       const token = generateTokenResponse(user, user.token());
       res.status(HttpStatus.CREATED);
       return res.json({ token, user: userTransformed });
@@ -65,7 +65,7 @@ class AuthController {
       const repository = getCustomRepository(UserRepository);
       const { user, accessToken } = await repository.findAndGenerateToken(req.body);
       const token = generateTokenResponse(user, accessToken);
-      const userTransformed = user.transform();
+      const userTransformed = user.whitelist();
       return res.json({ token, user: userTransformed });
     } 
     catch (error) {
@@ -90,7 +90,7 @@ class AuthController {
       const user = req.body;
       const accessToken = user.token();
       const token = generateTokenResponse(user, accessToken);
-      const userTransformed = user.transform();
+      const userTransformed = user.whitelist();
       return res.json({ token, user: userTransformed });
     } 
     catch (error) {

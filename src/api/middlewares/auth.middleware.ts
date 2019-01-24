@@ -3,6 +3,7 @@ import * as Boom from "boom";
 
 import { User } from "./../models/user.model";
 import { promisify } from "es6-promisify";
+import { roles as userRoles } from "./../enums/role.enum";
 
 const ADMIN = 'admin';
 const LOGGED_USER = '_loggedUser';
@@ -56,7 +57,7 @@ const _handleJWT = (req, res, next: Function, roles) => async (err : Error, user
  * 
  * @param roles 
  */
-const authorize = (roles = User.roles) => (req, res, next) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles) ) (req, res, next);
+const authorize = (roles = userRoles) => (req, res, next) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles) ) (req, res, next);
 
 /**
  * 

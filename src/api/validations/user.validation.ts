@@ -1,5 +1,5 @@
 import * as Joi from "joi";
-import { User } from "./../models/user.model";
+import { roles } from "./../enums/role.enum";
 
 // GET /v1/users
 const listUsers = {
@@ -10,8 +10,8 @@ const listUsers = {
     email: Joi.string(),
     firstname: Joi.string(),
     lastname: Joi.string(),
-    role: Joi.string().valid(User.roles),
-  },
+    role: Joi.string().valid(roles),
+  }
 };
 
 // POST /v1/users
@@ -22,8 +22,8 @@ const createUser = {
     username: Joi.string().max(32),
     lastname: Joi.string().max(32),
     firstname: Joi.string().max(32),
-    role: Joi.string().valid(User.roles),
-  },
+    role: Joi.string().valid(roles),
+  }
 };
 
 // PUT /v1/users/:userId
@@ -34,11 +34,11 @@ const replaceUser = {
     username: Joi.string().max(32),
     lastname: Joi.string().max(32),
     firstname: Joi.string().max(32),
-    role: Joi.string().valid(User.roles),
+    role: Joi.string().valid(roles),
   },
   params: {
     userId: Joi.string().regex(/^[0-9]{0,4}$/).required(),
-  },
+  }
 };
 
 // PATCH /v1/users/:userId
@@ -49,11 +49,11 @@ const updateUser = {
     username: Joi.string().max(32),
     lastname: Joi.string().max(32),
     firstname: Joi.string().max(32),
-    role: Joi.string().valid(User.roles),
+    role: Joi.string().valid(roles),
   },
   params: {
     userId: Joi.string().regex(/^[0-9]{0,4}$/).required(),
-  },
+  }
 };
 
 export { listUsers, createUser, replaceUser, updateUser };

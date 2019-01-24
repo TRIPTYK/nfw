@@ -1,8 +1,8 @@
 import * as Express from "express";
-import { UserController } from "./../../controllers/user.controller";
 import * as Validate from "express-validation";
 import * as UserMiddleware from "./../../middlewares/user.middleware";
 
+import { UserController } from "./../../controllers/user.controller";
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
 import { listUsers, createUser, replaceUser, updateUser } from "./../../validations/user.validation";
 
@@ -60,14 +60,16 @@ router
    * @apiSuccess (Created 201) {String}  user.role       User's role
    * @apiSuccess (Created 201) {String}  user.firstname  User's firstname
    * @apiSuccess (Created 201) {String}  user.lastname   User's lastname
-   * @apiSuccess (Created 201) {Date}    user.createdAt  Timestamp
+   * @apiSuccess (Created 201) {String}  user.picture    User's picture
+   * @apiSuccess (Created 201) {Date}    user.createdAt  Date
+   * @apiSuccess (Created 201) {Date}    user.updatedAt  Date
+   * @apiSuccess (Created 201) {Date}    user.deletedAt  Date
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  //.post(authorize(ADMIN), Validate(createUser), UserController.create);
-  .post(Validate(createUser), userController.create);
+  .post(/*authorize(ADMIN),*/ Validate(createUser), userController.create);
 
 router
   .route('/profile')
@@ -142,7 +144,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .put(authorize(LOGGED_USER), Validate(replaceUser), userController.replace)
+  .put(authorize(LOGGED_USER), Validate(replaceUser), userController.update)
 
   /**
    * @api {patch} v1/users/:id Update User
