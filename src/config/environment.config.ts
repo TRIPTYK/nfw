@@ -34,5 +34,10 @@ const jimp                  = {
   md: parseInt(process.env.JIMP_SIZE_MD),
   xl: parseInt(process.env.JIMP_SIZE_XL),
 };
+const https                 = {
+  isActive: parseInt(process.env.HTTPS_IS_ACTIVE),
+  key: process.env.HTTPS_KEY,
+  cert: process.env.HTTPS_KEY
+};
 
-export { env, environments, port, url, authorized, jwtSecret, jwtExpirationInterval, api, logs, HTTPLogs, typeorm, jimp };
+export { env, environments, port, url, authorized, https, jwtSecret, jwtExpirationInterval, api, logs, HTTPLogs, typeorm, jimp };

@@ -16,7 +16,7 @@ const ProxyRouter = require('./../api/routes/v1');
 /**
  * Instanciate Express application
  */
-const app = Express();
+let app = Express();
 
 /**
  * GZIP compression

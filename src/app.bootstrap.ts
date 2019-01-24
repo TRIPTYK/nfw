@@ -1,5 +1,8 @@
+import * as Fs from "fs";
+import * as HTTPS from "https";
+
 import { logger as Logger } from "./config/logger.config";
-import { port, env, typeorm } from "./config/environment.config";
+import { port, env, https, typeorm } from "./config/environment.config";
 import { TypeORMConfiguration } from "./config/typeorm.config";
 
 /** Connection to Database server before app configuration */
@@ -9,8 +12,27 @@ TypeORMConfiguration.connect().then( (connection) => {
 
 import { app as App } from "./config/app.config";
 
-/** Listen to requests */
-App.listen( port, () => Logger.info(`HTTP server is now running on port ${port} (${env})`));
+/**
+ * HTTPS configuration
+ */
+if(https.isActive === 1)
+{
+  let credentials = {  
+    key: Fs.readFileSync("my-api.key", "utf8"),
+    cert: Fs.readFileSync("my-api.cert", "utf8")
+  };
+  
+  HTTPS
+    .createServer(credentials, App)
+    .listen(port, function() {
+      Logger.info(`HTTPS server is now running on port ${port} (${env})`)
+    });
+}
+else 
+{
+  App.listen( port, () => Logger.info(`HTTP server is now running on port ${port} (${env})`));
+}
+
 
 /** Exports Express */
 export { App };
