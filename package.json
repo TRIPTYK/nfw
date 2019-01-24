@@ -3,8 +3,21 @@
   "version": "0.0.1",
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
   "main": "./dist/app.bootstrap.js",
+  "watch": {
+    "src": {
+      "patterns": ["src"],
+      "extensions": "env",
+      "quiet": true,
+      "legacyWatch": true,
+      "delay": 2500,
+      "runOnChangeOnly": true
+    }
+  },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "distify": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && cp ./src/development.env ./dist/development.env && cp ./src/staging.env ./dist/staging.env && cp ./src/production.env ./dist/production.env",
+    "environify": "yes | cp -rf ./src/development.env ./dist/development.env && yes | cp -rf ./src/staging.env ./dist/staging.env && yes | cp -rf ./src/production.env ./dist/production.env",
+    "watch": "npm-watch 'environify'"
   },
   "repository": {
     "type": "git",
@@ -52,6 +65,7 @@
     "multer": "^1.4.1",
     "mysql": "^2.16.0",
     "node-notifier": "^5.3.0",
+    "npm-watch": "^0.6.0",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.0",

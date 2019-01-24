@@ -33,7 +33,7 @@ Install dependencies :
 $ npm install
 ```
 
-Finaly, init the *dist* directory which go good (create directory and sub-directories, copy .env files) :
+Init the *dist* directory which go good (create directory and sub-directories, copy .env files) :
 
 ```bash
 $ npm run distify
@@ -64,7 +64,7 @@ Adapt your own configuration in tsconfig.json.
 
 More info about the [tsconfig file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).
 
-## Compilation
+### Compilation
 
 The production project is generated in the *dist* directory, after Typescript compilation.
 
@@ -85,6 +85,16 @@ Run compilation on watching :
 ```bash
 $ tsc --watch
 ```
+
+### Environment files compilation
+
+When your .env files changes, run an update with :
+
+```bash
+$ npm run environify
+```
+
+This command copy .env files from the *src* directory to *dist* directory.
 
 ## TypeORM configuration
 
