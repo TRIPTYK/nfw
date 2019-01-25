@@ -36,7 +36,7 @@ $ npm install
 Init the *dist* directory which go good (create directory and sub-directories, copy .env files) :
 
 ```bash
-$ npm run distify
+$ npm run dist
 ```
 
 ## Typescript configuration
@@ -91,7 +91,7 @@ $ tsc --watch
 When your .env files changes, run an update with :
 
 ```bash
-$ npm run environify
+$ npm run env
 ```
 
 This command copy .env files from the *src* directory to *dist* directory.

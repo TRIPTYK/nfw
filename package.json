@@ -5,7 +5,9 @@
   "main": "./dist/app.bootstrap.js",
   "watch": {
     "src": {
-      "patterns": ["src"],
+      "patterns": [
+        "src"
+      ],
       "extensions": "env",
       "quiet": true,
       "legacyWatch": true,
@@ -14,10 +16,10 @@
     }
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
-    "distify": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && cp ./src/development.env ./dist/development.env && cp ./src/staging.env ./dist/staging.env && cp ./src/production.env ./dist/production.env",
-    "environify": "yes | cp -rf ./src/development.env ./dist/development.env && yes | cp -rf ./src/staging.env ./dist/staging.env && yes | cp -rf ./src/production.env ./dist/production.env",
-    "watch": "npm-watch 'environify'"
+    "test": "./node_modules/.bin/mocha --reporter spec --timeout 10000",
+    "dist": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && cp ./src/development.env ./dist/development.env && cp ./src/staging.env ./dist/staging.env && cp ./src/production.env ./dist/production.env",
+    "env": "yes | cp -rf ./src/development.env ./dist/development.env && yes | cp -rf ./src/staging.env ./dist/staging.env && yes | cp -rf ./src/production.env ./dist/production.env",
+    "watch": "npm-watch 'env'"
   },
   "repository": {
     "type": "git",
@@ -45,6 +47,7 @@
     "body-parser": "^1.18.3",
     "boom": "^7.3.0",
     "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "compression": "^1.7.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
