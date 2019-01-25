@@ -38,7 +38,9 @@ export class Document {
   })
   size;
 
-  @ManyToOne(type => User, user => user.documents)
+  @ManyToOne(type => User, user => user.documents, {
+    onDelete: "CASCADE" // Remove all documents when user is deleted
+  })
   user: User;
 
   @Column({

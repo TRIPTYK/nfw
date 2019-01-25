@@ -52,7 +52,9 @@ export class User {
   })
   lastname: string;
 
-  @OneToMany(type => Document, document => document.user)
+  @OneToMany(type => Document, document => document.user, {
+    eager: true
+  })
   documents: Document[];
 
   @Column({
