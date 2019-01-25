@@ -14,6 +14,13 @@ const listUsers = {
   }
 };
 
+// GET /v1/users/userId
+const getUser = {
+  params: {
+    userId: Joi.string().regex(/^[0-9]{0,4}$/).required()
+  }
+};
+
 // POST /v1/users
 const createUser = {
   body: {
@@ -56,4 +63,4 @@ const updateUser = {
   }
 };
 
-export { listUsers, createUser, replaceUser, updateUser };
+export { listUsers, getUser, createUser, replaceUser, updateUser };
