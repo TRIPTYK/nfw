@@ -7,6 +7,7 @@ import * as Passport from "passport";
 import * as ExpressValidator from "express-validator";
 import * as ServiceErrorHandler from "../api/services/error-handler.service";
 import * as Helmet from "helmet";
+import * as RateLimit from "express-rate-limit";
 
 import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, authorized, api, env, environments } from "./environment.config";
@@ -20,6 +21,8 @@ let app = Express();
 
 /**
  * GZIP compression
+ * 
+ * @inheritdoc https://github.com/expressjs/compression
  */
 app.use( Compression() );
 
@@ -30,17 +33,23 @@ app.use( Express.static('public') );
 
 /**
  * Expose body on req.body
+ * 
+ * @inheritdoc https://www.npmjs.com/package/body-parser
  */
 app.use( BodyParser.json() );
 app.use( BodyParser.urlencoded( { extended : true } ) );
 
 /**
  * Enable and set Helmet security middleware
+ * 
+ * @inheritdoc https://github.com/helmetjs/helmet
  */
 app.use( Helmet() );
 
 /**
  * Enable CORS - Cross Origin Resource Sharing
+ * 
+ * @inheritdoc https://www.npmjs.com/package/cors
  */
 let CORSOptions = {
   origin: authorized,
@@ -51,6 +60,8 @@ app.use( Cors( CORSOptions) );
 
 /**
  * Passport configuration
+ * 
+ * @inheritdoc http://www.passportjs.org/
  */
 app.use( Passport.initialize() );
 
@@ -64,13 +75,29 @@ Passport.use('google', Strategies.google);
 app.use( ExpressValidator() );
 
 /**
- * Set Router(s) on paths
+ * Configure API Rate limit
+ * Note that you can also set limit on specific route path
+ * 
+ * @inheritdoc https://www.npmjs.com/package/express-rate-limit
  */
-app.use(`/api/${api}`, ProxyRouter);
+app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+ 
+const apiLimiter = RateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 100,
+  message: "Too many requests from this IP, please try again after an hour"
+});
+
+/**
+ * Set RateLimit and Router(s) on paths
+ */
+app.use(`/api/${api}`, apiLimiter, ProxyRouter);
 
 /**
  * Request logging with Morgan
  * dev : console | production : file
+ * 
+ * @inheritdoc https://github.com/expressjs/morgan
  */
 app.use( Morgan(HTTPLogs) );
 
