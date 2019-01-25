@@ -4,7 +4,7 @@ import * as Dotenv from "dotenv";
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in 
  * app.js
  */
-const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION' };
+const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
 
 const environment = process.argv[2] && process.argv[2] === '--env' && process.argv[3] && environments.hasOwnProperty(process.argv[3].toUpperCase()) ? process.argv[3] : 'development';
 
@@ -13,7 +13,7 @@ Dotenv.config( { path : `${process.cwd()}/${environment}.env` } );
 const env                   = process.env.NODE_ENV;
 const port                  = process.env.PORT;
 const url                   = process.env.URL;
-const authorized            = process.env.AUTHORIZED.trim().split(',');
+const authorized            = process.env.AUTHORIZED.split(',');
 const jwtSecret             = process.env.JWT_SECRET;
 const jwtExpirationInterval = process.env.JWT_EXPIRATION_MINUTES;
 const api                   = process.env.API_VERSION;
