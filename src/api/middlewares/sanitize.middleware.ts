@@ -5,6 +5,8 @@ import * as Boom from "boom";
 /**
  * Sanitize data before using|insertion
  * 
+ * @inheritdoc https://www.npmjs.com/package/xss
+ * 
  * @param req Request
  * @param res Response
  * @param next Function
