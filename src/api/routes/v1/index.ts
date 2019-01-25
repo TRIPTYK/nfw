@@ -1,10 +1,10 @@
-import * as Express from "express";
+import { Router } from "express";
 import { router as AuthRouter } from "./auth.route";
 import { router as UserRouter } from "./user.route";
 import { router as DocumentRouter } from "./document.route";
 import { Request, Response } from "express";
 
-const router = Express.Router();
+const router = Router();
 
 /**
  * @api {get} v1/status
@@ -34,4 +34,4 @@ router.use('/users/', UserRouter);
  */
 router.use('/documents/', DocumentRouter);
 
-module.exports = router;
+export { router };

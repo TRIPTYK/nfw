@@ -1,12 +1,12 @@
-import * as Express from "express";
-import * as Validate from "express-validation";
+import * as validate from "express-validation";
 
+import { Router } from "express";
 import { AuthController } from "./../../controllers/auth.controller";
-import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
 import { register, login, oAuth, refresh } from "./../../validations/auth.validation";
 import { oAuth as oAuthLogin } from "./../../middlewares/auth.middleware";
+import { sanitize } from "./../../middlewares/sanitize.middleware";
 
-const router = Express.Router();      
+const router = Router();      
 const authController = new AuthController();
 
 /**
@@ -38,7 +38,7 @@ const authController = new AuthController();
  */
 router
   .route('/register')
-    .post(Validate(register), authController.register);
+    .post(validate(register), sanitize, authController.register);
 
 /**
  * @api {post} v1/auth/login Login
@@ -65,11 +65,11 @@ router
  * @apiSuccess (Created 201) {Date}    user.createdAt  Timestamp
  *
  * @Error (Bad Request 400)  ValidationError  Some parameters may contain invalid values
- * @Error (Unauthorized 401)  Unauthorized     Incorrect email or password
+ * @Error (Unauthorized 401)  Unauthorized    Incorrect email or password
  */
 router
   .route('/login')
-    .post(Validate(login), authController.login);
+    .post(validate(login), sanitize, authController.login);
 
 
 /**
@@ -88,12 +88,12 @@ router
  * @apiSuccess {String}  refreshToken  Token to get a new accessToken after expiration time
  * @apiSuccess {Number}  expiresIn     Access Token's expiration time in miliseconds
  *
- * @Error (Bad Request 400)  ValidationError  Some parameters may contain invalid values
+ * @Error (Bad Request 400)  ValidationError   Some parameters may contain invalid values
  * @Error (Unauthorized 401)  Unauthorized     Incorrect email or refreshToken
  */
 router
   .route('/refresh-token')
-    .post(Validate(refresh), authController.refresh);
+    .post(validate(refresh), sanitize, authController.refresh);
 
 /**
  * @api {post} v1/auth/facebook Facebook Login
@@ -115,7 +115,7 @@ router
  */
 router
   .route('/facebook')
-    .post(Validate(oAuth), oAuthLogin('facebook'), authController.oAuth);
+    .post(validate(oAuth), oAuthLogin('facebook'), authController.oAuth);
 
 /**
  * @api {post} v1/auth/google Google Login
@@ -137,6 +137,6 @@ router
  */
 router
   .route('/google')
-    .post(Validate(oAuth), oAuthLogin('google'), authController.oAuth);
+    .post(validate(oAuth), oAuthLogin('google'), authController.oAuth);
 
 export { router };
