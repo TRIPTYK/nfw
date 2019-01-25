@@ -4,31 +4,46 @@ import * as Fs from "fs";
 
 import { Document } from "./../models/document.model";
 import { Request, Response } from "express";
-import { getConnection, Connection, getRepository, getCustomRepository } from "typeorm";
-import { typeorm as TypeORM } from "./../../config/environment.config";
+import { getRepository, getCustomRepository } from "typeorm";
 import { DocumentRepository } from "./../repositories/document.repository";
+import { BaseController } from "./base.controller";
 
 /**
  * 
  */
-class DocumentController {
+class DocumentController extends BaseController {
 
   /** */
-  connection : Connection;
+  constructor() { super(); }
 
-  /** */
-  constructor() { this.connection = getConnection(TypeORM.name); }
-
-  async list (req: Request, res : Response, next: Function) {
+  /**
+   * Retrieve a list of documents, according to some parameters
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async list (req: Request, res : Response, next: Function) {
     try {
       const repository = getCustomRepository(DocumentRepository);
-      const documents = await repository.list(req.query);;
+      const documents = await repository.list(req.query);
       res.json(documents);
     } 
     catch (e) { next(e); }
   }
 
-  async create(req: Request, res: Response, next: Function) {
+  /**
+   * Create a new document
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async create(req: Request, res: Response, next: Function) {
     try {
       const documentRepository = getRepository(Document);
       let document = new Document(req['file']);
@@ -38,7 +53,16 @@ class DocumentController {
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }
 
-  async get(req: Request, res: Response, next: Function) {
+  /**
+   * Retrieve one document according to :documentId
+   * 
+   * @param req Request 
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async get(req: Request, res: Response, next: Function) {
     try {
       const documentRepository = getRepository(Document);
       let document = await documentRepository.findOneOrFail(req.params.documentId);
@@ -47,6 +71,15 @@ class DocumentController {
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }
 
+  /**
+   * Update one document according to :documentId
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
   async update(req: Request, res: Response, next: Function) {
     try {
       const documentRepository = getRepository(Document);
@@ -67,7 +100,16 @@ class DocumentController {
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }
 
-  async remove (req: Request, res : Response, next: Function) {
+  /**
+   * Delete one document according to :documentId
+   * 
+   * @param req Request 
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async remove (req: Request, res : Response, next: Function) {
 
     try {
       const documentRepository = getRepository(Document);
