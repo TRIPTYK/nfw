@@ -14,6 +14,7 @@ export class RefreshToken {
   { 
     this.token = token;
     this.expires = expires;
+    this.user = user;
   }
 
   @PrimaryGeneratedColumn()
@@ -22,7 +23,7 @@ export class RefreshToken {
   @Column()
   token: String;
 
-  @OneToOne(type => User)
+  @OneToOne(type => User, { eager : true })
   @JoinColumn()
   user: User;
 

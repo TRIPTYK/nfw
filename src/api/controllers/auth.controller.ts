@@ -1,4 +1,5 @@
 import * as HttpStatus from "http-status";
+import * as Boom from "boom";
 
 import { User } from "./../models/user.model";
 import { RefreshToken } from "./../models/refresh-token.model";
@@ -42,8 +43,8 @@ class AuthController {
       res.status(HttpStatus.CREATED);
       return res.json({ token, user: userTransformed });
     } 
-    catch (error) {
-      return next( User.checkDuplicateEmail(error) );
+    catch (e) {
+      return next( User.checkDuplicateEmail(e) );
     }
 
   }
@@ -68,9 +69,7 @@ class AuthController {
       const userTransformed = user.whitelist();
       return res.json({ token, user: userTransformed });
     } 
-    catch (error) {
-      return next(error);
-    }
+    catch (e) { return next( Boom.expectation.failed(e.message)); }
 
   }
 
@@ -93,9 +92,7 @@ class AuthController {
       const userTransformed = user.whitelist();
       return res.json({ token, user: userTransformed });
     } 
-    catch (error) {
-      return next(error);
-    }
+    catch (e) { return next( Boom.expectation.failed(e.message)); }
   }
 
   /**
@@ -117,21 +114,17 @@ class AuthController {
       const userRepository = getCustomRepository(UserRepository);
 
       const { email, refreshToken } = req.body;
-      
-      const u = await userRepository.findOne({ email : email });
 
       const refreshObject = await refreshTokenRepository.find({
-        token: refreshToken,
+        where : { token: refreshToken }
       });
       refreshTokenRepository.remove(refreshObject);
-
+      
       const { user, accessToken } = await userRepository.findAndGenerateToken({ email, refreshObject });
       const response = generateTokenResponse(user, accessToken);
       return res.json(response);
     } 
-    catch (error) {
-      return next(error);
-    }
+    catch (e) { throw next( Boom.expectation.failed(e.message)); }
   }
 };
 
