@@ -1,8 +1,8 @@
+import * as Boom from "boom";
+
 import { Document } from "../models/document.model";
 import { Repository, EntityRepository, getRepository } from "typeorm";
 import { omitBy, isNil } from "lodash";
-
-import * as Boom from "boom";
 
 @EntityRepository(Document)
 export class DocumentRepository extends Repository<Document>  {
@@ -13,18 +13,21 @@ export class DocumentRepository extends Repository<Document>  {
   /**
    * Get a list of files according to current query parameters
    * 
+   * @public
    */
-  list({ page = 1, perPage = 30, path, fieldname, filename, size, mimetype }) {
+  public async list({ page = 1, perPage = 30, path, fieldname, filename, size, mimetype }) {
     
     try {
       const repository = getRepository(Document);
       const options = omitBy({ path, fieldname, filename, size, mimetype }, isNil);
-  
-      return repository.find({
+      
+      const documents = await repository.find({
         where: options,
         skip: ( page - 1 ) * perPage,
         take: perPage
       });
+
+      return documents;
     }
     catch(e) { throw Boom.expectationFailed(e.message); }
     

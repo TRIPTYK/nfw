@@ -5,6 +5,7 @@ const listDocuments = {
   query: {
     page: Joi.number().min(1),
     perPage: Joi.number().min(1).max(100),
+    fieldname: Joi.string(),
     filename: Joi.string(),
     path: Joi.string(),
     mimetype: Joi.string(),
@@ -12,25 +13,32 @@ const listDocuments = {
   }
 };
 
-// POST /v1/documents/upload
-const createDocument = {
-  body: {
-    filename: Joi.string().required().min(6).max(128),
+// GET /v1/documents/:documentId
+const getDocument = {
+  params: {
+    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
   }
-};
+}
 
-// PUT /v1/documents/:id
+// PUT /v1/documents/:documentId
 const replaceDocument = {
-  body: {
-    filename: Joi.string().required().min(6).max(128),
+  params: {
+    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
   }
-};
+}
 
-// PATCH /v1/documents/:id
+// PATCH /v1/documents/:documentId
 const updateDocument = {
-  body: {
-    filename: Joi.string().required().min(6).max(128),
+  params: {
+    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
   }
-};
+}
 
-export { listDocuments, createDocument, replaceDocument, updateDocument };
+// DELETE /v1/documents/:documentId
+const deleteDocument = {
+  params: {
+    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
+  }
+}
+
+export { listDocuments, getDocument, replaceDocument, updateDocument, deleteDocument };
