@@ -1,3 +1,5 @@
+import * as Boom from "boom";
+
 import { Request, Response } from "express";
 import { UserRepository } from "./../repositories/user.repository";
 import { getCustomRepository } from "typeorm";
