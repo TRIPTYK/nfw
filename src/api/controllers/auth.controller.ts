@@ -4,21 +4,18 @@ import * as Boom from "boom";
 import { User } from "./../models/user.model";
 import { RefreshToken } from "./../models/refresh-token.model";
 import { Request, Response } from "express";
-import { getConnection, Connection, getRepository, getCustomRepository } from "typeorm";
+import { getRepository, getCustomRepository } from "typeorm";
 import { UserRepository } from "./../repositories/user.repository";
-import { typeorm as TypeORM } from "./../../config/environment.config";
 import { generateTokenResponse } from "./../utils/auth.util";
+import { BaseController } from "./base.controller";
 
 /**
  * 
  */
-class AuthController {
+class AuthController extends BaseController {
 
   /** */
-  connection : Connection ;
-
-  /** */
-  constructor() { this.connection = getConnection(TypeORM.name); }
+  constructor() { super(); }
 
   /**
    * Create and save a new user

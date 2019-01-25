@@ -1,49 +1,49 @@
+import * as HttpStatus from "http-status";
+
 import { Request, Response } from "express";
 import { User } from "./../models/user.model";
 import { UserRepository } from "./../repositories/user.repository";
-import { getConnection, Connection, getRepository, getCustomRepository } from "typeorm";
-import { typeorm as TypeORM } from "./../../config/environment.config";
+import { getRepository, getCustomRepository } from "typeorm";
+import { BaseController } from "./base.controller";
 
-import * as HttpStatus from "http-status";
-
-export class UserController {
-  
-  /** */
-  connection: Connection;
+/**
+ * 
+ */
+export class UserController extends BaseController {
 
   /** */
-  constructor() { this.connection = getConnection(TypeORM.name); }
+  constructor() { super(); }
 
   /**
    * Get serialized user
    * 
-   * @param {Object} req
-   * @param {Object} res
+   * @param req Request
+   * @param res Response
    * 
    * @public
    */
-  get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
+  public get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
 
   /**
    * Get logged in user info
    * 
-   * @param {Object} req
-   * @param {Object} res
+   * @param req Request
+   * @param res Response
    * 
    * @public
    */
-  loggedIn (req: Request, res : Response) { res.json( req['user'].whitelist() ) }
+  public loggedIn (req: Request, res : Response) { res.json( req['user'].whitelist() ); }
 
   /**
    * Create new user
    * 
-   * @param {Object} req
-   * @param {Object} res
-   * @param {Function} next
+   * @param req Request
+   * @param res Response
+   * @param next Function
    * 
    * @public
    */
-  async create (req: Request, res : Response, next: Function) {
+  public async create (req: Request, res : Response, next: Function) {
     try {
       const repository = getRepository(User);
       const user = new User(req.body);
@@ -57,13 +57,13 @@ export class UserController {
   /**
    * Update existing user
    * 
-   * @param {Object} req
-   * @param {Object} res
-   * @param {Function} next
+   * @param req Request
+   * @param res Response
+   * @param next Function
    * 
    * @public
    */
-  async update (req: Request, res : Response, next: Function) {
+  public async update (req: Request, res : Response, next: Function) {
 
     try {
       const repository = getRepository(User);
@@ -79,13 +79,13 @@ export class UserController {
   /**
    * Get user list
    * 
-   * @param {Object} req
-   * @param {Object} res
-   * @param {Function} next
+   * @param req Request
+   * @param res Response
+   * @param next Function
    * 
    * @public
    */
-  async list (req: Request, res : Response, next: Function) {
+  public async list (req: Request, res : Response, next: Function) {
 
     try {
       const repository = getCustomRepository(UserRepository);
@@ -98,9 +98,14 @@ export class UserController {
 
   /**
    * Delete user
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
    * @public
    */
-  async remove (req: Request, res : Response, next: Function) {
+  public async remove (req: Request, res : Response, next: Function) {
 
     try {
       const user = req['locals'];
