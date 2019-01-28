@@ -12,7 +12,7 @@ import * as RateLimit from "express-rate-limit";
 import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, authorized, api, env, environments } from "./environment.config";
 
-const ProxyRouter = require('./../api/routes/v1');
+import { router as ProxyRouter } from "./../api/routes/v1";
 
 /**
  * Instanciate Express application
