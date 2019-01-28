@@ -6,6 +6,10 @@
 
 import * as Winston from "winston";
 
+let env = process.argv[2] && process.argv[2] === '--env' ? process.argv[3] : 'development';
+
+let directory = env === 'test' ? 'test' : 'dist';
+
 const logger = Winston.createLogger({
   level: 'info',
   format: Winston.format.json(),
@@ -14,8 +18,8 @@ const logger = Winston.createLogger({
     // - Write to all logs with level `info` and below to `combined.log`
     // - Write all logs error (and below) to `error.log`.
     //
-    new Winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new Winston.transports.File({ filename: 'logs/combined.log' }),
+    new Winston.transports.File({ filename: `${process.cwd()}/${directory}/logs/error.log`, level: 'error' }),
+    new Winston.transports.File({ filename: `${process.cwd()}/${directory}/logs/combined.log` }),
   ],
 });
 

@@ -86,25 +86,68 @@ Run compilation on watching :
 $ tsc --watch
 ```
 
-### Environment files compilation
+### Environment files configuration
 
-When your .env files changes, run an update with :
+Environment files contains settings variables about Express application, TypeORM configuration, behaviors, etc ...
 
-```bash
-$ npm run env
+Start with by .env files editing according to your own configuration :
+
+```env
+# Environment
+NODE_ENV = "production"
+
+# API version
+API_VERSION = "v1"
+
+# Application port
+PORT = 8001
+
+# Application URL
+URL = "http://your-production-url.com"
+
+# CORS authorized domains, by coma separated
+AUTHORIZED = "http://localhost:8001"
+
+# HTTPS configuration 
+HTTPS_IS_ACTIVE = 0
+HTTPS_CERT = "my-api.cert"
+HTTPS_KEY = "my-api.key"
+
+# JWT Secret passphrase
+JWT_SECRET = "your-passphrase"
+
+# JWT Expiration
+JWT_EXPIRATION_MINUTES = 15
+
+# TypeORM
+TYPEORM_TYPE = "mysql"
+TYPEORM_NAME = "default"
+TYPEORM_HOST = "localhost"
+TYPEORM_DB = "your-database-name"
+TYPEORM_USER = "root"
+TYPEORM_PWD = "root"
+TYPEORM_PORT = "3306"
+
+# Jimp
+JIMP_IS_ACTIVE = 1
+JIMP_SIZE_XS = 320
+JIMP_SIZE_MD = 768
+JIMP_SIZE_XL = 1920
+
+# API mail credentials
+MAIL_API_ID = 'PIvyWM9y2hFR0cie'
+MAIL_API_ROUTE = 'http://api.mail.triptyk.eu/api/1.0/'
 ```
-
-This command copy .env files from the *src* directory to *dist* directory.
 
 ## TypeORM configuration
 
-Create your ormconfig.json file :
+If you will use TypeORM as CLI, begin by create the ormconfig.json file :
 
 ```bash
 $ touch ormconfig.json
 ```
 
-And put your configuration :
+And fill in with your configuration :
 
 ```javascript
 {
@@ -129,13 +172,13 @@ And put your configuration :
 }
 ```
 
-More info about [ormconfig file](http://typeorm.io/#/using-ormconfig).
-
 Warning : if you will use typeorm cli commands (by example for migrations), you should install typeorm globaly :
 
 ```bash
 $ npm i typeorm -g
 ```
+
+More info about [ormconfig file](http://typeorm.io/#/using-ormconfig).
 
 ### Database migration
 
@@ -145,7 +188,15 @@ More info about [typeorm migration](http://typeorm.io/#/migrations).
 
 ## Tests
 
-Todo
+Some base tests are already writted with [Mocha]() and [Chai](). They are located in *test* directory.
+
+So, [Mockery]() and [Jenkins]() are also available in the project, but not used from scratch. 
+
+To run your tests, launch the following command :
+
+```bash
+$ npm run test --env test
+```
 
 ## Deploy with PM2
 

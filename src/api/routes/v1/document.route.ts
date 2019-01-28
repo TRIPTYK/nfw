@@ -63,7 +63,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(upload.single('document'), resize, documentController.create);
+  .post(authorize([ADMIN, LOGGED_USER]), upload.single('document'), resize, documentController.create);
 
 router
   .route('/:documentId')
@@ -122,7 +122,7 @@ router
    * @apiError (Forbidden 403)    Forbidden         Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound          File does not exist
    */
-  .put(authorize([LOGGED_USER]), validate(replaceDocument), upload.single('document'), resize, documentController.update)
+  .put(authorize([ADMIN, LOGGED_USER]), validate(replaceDocument), upload.single('document'), resize, documentController.update)
 
   /**
    * @api {patch} v1/documents/:id Update User
@@ -154,7 +154,7 @@ router
    * @apiError (Forbidden 403)    Forbidden         Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound          File does not exist
    */
-  .patch(authorize([LOGGED_USER]), validate(updateDocument), upload.single('document'), resize, documentController.update)
+  .patch(authorize([ADMIN, LOGGED_USER]), validate(updateDocument), upload.single('document'), resize, documentController.update)
 
   /**
    * @api {patch} v1/documents/:id Delete File
@@ -172,7 +172,7 @@ router
    * @apiError (Forbidden 403)    Forbidden     Only user with same id or admins can delete the data
    * @apiError (Not Found 404)    NotFound      User does not exist
    */
-  .delete(authorize([LOGGED_USER]), validate(deleteDocument), documentController.remove);
+  .delete(authorize([ADMIN, LOGGED_USER]), validate(deleteDocument), documentController.remove);
 
 
 export { router };
