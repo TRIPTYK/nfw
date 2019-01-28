@@ -44,11 +44,15 @@ export class User {
   })
   services: { facebook : string, google: string }
 
-  @Column()
+  @Column({
+    length: 32,
+    default: ""
+  })
   firstname: string;
 
   @Column({
-    length: 32
+    length: 32,
+    default: ""
   })
   lastname: string;
 

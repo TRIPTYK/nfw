@@ -66,7 +66,7 @@ class AuthController extends BaseController {
       const userTransformed = user.whitelist();
       return res.json({ token, user: userTransformed });
     } 
-    catch (e) { return next( Boom.expectation.failed(e.message)); }
+    catch (e) { return next( Boom.expectationFailed(e.message)); }
 
   }
 
