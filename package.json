@@ -16,9 +16,9 @@
     }
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec --timeout 10000",
+    "test": "./node_modules/.bin/mocha --env test --reporter spec --timeout 10000",
     "dist": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && cp ./src/development.env ./dist/development.env && cp ./src/staging.env ./dist/staging.env && cp ./src/production.env ./dist/production.env",
-    "env": "yes | cp -rf ./src/development.env ./dist/development.env && yes | cp -rf ./src/staging.env ./dist/staging.env && yes | cp -rf ./src/production.env ./dist/production.env",
+    "env": "yes | cp -rf ./development.env ./dist/development.env && yes | cp -rf ./staging.env ./dist/staging.env && yes | cp -rf ./production.env ./dist/production.env && yes | cp -rf ./test.env ./dist/test.env",
     "watch": "npm-watch 'env'"
   },
   "repository": {
@@ -59,11 +59,13 @@
     "express-validator": "^5.3.1",
     "helmet": "^3.15.0",
     "http-status": "^1.3.1",
+    "jenkins": "^0.23.0",
     "jimp": "^0.6.0",
     "joi": "^14.3.1",
     "jwt-simple": "^0.5.5",
     "lodash": "^4.17.11",
     "mocha": "^5.2.0",
+    "mockery": "^2.1.0",
     "moment-timezone": "^0.5.23",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
@@ -76,6 +78,7 @@
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
+    "supertest": "^3.4.2",
     "typeorm": "^0.2.12",
     "uuid": "^3.3.2",
     "winston": "^3.1.0",

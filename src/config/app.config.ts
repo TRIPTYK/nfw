@@ -104,7 +104,7 @@ app.use( Morgan(HTTPLogs) );
 /**
  * Errors handlers
  */
-if(env.toUpperCase() === environments.DEVELOPMENT)
+if(env.toUpperCase() === environments.DEVELOPMENT || env.toUpperCase() === environments.TEST)
 {
   app.use( ServiceErrorHandler.exit );
 }

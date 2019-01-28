@@ -63,6 +63,7 @@ const exit = (err, req, res, next) => {
  * @param {*} next 
  */
 const notFound = (req, res, next) => {
+  res.status( 404 );
   res.json( Boom.notFound('End point not found') );
 };
 
