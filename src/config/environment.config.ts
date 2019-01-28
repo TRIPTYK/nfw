@@ -8,7 +8,7 @@ const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUC
 
 const environment = process.argv[2] && process.argv[2] === '--env' && process.argv[3] && environments.hasOwnProperty(process.argv[3].toUpperCase()) ? process.argv[3] : 'development';
 
-Dotenv.config( { path : `${process.cwd()}/${environment}.env` } );
+Dotenv.config( { path : `${process.cwd()}/../${environment}.env` } );
 
 const env                   = process.env.NODE_ENV;
 const port                  = process.env.PORT;
