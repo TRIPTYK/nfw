@@ -92,7 +92,7 @@ router
    *
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated Users can access the data
    */
-  .get(authorize([LOGGED_USER]), userController.loggedIn);
+  .get(authorize([ADMIN, LOGGED_USER]), userController.loggedIn);
 
 router
   .route('/:userId')
@@ -145,7 +145,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .put(authorize([LOGGED_USER]), validate(replaceUser), sanitize, userController.update)
+  .put(authorize([ADMIN, LOGGED_USER]), validate(replaceUser), sanitize, userController.update)
 
   /**
    * @api {patch} v1/users/:id Update User

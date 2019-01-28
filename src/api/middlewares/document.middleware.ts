@@ -48,7 +48,6 @@ const resize = async (req: Request, res: Response, next: Function) => {
     if(JimpConfiguration.isActive === 1 && imageMimeTypes.lastIndexOf(req['file'].mimetype) !== -1)
     {
       let destination = req['file'].destination;
-      console.log(req['file']);
 
       // Read original file
       const image = await Jimp.read(req['file'].path);
