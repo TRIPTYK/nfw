@@ -116,7 +116,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .get(authorize([LOGGED_USER]), validate(getUser), userController.get)
+  .get(authorize([ADMIN, LOGGED_USER]), validate(getUser), userController.get)
 
   /**
    * @api {put} v1/users/:id Replace User
@@ -174,7 +174,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .patch(authorize([LOGGED_USER]), validate(updateUser), sanitize, userController.update)
+  .patch(authorize([ADMIN, LOGGED_USER]), validate(updateUser), sanitize, userController.update)
 
   /**
    * @api {patch} v1/users/:id Delete User
@@ -192,7 +192,7 @@ router
    * @apiError (Forbidden 403)    Forbidden     Only user with same id or admins can delete the data
    * @apiError (Not Found 404)    NotFound      User does not exist
    */
-  .delete(authorize([LOGGED_USER]), sanitize, userController.remove);
+  .delete(authorize([ADMIN, LOGGED_USER]), sanitize, userController.remove);
 
 
 export { router };

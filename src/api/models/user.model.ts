@@ -46,13 +46,11 @@ export class User {
 
   @Column({
     length: 32,
-    default: ""
   })
   firstname: string;
 
   @Column({
     length: 32,
-    default: ""
   })
   lastname: string;
 

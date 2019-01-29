@@ -6,10 +6,16 @@ import { port, env, https, typeorm, environments } from "./config/environment.co
 import { TypeORMConfiguration } from "./config/typeorm.config";
 
 /** Connection to Database server before app configuration */
-TypeORMConfiguration.connect().then( (connection) => {
-  if(env !== environments.TEST.toLowerCase())
-    Logger.info(`Connection to ${typeorm.type} server established on port ${typeorm.port} (${env})`);
-});
+TypeORMConfiguration
+  .connect()
+  .then( (connection) => {
+    if(env !== environments.TEST.toLowerCase())
+      Logger.info(`Connection to ${typeorm.type} server established on port ${typeorm.port} (${env})`);
+  })
+  .catch( (error) => { 
+    if(env !== environments.TEST.toLowerCase())
+      Logger.error(`MySQL connection error : ${error.message}`);
+  });
 
 import { app as App } from "./config/app.config";
 
