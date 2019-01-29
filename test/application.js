@@ -7,6 +7,7 @@ var pkgInfo = require('./../package.json');
 // Require the dev-dependencies
 
 const expect  = require("chai").expect;
+const request = require('supertest');
 
 describe("Express application", function () {
   
@@ -30,4 +31,10 @@ describe("Express application", function () {
     expect(pkgInfo.dependencies.express.slice(1)).to.equal('4.16.4');
   });
   
+  it('API status is OK 200', function (done) {
+    request(server)
+      .get('/api/v1/status')
+      .expect(200, done);
+  });
+
 });
