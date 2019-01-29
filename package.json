@@ -19,7 +19,8 @@
     "test": "./node_modules/.bin/mocha --env test --reporter spec --timeout 10000",
     "dist": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && cp ./src/development.env ./dist/development.env && cp ./src/staging.env ./dist/staging.env && cp ./src/production.env ./dist/production.env",
     "env": "yes | cp -rf ./development.env ./dist/development.env && yes | cp -rf ./staging.env ./dist/staging.env && yes | cp -rf ./production.env ./dist/production.env && yes | cp -rf ./test.env ./dist/test.env",
-    "watch": "npm-watch 'env'"
+    "watch": "npm-watch 'env'",
+    "generate" : "node ./build/"
   },
   "repository": {
     "type": "git",
