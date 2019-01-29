@@ -1,0 +1,36 @@
+import * as Joi from "joi";
+
+// GET /v1/{{ENTITY_LOWERCASE}}
+const list{{ENTITY_CAPITALIZE}}s = {
+  query: {}
+};
+
+// GET /v1/{{ENTITY_LOWERCASE}}s/{{ENTITY_LOWERCASE}}Id
+const get{{ENTITY_CAPITALIZE}} = {
+  params: {
+    {{ENTITY_LOWERCASE}}Id: Joi.string().regex(/^[0-9]{0,4}$/).required()
+  }
+};
+
+// POST /v1/{{ENTITY_LOWERCASE}}s
+const create{{ENTITY_CAPITALIZE}} = {
+  body: {}
+};
+
+// PUT /v1/{{ENTITY_LOWERCASE}}s/:{{ENTITY_LOWERCASE}}Id
+const replace{{ENTITY_CAPITALIZE}} = {
+  body: {},
+  params: {
+    {{ENTITY_LOWERCASE}}Id: Joi.string().regex(/^[0-9]{0,4}$/).required(),
+  }
+};
+
+// PATCH /v1/{{ENTITY_LOWERCASE}}s/:{{ENTITY_LOWERCASE}}Id
+const update{{ENTITY_CAPITALIZE}} = {
+  body: {},
+  params: {
+    {{ENTITY_LOWERCASE}}Id: Joi.string().regex(/^[0-9]{0,4}$/).required(),
+  }
+};
+
+export { list{{ENTITY_CAPITALIZE}}s, get{{ENTITY_CAPITALIZE}}, create{{ENTITY_CAPITALIZE}}, replace{{ENTITY_CAPITALIZE}}, update{{ENTITY_CAPITALIZE}} };

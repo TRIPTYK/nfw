@@ -1,0 +1,109 @@
+import * as HttpStatus from "http-status";
+
+import { Request, Response } from "express";
+import { {{ENTITY_CAPITALIZE}} } from "./../models/{{ENTITY_LOWERCASE}}.model";
+import { {{ENTITY_CAPITALIZE}}Repository } from "./../repositories/{{ENTITY_LOWERCASE}}.repository";
+import { getRepository, getCustomRepository } from "typeorm";
+import { BaseController } from "./base.controller";
+
+/**
+ * 
+ */
+export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
+
+  /** */
+  constructor() { super(); }
+
+  /**
+   * Get serialized {{ENTITY_LOWERCASE}}
+   * 
+   * @param req Request
+   * @param res Response
+   * 
+   * @public
+   */
+  public get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
+
+  /**
+   * Create new {{ENTITY_LOWERCASE}}
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async create (req: Request, res : Response, next: Function) {
+    try {
+      const repository = getRepository({{ENTITY_CAPITALIZE}});
+      const {{ENTITY_LOWERCASE}} = new {{ENTITY_CAPITALIZE}}(req.body);
+      const saved{{ENTITY_CAPITALIZE}} = await repository.save({{ENTITY_LOWERCASE}});
+      res.status( HttpStatus.CREATED );
+      res.json( saved{{ENTITY_CAPITALIZE}} );
+    } 
+    catch (e) { next( e.message ); }
+  }
+
+  /**
+   * Update existing {{ENTITY_LOWERCASE}}
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async update (req: Request, res : Response, next: Function) {
+
+    try {
+      const repository = getRepository({{ENTITY_CAPITALIZE}});
+      const {{ENTITY_LOWERCASE}} = await repository.findOne(req.params.{{ENTITY_LOWERCASE}}Id);
+      repository.merge({{ENTITY_LOWERCASE}}, req.body);
+      repository.save({{ENTITY_LOWERCASE}});
+      res.json( {{ENTITY_LOWERCASE}} );
+    }
+    catch(e) { next( e.message ); }
+    
+  };
+
+  /**
+   * Get {{ENTITY_LOWERCASE}} list
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async list (req: Request, res : Response, next: Function) {
+
+    try {
+      const repository = getCustomRepository({{ENTITY_CAPITALIZE}}Repository);
+      const {{ENTITY_LOWERCASE}}s = await repository.list(req.query);
+      res.json({{ENTITY_LOWERCASE}}s);
+    } 
+    catch (e) { next(e); }
+  }
+
+  /**
+   * Delete {{ENTITY_LOWERCASE}}
+   * 
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   * 
+   * @public
+   */
+  public async remove (req: Request, res : Response, next: Function) {
+
+    try {
+      const {{ENTITY_LOWERCASE}}Repository = getRepository({{ENTITY_CAPITALIZE}});
+      const {{ENTITY_LOWERCASE}} = await {{ENTITY_LOWERCASE}}Repository.findOne(req.params.{{ENTITY_LOWERCASE}}Id);
+      const repository = getRepository({{ENTITY_CAPITALIZE}});
+      await repository.remove({{ENTITY_LOWERCASE}});
+      res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+    catch(e) { next(e); }
+    
+  }
+}
