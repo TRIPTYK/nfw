@@ -68,3 +68,6 @@ todo
 
 # ORM configuration
 ormconfig.json
+
+# Dist directory
+dist/
