@@ -33,7 +33,7 @@ Install dependencies :
 $ npm install
 ```
 
-Init the *dist* directory which go good (create directory and sub-directories, copy .env files) :
+Init the *dist* directory which go good (create directory and sub-directories) :
 
 ```bash
 $ npm run dist
@@ -188,9 +188,9 @@ More info about [typeorm migration](http://typeorm.io/#/migrations).
 
 ## Tests
 
-Some base tests are already writted with [Mocha]() and [Chai](). They are located in *test* directory.
+Some base tests are already writted with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). They are located in *test* directory.
 
-So, [Mockery]() and [Jenkins]() are also available in the project, but not used from scratch. 
+So, [Mockery](https://www.npmjs.com/package/Mockery) and [Jenkins](https://jenkins.io/) are also available in the project, but not used from scratch. 
 
 To run your tests, launch the following command :
 
