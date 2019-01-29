@@ -32,12 +32,16 @@ class AuthController extends BaseController {
 
     try {
       const repository = getRepository(User);
-      const user = new User(req.body);
-      repository.save(user);
+      
+      let user = new User(req.body);
+      
+      await repository.insert(user);
 
       const userTransformed = user.whitelist();
-      const token = generateTokenResponse(user, user.token());
+      const token = await generateTokenResponse(user, user.token());
+
       res.status(HttpStatus.CREATED);
+
       return res.json({ token, user: userTransformed });
     } 
     catch (e) {
@@ -62,7 +66,7 @@ class AuthController extends BaseController {
     try {
       const repository = getCustomRepository(UserRepository);
       const { user, accessToken } = await repository.findAndGenerateToken(req.body);
-      const token = generateTokenResponse(user, accessToken);
+      const token = await generateTokenResponse(user, accessToken);
       const userTransformed = user.whitelist();
       return res.json({ token, user: userTransformed });
     } 

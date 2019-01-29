@@ -99,7 +99,10 @@ app.use(`/api/${api}`, apiLimiter, ProxyRouter);
  * 
  * @inheritdoc https://github.com/expressjs/morgan
  */
-app.use( Morgan(HTTPLogs) );
+if(env.toUpperCase() !== environments.TEST)
+{
+  app.use( Morgan(HTTPLogs) );
+}
 
 /**
  * Errors handlers
