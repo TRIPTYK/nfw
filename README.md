@@ -116,6 +116,7 @@ JIMP_SIZE_XL = 1920
 MAIL_API_ID = 'PIvyWM9y2hFR0cie'
 MAIL_API_ROUTE = 'http://api.mail.triptyk.eu/api/1.0/'
 ```
+Enjoy.
 
 ## Typescript Compilation
 
@@ -176,13 +177,13 @@ More info about [ormconfig file](http://typeorm.io/#/using-ormconfig).
 
 ### Database migration
 
-A TypeORM migration is a DB synchronizing. If your schema has pending changes, migration tool allow you to synchronize it.
+A TypeORM migration is a DB synchronizing. If your schema have pending changes, migration tool allow you to synchronize it.
 
 More info about [typeorm migration](http://typeorm.io/#/migrations).
 
 ## Files generating
 
-The boilerplate expose a common files generator which be used as NPM task. This generate following files :
+The boilerplate expose a basic files generator which be used as NPM task. This generate following files :
 
 * Model
 * Controller 
@@ -190,7 +191,7 @@ The boilerplate expose a common files generator which be used as NPM task. This 
 * Validation 
 * Route
 
-So, the proxy router file (index.ts) is updated with the entity router which has just been created.
+So, the proxy router file (index.ts) is updated with the dedicated entity router which has just been created.
 
 To use the file generating, run the following command :
 
@@ -198,13 +199,16 @@ To use the file generating, run the following command :
 $ npm run generate YOUR_ENTITY_NAME
 ```
 
-Note that the generated files contains only basic features, and that the model must be filled after the file generating.
+Note that the generated files contains only basic features. Note also that some parts must be filled by hand :
+
+* Validation rules: body rules are created but empty by default. Fill it with your rules.
+* Model: model is filled with a primary auto-incremented id, and date system columns. Fill it with your columns and relations.
 
 ## Testing
 
-Some base tests are already writted with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). They are located in *test* directory.
+Some basic tests are already writted with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). They are located in *test* directory.
 
-[Mockery](https://www.npmjs.com/package/Mockery) and [Jenkins](https://jenkins.io/) are also available in the project, but not used from scratch. 
+[Jenkins](https://jenkins.io/) is also available in the project, but not used from scratch. 
 
 To run your tests, launch the following command :
 
