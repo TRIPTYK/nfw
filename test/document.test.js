@@ -8,7 +8,7 @@ describe("Document CRUD", function () {
 
   before(function (done) {
 
-    let express = require('./../dist/app.bootstrap')
+    let express = require('../dist/app.bootstrap')
     let credentials = {
       username: 'triptyk',
       email: 'steve@triptyk.eu',

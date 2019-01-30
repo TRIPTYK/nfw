@@ -13,11 +13,12 @@ let capitalize  = process.argv[2][0].toUpperCase() + process.argv[2].substr(1);
 let lowercase   = process.argv[2];
 
 let items = [
-  { template : 'model', dest: 'models' },
-  { template : 'controller', dest: 'controllers' },
-  { template : 'repository', dest: 'repositories' },
-  { template : 'validation', dest: 'validations' },
-  { template : 'route', dest: 'routes/v1' },
+  { template : 'model', dest: 'models', ext: 'ts' },
+  { template : 'controller', dest: 'controllers', ext: 'ts' },
+  { template : 'repository', dest: 'repositories', ext: 'ts' },
+  { template : 'validation', dest: 'validations', ext: 'ts' },
+  { template : 'route', dest: 'routes/v1', ext: 'ts' },
+  { template : 'test', dest: '../../test', ext: 'js' },
 ];
 
 /**
@@ -55,10 +56,10 @@ const _write = async (items) => {
     let output = file
       .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
       .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
-    FS.writeFile(`${process.cwd()}/src/api/${item.dest}/${lowercase}.${item.template}.ts`, output, (err) => {
+    FS.writeFile(`${process.cwd()}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output, (err) => {
       if(err) {
         console.log(`Error while ${item.template} file generating \n`);
-        console.log(`WARNING : check the api/${items.dest}/${lowercase}.${item.template}.ts to update`);
+        console.log(`WARNING : check the api/${items.dest}/${lowercase}.${item.template}.${item.ext} to update`);
       }
       else console.log(`${item.template[0].toUpperCase()}${item.template.substr(1)} generated.`)
     });

@@ -9,7 +9,7 @@ describe("Authentification", function () {
 
   before(function (done) {
 
-    let express = require('./../dist/app.bootstrap');
+    let express = require('../dist/app.bootstrap');
   
     server      = express.App;
     agent       = request.agent(server);
