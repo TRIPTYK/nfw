@@ -5,8 +5,8 @@
   "main": "./dist/app.bootstrap.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --env test --reporter spec --timeout 10000",
-    "dist": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl",
-    "generate" : "node ./build/"
+    "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i typescript -g && npm i typeorm -g && npm i && tsc",
+    "generate": "node ./build/"
   },
   "repository": {
     "type": "git",
