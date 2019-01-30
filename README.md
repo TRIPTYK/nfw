@@ -29,43 +29,11 @@ Remove .git directory :
 $ cd your-project-name/
 $ rm -rf .git
 ```
-Install dependencies :
+
+Kickstart project (create *dist* directory and sub-directories, install package, install typescript and typeorm globaly, and run a first compilation) :
 
 ```bash
-$ npm install
-```
-
-Install Typescript globaly :
-
-```bash
-$ npm i typescript -g
-```
-
-Init the *dist* directory which go good (create directory and sub-directories) :
-
-```bash
-$ npm run dist
-```
-
-Adapt your own typescript configuration in [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) :
-
-```javascript
-{
-  "compilerOptions": {
-    "lib": ["dom", "es5", "es6"],
-    "target": "es2017",
-    "module": "commonjs",
-    "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "sourceMap": false,
-    "outDir": "./dist/"
-  },
-  "exclude" : [
-    "**/**/node_modules",
-    "node_modules"
-  ]
-}
+$ npm run kickstart
 ```
 
 Adapt yours .env files with your own configuration :
@@ -116,7 +84,11 @@ JIMP_SIZE_XL = 1920
 MAIL_API_ID = 'PIvyWM9y2hFR0cie'
 MAIL_API_ROUTE = 'http://api.mail.triptyk.eu/api/1.0/'
 ```
-Enjoy.
+Enjoy with :
+
+```bash
+$ nodemon
+```
 
 ## Typescript Compilation
 
@@ -134,15 +106,30 @@ Run watching compilation :
 $ tsc --watch
 ```
 
-## TypeORM configuration
+If required, yo can adapt typescript configuration in [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) :
 
-If you will use TypeORM as CLI, begin by update the ormconfig.json file :
-
-```bash
-$ touch ormconfig.json
+```javascript
+{
+  "compilerOptions": {
+    "lib": ["dom", "es5", "es6"],
+    "target": "es2017",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": false,
+    "outDir": "./dist/"
+  },
+  "exclude" : [
+    "**/**/node_modules",
+    "node_modules"
+  ]
+}
 ```
 
-And fill in with your configuration :
+## TypeORM configuration
+
+If you will use TypeORM as CLI, begin by update the ormconfig.json file and fill in with your own configuration :
 
 ```javascript
 {
@@ -167,12 +154,6 @@ And fill in with your configuration :
 }
 ```
 
-Warning : if you will use typeorm cli commands (by example for migrations), you should install typeorm globaly :
-
-```bash
-$ npm i typeorm -g
-```
-
 More info about [ormconfig file](http://typeorm.io/#/using-ormconfig).
 
 ### Database migration
@@ -190,6 +171,7 @@ The boilerplate expose a basic files generator which be used as NPM task. This g
 * Custom repository
 * Validation 
 * Route
+* Test
 
 So, the proxy router file (index.ts) is updated with the dedicated entity router which has just been created.
 
