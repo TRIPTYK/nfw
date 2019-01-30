@@ -30,17 +30,17 @@ $ cd your-project-name/
 $ rm -rf .git
 ```
 
-Kickstart project (create *dist* directory and sub-directories, install package, install typescript and typeorm globaly, and run a first compilation) :
+Kickstart project (create *dist* directory and sub-directories, install packages, install typescript and typeorm globaly, and run a first compilation) :
 
 ```bash
 $ npm run kickstart
 ```
 
-Adapt yours .env files with your own configuration :
+Adapt yours .env files (dev, test, staging, production) with your own configuration :
 
 ```env
 # Environment
-NODE_ENV = "production"
+NODE_ENV = "development"
 
 # API version
 API_VERSION = "v1"
@@ -49,9 +49,9 @@ API_VERSION = "v1"
 PORT = 8001
 
 # Application URL
-URL = "http://your-production-url.com"
+URL = "http://your-development-url.com"
 
-# CORS authorized domains, by coma separated
+# CORS authorized domains, by coma separated WITHOUT spacing
 AUTHORIZED = "http://localhost:8001"
 
 # HTTPS configuration 
@@ -126,6 +126,8 @@ If required, yo can adapt typescript configuration in [tsconfig.json](https://ww
   ]
 }
 ```
+
+This is recommanded to maintains the *dist* directory as output compilation target.
 
 ## TypeORM configuration
 
