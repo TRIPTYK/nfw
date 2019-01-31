@@ -20,6 +20,14 @@ import { router as ProxyRouter } from "./../api/routes/v1";
 let app = Express();
 
 /**
+ * Expose body on req.body
+ * 
+ * @inheritdoc https://www.npmjs.com/package/body-parser
+ */
+app.use( BodyParser.urlencoded( { extended : false } ) );
+app.use( BodyParser.json() );
+
+/**
  * GZIP compression
  * 
  * @inheritdoc https://github.com/expressjs/compression
@@ -32,19 +40,11 @@ app.use( Compression() );
 app.use( Express.static('public') );
 
 /**
- * Expose body on req.body
- * 
- * @inheritdoc https://www.npmjs.com/package/body-parser
- */
-app.use( BodyParser.json() );
-app.use( BodyParser.urlencoded( { extended : true } ) );
-
-/**
  * Enable and set Helmet security middleware
  * 
  * @inheritdoc https://github.com/helmetjs/helmet
  */
-app.use( Helmet() );
+//app.use( Helmet() );
 
 /**
  * Enable CORS - Cross Origin Resource Sharing

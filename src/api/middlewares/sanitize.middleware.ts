@@ -4,7 +4,7 @@ import * as Boom from "boom";
 
 /**
  * Sanitize data before using|insertion
- * 
+ * TODO fix embeded objects/arrays
  * @inheritdoc https://www.npmjs.com/package/xss
  * 
  * @param req Request
@@ -15,7 +15,7 @@ const sanitize = (req: Request, res: Response, next: Function) => {
   try {
     for(let key in req.body)
     {
-      req.body[key] = XSS(req.body[key]);
+      //req.body[key] = XSS(req.body[key]);
     }
     next();
   }

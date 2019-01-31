@@ -30,7 +30,7 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
     }
     catch(e)
     {
-      throw Boom.badImplementation(e);
+      throw Boom.expectationFailed(e.message);
     }
     
   }
