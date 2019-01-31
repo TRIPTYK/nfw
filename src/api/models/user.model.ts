@@ -3,6 +3,7 @@ import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environmen
 import { DateUtils } from "typeorm/util/DateUtils";
 import { Document } from "./../models/document.model";
 import { roles } from "./../enums/role.enum";
+import { userSerializer } from "./../serializers/user.serializer";
 
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
@@ -113,15 +114,7 @@ export class User {
    * 
    */
   public whitelist() {
-
-    const transformed = {};
-    const fields = ['id', 'username', 'email', 'firstname', 'lastname' , 'services', 'picture', 'role', 'createdAt'];
-
-    fields.forEach((field) => {
-      transformed[field] = this[field];
-    });
-
-    return transformed;
+    return userSerializer.serialize(this);
   }
 
   /**

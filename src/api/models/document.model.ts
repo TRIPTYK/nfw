@@ -3,6 +3,7 @@ import { User } from "./user.model";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { mimeTypes } from "./../enums/mime-type.enum";
 import { documentTypes } from "./../enums/document-type.enum";
+import { documentSerializer } from "./../serializers/document.serializer";
 
 @Entity()
 export class Document {
@@ -60,4 +61,11 @@ export class Document {
     default: null
   })
   deletedAt;
+
+  /**
+   * 
+   */
+  public whitelist() {
+    return documentSerializer.serialize(this);
+  }
 }

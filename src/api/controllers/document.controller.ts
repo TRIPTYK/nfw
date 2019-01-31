@@ -29,7 +29,7 @@ class DocumentController extends BaseController {
     try {
       const repository = getCustomRepository(DocumentRepository);
       const documents = await repository.list(req.query);
-      res.json(documents);
+      res.json( documents.map(document => document.whitelist()) );
     } 
     catch (e) { next(e); }
   }
@@ -48,7 +48,7 @@ class DocumentController extends BaseController {
       const documentRepository = getRepository(Document);
       let document = new Document(req['file']);
       documentRepository.save(document);
-      res.json(document);
+      res.json(document.whitelist());
     }
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }
@@ -66,7 +66,7 @@ class DocumentController extends BaseController {
     try {
       const documentRepository = getRepository(Document);
       let document = await documentRepository.findOneOrFail(req.params.documentId);
-      res.json(document);
+      res.json(document.whitelist());
     }
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }
@@ -95,7 +95,7 @@ class DocumentController extends BaseController {
       documentRepository.merge(document, req['file']);
       documentRepository.save(document);
 
-      res.json(document);
+      res.json(document.whitelist());
     }
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }
