@@ -125,12 +125,7 @@ export class User {
     const payload = {
       exp: Moment().add(jwtExpirationInterval, 'minutes').unix(),
       iat: Moment().unix(),
-      sub: { 
-        id: this.id,
-        username: this.username,
-        email: this.email,
-        role: this.role
-      }
+      sub: this.id
     };
     return Jwt.encode(payload, jwtSecret);
   }
