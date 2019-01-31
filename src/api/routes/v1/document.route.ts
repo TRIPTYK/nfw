@@ -5,11 +5,16 @@ import { DocumentController } from "./../../controllers/document.controller";
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
 import { listDocuments, getDocument, replaceDocument, updateDocument, deleteDocument } from "./../../validations/document.validation";
 import { set as Multer } from "./../../../config/multer.config";
-import { resize } from "./../../middlewares/document.middleware";
+import { resize, deserialize } from "./../../middlewares/document.middleware";
 
 const router = Router();
 const documentController = new DocumentController();
 const upload = Multer();
+
+/**
+ * Deserialize document when API with userId route parameter is hit
+ */
+router.param('documentId', deserialize);
 
 router
   .route('/')
