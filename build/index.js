@@ -19,6 +19,7 @@ let items = [
   { template : 'validation', dest: 'validations', ext: 'ts' },
   { template : 'route', dest: 'routes/v1', ext: 'ts' },
   { template : 'test', dest: '../../test', ext: 'js' },
+  { template : 'serializer', dest: 'serializers', ext: 'ts' },
 ];
 
 /**

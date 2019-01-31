@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
+import { {{ENTITY_LOWERCASE}}Serializer } from "./../serializers/{{ENTITY_LOWERCASE}}.serializer";
 
 @Entity()
 export class {{ENTITY_CAPITALIZE}} {
@@ -29,4 +30,8 @@ export class {{ENTITY_CAPITALIZE}} {
     default: null
   })
   deletedAt;
+
+  public whitelist() {
+    return {{ENTITY_LOWERCASE}}Serializer.serialize(this);
+  } 
 }

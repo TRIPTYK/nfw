@@ -174,6 +174,7 @@ The boilerplate expose a basic files generator which be used as NPM task. This g
 * Validation 
 * Route
 * Test
+* Serializer
 
 So, the proxy router file (index.ts) is updated with the dedicated entity router which has just been created.
 
@@ -187,6 +188,7 @@ Note that the generated files contains only basic features. Note also that some 
 
 * Validation rules: body rules are created but empty by default. Fill it with your rules.
 * Model: model is filled with a primary auto-incremented id, and date system columns. Fill it with your columns and relations.
+* Serializer: attributes as empty by default.Fill it with your entity attributes.
 
 ## Testing
 
