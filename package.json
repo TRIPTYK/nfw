@@ -49,6 +49,7 @@
     "jenkins": "^0.23.0",
     "jimp": "^0.6.0",
     "joi": "^14.3.1",
+    "jsonapi-serializer": "^3.6.4",
     "jwt-simple": "^0.5.5",
     "lodash": "^4.17.11",
     "mocha": "^5.2.0",
