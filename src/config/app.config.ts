@@ -25,7 +25,7 @@ let app = Express();
  * @inheritdoc https://www.npmjs.com/package/body-parser
  */
 app.use( BodyParser.urlencoded( { extended : false } ) );
-app.use( BodyParser.json() );
+app.use( BodyParser.json({ type: 'application/vnd.api+json' }) );
 
 /**
  * GZIP compression
@@ -44,7 +44,7 @@ app.use( Express.static('public') );
  * 
  * @inheritdoc https://github.com/helmetjs/helmet
  */
-//app.use( Helmet() );
+app.use( Helmet() );
 
 /**
  * Enable CORS - Cross Origin Resource Sharing

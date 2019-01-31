@@ -21,6 +21,7 @@ describe("Authentification", function () {
       .send(credentials)
       .end(function(err, response){
         expect(response.statusCode).to.equal(201);
+        console.log(response.body);
         token = response.body.token.accessToken;
         refreshToken = response.body.token.refreshToken;
         done();
@@ -56,7 +57,11 @@ describe("Authentification", function () {
     it('Authentification succeed with good credentials', function (done) {
       request(server)
         .post('/api/v1/auth/login')
-        .send(credentials)
+        .send({
+          username: credentials.username,
+          email: credentials.email,
+          password: password
+        })
         .expect(200, done);
     });
 
@@ -91,9 +96,9 @@ describe("Authentification", function () {
         .post('/api/v1/auth/refresh-token')
         .set('Authorization', 'Bearer ' + token)
         .send({
-          email: credentials.email,
-          password: password,
-          refreshToken: refreshToken
+          token: {
+            refreshToken: refreshToken
+          }
         })
         .expect(200, done);
     });

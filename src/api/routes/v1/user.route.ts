@@ -3,12 +3,17 @@ import * as validate from "express-validation";
 import { Router } from "express";
 import { UserController } from "./../../controllers/user.controller";
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
-import { load } from "./../../middlewares/user.middleware";
+import { load, deserialize } from "./../../middlewares/user.middleware";
 import { listUsers, getUser, createUser, replaceUser, updateUser } from "./../../validations/user.validation";
 import { sanitize } from "./../../middlewares/sanitize.middleware";
 
 const router = Router();
 const userController = new UserController();
+
+/**
+ * Deserialize user when API with userId route parameter is hit
+ */
+router.param('userId', deserialize);
 
 /**
  * Load user when API with userId route parameter is hit

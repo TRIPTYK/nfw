@@ -1,29 +1,27 @@
 var request = require('supertest');
-var uuid = require('uuid/v4');
+var fixtures = require('./fixtures');
 
 describe("Route's validation", function () {
   
-  var server, agent, token;
+  var server, agent, password, credentials, token, refreshToken;
 
   before(function (done) {
 
     let expect = require('chai').expect;
     let express = require('./../dist/app.bootstrap')
-    let credentials = {
-      username: 'triptyk',
-      email: 'steve@triptyk.eu',
-      password: 'e2q2mak7'
-    };
 
-    server = express.App;
-    agent = request.agent(server);
+    server      = express.App;
+    agent       = request.agent(server);
+    password    = fixtures.password();
+    credentials = fixtures.user('admin', password);
 
     agent
-      .post('/api/v1/auth/login')
+      .post('/api/v1/auth/register')
       .send(credentials)
       .end(function(err, response){
-        expect(response.statusCode).to.equal(200);
+        expect(response.statusCode).to.equal(201);
         token = response.body.token.accessToken;
+        refreshToken = response.body.token.refreshToken;
         done();
       });
   });

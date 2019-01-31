@@ -6,6 +6,8 @@ import { getRepository } from "typeorm";
 import { Document } from "./../models/document.model";
 import { jimp as JimpConfiguration } from "./../../config/environment.config";
 import { imageMimeTypes } from "./../enums/mime-type.enum";
+import { Deserializer as JSONAPIDeserializer } from "jsonapi-serializer";
+import { whitelist } from "./../serializers/document.serializer";
 
 /**
  * Create Document and append it to req
@@ -80,4 +82,31 @@ const resize = async (req: Request, res: Response, next: Function) => {
   catch (e) { return next( Boom.expectationFailed(e.message) ); }
 };
 
-export { create, resize };
+/**
+ * Deserialize
+ * 
+ * @param req 
+ * @param res 
+ * @param next 
+ */
+const deserialize = async(req: Request, res: Response, next: Function) => {
+  try {
+    
+    let document = await new JSONAPIDeserializer({
+      attributes: whitelist
+    }).deserialize(req.body);
+
+    req.body = {};
+
+    for(let key in document)
+    {
+      if(key !== 'id') req.body[key] = document[key];
+      else delete req.body[key];
+    }
+
+    return next();
+  } 
+  catch (e) { return next(Boom.expectationFailed(e.message)); }
+}
+
+export { create, resize, deserialize };
