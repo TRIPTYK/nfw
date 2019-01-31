@@ -27,8 +27,9 @@ const oAuth = {
 // POST /v1/auth/refresh
 const refresh = {
   body: {
-    email: Joi.string().email().required(),
-    refreshToken: Joi.string().required(),
+    token: {
+      refreshToken: Joi.string().required(),
+    }
   }
 };
 

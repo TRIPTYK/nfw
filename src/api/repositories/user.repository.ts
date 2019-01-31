@@ -1,9 +1,9 @@
 import { User } from "./../models/user.model";
 import { Repository, EntityRepository, getRepository } from "typeorm";
 import { omitBy, isNil } from "lodash";
-import { Moment } from "moment-timezone";
 import { uuidv4 } from "uuid/v4";
 
+import * as Moment from "moment-timezone";
 import * as Boom from "boom";
 
 @EntityRepository(User)
@@ -78,7 +78,7 @@ export class UserRepository extends Repository<User>  {
     {
       throw Boom.unauthorized('Password must match to authorize a token generating');
     }
-    else if (refreshObject && refreshObject.userEmail === email && Moment(refreshObject.expires).isBefore()) 
+    else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) 
     {
       throw Boom.unauthorized('Invalid refresh token.');
     }
@@ -88,7 +88,7 @@ export class UserRepository extends Repository<User>  {
 
   /**
    * 
-   * @param param0 
+   * @param param
    */
   async oAuthLogin({ service, id, email, username, picture }) {
 

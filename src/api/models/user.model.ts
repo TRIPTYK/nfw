@@ -9,6 +9,7 @@ import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
+import { IModel } from "../interfaces/IModel.interface";
 
 @Entity()
 export class User {

@@ -4,7 +4,7 @@ import * as Boom from "boom";
 import { User } from "./../models/user.model";
 import { RefreshToken } from "./../models/refresh-token.model";
 import { Request, Response } from "express";
-import { getRepository, getCustomRepository } from "typeorm";
+import { getRepository, getCustomRepository, AdvancedConsoleLogger } from "typeorm";
 import { UserRepository } from "./../repositories/user.repository";
 import { generateTokenResponse } from "./../utils/auth.util";
 import { BaseController } from "./base.controller";
@@ -114,18 +114,20 @@ class AuthController extends BaseController {
       const refreshTokenRepository = getRepository(RefreshToken);
       const userRepository = getCustomRepository(UserRepository);
 
-      const { email, refreshToken } = req.body;
-
-      const refreshObject = await refreshTokenRepository.find({
-        where : { token: refreshToken }
+      const { token } = req.body;
+      
+      const refreshObject = await refreshTokenRepository.findOne({
+        where : { token: token.refreshToken }
       });
       refreshTokenRepository.remove(refreshObject);
-      
-      const { user, accessToken } = await userRepository.findAndGenerateToken({ email, refreshObject });
-      const response = generateTokenResponse(user, accessToken);
-      return res.json(response);
+
+      // Get owner user of the token
+      const { user, accessToken } = await userRepository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject });;
+      const response = await generateTokenResponse(user, accessToken);
+ 
+      return res.json( { token: response } );
     } 
-    catch (e) { throw next( Boom.expectation.failed(e.message)); }
+    catch (e) { throw next( Boom.expectationFailed(e.message)); }
   }
 };
 
