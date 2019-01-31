@@ -62,9 +62,6 @@ export class Document {
   })
   deletedAt;
 
-  /**
-   * 
-   */
   public whitelist() {
     return documentSerializer.serialize(this);
   }
