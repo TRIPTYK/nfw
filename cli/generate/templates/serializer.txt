@@ -1,10 +1,7 @@
-import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
+import { BaseSerializer } from "./base.serializer";
 
-const {{ENTITY_LOWERCASE}}Serializer = new JSONAPISerializer('{{ENTITY_LOWERCASE}}s', {
-  id: 'id',
-  attributes: [ /** TODO **/],
-  convertCase: "kebab-case",
-  unconvertCase: "camelCase"
-});
+export class {{ENTITY_CAPITALIZE}}Serializer extends BaseSerializer {
 
-export { {{ENTITY_LOWERCASE}}Serializer }
+  constructor() { super('{{ENTITY_LOWERCASE}}s', ['']) };
+
+}

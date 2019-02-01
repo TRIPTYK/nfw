@@ -10,8 +10,8 @@ import { DocumentMiddleware } from "./../../middlewares/document.middleware";
 const router = Router();
 const upload = Multer();
 
-const documentController = new DocumentController(); // Todo injecter la dépendance via le router proxy
-const documentMiddleware = new DocumentMiddleware(); // Todo injecter la dépendance via le router proxy
+const documentController = new DocumentController(); /* TODO injecter la dépendance via le router proxy */
+const documentMiddleware = new DocumentMiddleware(); /* TODO injecter la dépendance via le router proxy */
 
 /**
  * Deserialize document when API with userId route parameter is hit
