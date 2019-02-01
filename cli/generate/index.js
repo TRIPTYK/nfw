@@ -2,10 +2,11 @@ const FS = require('fs');
 const Util = require('util');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
+var colors = require('colors/safe');
 
 if(!process.argv[2])
 {
-  console.log('Nothing to generate. Please, get entity name parameter.')
+  console.log(colors.red('x') + ' ' + 'Nothing to generate. Please, get entity name parameter.')
   process.exit(0);
 }
 
@@ -20,6 +21,7 @@ let items = [
   { template : 'route', dest: 'routes/v1', ext: 'ts' },
   { template : 'test', dest: '../../test', ext: 'js' },
   { template : 'serializer', dest: 'serializers', ext: 'ts' },
+  { template : 'middleware', dest: 'middlewares', ext: 'ts' },
 ];
 
 /**
@@ -53,16 +55,16 @@ const _countLines = (path) => {
 const _write = async (items) => {
 
   items.forEach( async (item) => {
-    let file = await ReadFile(`${process.cwd()}/build/templates/${item.template}.txt`, 'utf-8');
+    let file = await ReadFile(`${process.cwd()}/cli/generate/templates/${item.template}.txt`, 'utf-8');
     let output = file
       .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
       .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
     FS.writeFile(`${process.cwd()}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output, (err) => {
       if(err) {
-        console.log(`Error while ${item.template} file generating \n`);
-        console.log(`WARNING : check the api/${items.dest}/${lowercase}.${item.template}.${item.ext} to update`);
+        console.log(`${colors.red('x')} Error while ${item.template} file generating \n`);
+        console.log(`${colors.red('WARNING')} : check the api/${items.dest}/${lowercase}.${item.template}.${item.ext} to update`);
       }
-      else console.log(`${item.template[0].toUpperCase()}${item.template.substr(1)} generated.`)
+      else console.log(`${colors.green('v')} ${item.template[0].toUpperCase()}${item.template.substr(1)} generated.`)
     });
   });
 
@@ -107,25 +109,27 @@ const _write = async (items) => {
         console.log('Original router file will be restored ...');
         FS.writeFile(proxyPath, proxy, (err) => {
           if(err) process.stdout.write(err.message);
-          console.log('Original router file restoring done.');
-          console.log('Files generating done.');
-          console.log(`WARNING : check the api/routes/v1/index.ts to update`);
+          console.log(`${colors.green('v')} Original router file restoring done.`);
+          console.log(`${colors.green('v')} Files generating done.`);
+          console.log(`${colors.red('WARNING')} : check the api/routes/v1/index.ts to update`);
           process.exit(0);
         });
       }
       else {
-        console.log('Proxy router file updated.')
-        console.log('Files generating done.');
-        console.log(`NOTICE : don\'t forget to update the api/models/${lowercase}.model.ts`);
+        console.log(`${colors.green('v')} Proxy router file updated.`);
+        console.log(`${colors.green('v')} Files generating done.`);
+        console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/models/${lowercase}.model.ts`);
+        console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
         process.exit(0);
       }
     });
   }
   else 
   {
-    console.log('Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.');
-    console.log('Files generating done.');
-    console.log(`NOTICE : don\'t forget to update the api/models/${lowercase}.model.ts`);
+    console.log(`${colors.blue('i')} Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
+    console.log(`${colors.green('v')} Files generating done.`);
+    console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/models/${lowercase}.model.ts`);
+    console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
     process.exit(0);
   }
 
@@ -147,7 +151,7 @@ const build = async (items) => {
     process.stdin.on('data', function(data) {
       let value = data.toString().toLowerCase().replace(/\n/i, '').replace(/\r/i, '');
       if(value !== 'y' && value !== 'yes' ) {
-        console.log('Process aborted.');
+        console.log(`${colors.red('x')} Process aborted.`);
         process.exit(0);
       }
       else {
