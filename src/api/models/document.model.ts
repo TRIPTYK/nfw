@@ -3,10 +3,11 @@ import { User } from "./user.model";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { mimeTypes } from "./../enums/mime-type.enum";
 import { documentTypes } from "./../enums/document-type.enum";
-import { documentSerializer } from "./../serializers/document.serializer";
+import { DocumentSerializer } from "./../serializers/document.serializer";
+import { IModelize } from "../interfaces/IModelize.interface";
 
 @Entity()
-export class Document {
+export class Document implements IModelize {
 
   /**
    * @param payload Object data to assign
@@ -63,6 +64,6 @@ export class Document {
   deletedAt;
 
   public whitelist() {
-    return documentSerializer.serialize(this);
+    return new DocumentSerializer().serializer.serialize(this);
   }
 }
