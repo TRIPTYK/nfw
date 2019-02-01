@@ -22,7 +22,7 @@ export class UserController extends BaseController {
    * 
    * @public
    */
-  public get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
+  public get(req: Request, res : Response) { console.log('here'); res.json( req['locals'].whitelist() ); }
 
   /**
    * Get logged in user info
@@ -66,6 +66,7 @@ export class UserController extends BaseController {
   public async update (req: Request, res : Response, next: Function) {
 
     try {
+      console.log('hereeee')
       const repository = getRepository(User);
       const user = await repository.findOne(req.params.userId);
       repository.merge(user, req.body);
@@ -89,7 +90,7 @@ export class UserController extends BaseController {
 
     try {
       const repository = getCustomRepository(UserRepository);
-      const users = await repository.list(req.query);;
+      const users = await repository.list(req.query);
       const transformedUsers = users.map(user => user.whitelist());
       res.json(transformedUsers);
     } 

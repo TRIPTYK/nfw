@@ -1,20 +1,15 @@
-import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
+import { BaseSerializer } from "./base.serializer";
 
-const whitelist = [ 
-  'fieldname', 
-  'filename', 
-  'path', 
-  'mimetype', 
-  'size', 
-  'user', 
-  'createdAt' 
-];
+export class DocumentSerializer extends BaseSerializer {
 
-const documentSerializer = new JSONAPISerializer('documents', {
-  id: 'id',
-  attributes: whitelist,
-  convertCase: "kebab-case",
-  unconvertCase: "camelCase"
-});
+  constructor() { super('documents', [ 
+    'fieldname', 
+    'filename', 
+    'path', 
+    'mimetype', 
+    'size', 
+    'user', 
+    'createdAt' 
+  ]) };
 
-export { documentSerializer, whitelist }
+}

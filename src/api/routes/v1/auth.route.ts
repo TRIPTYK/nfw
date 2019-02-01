@@ -4,7 +4,7 @@ import { Router } from "express";
 import { AuthController } from "./../../controllers/auth.controller";
 import { register, login, oAuth, refresh } from "./../../validations/auth.validation";
 import { oAuth as oAuthLogin } from "./../../middlewares/auth.middleware";
-import { sanitize } from "./../../middlewares/sanitize.middleware";
+import { SecurityMiddleware } from "../../middlewares/security.middleware";
 
 const router = Router();      
 const authController = new AuthController();
@@ -38,7 +38,7 @@ const authController = new AuthController();
  */
 router
   .route('/register')
-    .post(validate(register), sanitize, authController.register);
+    .post(validate(register), SecurityMiddleware.sanitize, authController.register);
 
 /**
  * @api {post} v1/auth/login Login
@@ -69,7 +69,8 @@ router
  */
 router
   .route('/login')
-    .post(validate(login), sanitize, authController.login);
+    .post(validate(login), SecurityMiddleware.sanitize, authController.login);
+    
 
 
 /**
@@ -93,7 +94,7 @@ router
  */
 router
   .route('/refresh-token')
-    .post(validate(refresh), sanitize, authController.refresh);
+    .post(validate(refresh), SecurityMiddleware.sanitize, authController.refresh);
 
 /**
  * @api {post} v1/auth/facebook Facebook Login

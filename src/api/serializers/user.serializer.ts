@@ -1,21 +1,16 @@
-import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
+import { BaseSerializer } from "./base.serializer";
 
-const whitelist = [ 
-  'username', 
-  'email', 
-  'services', 
-  'documents', 
-  'firstname', 
-  'lastname', 
-  'role', 
-  'createdAt' 
-];
+export class UserSerializer extends BaseSerializer {
 
-const userSerializer = new JSONAPISerializer('users', {
-  id: 'id',
-  attributes: whitelist,
-  convertCase: "kebab-case",
-  unconvertCase: "camelCase"
-});
+  constructor() { super('users', [ 
+    'username', 
+    'email', 
+    'services', 
+    'documents', 
+    'firstname', 
+    'lastname', 
+    'role', 
+    'createdAt' 
+  ]) };
 
-export { userSerializer , whitelist }
+}

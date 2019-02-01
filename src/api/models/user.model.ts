@@ -3,16 +3,16 @@ import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environmen
 import { DateUtils } from "typeorm/util/DateUtils";
 import { Document } from "./../models/document.model";
 import { roles } from "./../enums/role.enum";
-import { userSerializer } from "./../serializers/user.serializer";
+import { UserSerializer } from "./../serializers/user.serializer";
+import { IModelize } from "../interfaces/IModelize.interface";
 
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
-import { IModel } from "../interfaces/IModel.interface";
 
 @Entity()
-export class User {
+export class User implements IModelize {
 
   /**
    * @param payload Object data to assign
@@ -111,13 +111,9 @@ export class User {
     }
   }
 
-  /**
-   * 
-   */
   public whitelist() {
-    return userSerializer.serialize(this);
+    return new UserSerializer().serializer.serialize(this);
   }
-
   /**
    * 
    */

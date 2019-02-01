@@ -5,16 +5,18 @@ import { DocumentController } from "./../../controllers/document.controller";
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
 import { listDocuments, getDocument, replaceDocument, updateDocument, deleteDocument } from "./../../validations/document.validation";
 import { set as Multer } from "./../../../config/multer.config";
-import { resize, deserialize } from "./../../middlewares/document.middleware";
+import { DocumentMiddleware } from "./../../middlewares/document.middleware";
 
 const router = Router();
-const documentController = new DocumentController();
 const upload = Multer();
+
+const documentController = new DocumentController(); // Todo injecter la dépendance via le router proxy
+const documentMiddleware = new DocumentMiddleware(); // Todo injecter la dépendance via le router proxy
 
 /**
  * Deserialize document when API with userId route parameter is hit
  */
-router.param('documentId', deserialize);
+router.param('documentId', documentMiddleware.deserialize);
 
 router
   .route('/')
@@ -68,7 +70,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize([ADMIN, LOGGED_USER]), upload.single('document'), resize, documentController.create);
+  .post(authorize([ADMIN, LOGGED_USER]), upload.single('document'), documentMiddleware.resize, documentController.create);
 
 router
   .route('/:documentId')
@@ -127,7 +129,7 @@ router
    * @apiError (Forbidden 403)    Forbidden         Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound          File does not exist
    */
-  .put(authorize([ADMIN, LOGGED_USER]), validate(replaceDocument), upload.single('document'), resize, documentController.update)
+  .put(authorize([ADMIN, LOGGED_USER]), validate(replaceDocument), upload.single('document'), documentMiddleware.resize, documentController.update)
 
   /**
    * @api {patch} v1/documents/:id Update User
@@ -159,7 +161,7 @@ router
    * @apiError (Forbidden 403)    Forbidden         Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound          File does not exist
    */
-  .patch(authorize([ADMIN, LOGGED_USER]), validate(updateDocument), upload.single('document'), resize, documentController.update)
+  .patch(authorize([ADMIN, LOGGED_USER]), validate(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.update)
 
   /**
    * @api {patch} v1/documents/:id Delete File
