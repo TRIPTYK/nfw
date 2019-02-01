@@ -6,7 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha --env test --reporter spec --timeout 10000",
     "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i typescript -g && npm i typeorm -g && npm i && tsc",
-    "generate": "node ./build/",
+    "generate": "node ./cli/generate/",
     "todo": "leasot -x 'src/**/*.ts'",
     "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md"
   },
