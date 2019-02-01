@@ -4,7 +4,7 @@ import { Router } from "express";
 import { {{ENTITY_CAPITALIZE}}Controller } from "./../../controllers/{{ENTITY_LOWERCASE}}.controller";
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
 import { list{{ENTITY_CAPITALIZE}}s, get{{ENTITY_CAPITALIZE}}, create{{ENTITY_CAPITALIZE}}, replace{{ENTITY_CAPITALIZE}}, update{{ENTITY_CAPITALIZE}} } from "./../../validations/{{ENTITY_LOWERCASE}}.validation";
-import { SecurityMiddleware } from "./../../middlewares/sanitize.middleware";
+import { SecurityMiddleware } from "./../../middlewares/security.middleware";
 
 const router = Router();
 

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { router as AuthRouter } from "./auth.route";
 import { router as UserRouter } from "./user.route";
 import { router as DocumentRouter } from "./document.route";
+import { router as TrucRouter } from "./truc.route";
 
 const router = Router();
 
@@ -36,5 +37,3 @@ router.use('/documents/', DocumentRouter);
 
 
 export { router }
-
-
