@@ -1,5 +1,4 @@
 var request = require('supertest');
-var uuid = require('uuid/v4');
 var fixtures = require('./fixtures');
 
 describe("Authentification", function () {
@@ -14,14 +13,17 @@ describe("Authentification", function () {
     server      = express.App;
     agent       = request.agent(server);
     password    = fixtures.password();
-    credentials = fixtures.user('admin', password);
+    credentials = { 
+      data: { attributes: fixtures.user('admin', password) }
+    }
 
     agent
       .post('/api/v1/auth/register')
       .send(credentials)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
       .end(function(err, response){
         expect(response.statusCode).to.equal(201);
-        console.log(response.body);
         token = response.body.token.accessToken;
         refreshToken = response.body.token.refreshToken;
         done();
@@ -39,7 +41,9 @@ describe("Authentification", function () {
     it('POST api/v1/auth/register succeed with 201', function (done) {
       request(server)
         .post('/api/v1/auth/register')
-        .send(fixtures.user('admin'))
+        .send({ data :  { attributes : fixtures.user('admin') } })
+        .set('Accept', 'application/vnd.api+json')
+        .set('Content-Type', 'application/vnd.api+json')
         .expect(201, done);
     });
 
@@ -47,6 +51,8 @@ describe("Authentification", function () {
       request(server)
         .post('/api/v1/auth/register')
         .send(credentials)
+        .set('Accept', 'application/vnd.api+json')
+        .set('Content-Type', 'application/vnd.api+json')
         .expect(409, done);
     });
 
@@ -57,20 +63,28 @@ describe("Authentification", function () {
     it('Authentification succeed with good credentials', function (done) {
       request(server)
         .post('/api/v1/auth/login')
+        .set('Accept', 'application/vnd.api+json')
+        .set('Content-Type', 'application/vnd.api+json')
         .send({
-          username: credentials.username,
-          email: credentials.email,
+          username: credentials.data.attributes.username,
+          email: credentials.data.attributes.email,
           password: password
-        })
-        .expect(200, done);
+        })    
+        .end(function(err, res) {
+          expect(res.statusCode).to.equal(200);
+          refreshToken = res.body.token.refreshToken;
+          done()
+        });
     });
 
     it('Authentification failed with bad password', function (done) {
       request(server)
         .post('/api/v1/auth/login')
+        .set('Accept', 'application/vnd.api+json')
+        .set('Content-Type', 'application/vnd.api+json')
         .send({
-          username: credentials.username,
-          email: credentials.email,
+          username: credentials.data.attributes.username,
+          email: credentials.data.attributes.email,
           password: 'totoIsANoob'
         })
         .expect(417, done);
@@ -79,9 +93,11 @@ describe("Authentification", function () {
     it('Authentification failed with bad email', function (done) {
       request(server)
         .post('/api/v1/auth/login')
+        .set('Accept', 'application/vnd.api+json')
+        .set('Content-Type', 'application/vnd.api+json')
         .send({
-          username: credentials.username,
-          email: 'fake' + credentials.email,
+          username: credentials.data.attributes.username,
+          email: 'fake' + credentials.data.attributes.email,
           password: password
         })
         .expect(417, done);
@@ -95,10 +111,10 @@ describe("Authentification", function () {
       request(server)
         .post('/api/v1/auth/refresh-token')
         .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/vnd.api+json')
+        .set('Content-Type', 'application/vnd.api+json')
         .send({
-          token: {
-            refreshToken: refreshToken
-          }
+          token: { refreshToken: refreshToken }
         })
         .expect(200, done);
     });
