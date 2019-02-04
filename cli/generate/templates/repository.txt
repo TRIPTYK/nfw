@@ -15,7 +15,7 @@ export class {{ENTITY_CAPITALIZE}}Repository extends Repository<{{ENTITY_CAPITAL
    * 
    * @public
    */
-  public async list({ page = 1, perPage = 30, path, fieldname, filename, size, mimetype }) {
+  public async list({ page = 1, perPage = 30, /** TODO path, fieldname, filename, size, mimetype **/ }) {
     
     try {
       const repository = getRepository({{ENTITY_CAPITALIZE}});
