@@ -10,7 +10,7 @@ import { DocumentSerializer } from "./../serializers/document.serializer";
 import { BaseMiddleware } from "./base.middleware";
 
 /**
- * TODO générer un middleware type pour une entité
+ * 
  */
 export class DocumentMiddleware extends BaseMiddleware {
 

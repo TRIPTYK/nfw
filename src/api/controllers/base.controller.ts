@@ -3,7 +3,6 @@ import { typeorm as TypeORM } from "./../../config/environment.config";
 
 /**
  * Main controller contains properties/methods
- * TODO implements more methods in BaseController
  */
 abstract class BaseController {
 

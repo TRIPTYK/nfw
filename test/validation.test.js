@@ -13,11 +13,13 @@ describe("Route's validation", function () {
     server      = express.App;
     agent       = request.agent(server);
     password    = fixtures.password();
-    credentials = fixtures.user('admin', password);
+    credentials = { data : { attributes : fixtures.user('admin', password) } };
 
     agent
       .post('/api/v1/auth/register')
       .send(credentials)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
       .end(function(err, response){
         expect(response.statusCode).to.equal(201);
         token = response.body.token.accessToken;
@@ -114,18 +116,23 @@ describe("Route's validation", function () {
       it('POST /api/v1/auth/register rejected as 400', function (done) {
         request(server)
           .post('/api/v1/auth/register')
+          .send({})
           .expect(400, done);
       });
   
       it('POST /api/v1/auth/login rejected as 400', function (done) {
         request(server)
           .post('/api/v1/auth/login')
+          .send({})
           .expect(400, done);
       });
   
       it('POST /api/v1/auth/refresh-token rejected as 400', function (done) {
         request(server)
           .post('/api/v1/auth/refresh-token')
+          .set('Accept', 'application/vnd.api+json')
+          .set('Content-Type', 'application/vnd.api+json')
+          .send({})
           .expect(400, done);
       });
   

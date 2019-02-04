@@ -6,7 +6,7 @@ import { promisify } from "es6-promisify";
 import { roles as userRoles } from "./../enums/role.enum";
 
 const ADMIN = 'admin';
-const LOGGED_USER = '_loggedUser';
+const LOGGED_USER = 'user';
 
 /**
  * 

@@ -5,9 +5,11 @@ import { AuthController } from "./../../controllers/auth.controller";
 import { register, login, oAuth, refresh } from "./../../validations/auth.validation";
 import { oAuth as oAuthLogin } from "./../../middlewares/auth.middleware";
 import { SecurityMiddleware } from "../../middlewares/security.middleware";
+import { UserMiddleware } from "../../middlewares/user.middleware";
 
 const router = Router();      
 const authController = new AuthController();
+const userMiddleware = new UserMiddleware();  /* Todo injecter comme dépendance */
 
 /**
  * @api {post} v1/auth/register Register
@@ -38,7 +40,7 @@ const authController = new AuthController();
  */
 router
   .route('/register')
-    .post(validate(register), SecurityMiddleware.sanitize, authController.register);
+    .post(userMiddleware.deserialize, validate(register), SecurityMiddleware.sanitize, authController.register);
 
 /**
  * @api {post} v1/auth/login Login
@@ -48,8 +50,8 @@ router
  * @apiGroup Auth
  * @apiPermission public
  *
- * @apiParam  {String}         email     User's email
- * @apiParam  {String{..16}}  password  User's password
+ * @apiParam  {String}         email      User's email
+ * @apiParam  {String{..16}}  password    User's password
  *
  * @apiSuccess  {String}  token.tokenType     Access Token's type
  * @apiSuccess  {String}  token.accessToken   Authorization Token
@@ -71,8 +73,6 @@ router
   .route('/login')
     .post(validate(login), SecurityMiddleware.sanitize, authController.login);
     
-
-
 /**
  * @api {post} v1/auth/refresh-token Refresh Token
  * @apiDescription Refresh expired accessToken
@@ -94,7 +94,7 @@ router
  */
 router
   .route('/refresh-token')
-    .post(validate(refresh), SecurityMiddleware.sanitize, authController.refresh);
+    .post( validate(refresh), (req, res, next) => { console.log('In'); next(); },  SecurityMiddleware.sanitize, authController.refresh);
 
 /**
  * @api {post} v1/auth/facebook Facebook Login

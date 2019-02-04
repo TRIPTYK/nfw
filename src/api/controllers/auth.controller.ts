@@ -31,6 +31,7 @@ class AuthController extends BaseController {
   async register(req: Request, res : Response, next: Function) { 
 
     try {
+
       const repository = getRepository(User);
       
       let user = new User(req.body);
@@ -115,11 +116,13 @@ class AuthController extends BaseController {
       const userRepository = getCustomRepository(UserRepository);
 
       const { token } = req.body;
-      
+
       const refreshObject = await refreshTokenRepository.findOne({
         where : { token: token.refreshToken }
       });
       refreshTokenRepository.remove(refreshObject);
+
+      if(typeof(refreshObject) === 'undefined') return next(Boom.expectationFailed('RefreshObject cannot be empty'));
 
       // Get owner user of the token
       const { user, accessToken } = await userRepository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject });;
@@ -127,7 +130,7 @@ class AuthController extends BaseController {
  
       return res.json( { token: response } );
     } 
-    catch (e) { throw next( Boom.expectationFailed(e.message)); }
+    catch (e) { console.log(e.message); throw next( Boom.expectationFailed(e.message)); }
   }
 };
 

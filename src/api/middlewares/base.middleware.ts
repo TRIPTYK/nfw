@@ -27,10 +27,11 @@ export abstract class BaseMiddleware {
    * @param next 
    */
   public deserialize = async(req: Request, res: Response, next: Function) => {
-    
+
     try {
-      
+
       if(req.method === 'GET') return next();
+      if(!req.body.data || !req.body.data.attributes) return next();
 
       let fields = await this.serializer.deserialize(req);
 
@@ -41,7 +42,7 @@ export abstract class BaseMiddleware {
         if(key !== 'id') req.body[key] = fields[key];
         else delete req.body[key];
       }
-  
+
       return next();
     } 
     catch (e) { return next(Boom.expectationFailed(e.message)); }

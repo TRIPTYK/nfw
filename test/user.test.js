@@ -1,11 +1,14 @@
 var request = require('supertest');
-var uuid = require('uuid/v4');
 var fixtures = require('./fixtures');
+var chai = require("chai");
+
+chai.config.includeStack = false;
+chai.config.truncateThreshold = true;
 
 describe("User CRUD", function () {
   
-  var server, agent, password, credentials, token, refreshToken, uid, id;
-  var expect = require('chai').expect;
+  var server, agent, password, credentials, token, refreshToken, id;
+  var expect = chai.expect;
 
   before(function (done) {
 
@@ -14,15 +17,18 @@ describe("User CRUD", function () {
     server      = express.App;
     agent       = request.agent(server);
     password    = fixtures.password();
-    credentials = fixtures.user('admin', password);
+    credentials = { data : { attributes : fixtures.user('admin', password) } };
 
     agent
       .post('/api/v1/auth/register')
       .send(credentials)
-      .end(function(err, response) {
-        expect(response.statusCode).to.equal(201);
-        token = response.body.token.accessToken;
-        refreshToken = response.body.token.refreshToken;
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .end(function(err, res) {
+        expect(res.statusCode).to.equal(201);
+        token = res.body.token.accessToken;
+        refreshToken = res.body.token.refreshToken;
+        id = res.body.user.data.id;
         done();
       });
 
@@ -37,10 +43,12 @@ describe("User CRUD", function () {
     agent
       .post('/api/v1/users')
       .set('Authorization', 'Bearer ' + token)
-      .send(fixtures.user('admin'))
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send({ data : { attributes : fixtures.user('admin') } })
       .end(function(err, res) {
-        expect(res.statusCode, 201);
-        id = res.body.id;
+        let status = res.status | res.statusCode;
+        expect(status).to.equal(201);
         done();
       }) 
   });
@@ -63,7 +71,9 @@ describe("User CRUD", function () {
     agent
       .put('/api/v1/users/' + id)
       .set('Authorization', 'Bearer ' + token)
-      .send(fixtures.user('user'))
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send( { data : { attributes : fixtures.user('user') } })
       .expect(200, done);
   });
 
@@ -71,9 +81,15 @@ describe("User CRUD", function () {
     agent
       .patch('/api/v1/users/' + id)
       .set('Authorization', 'Bearer ' + token)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
       .send({
-        username: fixtures.user().username,
-        lastname: fixtures.user().lastname
+        data: {
+          attributes : {
+            username: fixtures.user().username,
+            lastname: fixtures.user().lastname
+          }
+        }
       })
       .expect(200, done);
   });

@@ -23,7 +23,10 @@ export class RefreshToken {
   @Column()
   token: String;
 
-  @OneToOne(type => User, { eager : true })
+  @OneToOne(type => User, { 
+    eager : true,
+    onDelete: "CASCADE" // Remove refresh-token when user is deleted
+   })
   @JoinColumn()
   user: User;
 

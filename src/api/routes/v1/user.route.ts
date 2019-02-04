@@ -76,7 +76,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize([ADMIN]), validate(createUser), SecurityMiddleware.sanitize, userController.create);
+  .post(authorize([ADMIN]), userMiddleware.deserialize, validate(createUser), SecurityMiddleware.sanitize, userController.create);
 
 router
   .route('/profile')
@@ -151,7 +151,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .put(authorize([ADMIN, LOGGED_USER]), validate(replaceUser), SecurityMiddleware.sanitize, userController.update)
+  .put(authorize([ADMIN, LOGGED_USER]), validate(replaceUser),  SecurityMiddleware.sanitize, userController.update)
 
   /**
    * @api {patch} v1/users/:id Update User
