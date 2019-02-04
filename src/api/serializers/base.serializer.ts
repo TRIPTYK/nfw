@@ -43,7 +43,9 @@ export abstract class BaseSerializer implements ISerialize {
       unconvertCase: "camelCase"
     });
     this.deserializer = new JSONAPIDeserializer({
-      attributes: whitelist
+      attributes: whitelist,
+      convertCase: "kebab-case",
+      unconvertCase: "camelCase"
     });
    
   }

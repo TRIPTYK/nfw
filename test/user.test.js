@@ -49,6 +49,17 @@ describe("User CRUD", function () {
       .end(function(err, res) {
         let status = res.status | res.statusCode;
         expect(status).to.equal(201);
+        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.id).to.be.a('string');
+        expect(res.body.data.attributes).to.include.all.keys(
+          'username',
+          'email',
+          'services',
+          'firstname',
+          'lastname',
+          'role',
+          'created-at'
+        );
         done();
       }) 
   });
@@ -57,14 +68,44 @@ describe("User CRUD", function () {
     agent
       .get('/api/v1/users/profile')
       .set('Authorization', 'Bearer ' + token)
-      .expect(200, done);
+      .end(function(err, res) {
+        let status = res.status | res.statusCode;
+        expect(status).to.equal(200);
+        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.id).to.be.a('string');
+        expect(res.body.data.attributes).to.include.all.keys(
+          'username',
+          'email',
+          'services',
+          'documents',
+          'firstname',
+          'lastname',
+          'role',
+          'created-at'
+        );
+        done();
+      }) 
   });
 
   it('GET /api/v1/users/n succeed with 200', function (done) {
     agent
       .get('/api/v1/users/' + id)
       .set('Authorization', 'Bearer ' + token)
-      .expect(200, done);
+      .end(function(err, res) {
+        expect(res.statusCode).to.equal(200);
+        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.id).to.be.a('string');
+        expect(res.body.data.attributes).to.include.all.keys(
+          'username',
+          'email',
+          'services',
+          'firstname',
+          'lastname',
+          'role',
+          'created-at'
+        );
+        done();
+      });
   });
 
   it('PUT /api/v1/users/n succeed with 200', function (done) {
@@ -74,7 +115,22 @@ describe("User CRUD", function () {
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
       .send( { data : { attributes : fixtures.user('user') } })
-      .expect(200, done);
+      .end(function(err, res) {
+        expect(res.statusCode).to.equal(200);
+        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.id).to.be.a('string');
+        expect(res.body.data.attributes).to.include.all.keys(
+          'username',
+          'email',
+          'services',
+          'documents',
+          'firstname',
+          'lastname',
+          'role',
+          'created-at'
+        );
+        done()
+      });
   });
 
   it('PATCH /api/v1/users/n succeed with 200', function (done) {
@@ -91,7 +147,22 @@ describe("User CRUD", function () {
           }
         }
       })
-      .expect(200, done);
+      .end(function(err, res) {
+        expect(res.statusCode).to.equal(200);
+        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.id).to.be.a('string');
+        expect(res.body.data.attributes).to.include.all.keys(
+          'username',
+          'email',
+          'services',
+          'documents',
+          'firstname',
+          'lastname',
+          'role',
+          'created-at'
+        );
+        done()
+      });
   });
 
   it('DELETE /api/v1/users/n succeed with 204', function (done) {
