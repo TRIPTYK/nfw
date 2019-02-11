@@ -1,18 +1,36 @@
+/**
+ *
+ */
 const FS = require('fs');
 const Util = require('util');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
 var colors = require('colors/safe');
 
+
+/**
+ *  @description : Checks if the second parameter is present , otherwise exit
+ *  npm run generate User
+ *      [0]  [1]    [2]
+ */
 if(!process.argv[2])
 {
   console.log(colors.red('x') + ' ' + 'Nothing to generate. Please, get entity name parameter.')
   process.exit(0);
 }
 
+// first letter of the entity to Uppercase
 let capitalize  = process.argv[2][0].toUpperCase() + process.argv[2].substr(1);
 let lowercase   = process.argv[2];
 
+
+
+/**
+ * array of each element to generate with the provided entity
+ * @ template : template file name in /cli/generate/template folder
+ * @ dest : destination folder
+ * @ ext : file extension
+ */
 let items = [
   { template : 'model', dest: 'models', ext: 'ts' },
   { template : 'controller', dest: 'controllers', ext: 'ts' },
@@ -25,8 +43,8 @@ let items = [
 ];
 
 /**
- * 
- * @param {*} path 
+ * @description : count the lines of a file
+ * @param {*} path
  */
 const _countLines = (path) => {
   let count = 0;
@@ -36,10 +54,10 @@ const _countLines = (path) => {
         .on('data', function(chunk) {
           let i;
           for (i = 0; i < chunk.length; ++i)
-            if (chunk[i] == 10) count++;
+            if (chunk[i] == 10) count++; // 10 -> line ending in ASCII table
         })
         .on('end', function(data) {
-          resolve(count);
+          resolve(count); // return promise (https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Promise/resolve)
         });
     }
     catch(e) {
@@ -49,8 +67,8 @@ const _countLines = (path) => {
 }
 
 /**
- * 
- * @param {*} items 
+ * @description replace the vars in {{}} format in file and creates them
+ * @param {*} items
  */
 const _write = async (items) => {
 
@@ -58,7 +76,7 @@ const _write = async (items) => {
     let file = await ReadFile(`${process.cwd()}/cli/generate/templates/${item.template}.txt`, 'utf-8');
     let output = file
       .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
+      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);    // ig -> global , case insensitive replacement
     FS.writeFile(`${process.cwd()}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output, (err) => {
       if(err) {
         console.log(`${colors.red('x')} Error while ${item.template} file generating \n`);
@@ -68,37 +86,37 @@ const _write = async (items) => {
     });
   });
 
-  // Write in proxy router 
+  // Write in proxy router
   let proxyPath = `${process.cwd()}/src/api/routes/v1/index.ts`;
   let lines = await _countLines(proxyPath);
   let proxy = await ReadFile(proxyPath, 'utf-8');
-  let array = proxy.split('\n');
+  let proxyLines = proxy.split('\n');
   let toRoute = `router.use('/${lowercase}s/', ${capitalize}Router)`;
   let toImport = `import { router as ${capitalize}Router } from "./${lowercase}.route";`;
   let isAlreadyImported = false;
-  let firstn = false; 
+  let firstn = false;
   let output = '';
   let j = 0;
 
-  for(j ; j < array.length ; j++)
+  for(j ; j < proxyLines.length ; j++)
   {
-    if(array[j] === toImport) {
+    if(proxyLines[j] === toImport) {
       isAlreadyImported = true;
     }
 
-    if(!firstn && array[j] === '') { 
-      output += toImport + "\n\n"; 
-      firstn = true; 
+    if(!firstn && proxyLines[j] === '') {
+      output += toImport + "\n\n";
+      firstn = true;
     }
-    else if(j === lines - 1) { 
+    else if(j === lines - 1) {
       output += '\n';
       output += '/**\n';
       output += ' * ' + capitalize + ' routes \n';
       output += ' */\n';
-      output += toRoute + "\n\n"; 
+      output += toRoute + "\n\n";
     }
-    else if(array[j] === '') { output += "\n"; }
-    else { output += array[j] + "\n" }
+    else if(proxyLines[j] === '') { output += "\n"; }
+    else { output += proxyLines[j] + "\n" }
   }
 
   if(!isAlreadyImported)
@@ -124,7 +142,7 @@ const _write = async (items) => {
       }
     });
   }
-  else 
+  else
   {
     console.log(`${colors.blue('i')} Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
     console.log(`${colors.green('v')} Files generating done.`);
@@ -138,8 +156,8 @@ const _write = async (items) => {
 /**
  * Main function
  * Check entity existence, and write file or not according to the context
- * 
- * @param {*} items 
+ *
+ * @param {*} items
  */
 const build = async (items) => {
 
@@ -149,7 +167,7 @@ const build = async (items) => {
   {
     console.log('An entity with the same name already exists, will you overwrite it ? (y/n)');
     process.stdin.on('data', function(data) {
-      let value = data.toString().toLowerCase().replace(/\n/i, '').replace(/\r/i, '');
+      let value = data.toString().toLowerCase().replace(/\n/i, '').replace(/\r/i, '');  // i -> case insensitive
       if(value !== 'y' && value !== 'yes' ) {
         console.log(`${colors.red('x')} Process aborted.`);
         process.exit(0);
