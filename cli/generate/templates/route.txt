@@ -5,6 +5,7 @@ import { {{ENTITY_CAPITALIZE}}Controller } from "./../../controllers/{{ENTITY_LO
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
 import { list{{ENTITY_CAPITALIZE}}s, get{{ENTITY_CAPITALIZE}}, create{{ENTITY_CAPITALIZE}}, replace{{ENTITY_CAPITALIZE}}, update{{ENTITY_CAPITALIZE}} } from "./../../validations/{{ENTITY_LOWERCASE}}.validation";
 import { SecurityMiddleware } from "./../../middlewares/security.middleware";
+import { {{ENTITY_CAPITALIZE}}Middleware } from "./../../middlewares/{{ENTITY_LOWERCASE}}.middleware"
 
 const router = Router();
 
