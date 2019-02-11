@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
-import { {{ENTITY_CAPITALIZE}}Serializer } from "./../serializers/{{ENTITY_LOWERCASE}}.serializer";
+import { BananeSerializer } from "./../serializers/banane.serializer";
 
 @Entity()
-export class {{ENTITY_CAPITALIZE}} {
+export class Banane {
 
   /**
    * @param payload Object data to assign
@@ -32,6 +32,6 @@ export class {{ENTITY_CAPITALIZE}} {
   deletedAt;
 
   public whitelist() {
-    return new {{ENTITY_CAPITALIZE}}Serializer().serializer.serialize(this);
+    return new BananeSerializer().serializer.serialize(this);
   } 
 }

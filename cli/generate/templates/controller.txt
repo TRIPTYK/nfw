@@ -5,6 +5,7 @@ import { {{ENTITY_CAPITALIZE}} } from "./../models/{{ENTITY_LOWERCASE}}.model";
 import { {{ENTITY_CAPITALIZE}}Repository } from "./../repositories/{{ENTITY_LOWERCASE}}.repository";
 import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
+const promisify = require('util')
 
 /**
  * 
@@ -24,7 +25,8 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    */
   public get(req: Request, res : Response) { 
     const repository = getRepository({{ENTITY_CAPITALIZE}});
-    const {{ENTITY_LOWERCASE}} = repository.findOneOrFailed(req.params.{{ENTITY_LOWERCASE}}Id);
+    const findFail = promisify(repository.findOneOrFail) ;
+    const {{ENTITY_LOWERCASE}} = await findFail(req.params.{{ENTITY_LOWERCASE}}Id);
     res.json( {{ENTITY_LOWERCASE}}.whitelist() ); 
   }
 
