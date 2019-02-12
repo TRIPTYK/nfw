@@ -5,6 +5,7 @@ import { TestController } from "./../../controllers/test.controller";
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
 import { listTests, getTest, createTest, replaceTest, updateTest } from "./../../validations/test.validation";
 import { SecurityMiddleware } from "./../../middlewares/security.middleware";
+import { TestMiddleware } from "./../../middlewares/test.middleware";
 
 const router = Router();
 
@@ -34,9 +35,9 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated tests can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-
+/*
   .get(authorize([ADMIN]), validate(listTests), testController.list)
-
+*/
   /**
    * @api {post} v1/tests Create Test
    * @apiDescription Create a new test
@@ -92,9 +93,9 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only test with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     Test does not exist
    */
-
+/*
   .get(authorize([ADMIN, LOGGED_USER]), validate(getTest), testController.get)
-
+*/
   /**
    * @api {put} v1/tests/:id Replace Test
    * @apiDescription Replace the whole test document with a new one
@@ -122,9 +123,9 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only test with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     Test does not exist
    */
-
+/*
   .put(authorize([ADMIN, LOGGED_USER]), validate(replaceTest), SecurityMiddleware.sanitize, testController.update)
-
+*/
   /**
    * @api {patch} v1/tests/:id Update Test
    * @apiDescription Update some fields of a test document
@@ -152,9 +153,9 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only test with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     Test does not exist
    */
-
+/*
   .patch(authorize([ADMIN, LOGGED_USER]), validate(updateTest), SecurityMiddleware.sanitize, testController.update)
-
+*/
   /**
    * @api {patch} v1/tests/:id Delete Test
    * @apiDescription Delete a test

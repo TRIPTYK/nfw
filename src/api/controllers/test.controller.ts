@@ -5,6 +5,7 @@ import { Test } from "./../models/test.model";
 import { TestRepository } from "./../repositories/test.repository";
 import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
+const promisify = require('util')
 
 /**
  * 
@@ -22,11 +23,12 @@ export class TestController extends BaseController {
    * 
    * @public
    */
-  public get(req: Request, res : Response) { 
+   /*
+   public async get(req: Request, res : Response) { 
     const repository = getRepository(Test);
-    const test = repository.findOneOrFailed(req.params.testId);
+    const test = await repository.findOneOrFail(req.params.testId);
     res.json( test.whitelist() ); 
-  }
+  }*/
 
   /**
    * Create new test
@@ -37,6 +39,7 @@ export class TestController extends BaseController {
    * 
    * @public
    */
+
   public async create (req: Request, res : Response, next: Function) {
     try {
       const repository = getRepository(Test);
@@ -57,6 +60,7 @@ export class TestController extends BaseController {
    * 
    * @public
    */
+/*
   public async update (req: Request, res : Response, next: Function) {
 
     try {
@@ -68,7 +72,7 @@ export class TestController extends BaseController {
     }
     catch(e) { next( e.message ); }
     
-  };
+  };*/
 
   /**
    * Get test list
@@ -79,6 +83,7 @@ export class TestController extends BaseController {
    * 
    * @public
    */
+   /*
   public async list (req: Request, res : Response, next: Function) {
 
     try {
@@ -87,7 +92,7 @@ export class TestController extends BaseController {
       res.json(tests);
     } 
     catch (e) { next(e); }
-  }
+  }*/
 
   /**
    * Delete test
@@ -98,6 +103,7 @@ export class TestController extends BaseController {
    * 
    * @public
    */
+
   public async remove (req: Request, res : Response, next: Function) {
 
     try {

@@ -53,20 +53,23 @@ describe("Test CRUD", function () {
       }) 
   });
 
+/*
   it('GET /api/v1/tests/profile succeed with 200', function (done) {
     agent
       .get('/api/v1/tests/profile')
       .set('Authorization', 'Bearer ' + token)
       .expect(200, done);
   });
-
+*/
+/*
   it('GET /api/v1/tests/n succeed with 200', function (done) {
     agent
       .get('/api/v1/tests/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(200, done);
   });
-
+*/
+/*
   it('PUT /api/v1/tests/n succeed with 200', function (done) {
     agent
       .put('/api/v1/tests/' + id)
@@ -76,7 +79,8 @@ describe("Test CRUD", function () {
       .send( { data : { attributes : fixtures.user('test') } })
       .expect(200, done);
   });
-
+*/
+/*
   it('PATCH /api/v1/tests/n succeed with 200', function (done) {
     agent
       .patch('/api/v1/tests/' + id)
@@ -90,6 +94,7 @@ describe("Test CRUD", function () {
       })
       .expect(200, done);
   });
+*/
 
   it('DELETE /api/v1/tests/n succeed with 204', function (done) {
     agent
@@ -97,4 +102,5 @@ describe("Test CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });
+  
 });

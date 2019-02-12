@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
-import { testSerializer } from "./../serializers/test.serializer";
+import { TestSerializer } from "./../serializers/test.serializer";
 
 @Entity()
 export class Test {
@@ -32,6 +32,6 @@ export class Test {
   deletedAt;
 
   public whitelist() {
-    return testSerializer.serialize(this);
+    return new TestSerializer().serializer.serialize(this);
   } 
 }
