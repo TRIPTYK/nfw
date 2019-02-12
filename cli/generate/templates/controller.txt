@@ -23,11 +23,12 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    * 
    * @public
    */
+   {{ENTITY_CRUD_READ_ID_START}}
    public async get(req: Request, res : Response) { 
     const repository = getRepository({{ENTITY_CAPITALIZE}});
     const {{ENTITY_LOWERCASE}} = await repository.findOneOrFail(req.params.{{ENTITY_LOWERCASE}}Id);
     res.json( {{ENTITY_LOWERCASE}}.whitelist() ); 
-  }
+  }{{ENTITY_CRUD_READ_ID_END}}
 
   /**
    * Create new {{ENTITY_LOWERCASE}}
@@ -38,6 +39,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    * 
    * @public
    */
+{{ENTITY_CRUD_CREATE_START}}
   public async create (req: Request, res : Response, next: Function) {
     try {
       const repository = getRepository({{ENTITY_CAPITALIZE}});
@@ -47,7 +49,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
       res.json( saved{{ENTITY_CAPITALIZE}}.whitelist() );
     } 
     catch (e) { next( e.message ); }
-  }
+  }{{ENTITY_CRUD_CREATE_END}}
 
   /**
    * Update existing {{ENTITY_LOWERCASE}}
@@ -58,6 +60,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    * 
    * @public
    */
+{{ENTITY_CRUD_UPDATE_PUT_START}}
   public async update (req: Request, res : Response, next: Function) {
 
     try {
@@ -69,7 +72,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
     }
     catch(e) { next( e.message ); }
     
-  };
+  };{{ENTITY_CRUD_UPDATE_PUT_END}}
 
   /**
    * Get {{ENTITY_LOWERCASE}} list
@@ -80,6 +83,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    * 
    * @public
    */
+   {{ENTITY_CRUD_READ_START}}
   public async list (req: Request, res : Response, next: Function) {
 
     try {
@@ -88,7 +92,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
       res.json({{ENTITY_LOWERCASE}}s);
     } 
     catch (e) { next(e); }
-  }
+  }{{ENTITY_CRUD_READ_END}}
 
   /**
    * Delete {{ENTITY_LOWERCASE}}
@@ -99,6 +103,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    * 
    * @public
    */
+{{ENTITY_CRUD_DELETE_START}}
   public async remove (req: Request, res : Response, next: Function) {
 
     try {
@@ -110,5 +115,5 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
     }
     catch(e) { next(e); }
     
-  }
+  }{{ENTITY_CRUD_DELETE_END}}
 }

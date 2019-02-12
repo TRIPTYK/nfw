@@ -38,7 +38,7 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
     server = undefined;
     delete server;
   });
-
+{{ENTITY_CRUD_CREATE_START}}
   it('POST /api/v1/{{ENTITY_LOWERCASE}}s succeed with 201', function (done) {
     agent
       .post('/api/v1/{{ENTITY_LOWERCASE}}s')
@@ -52,21 +52,24 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
         done();
       }) 
   });
-
+{{ENTITY_CRUD_CREATE_END}}
+{{ENTITY_CRUD_READ_START}}
   it('GET /api/v1/{{ENTITY_LOWERCASE}}s/profile succeed with 200', function (done) {
     agent
       .get('/api/v1/{{ENTITY_LOWERCASE}}s/profile')
       .set('Authorization', 'Bearer ' + token)
       .expect(200, done);
   });
-
+{{ENTITY_CRUD_READ_END}}
+{{ENTITY_CRUD_READ_ID_START}}
   it('GET /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
     agent
       .get('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(200, done);
   });
-
+{{ENTITY_CRUD_READ_ID_END}}
+{{ENTITY_CRUD_UPDATE_PUT_START}}
   it('PUT /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
     agent
       .put('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
@@ -76,7 +79,8 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       .send( { data : { attributes : fixtures.user('{{ENTITY_LOWERCASE}}') } })
       .expect(200, done);
   });
-
+{{ENTITY_CRUD_UPDATE_PUT_END}}
+{{ENTITY_CRUD_UPDATE_PATCH_START}}
   it('PATCH /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
     agent
       .patch('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
@@ -90,11 +94,13 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       })
       .expect(200, done);
   });
-
+{{ENTITY_CRUD_UPDATE_PATCH_END}}
+{{ENTITY_CRUD_DELETE_START}}
   it('DELETE /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 204', function (done) {
     agent
       .delete('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });
+  {{ENTITY_CRUD_DELETE_END}}
 });
