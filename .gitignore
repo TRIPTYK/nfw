@@ -72,6 +72,4 @@ ormconfig.json
 # Dist directory
 dist/
 
-*.env
-!production.env
 package-lock.json
