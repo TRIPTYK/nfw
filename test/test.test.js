@@ -5,7 +5,7 @@ var chai = require("chai");
 chai.config.includeStack = false;
 chai.config.truncateThreshold = true;
 
-describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
+describe("Test CRUD", function () {
   
   var server, agent, password, credentials, token, refreshToken, id;
   var expect = chai.expect;
@@ -17,7 +17,7 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
     server      = express.App;
     agent       = request.agent(server);
     password    = fixtures.password();
-    credentials = { data : { attributes : fixtures.{{ENTITY_LOWERCASE}}('admin', password) } };
+    credentials = { data : { attributes : fixtures.test('admin', password) } };
 
     agent
       .post('/api/v1/auth/register')
@@ -28,7 +28,7 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
         expect(res.statusCode).to.equal(201);
         token = res.body.token.accessToken;
         refreshToken = res.body.token.refreshToken;
-        id = res.body.{{ENTITY_LOWERCASE}}.data.id;
+        id = res.body.test.data.id;
         done();
       });
 
@@ -38,52 +38,52 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
     server = undefined;
     delete server;
   });
-{{ENTITY_CRUD_CREATE_START}}
-  it('POST /api/v1/{{ENTITY_LOWERCASE}}s succeed with 201', function (done) {
+
+  it('POST /api/v1/tests succeed with 201', function (done) {
     agent
-      .post('/api/v1/{{ENTITY_LOWERCASE}}s')
+      .post('/api/v1/tests')
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
-      .send({ data : { attributes : fixtures.{{ENTITY_LOWERCASE}}('admin') } })
+      .send({ data : { attributes : fixtures.test('admin') } })
       .end(function(err, res) {
         let status = res.status | res.statusCode;
         expect(status).to.equal(201);
         done();
       }) 
   });
-{{ENTITY_CRUD_CREATE_END}}
-{{ENTITY_CRUD_READ_START}}
-  it('GET /api/v1/{{ENTITY_LOWERCASE}}s/profile succeed with 200', function (done) {
+
+/*
+  it('GET /api/v1/tests/profile succeed with 200', function (done) {
     agent
-      .get('/api/v1/{{ENTITY_LOWERCASE}}s/profile')
+      .get('/api/v1/tests/profile')
       .set('Authorization', 'Bearer ' + token)
       .expect(200, done);
   });
-{{ENTITY_CRUD_READ_END}}
-{{ENTITY_CRUD_READ_ID_START}}
-  it('GET /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
+*/
+/*
+  it('GET /api/v1/tests/n succeed with 200', function (done) {
     agent
-      .get('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
+      .get('/api/v1/tests/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(200, done);
   });
-{{ENTITY_CRUD_READ_ID_END}}
-{{ENTITY_CRUD_UPDATE_PUT_START}}
-  it('PUT /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
+*/
+/*
+  it('PUT /api/v1/tests/n succeed with 200', function (done) {
     agent
-      .put('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
+      .put('/api/v1/tests/' + id)
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
-      .send( { data : { attributes : fixtures.user('{{ENTITY_LOWERCASE}}') } })
+      .send( { data : { attributes : fixtures.user('test') } })
       .expect(200, done);
   });
-{{ENTITY_CRUD_UPDATE_PUT_END}}
-{{ENTITY_CRUD_UPDATE_PATCH_START}}
-  it('PATCH /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
+*/
+/*
+  it('PATCH /api/v1/tests/n succeed with 200', function (done) {
     agent
-      .patch('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
+      .patch('/api/v1/tests/' + id)
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
@@ -94,13 +94,13 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       })
       .expect(200, done);
   });
-{{ENTITY_CRUD_UPDATE_PATCH_END}}
-{{ENTITY_CRUD_DELETE_START}}
-  it('DELETE /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 204', function (done) {
+*/
+
+  it('DELETE /api/v1/tests/n succeed with 204', function (done) {
     agent
-      .delete('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
+      .delete('/api/v1/tests/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });
-  {{ENTITY_CRUD_DELETE_END}}
+  
 });

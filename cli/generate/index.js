@@ -8,18 +8,57 @@ const { countLines } = require('./utils');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
 var colors = require('colors/safe');
+const crudOptions = {
+  create: false,
+  read: false,
+  update: false,
+  delete: false
+}
+
+/**
+ * @param  {String} arg
+ */
+const checkForCrud = (arg) => {
+  let crudString = arg.toLowerCase();
+  
+  if((/^[crud]{1,4}$/).test(crudString)){
+      if(crudString.includes('c')) crudOptions.create = true;
+      if(crudString.includes('r')) crudOptions.read = true;
+      if(crudString.includes('u')) crudOptions.update = true;
+      if(crudString.includes('d')) crudOptions.delete = true;
+  }
+  else{
+    return false;
+  }
+  return crudOptions;
+}
 
 
 /**
  *  @description : Checks if the second parameter is present , otherwise exit
- *  npm run generate User
- *      [0]  [1]    [2]
+ *  Exemple :npm run generate User
+ *               [0]    [1]   [2]
  */
 if(!process.argv[2])
 {
   console.log(colors.red('x') + ' ' + 'Nothing to generate. Please, get entity name parameter.')
   process.exit(0);
 }
+
+
+if(!process.argv[3]){
+  console.log(colors.rainbow('Warning :') + ' ' +' No CRUD options, set every option to true by default');
+  crudOptions.create = true;
+  crudOptions.update = true;
+  crudOptions.read = true;
+  crudOptions.delete = true;
+  console.log(crudOptions)
+}else{
+  var crud = checkForCrud(process.argv[3])
+  console.log(crud);
+  //process.exit(0);
+}
+
 
 // first letter of the entity to Uppercase
 let capitalize  = process.argv[2][0].toUpperCase() + process.argv[2].substr(1);
@@ -36,6 +75,35 @@ const _write = async (items) => {
     let output = file
       .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
       .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);    // ig -> global , case insensitive replacement
+    if(crudOptions.create) output = output.replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "").replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"");
+    else output = output.replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "/*").replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"*/");
+
+    if(crudOptions.read){
+      output = output.replace(/{{ENTITY_CRUD_READ_START}}/ig, "")
+      .replace(/{{ENTITY_CRUD_READ_END}}/ig,"")
+      .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig, "")
+      .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"");
+    }else {
+      output = output.replace(/{{ENTITY_CRUD_READ_START}}/ig, "/*")
+      .replace(/{{ENTITY_CRUD_READ_END}}/ig,"*/")
+      .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig,"/*")
+      .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"*/");
+    }
+    if(crudOptions.update){
+      output = output.replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "")
+      .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"")
+      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig, "")
+      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"");
+    }else {
+      output = output.replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "/*")
+      .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"*/")
+      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig,"/*")
+      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"*/");
+    }
+
+    if(crudOptions.delete) output = output.replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "").replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"");
+    else output = output.replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "/*").replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"*/");
+
     FS.writeFile(`${process.cwd()}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output, (err) => {
       if(err) {
         console.log(`${colors.red('x')} Error while ${item.template} file generating \n`);
