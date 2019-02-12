@@ -75,4 +75,3 @@ dist/
 *.env
 !production.env
 package-lock.json
-src/api/*
