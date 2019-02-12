@@ -34,8 +34,9 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated {{ENTITY_LOWERCASE}}s can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
+{{ENTITY_CRUD_READ_START}}
   .get(authorize([ADMIN]), validate(list{{ENTITY_CAPITALIZE}}s), {{ENTITY_LOWERCASE}}Controller.list)
-
+{{ENTITY_CRUD_READ_END}}
   /**
    * @api {post} v1/{{ENTITY_LOWERCASE}}s Create {{ENTITY_CAPITALIZE}}
    * @apiDescription Create a new {{ENTITY_LOWERCASE}}
@@ -66,8 +67,9 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated {{ENTITY_LOWERCASE}}s can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
+{{ENTITY_CRUD_CREATE_START}}
   .post(authorize([ADMIN]), validate(create{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.create);
-
+{{ENTITY_CRUD_CREATE_END}}
 router
   .route('/:{{ENTITY_LOWERCASE}}Id')
   /**
@@ -90,8 +92,9 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
+{{ENTITY_CRUD_READ_ID_START}}
   .get(authorize([ADMIN, LOGGED_USER]), validate(get{{ENTITY_CAPITALIZE}}), {{ENTITY_LOWERCASE}}Controller.get)
-
+{{ENTITY_CRUD_READ_ID_END}}
   /**
    * @api {put} v1/{{ENTITY_LOWERCASE}}s/:id Replace {{ENTITY_CAPITALIZE}}
    * @apiDescription Replace the whole {{ENTITY_LOWERCASE}} document with a new one
@@ -119,8 +122,9 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
+{{ENTITY_CRUD_UPDATE_PUT_START}}
   .put(authorize([ADMIN, LOGGED_USER]), validate(replace{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
-
+{{ENTITY_CRUD_UPDATE_PUT_END}}
   /**
    * @api {patch} v1/{{ENTITY_LOWERCASE}}s/:id Update {{ENTITY_CAPITALIZE}}
    * @apiDescription Update some fields of a {{ENTITY_LOWERCASE}} document
@@ -148,8 +152,9 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
+{{ENTITY_CRUD_UPDATE_PATCH_START}}
   .patch(authorize([ADMIN, LOGGED_USER]), validate(update{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
-
+{{ENTITY_CRUD_UPDATE_PATCH_END}}
   /**
    * @api {patch} v1/{{ENTITY_LOWERCASE}}s/:id Delete {{ENTITY_CAPITALIZE}}
    * @apiDescription Delete a {{ENTITY_LOWERCASE}}
@@ -166,7 +171,8 @@ router
    * @apiError (Forbidden 403)    Forbidden     Only {{ENTITY_LOWERCASE}} with same id or admins can delete the data
    * @apiError (Not Found 404)    NotFound      {{ENTITY_CAPITALIZE}} does not exist
    */
+{{ENTITY_CRUD_DELETE_START}}
   .delete(authorize([ADMIN, LOGGED_USER]), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.remove);
-
+{{ENTITY_CRUD_DELETE_END}}
 
 export { router };
