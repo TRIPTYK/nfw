@@ -23,10 +23,9 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    * 
    * @public
    */
-  public get(req: Request, res : Response) { 
+   public async get(req: Request, res : Response) { 
     const repository = getRepository({{ENTITY_CAPITALIZE}});
-    const findFail = promisify(repository.findOneOrFail) ;
-    const {{ENTITY_LOWERCASE}} = await findFail(req.params.{{ENTITY_LOWERCASE}}Id);
+    const {{ENTITY_LOWERCASE}} = await repository.findOneOrFail(req.params.{{ENTITY_LOWERCASE}}Id);
     res.json( {{ENTITY_LOWERCASE}}.whitelist() ); 
   }
 
