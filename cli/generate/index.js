@@ -3,6 +3,8 @@
  */
 const FS = require('fs');
 const Util = require('util');
+const { items } = require('./resources');
+const { countLines } = require('./utils');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
 var colors = require('colors/safe');
@@ -22,49 +24,6 @@ if(!process.argv[2])
 // first letter of the entity to Uppercase
 let capitalize  = process.argv[2][0].toUpperCase() + process.argv[2].substr(1);
 let lowercase   = process.argv[2];
-
-
-
-/**
- * array of each element to generate with the provided entity
- * @ template : template file name in /cli/generate/template folder
- * @ dest : destination folder
- * @ ext : file extension
- */
-let items = [
-  { template : 'model', dest: 'models', ext: 'ts' },
-  { template : 'controller', dest: 'controllers', ext: 'ts' },
-  { template : 'repository', dest: 'repositories', ext: 'ts' },
-  { template : 'validation', dest: 'validations', ext: 'ts' },
-  { template : 'route', dest: 'routes/v1', ext: 'ts' },
-  { template : 'test', dest: '../../test', ext: 'js' },
-  { template : 'serializer', dest: 'serializers', ext: 'ts' },
-  { template : 'middleware', dest: 'middlewares', ext: 'ts' },
-];
-
-/**
- * @description : count the lines of a file
- * @param {*} path
- */
-const _countLines = (path) => {
-  let count = 0;
-  return new Promise( (resolve, reject) => {
-    try {
-      FS.createReadStream(path)
-        .on('data', function(chunk) {
-          let i;
-          for (i = 0; i < chunk.length; ++i)
-            if (chunk[i] == 10) count++; // 10 -> line ending in ASCII table
-        })
-        .on('end', function(data) {
-          resolve(count); // return promise (https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Promise/resolve)
-        });
-    }
-    catch(e) {
-      reject(e.message);
-    }
-  });
-}
 
 /**
  * @description replace the vars in {{}} format in file and creates them
@@ -88,7 +47,7 @@ const _write = async (items) => {
 
   // Write in proxy router
   let proxyPath = `${process.cwd()}/src/api/routes/v1/index.ts`;
-  let lines = await _countLines(proxyPath);
+  let lines = await countLines(proxyPath);
   let proxy = await ReadFile(proxyPath, 'utf-8');
   let proxyLines = proxy.split('\n');
   let toRoute = `router.use('/${lowercase}s/', ${capitalize}Router)`;
