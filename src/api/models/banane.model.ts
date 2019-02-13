@@ -13,23 +13,38 @@ export class Banane {
   @PrimaryGeneratedColumn()
   id: Number;
 
-  @Column({
-    type: Date,
-    default: DateUtils.mixedDateToDateString( new Date() )
-  })
-  createdAt;
-
-  @Column({
-    type: Date,
+ @Column({
+    type: "varchar",
+    length : 255,
     default: null
-  })
-  updatedAt;
 
-  @Column({
-    type: Date,
-    default: null
   })
-  deletedAt;
+  Name;
+
+ @Column({
+    type: "datetime",
+    default: null
+
+  })
+  BirthDate;
+
+ @Column({
+    type: "varchar",
+    length : 255,
+    default: null
+
+  })
+  WaterPoint;
+
+ @Column({
+    type: "int",
+    length : 11,
+    default: null
+
+  })
+  grade;
+
+
 
   public whitelist() {
     return new BananeSerializer().serializer.serialize(this);
