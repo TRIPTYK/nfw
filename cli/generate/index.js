@@ -8,6 +8,7 @@ const { countLines } = require('./utils');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
 var colors = require('colors/safe');
+const modelWrite = require('./modelWrite')
 const crudOptions = {
   create: false,
   read: false,
@@ -190,6 +191,12 @@ const build = async (items) => {
 
   let entityExists = await Exists(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
 
+  if(entityExists){
+    modelWrite._writeModel(lowercase,"sql")
+  }
+
+  /*
+
   if(entityExists)
   {
     console.log('An entity with the same name already exists, will you overwrite it ? (y/n)');
@@ -207,6 +214,7 @@ const build = async (items) => {
   else {
     _write(items);
   }
+  */
 };
 
 build(items);

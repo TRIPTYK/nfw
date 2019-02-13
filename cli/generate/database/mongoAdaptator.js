@@ -1,5 +1,4 @@
 const databaseEnv = require('./databaseEnv');
-const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 const Log = require('../log');
@@ -17,4 +16,4 @@ exports.getColumns = (tableName) => {
     mongoose.tableName.find( {  } );
 };
 
-getColumns('');
+//getColumns('');
