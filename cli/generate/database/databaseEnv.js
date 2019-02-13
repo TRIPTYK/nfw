@@ -1,5 +1,5 @@
 /**
- * Exports environment settings for the database from the .env file in the root foler 
+ * Exports environment settings for the database from the .env file in the root foler
  */
 const dotenv = require('dotenv');
 
