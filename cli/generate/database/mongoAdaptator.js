@@ -1,12 +1,8 @@
 const databaseEnv = require('./databaseEnv');
-<<<<<<< HEAD
-const mongoose = require('mongoose');
-=======
 const dotenv = require('dotenv');
 const { promisify } = require('es6-promisify');
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
->>>>>>> 78df5b75322a5f6efb87959f454c942c8ee3c1da
 
 const Log = require('../log');
 const url = `mongodb://${databaseEnv.user}:${databaseEnv.pwd}@${databaseEnv.host}:${databaseEnv.port}`;
@@ -47,9 +43,6 @@ exports.getColumns = async (tableName) => {
     columns[column] = { $exists : true };
   }
 
-<<<<<<< HEAD
-//getColumns('');
-=======
   const columnsWithValues = await FindOne(columns);
   columns = {};
 
@@ -61,4 +54,3 @@ exports.getColumns = async (tableName) => {
 
   return JSON.stringify(columns);
 };
->>>>>>> 78df5b75322a5f6efb87959f454c942c8ee3c1da
