@@ -1,3 +1,4 @@
+const FS = require('fs');
 /**
  * @description : count the lines of a file
  * @param {*} path
