@@ -49,8 +49,12 @@ exports.getColumns = async (tableName) => {
   for (let variable in reduceResult) {
     let column = reduceResult[variable]._id;
     let columnValue = columnsWithValues[column];
-    columns[column] = columnsWithValues[column].constructor.name;
+    columns[column] = {
+      Field : column,
+      Default : null,
+      Type : columnsWithValues[column].constructor.name
+    };
   }
 
-  return JSON.stringify(columns);
+  return columns;
 };
