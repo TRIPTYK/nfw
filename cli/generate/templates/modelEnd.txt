@@ -1,0 +1,4 @@
+  public whitelist() {
+    return new {{ENTITY_CAPITALIZE}}Serializer().serializer.serialize(this);
+  } 
+}
