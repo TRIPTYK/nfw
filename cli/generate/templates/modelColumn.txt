@@ -1,0 +1,5 @@
+ @Column({
+    type: {{ROW_TYPE}},
+    default: {{ROW_DEFAULT}}
+  })
+  {{ROW_NAME}};

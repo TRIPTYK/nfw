@@ -3,7 +3,7 @@
  */
 const dotenv = require('dotenv');
 
-let environment = process.argv[2] || "development";
+let environment =  "development";
 
 dotenv.config( { path : `${process.cwd()}/${environment}.env` } );
 const env = process.env.NODE_ENV;
