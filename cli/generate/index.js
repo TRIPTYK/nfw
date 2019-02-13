@@ -2,7 +2,7 @@ const FS = require('fs');
 const Util = require('util');
 const { items } = require('./resources');
 const Log = require('./log');
-const { countLines } = require('./utils');
+const { countLines , capitalizeEntity } = require('./utils');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
 const readline = require('readline');
@@ -29,10 +29,8 @@ if(!action)
   process.exit(0);
 }
 
-const _capitalizeEntity = (entity) => { return entity[0].toUpperCase() + entity.substr(1) };
-
 // first letter of the entity to Uppercase
-let capitalize  = _capitalizeEntity(action);
+let capitalize  = capitalizeEntity(action);
 let lowercase   = action;
 
 /**
@@ -68,7 +66,6 @@ const _writeRoutes = async () => {
   // Write in proxy router
   let proxyPath = `${processPath}/src/api/routes/v1/index.ts`;
   let lines = await countLines(proxyPath);
-  console.log(lines);
   let proxy = await ReadFile(proxyPath, 'utf-8');
   let proxyLines = proxy.split('\n');
   let toRoute = `router.use('/${lowercase}s/', ${capitalize}Router);`;
@@ -196,7 +193,7 @@ const _write = async items => {
         Log.error(`Error while ${item.template} file generating \n`);
         Log.warning(`Check the api/${item.dest}/${lowercase}.${item.template}.${item.ext} to update`);
       }
-      else Log.success(`${_capitalizeEntity(item.template)} generated.`);
+      else Log.success(`${capitalizeEntity(item.template)} generated.`);
     });
   });
 
