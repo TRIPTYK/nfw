@@ -12,3 +12,11 @@ export class {{ENTITY_CAPITALIZE}} {
 
   @PrimaryGeneratedColumn()
   id: Number;
+
+
+  {{ENTITIES}}
+
+  public whitelist() {
+    return new {{ENTITY_CAPITALIZE}}Serializer().serializer.serialize(this);
+  } 
+}
