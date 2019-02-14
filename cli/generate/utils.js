@@ -1,4 +1,3 @@
-const FS = require('fs');
 /**
  * Require the library FS
  */
