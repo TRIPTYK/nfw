@@ -4,6 +4,7 @@ import { router as AuthRouter } from "./auth.route";
 import { router as UserRouter } from "./user.route";
 import { router as DocumentRouter } from "./document.route";
 
+
 const router = Router();
 
 /**
@@ -15,7 +16,7 @@ const router = Router();
  *
  * @apiSuccess (Success 200) {String}  token.tokenType OK string success
  *
- * @Error (Internal server error)
+ * @Error (Internal server error) 
  */
 router.get('/status', (req : Request, res : Response) => { res.sendStatus(200); });
 
@@ -34,4 +35,5 @@ router.use('/users/', UserRouter);
  */
 router.use('/documents/', DocumentRouter);
 
-export {router}
+
+export { router }

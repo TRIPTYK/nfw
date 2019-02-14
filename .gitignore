@@ -72,7 +72,6 @@ ormconfig.json
 # Dist directory
 dist/
 
-*.env
 package-lock.json
 
 #JsDocs
