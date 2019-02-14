@@ -10,7 +10,7 @@ const FS = require('fs');
 const Util = require('util');
 /**
  * Get the informations about the templates generation
- * @returns {Array.<JSON>} Return an array of json object 
+ * @returns {Array.<JSON>} Return an array of json object
  */
 const { items } = require('./resources');
 /**
@@ -54,6 +54,7 @@ const crudOptions = {
 
 const action = process.argv[2];
 const processPath = process.cwd();
+const operations = process.argv[3];
 
 /**
  *  @description : Checks if the second parameter is present , otherwise exit
@@ -88,14 +89,14 @@ const _checkForCrud = (arg) => {
   return crudOptions;
 };
 
-if(!argv.operations){
+if(!operations){
   Log.rainbow('Warning : ','No CRUD options, set every option to true by default');
   crudOptions.create = true;
   crudOptions.update = true;
   crudOptions.read = true;
   crudOptions.delete = true;
 }else{
-  _checkForCrud(argv.operations);
+  _checkForCrud(operations);
 }
 /**
  * @access private
@@ -185,8 +186,7 @@ const _write = async items => {
         .replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"");
     }else{
       output = output
-        .replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "/*")
-        .replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"*/");
+        .replace(/{{ENTITY_CRUD_CREATE_START}}[\s\S]*{{ENTITY_CRUD_CREATE_END}}/mg,"");
     }
 
     if (crudOptions.read) {
@@ -197,10 +197,8 @@ const _write = async items => {
         .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"");
     }else{
       output = output
-        .replace(/{{ENTITY_CRUD_READ_START}}/ig, "/*")
-        .replace(/{{ENTITY_CRUD_READ_END}}/ig,"*/")
-        .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig,"/*")
-        .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"*/");
+        .replace(/{{ENTITY_CRUD_READ_START}}[\s\S]*{{ENTITY_CRUD_READ_END}}/mg, "")
+        .replace(/{{ENTITY_CRUD_READ_ID_START}}[\s\S]*{{ENTITY_CRUD_READ_ID_END}}/mg,"");
     }
 
     if (crudOptions.update){
@@ -211,10 +209,8 @@ const _write = async items => {
         .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"");
     }else{
       output = output
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "/*")
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"*/")
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig,"/*")
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"*/");
+        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}[\s\S]*{{ENTITY_CRUD_UPDATE_PUT_END}}/mg, "")
+        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}[\s\S]*{{ENTITY_CRUD_UPDATE_PATCH_END}}/mg,"");
     }
 
     if (crudOptions.delete) {
@@ -223,8 +219,7 @@ const _write = async items => {
         .replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"");
     }else{
       output = output
-        .replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "/*")
-        .replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"*/");
+        .replace(/{{ENTITY_CRUD_DELETE_START}}[\s\S]*{{ENTITY_CRUD_DELETE_END}}/mg, "");
     }
 
     FS.writeFile(`${processPath}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output, (err) => {
