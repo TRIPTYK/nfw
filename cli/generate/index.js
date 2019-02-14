@@ -1,9 +1,11 @@
 /**
- *  Require the library FS
+ * Requirement of the library FS
+ * @description Handle read/write stream I/O
  */
 const FS = require('fs');
 /**
  * Requirement of the library Utils
+ * @description Needed to promisify async methods
  */
 const Util = require('util');
 /**
@@ -12,13 +14,16 @@ const Util = require('util');
  */
 const { items } = require('./resources');
 /**
- * Get the function countLine
- * @returns {Function}
+ * Requirement of the logs library
+ *@description Define function to simplify console logging
  */
-const { countLines } = require('./utils');
+const Log = require('./log');
 /**
- * Transform a async method to a promise
- * @returns {Promise} returns FS.readfile async function as a promise
+ * Requirement of the functions "countLine" and "capitalizeEntity" from the local file utils
+ */
+const { countLines , capitalizeEntity } = require('./utils');
+/**
+ * Set the function Fs.readfile as a promise
  */
 const ReadFile = Util.promisify(FS.readFile);
 /**
@@ -27,27 +32,50 @@ const ReadFile = Util.promisify(FS.readFile);
  */
 const Exists = Util.promisify(FS.exists);
 /**
- * Require the library color/safe
+ * Requirement of the library readline
  */
-var colors = require('colors/safe');
+const readline = require('readline');
 /**
- * Set the crud options to generate files
+ * Requirement of the modelWrite library
  */
+const modelWrite = require('./modelWrite');
+/**
+ * Requirement of the library yargs
+ * @description Handle the cli args
+ */
+const argv = require('yargs').argv;
+
 const crudOptions = {
   create: false,
   read: false,
   update: false,
   delete: false
+};
+
+const action = process.argv[2];
+const processPath = process.cwd();
+
+/**
+ *  @description : Checks if the second parameter is present , otherwise exit
+ */
+if(!action)
+{
+  Log.error('Nothing to generate. Please, get entity name parameter.');
+  process.exit(0);
 }
+
+// first letter of the entity to Uppercase
+let capitalize  = capitalizeEntity(action);
+let lowercase   = action;
 
 /**
  * @description : Check in a string if the letter C R U D are present and set the boolean of each Crud varable present in crudOption
  * @param  {string} arg - The thirs argument of 'npm run generate stringName {CRUD}'
  * @returns {Array.<boolean>} Return an array of boolean depending on the input string
  */
-const checkForCrud = (arg) => {
+const _checkForCrud = (arg) => {
   let crudString = arg.toLowerCase();
-  
+
   if((/^[crud]{1,4}$/).test(crudString)){
       if(crudString.includes('c')) crudOptions.create = true;
       if(crudString.includes('r')) crudOptions.read = true;
@@ -58,121 +86,53 @@ const checkForCrud = (arg) => {
     return false;
   }
   return crudOptions;
-}
+};
 
-
-/**
- *  @description : Checks if the second parameter is present , otherwise exit !
- *  Exemple :npm run generate User
- *               [0]    [1]   [2]
- */
-if(!process.argv[2])
-{
-  console.log(colors.red('x') + ' ' + 'Nothing to generate. Please, get entity name parameter.')
-  process.exit(0);
-}
-
-/**
- * @description : Check if third parameter is present, if he's not, set the default value to the crudOptions otherwise set the crudOptions to the desired rules set in the parameter
- */
-if(!process.argv[3]){
-  console.log(colors.rainbow('Warning :') + ' ' +' No CRUD options, set every option to true by default');
+if(!argv.operations){
+  Log.rainbow('Warning : ','No CRUD options, set every option to true by default');
   crudOptions.create = true;
   crudOptions.update = true;
   crudOptions.read = true;
   crudOptions.delete = true;
-  console.log(crudOptions)
 }else{
-  var crud = checkForCrud(process.argv[3])
-  console.log(crud);
-  //process.exit(0);
+  _checkForCrud(argv.operations);
 }
-
-
-// first letter of the entity to Uppercase
-let capitalize  = process.argv[2][0].toUpperCase() + process.argv[2].substr(1);
-let lowercase   = process.argv[2];
-
 /**
- * @description replace the vars in {{}} format in file and creates them
- * @param {*} items
- * @generator
+ * @access private
+ * @async
+ * @description Read all template and replace {{****}} with variables then write them in their specified path
  */
-const _write = async (items) => {
-
-  items.forEach( async (item) => {
-    let file = await ReadFile(`${process.cwd()}/cli/generate/templates/${item.template}.txt`, 'utf-8');
-    let output = file
-      .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);    // ig -> global , case insensitive replacement
-    if(crudOptions.create) output = output.replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "").replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"");
-    else output = output.replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "/*").replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"*/");
-
-    if(crudOptions.read){
-      output = output.replace(/{{ENTITY_CRUD_READ_START}}/ig, "")
-      .replace(/{{ENTITY_CRUD_READ_END}}/ig,"")
-      .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig, "")
-      .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"");
-    }else {
-      output = output.replace(/{{ENTITY_CRUD_READ_START}}/ig, "/*")
-      .replace(/{{ENTITY_CRUD_READ_END}}/ig,"*/")
-      .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig,"/*")
-      .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"*/");
-    }
-    if(crudOptions.update){
-      output = output.replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "")
-      .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"")
-      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig, "")
-      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"");
-    }else {
-      output = output.replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "/*")
-      .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"*/")
-      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig,"/*")
-      .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"*/");
-    }
-
-    if(crudOptions.delete) output = output.replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "").replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"");
-    else output = output.replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "/*").replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"*/");
-
-    FS.writeFile(`${process.cwd()}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output, (err) => {
-      if(err) {
-        console.log(`${colors.red('x')} Error while ${item.template} file generating \n`);
-        console.log(`${colors.red('WARNING')} : check the api/${items.dest}/${lowercase}.${item.template}.${item.ext} to update`);
-      }
-      else console.log(`${colors.green('v')} ${item.template[0].toUpperCase()}${item.template.substr(1)} generated.`)
-    });
-  });
-
+const _writeRoutes = async () => {
   // Write in proxy router
-  let proxyPath = `${process.cwd()}/src/api/routes/v1/index.ts`;
+  let proxyPath = `${processPath}/src/api/routes/v1/index.ts`;
   let lines = await countLines(proxyPath);
   let proxy = await ReadFile(proxyPath, 'utf-8');
   let proxyLines = proxy.split('\n');
-  let toRoute = `router.use('/${lowercase}s/', ${capitalize}Router)`;
+  let toRoute = `router.use('/${lowercase}s/', ${capitalize}Router);`;
   let toImport = `import { router as ${capitalize}Router } from "./${lowercase}.route";`;
   let isAlreadyImported = false;
   let firstn = false;
   let output = '';
-  let j = 0;
 
-  for(j ; j < proxyLines.length ; j++)
+  for(let j = 0 ; j < proxyLines.length ; j++)
   {
     if(proxyLines[j] === toImport) {
       isAlreadyImported = true;
     }
-    if(!firstn && proxyLines[j] === '') {
+
+    if(!firstn && proxyLines[j].trim() === '') {
       output += toImport + "\n\n";
       firstn = true;
     }
-    else if(j === lines - 1) {
+    else if(j === lines) {
       output += '\n';
       output += '/**\n';
       output += ' * ' + capitalize + ' routes \n';
       output += ' */\n';
       output += toRoute + "\n\n";
     }
-    else if(proxyLines[j] === '') { output += "\n";}
-    else { output += proxyLines[j] + "\n";}
+    else if(proxyLines[j].trim() === '') { output += "\n"; }
+    else { output += proxyLines[j] + "\n" }
   }
   if(!isAlreadyImported)
   {
@@ -182,30 +142,101 @@ const _write = async (items) => {
         console.log('Original router file will be restored ...');
         FS.writeFile(proxyPath, proxy, (err) => {
           if(err) process.stdout.write(err.message);
-          console.log(`${colors.green('v')} Original router file restoring done.`);
-          console.log(`${colors.green('v')} Files generating done.`);
-          console.log(`${colors.red('WARNING')} : check the api/routes/v1/index.ts to update`);
-          process.exit(0);
+          Log.success(`Original router file restoring done.`);
+          Log.success(`Files generating done.`);
+          Log.warning(`Check the api/routes/v1/index.ts to update`);
+          //process.exit(0);
         });
-      }
-      else {
-        console.log(`${colors.green('v')} Proxy router file updated.`);
-        console.log(`${colors.green('v')} Files generating done.`);
-        console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/models/${lowercase}.model.ts`);
-        console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
-        process.exit(0);
+      }else{
+        Log.success(`Proxy router file updated.`);
+        Log.success(`Files generating done.`);
+        Log.info(`Don\'t forget to update the api/models/${lowercase}.model.ts`);
+        Log.info(`Don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
+        //process.exit(0);
       }
     });
+  }else{
+    Log.info(`Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
+    Log.success(`Files generating done.`);
+    Log.info(`Don\'t forget to update the api/models/${lowercase}.model.ts`);
+    Log.info(`Don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
+    //process.exit(0);
   }
-  else
-  {
-    console.log(`${colors.blue('i')} Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
-    console.log(`${colors.green('v')} Files generating done.`);
-    console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/models/${lowercase}.model.ts`);
-    console.log(`${colors.blue('NOTICE')} : don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
-    process.exit(0);
-  }
+};
 
+/**
+ * @description replace the vars in placeholder in file and creates them
+ * @param {*} items
+ */
+const _write = async items => {
+
+  items.forEach( async (item) => {
+    let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
+
+    // replacing entity names
+    let output = file
+      .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);    // ig -> global , case insensitive replacement
+
+    // replacing all the placeholder depending on the crud options
+    if (crudOptions.create) {
+      output = output
+        .replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "")
+        .replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"");
+    }else{
+      output = output
+        .replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "/*")
+        .replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"*/");
+    }
+
+    if (crudOptions.read) {
+      output = output
+        .replace(/{{ENTITY_CRUD_READ_START}}/ig, "")
+        .replace(/{{ENTITY_CRUD_READ_END}}/ig,"")
+        .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig, "")
+        .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"");
+    }else{
+      output = output
+        .replace(/{{ENTITY_CRUD_READ_START}}/ig, "/*")
+        .replace(/{{ENTITY_CRUD_READ_END}}/ig,"*/")
+        .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig,"/*")
+        .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"*/");
+    }
+
+    if (crudOptions.update){
+      output = output
+        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "")
+        .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"")
+        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig, "")
+        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"");
+    }else{
+      output = output
+        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "/*")
+        .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"*/")
+        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig,"/*")
+        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"*/");
+    }
+
+    if (crudOptions.delete) {
+      output = output
+        .replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "")
+        .replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"");
+    }else{
+      output = output
+        .replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "/*")
+        .replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"*/");
+    }
+
+    FS.writeFile(`${processPath}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output, (err) => {
+      if(err) {
+        Log.error(`Error while ${item.template} file generating \n`);
+        Log.warning(`Check the api/${item.dest}/${lowercase}.${item.template}.${item.ext} to update`);
+      }
+      else Log.success(`${capitalizeEntity(item.template)} generated.`);
+    });
+  });
+
+  _writeRoutes();
 };
 
 /**
@@ -215,25 +246,30 @@ const _write = async (items) => {
  * @param {Array.<JSON>} items
  */
 const build = async (items) => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
 
   let entityExists = await Exists(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
 
   if(entityExists)
   {
-    console.log('An entity with the same name already exists, will you overwrite it ? (y/n)');
-    process.stdin.on('data', function(data) {
-      let value = data.toString().toLowerCase().replace(/\n/i, '').replace(/\r/i, '');  // i -> case insensitive
-      if(value !== 'y' && value !== 'yes' ) {
-        console.log(`${colors.red('x')} Process aborted.`);
+    rl.question('An entity with the same name already exists, will you overwrite it ? (y/n)', answer => {
+      if (!['y','yes'].includes(answer.toLowerCase().trim())) {
+        Log.error(`Process aborted.`);
         process.exit(0);
+      }else{
+        _write(items);
+        modelWrite.writeModel(lowercase,"sql");
       }
-      else {
-        _write(items)
-      }
+
+      rl.close();
     });
   }
   else {
     _write(items);
+    modelWrite.writeModel(lowercase,"sql")
   }
 };
 

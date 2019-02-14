@@ -1,3 +1,4 @@
+const FS = require('fs');
 /**
  * Require the library FS
  */
@@ -24,4 +25,6 @@ exports.countLines = (path) => {
       reject(e.message);
     }
   });
-}
+};
+
+exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);
