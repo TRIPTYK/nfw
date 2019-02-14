@@ -106,14 +106,14 @@ const _writeRoutes = async () => {
           Log.success(`Original router file restoring done.`);
           Log.success(`Files generating done.`);
           Log.warning(`Check the api/routes/v1/index.ts to update`);
-          process.exit(0);
+          //process.exit(0);
         });
       }else{
         Log.success(`Proxy router file updated.`);
         Log.success(`Files generating done.`);
         Log.info(`Don\'t forget to update the api/models/${lowercase}.model.ts`);
         Log.info(`Don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
-        process.exit(0);
+        //process.exit(0);
       }
     });
   }else{
@@ -121,7 +121,7 @@ const _writeRoutes = async () => {
     Log.success(`Files generating done.`);
     Log.info(`Don\'t forget to update the api/models/${lowercase}.model.ts`);
     Log.info(`Don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
-    process.exit(0);
+    //process.exit(0);
   }
 };
 
@@ -222,7 +222,7 @@ const build = async (items) => {
         process.exit(0);
       }else{
         _write(items);
-        //modelWrite._writeModel(lowercase,env);
+        modelWrite._writeModel(lowercase,"sql");
       }
 
       rl.close();
@@ -230,7 +230,7 @@ const build = async (items) => {
   }
   else {
     _write(items);
-    //modelWrite._writeModel(lowercase,env)
+    modelWrite._writeModel(lowercase,"sql")
   }
 };
 
