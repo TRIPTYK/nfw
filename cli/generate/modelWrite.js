@@ -1,12 +1,32 @@
+/**
+ * @module modelWrite
+ * @author Verliefden Romain
+ * @description this module write the model.ts based on columns of the database
+ * if the table exist. If the table doesn't exist , the user enter the columns of 
+ * the futur table and the table is created in the database.
+ * @exports writeModel
+ */
+
+
 const sqlAdaptator = require('./database/sqlAdaptator');
 //const mongoAdaptator = require('./database/mongoAdaptator');
 const Util = require('util');
 const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
-var colors = require('colors/safe');
+const colors = require('colors/safe');
+const dbWrite = require('./databaseWrite');
 
-const getTableInfo = async (dbType,tableName) => {
+
+
+/**
+ * 
+ * @param {Technology use for database} dbType 
+ * @param {name of the table in database} tableName 
+ * @description call getColumns function in correct adapator to get data of columns
+ * @returns data of a table
+ */
+const _getTableInfo = async (dbType,tableName) => {
     if(dbType === "sql"){
         return data = await sqlAdaptator.getColumns(tableName);
     }else if(dbType === "mongodb"){
@@ -18,12 +38,26 @@ const getTableInfo = async (dbType,tableName) => {
     return data="banane";
 }
 
-const dataWithoutLenght= (data) =>{
+/**
+ * 
+ * @param {data of a column} data 
+ * @description mysql send data(lenght). Therefore, I need to split if i only want
+ * the datatype.
+ * @returns data type
+ */
+const _dataWithoutLenght= (data) =>{
     type = data.split('(')
     return `"${type[0]}"`;
 }
 
-const haveLenght = (data) =>{
+/**
+ * 
+ * @param {column data} data 
+ * @description mysql send data(lenght). Therefore , if i only need the lenght I need to split
+ * split then delete the ')'
+ * @returns data lenght
+ */
+const _haveLenght = (data) =>{
     type = data.split('(');
 
     if(type[0] === "enum"){
@@ -38,7 +72,14 @@ const haveLenght = (data) =>{
     }
 }
 
-const dateDefaultIsNow = (data,def) =>{
+/**
+ * 
+ * @param { column data} data 
+ * @param {default value of column data} def 
+ * @description if the default date is not null return function to write to get actual
+ * date
+ */
+const _dateDefaultIsNow = (data,def) =>{
     type = data.split('(');
     if(type[0] === "datetime" && def != null){
         return "DateUtils.mixedDateToDateString( new Date() )"
@@ -47,14 +88,23 @@ const dateDefaultIsNow = (data,def) =>{
     }
 }
 
-exports._writeModel = async (table,dbType) =>{
+/**
+  @description get table data from database or let user create table if table doesn't exist yet
+  then write entity.model file
+
+ */
+exports.writeModel = async (table,dbType) =>{
     let capitalize  = table[0].toUpperCase() + table.substr(1);
     let lowercase   = table[0].toLowerCase() + table.substr(1);
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
-    let entityExists = await Exists(path);
-    let file = await ReadFile(`${process.cwd()}/cli/generate/templates/modelHeader.txt`, 'utf-8');
-    let ColTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/modelColumn.txt`, 'utf-8');
-    data = await getTableInfo(dbType,table);
+    let file = await ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
+    let ColTemp = await ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
+    try{
+        data = await _getTableInfo(dbType,table);
+    }catch(err){
+        await dbWrite.dbParams();
+        process.exit(0);
+    }
     console.log(data);
     console.log(data[0].Field);
     var Entities;
@@ -64,9 +114,9 @@ exports._writeModel = async (table,dbType) =>{
         }
         let EntitiesTemp = ColTemp
         .replace(/{{ROW_NAME}}/ig, col.Field)
-        .replace(/{{ROW_DEFAULT}}/ig, dateDefaultIsNow(col.Type,col.Default)) 
-        .replace(/{{ROW_LENGHT}}/ig, haveLenght(col.Type))
-        .replace(/{{ROW_TYPE}}/ig, dataWithoutLenght(col.Type));
+        .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default)) 
+        .replace(/{{ROW_LENGHT}}/ig, _haveLenght(col.Type))
+        .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
         console.log(haveLenght(col.Type));
         Entities += EntitiesTemp +"\n\n" ;
     });
