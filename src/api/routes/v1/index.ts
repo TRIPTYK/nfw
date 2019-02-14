@@ -2,8 +2,7 @@ import { Router } from "express";
 import { Request, Response } from "express";
 import { router as AuthRouter } from "./auth.route";
 import { router as UserRouter } from "./user.route";
-import { router as DocumentRouter } from "./document.route";
-import { router as BananeRouter } from "./banane.route";
+import { router as DocumentRouter } from "./document.route";
 
 const router = Router();
 

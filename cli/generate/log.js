@@ -5,9 +5,17 @@ exports.error = text => {
 };
 
 exports.warning = text => {
-  console.log(`${colors.yellow('-')} ${text}`);
+  console.log(`${colors.yellow('!')} ${text}`);
 };
 
 exports.success = text => {
   console.log(`${colors.green('v')} ${text}`);
+};
+
+exports.rainbow = (preText,text) => {
+  console.log(`${colors.rainbow(preText)} ${text}`);
+};
+
+exports.info = text => {
+  console.log(`${colors.blue('i')} ${text}`);
 };

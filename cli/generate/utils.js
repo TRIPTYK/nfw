@@ -1,3 +1,4 @@
+const FS = require('fs');
 /**
  * @description : count the lines of a file
  * @param {*} path
@@ -20,4 +21,6 @@ exports.countLines = (path) => {
       reject(e.message);
     }
   });
-}
+};
+
+exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);
