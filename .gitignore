@@ -74,3 +74,6 @@ dist/
 
 *.env
 package-lock.json
+
+#JsDocs
+out/

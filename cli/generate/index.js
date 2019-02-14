@@ -1,13 +1,38 @@
 /**
- *
+ *  Require the library FS
  */
 const FS = require('fs');
+/**
+ * Requirement of the library Utils
+ */
 const Util = require('util');
+/**
+ * Get the informations about the templates generation
+ * @returns {Array.<JSON>} Return an array of json object 
+ */
 const { items } = require('./resources');
+/**
+ * Get the function countLine
+ * @returns {Function}
+ */
 const { countLines } = require('./utils');
+/**
+ * Transform a async method to a promise
+ * @returns {Promise} returns FS.readfile async function as a promise
+ */
 const ReadFile = Util.promisify(FS.readFile);
+/**
+ * Transform a async method to a promise
+ * @returns {Promise} returns FS.exists async function as a promise
+ */
 const Exists = Util.promisify(FS.exists);
+/**
+ * Require the library color/safe
+ */
 var colors = require('colors/safe');
+/**
+ * Set the crud options to generate files
+ */
 const crudOptions = {
   create: false,
   read: false,
@@ -16,7 +41,9 @@ const crudOptions = {
 }
 
 /**
- * @param  {String} arg
+ * @description : Check in a string if the letter C R U D are present and set the boolean of each Crud varable present in crudOption
+ * @param  {string} arg - The thirs argument of 'npm run generate stringName {CRUD}'
+ * @returns {Array.<boolean>} Return an array of boolean depending on the input string
  */
 const checkForCrud = (arg) => {
   let crudString = arg.toLowerCase();
@@ -35,7 +62,7 @@ const checkForCrud = (arg) => {
 
 
 /**
- *  @description : Checks if the second parameter is present , otherwise exit
+ *  @description : Checks if the second parameter is present , otherwise exit !
  *  Exemple :npm run generate User
  *               [0]    [1]   [2]
  */
@@ -45,7 +72,9 @@ if(!process.argv[2])
   process.exit(0);
 }
 
-
+/**
+ * @description : Check if third parameter is present, if he's not, set the default value to the crudOptions otherwise set the crudOptions to the desired rules set in the parameter
+ */
 if(!process.argv[3]){
   console.log(colors.rainbow('Warning :') + ' ' +' No CRUD options, set every option to true by default');
   crudOptions.create = true;
@@ -67,6 +96,7 @@ let lowercase   = process.argv[2];
 /**
  * @description replace the vars in {{}} format in file and creates them
  * @param {*} items
+ * @generator
  */
 const _write = async (items) => {
 
@@ -130,7 +160,6 @@ const _write = async (items) => {
     if(proxyLines[j] === toImport) {
       isAlreadyImported = true;
     }
-
     if(!firstn && proxyLines[j] === '') {
       output += toImport + "\n\n";
       firstn = true;
@@ -142,10 +171,9 @@ const _write = async (items) => {
       output += ' */\n';
       output += toRoute + "\n\n";
     }
-    else if(proxyLines[j] === '') { output += "\n"; }
-    else { output += proxyLines[j] + "\n" }
+    else if(proxyLines[j] === '') { output += "\n";}
+    else { output += proxyLines[j] + "\n";}
   }
-
   if(!isAlreadyImported)
   {
     FS.writeFile(proxyPath, output, (err) => {
@@ -184,7 +212,7 @@ const _write = async (items) => {
  * Main function
  * Check entity existence, and write file or not according to the context
  *
- * @param {*} items
+ * @param {Array.<JSON>} items
  */
 const build = async (items) => {
 
