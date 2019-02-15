@@ -57,7 +57,7 @@ const _dataWithoutLenght= (data) =>{
  * split then delete the ')'
  * @returns data lenght
  */
-const _haveLenght = (data) =>{
+const _getLength = (data) =>{
     type = data.split('(');
 
     if(type[0] === "enum"){
@@ -68,7 +68,7 @@ const _haveLenght = (data) =>{
         let better = type[1].replace(')',"") ;
         return "length : "+better+",";
     }else{
-        return "\b";
+        return "";
     }
 }
 
@@ -102,22 +102,19 @@ exports.writeModel = async (table,dbType) =>{
     try{
         data = await _getTableInfo(dbType,table);
     }catch(err){
-        await dbWrite.dbParams();
-        process.exit(0);
+        data = await dbWrite.dbParams(table);
     }
-    console.log(data);
-    console.log(data[0].Field);
     var Entities;
     data.forEach(async col =>{
         if(col.Field === "id"){
             return;
         }
+        console.log(col);
         let EntitiesTemp = ColTemp
         .replace(/{{ROW_NAME}}/ig, col.Field)
         .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default)) 
-        .replace(/{{ROW_LENGHT}}/ig, _haveLenght(col.Type))
+        .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
         .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-        console.log(haveLenght(col.Type));
         Entities += EntitiesTemp +"\n\n" ;
     });
     let output = file
@@ -125,10 +122,11 @@ exports.writeModel = async (table,dbType) =>{
     .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
     .replace(/{{ENTITIES}}/ig, Entities);
     console.log(output);
-    FS.writeFile(path, output, (err) => {
+    /** FS.writeFile(path, output, (err) => {
     console.log(colors.green("Model created in :"+path));
+    */
     process.exit(0);
-    });
+    //});
       
 
 }
