@@ -14,7 +14,7 @@ export class {{ENTITY_CAPITALIZE}} {
   id: Number;
 
 
-  {{ENTITIES}}
+{{ENTITIES}}
 
   public whitelist() {
     return new {{ENTITY_CAPITALIZE}}Serializer().serializer.serialize(this);

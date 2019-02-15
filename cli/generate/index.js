@@ -221,16 +221,16 @@ const build = async (items) => {
         Log.error(`Process aborted.`);
         process.exit(0);
       }else{
-        _write(items);
-        modelWrite._writeModel(lowercase,"sql");
+        //_write(items);
+        modelWrite.writeModel(lowercase,"sql");
       }
 
       rl.close();
     });
   }
   else {
-    _write(items);
-    modelWrite._writeModel(lowercase,"sql")
+    //_write(items);
+    modelWrite.writeModel(lowercase,"sql")
   }
 };
 
