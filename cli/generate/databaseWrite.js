@@ -56,17 +56,21 @@ exports.dbParams = async (entity) => {
         let tempParanthesis = ''
         if(length_enum[0] !== 'NOTHING TO ADD'){
             tempParanthesis += '('
+            length_enum[length_enum.length-1].enum=length_enum[length_enum.length-1].enum.replace(',','');
             length_enum.forEach(elem => {
                 tempParanthesis += elem.enum;    
             });
             tempParanthesis += ')'
+        }
+        if(['text','varchar'].includes(value.type) && value.defaultValue!=='null'){
+            value.defaultValue=`'${value.defaultValue}'`;
         }
         let paramsTemp = {
             Field : value.column,
             Type : value.type+tempParanthesis,
             Default : value.defaultValue
         };
-        //console.clear();
+        console.clear();
         console.log(paramsTemp);
         let lastConfirm = await inquirer.prompt(confirmQuestion);
         if(lastConfirm.confirmation){

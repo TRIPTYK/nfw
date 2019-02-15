@@ -103,30 +103,29 @@ exports.writeModel = async (table,dbType) =>{
         data = await _getTableInfo(dbType,table);
     }catch(err){
         data = await dbWrite.dbParams(table);
+        await sqlAdaptator.createTable(data,table);
     }
-    var Entities;
+    var Entities='';
     data.forEach(async col =>{
         if(col.Field === "id"){
             return;
         }
-        console.log(col);
         let EntitiesTemp = ColTemp
         .replace(/{{ROW_NAME}}/ig, col.Field)
         .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default)) 
         .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
         .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-        Entities += EntitiesTemp +"\n\n" ;
+        Entities += ' '+EntitiesTemp +"\n\n" ;
     });
     let output = file
     .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
     .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
     .replace(/{{ENTITIES}}/ig, Entities);
     console.log(output);
-    /** FS.writeFile(path, output, (err) => {
+    FS.writeFile(path, output, (err) => {
     console.log(colors.green("Model created in :"+path));
-    */
     process.exit(0);
-    //});
+    });
       
 
 }
