@@ -56,7 +56,7 @@ exports._writeModel = async (table,dbType) =>{
     data = await getTableInfo(dbType,table);
     console.log(data);
     console.log(data[0].Field);
-    var Entities;
+    var Entities='';
     await data.forEach(async col =>{
         if(col.Field === "id"){
             return;
@@ -67,7 +67,7 @@ exports._writeModel = async (table,dbType) =>{
         .replace(/{{ROW_LENGHT}}/ig, haveLenght(col.Type))
         .replace(/{{ROW_TYPE}}/ig, dataWithoutLenght(col.Type));
         console.log(haveLenght(col.Type));
-        Entities += EntitiesTemp +"\n\n" ;
+        Entities += " "+EntitiesTemp +"\n\n" ;
     });
     let output = file
     .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
