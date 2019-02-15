@@ -174,10 +174,31 @@ const _write = async items => {
   items.forEach( async (item) => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
 
+    // global replace for column placeholder
+    let tableColumns = await modelWrite.getTableInfo("sql",lowercase);
+    const columnNames = tableColumns.map(elem => elem.Field);
+    const testColumns = tableColumns.map(elem => {
+
+      let elemLength = new RegExp("\\w\*\\\(\(\[0\-9\]\*\)\\\)","").exec(elem.Type);
+      let realType = new RegExp("(\\w*)","").exec(elem.Type)[1];
+
+      elemLength = elemLength === null ? elemLength = null : elemLength[1];
+
+      let elemVal = `fixtures.random${realType}(${elemLength})`;
+
+      return `${elem.Field} : ${elemVal}`;
+    });
+    const validation = tableColumns.map(elem => {
+      
+    });
+
+
     // replacing entity names
     let output = file
       .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);    // ig -> global , case insensitive replacement
+      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize) // ig -> global , case insensitive replacement
+      .replace(/{{ENTITY_COLUMNS}}/ig,columnNames)
+      .replace(/{{ENTITY_PROPERTIES}}/ig, `{${testColumns}}`);
 
     // replacing all the placeholder depending on the crud options
     if (crudOptions.create) {
