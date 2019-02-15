@@ -1,6 +1,7 @@
 const sqlAdaptator = require('./database/sqlAdaptator');
 //const mongoAdaptator = require('./database/mongoAdaptator');
 const Util = require('util');
+const Log = require('./log');
 const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
@@ -38,6 +39,8 @@ const haveLenght = (data) =>{
     }
 }
 
+exports.getTableInfo = getTableInfo;
+
 const dateDefaultIsNow = (data,def) =>{
     type = data.split('(');
     if(type[0] === "datetime" && def != null){
@@ -47,7 +50,7 @@ const dateDefaultIsNow = (data,def) =>{
     }
 }
 
-exports._writeModel = async (table,dbType) =>{
+exports.writeModel = async (table,dbType) =>{
     let capitalize  = table[0].toUpperCase() + table.substr(1);
     let lowercase   = table[0].toLowerCase() + table.substr(1);
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
@@ -63,7 +66,7 @@ exports._writeModel = async (table,dbType) =>{
         }
         let EntitiesTemp = ColTemp
         .replace(/{{ROW_NAME}}/ig, col.Field)
-        .replace(/{{ROW_DEFAULT}}/ig, dateDefaultIsNow(col.Type,col.Default)) 
+        .replace(/{{ROW_DEFAULT}}/ig, dateDefaultIsNow(col.Type,col.Default))
         .replace(/{{ROW_LENGHT}}/ig, haveLenght(col.Type))
         .replace(/{{ROW_TYPE}}/ig, dataWithoutLenght(col.Type));
         console.log(haveLenght(col.Type));
@@ -76,9 +79,8 @@ exports._writeModel = async (table,dbType) =>{
     console.log(output);
     FS.writeFile(path, output, (err) => {
     console.log(colors.green("Model created in :"+path));
-    process.exit(0);
+    Log.info("Dont forget to update your /src/config/typeorm.config.ts entities");
     });
-      
+
 
 }
-

@@ -40,3 +40,7 @@ exports.randomvarchar = (lenght) => {
 exports.randomdate = (lenght) => {
   return new Date(Date.now() + Math.random() * (999*9999*9999));
 };
+
+exports.randomdatetime = (lenght) => {
+  return new Date(Date.now() + Math.random() * (999*9999*9999));
+};
