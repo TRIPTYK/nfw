@@ -7,7 +7,7 @@ chai.config.truncateThreshold = true;
 
 describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
 
-  var server, agent, password, credentials, token, refreshToken, id , userId;
+  var server, agent, password, credentials, token, id;
   var expect = chai.expect;
 
   before(function (done) {
@@ -27,8 +27,6 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       .end(function(err, res) {
         expect(res.statusCode).to.equal(201);
         token = res.body.token.accessToken;
-        refreshToken = res.body.token.refreshToken;
-        userId = res.body.user.data.id;
         done();
       });
 
@@ -50,7 +48,7 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       .end(function(err, res) {
         let status = res.status | res.statusCode;
         expect(status).to.equal(201);
-        id = res.body.{{ENTITY_LOWERCASE}}.id;
+        id = res.body.data.id;
         done();
       })
   });

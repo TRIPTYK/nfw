@@ -72,7 +72,7 @@ router
   .post(authorize([ADMIN]), validate(create{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.create);
 {{ENTITY_CRUD_CREATE_END}}
 router
-  .route('/:{{ENTITY_LOWERCASE}}Id')
+  .route('/:id')
   /**
    * @api {get} v1/{{ENTITY_LOWERCASE}}s/:id Get {{ENTITY_CAPITALIZE}}
    * @apiDescription Get {{ENTITY_LOWERCASE}} information
