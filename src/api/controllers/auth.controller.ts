@@ -120,10 +120,10 @@ class AuthController extends BaseController {
       const refreshObject = await refreshTokenRepository.findOne({
         where : { token: token.refreshToken }
       });
-      refreshTokenRepository.remove(refreshObject);
 
       if(typeof(refreshObject) === 'undefined') return next(Boom.expectationFailed('RefreshObject cannot be empty'));
 
+      refreshTokenRepository.remove(refreshObject);
       // Get owner user of the token
       const { user, accessToken } = await userRepository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject });;
       const response = await generateTokenResponse(user, accessToken);
