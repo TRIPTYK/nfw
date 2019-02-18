@@ -309,6 +309,7 @@ const build = async (items) => {
         Log.error(`Process aborted.`);
         process.exit(0);
       }else{
+        modelWrite.writeModel(lowercase,"sql");
         _write(items);
       }
 
@@ -316,6 +317,7 @@ const build = async (items) => {
     });
   }
   else {
+    modelWrite.writeModel(lowercase,"sql")
     _write(items);
   }
 };
