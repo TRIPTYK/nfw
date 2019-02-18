@@ -200,7 +200,14 @@ const _getValidationFields = (columns) => {
  * @param {*} items
  */
 const _write = async items => {
-  var tableColumns = await modelWrite.getTableInfo("sql",lowercase);
+  let tableColumns;
+
+  try {
+    tableColumns = await modelWrite.getTableInfo("sql",lowercase);
+  }catch(err) {
+    tableColumns = [];
+  };
+
   // remove id key from array
   tableColumns.splice(tableColumns.findIndex(el => el.Field == 'id'),1);
 
@@ -213,7 +220,7 @@ const _write = async items => {
 
     // handle model template separately
     if (item.template == 'model') {
-      modelWrite.writeModel(lowercase,"sql");
+      //modelWrite.writeModel(lowercase,"sql");
       return;
     }
 

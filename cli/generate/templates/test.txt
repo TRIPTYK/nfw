@@ -38,6 +38,9 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
   });
 
 {{ENTITY_CRUD_CREATE_START}}
+  /*
+    
+  */
   it('POST /api/v1/{{ENTITY_LOWERCASE}}s succeed with 201', function (done) {
     agent
       .post('/api/v1/{{ENTITY_LOWERCASE}}s')
