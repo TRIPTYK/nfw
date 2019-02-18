@@ -54,15 +54,6 @@ router
    * @apiParam  {String={{ENTITY_LOWERCASE}},admin}  [role]    {{ENTITY_CAPITALIZE}}'s role
    *
    * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.{{ENTITY_LOWERCASE}}name   {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.role       {{ENTITY_CAPITALIZE}}'s role
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.firstname  {{ENTITY_CAPITALIZE}}'s firstname
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.lastname   {{ENTITY_CAPITALIZE}}'s lastname
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.picture    {{ENTITY_CAPITALIZE}}'s picture
-   * @apiSuccess (Created 201) {Date}    {{ENTITY_LOWERCASE}}.createdAt  Date
-   * @apiSuccess (Created 201) {Date}    {{ENTITY_LOWERCASE}}.updatedAt  Date
-   * @apiSuccess (Created 201) {Date}    {{ENTITY_LOWERCASE}}.deletedAt  Date
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated {{ENTITY_LOWERCASE}}s can create the data
@@ -84,9 +75,6 @@ router
    * @apiHeader {String} Athorization  {{ENTITY_CAPITALIZE}}'s access token
    *
    * @apiSuccess {String}  id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess {String}  name       {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess {String}  email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess {String}  role       {{ENTITY_CAPITALIZE}}'s role
    * @apiSuccess {Date}    createdAt  Timestamp
    *
    * @apiError (Unauthorized 401) Unauthorized Only authenticated {{ENTITY_LOWERCASE}}s can access the data
@@ -106,17 +94,10 @@ router
    *
    * @apiHeader {String} Athorization  {{ENTITY_CAPITALIZE}}'s access token
    *
-   * @apiParam  {String}             email     {{ENTITY_CAPITALIZE}}'s email
-   * @apiParam  {String{6..128}}     password  {{ENTITY_CAPITALIZE}}'s password
-   * @apiParam  {String{..128}}      [name]    {{ENTITY_CAPITALIZE}}'s name
    * @apiParam  {String={{ENTITY_LOWERCASE}},admin}  [role]    {{ENTITY_CAPITALIZE}}'s role
    * (You must be an admin to change the {{ENTITY_LOWERCASE}}'s role)
    *
    * @apiSuccess {String}  id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess {String}  name       {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess {String}  email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess {String}  role       {{ENTITY_CAPITALIZE}}'s role
-   * @apiSuccess {Date}    createdAt  Timestamp
    *
    * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401) Unauthorized Only authenticated {{ENTITY_LOWERCASE}}s can modify the data
@@ -143,10 +124,6 @@ router
    * (You must be an admin to change the {{ENTITY_LOWERCASE}}'s role)
    *
    * @apiSuccess {String}  id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess {String}  name       {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess {String}  email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess {String}  role       {{ENTITY_CAPITALIZE}}'s role
-   * @apiSuccess {Date}    createdAt  Timestamp
    *
    * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401) Unauthorized Only authenticated {{ENTITY_LOWERCASE}}s can modify the data
