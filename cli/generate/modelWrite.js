@@ -14,9 +14,10 @@ const Util = require('util');
 const Log = require('./log');
 const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
-const Exists = Util.promisify(FS.exists);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
+const createQuestion =[{type : 'list', name:'option', message:'There is no such entity in the database, what must be done ?', default:'create a table',choices:['create a table','generate basic model','nothing']}];
+const inquirer = require('inquirer');
 
 
 
@@ -114,7 +115,20 @@ exports.writeModel = async (table,dbType) =>{
     try{
         data = await _getTableInfo(dbType,table);
     }catch(err){
-        data = await dbWrite.dbParams(table);
+        let confirm = await  inquirer.prompt(createQuestion);
+        if (confirm.option === 'create a table') data = await dbWrite.dbParams(table);
+        else if (confirm.option === 'generate basic model'){
+            let modelTemplate = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
+            let model = (""+modelTemplate)
+            .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+            .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
+            FS.writeFile(path, model, (err) => {
+                console.log(colors.green("Model created in :"+path));
+                Log.info("Dont forget to update your /src/config/typeorm.config.ts entities");
+                process.exit(0);
+                });
+        }
+        else process.exit(0)
     }
     
     var Entities='';
