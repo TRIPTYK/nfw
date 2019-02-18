@@ -146,18 +146,18 @@ const _writeRoutes = async () => {
           Log.success(`Original router file restoring done.`);
           Log.success(`Files generating done.`);
           Log.warning(`Check the api/routes/v1/index.ts to update`);
-          //process.exit(0);
+          process.exit(0);
         });
       }else{
         Log.success(`Proxy router file updated.`);
         Log.success(`Files generating done.`);
-        //process.exit(0);
+        process.exit(0);
       }
     });
   }else{
     Log.info(`Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
     Log.success(`Files generating done.`);
-    //process.exit(0);
+    process.exit(0);
   }
 };
 

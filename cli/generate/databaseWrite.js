@@ -98,6 +98,5 @@ exports.dbParams = async (entity) => {
             }
         }
     }
-    console.log(paramsArray);
     return paramsArray
 }
