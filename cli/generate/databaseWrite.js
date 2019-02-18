@@ -1,7 +1,7 @@
 const res = require('./resources');
 const inquirer = require('inquirer');
 const colors = require('colors/safe');
-const needLength =  ['int','varchar'];
+const needLength =  ['int','varchar','tinyint','smallint','mediumint','bigint','float','double','decimal','char','binary','varbinary'];
 const enumQuestion = [{type:'input',name:'enum', message:'add a value to enum array : ', filter : (data =>{
     return "'"+data+"',";
 })}];

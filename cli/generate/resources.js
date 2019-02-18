@@ -24,7 +24,7 @@ const questionsParams = [
     }, filter: (data) =>{
       return data.replace(" ","_");
     }},
-    {type : 'list' ,name: 'type', message : "What's the column type ?", choices : ['varchar','datetime','int','text','enum','json','tinyint','smallint','mediumint','blob']},
+    {type : 'list' ,name: 'type', message : "What's the column type ?", choices : ['char','varchar','datetime','date','time','timestamp','year','tinyint','smallint','mediumint','binary','varbinary','int','bigint','float','double','decimal','tinytext','mediumtext','text','enum','json','tinyblob','smallblob','mediumblob','blob','bigblob','binary']},
     {type : 'input' ,name : 'defaultValue', message : "What's the column default value ?", default: "null"},
     {type:'list', name:'constraintValue', message:'CONSTRAINT', default : ' ', choices:['primary','unique','no constraint'], filter : (data) =>{
       if(data === 'primary'){
