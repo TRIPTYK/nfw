@@ -6,6 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec --timeout 10000",
     "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i typescript -g && npm i typeorm -g && npm i && tsc",
+    "kickstart-win": "init_scripts\\windows.bat",
     "generate": "node ./cli/generate/",
     "delete": "node ./cli/generate/delete",
     "todo": "leasot -x 'src/**/*.ts'",
