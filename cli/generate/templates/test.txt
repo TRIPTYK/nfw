@@ -38,9 +38,9 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
   });
 
 {{ENTITY_CRUD_CREATE_START}}
-  /*
-    
-  */
+  /**
+   * POST a {{ENTITY_LOWERCASE}} object to the API
+   */
   it('POST /api/v1/{{ENTITY_LOWERCASE}}s succeed with 201', function (done) {
     agent
       .post('/api/v1/{{ENTITY_LOWERCASE}}s')
@@ -58,6 +58,9 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
 {{ENTITY_CRUD_CREATE_END}}
 
 {{ENTITY_CRUD_READ_ID_START}}
+  /**
+   * GET a {{ENTITY_LOWERCASE}} object from the API
+   */
   it('GET /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
     agent
       .get('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
@@ -67,6 +70,9 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
 {{ENTITY_CRUD_READ_ID_END}}
 
 {{ENTITY_CRUD_UPDATE_PUT_START}}
+  /**
+   * PUT a {{ENTITY_LOWERCASE}} object to the API
+   */
   it('PUT /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
     agent
       .put('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
@@ -79,6 +85,9 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
 {{ENTITY_CRUD_UPDATE_PUT_END}}
 
 {{ENTITY_CRUD_UPDATE_PATCH_START}}
+  /**
+   * PATCH a {{ENTITY_LOWERCASE}} object to the API
+   */
   it('PATCH /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 200', function (done) {
     agent
       .patch('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
@@ -91,11 +100,14 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
 {{ENTITY_CRUD_UPDATE_PATCH_END}}
 
 {{ENTITY_CRUD_DELETE_START}}
+  /**
+   * DELETE a {{ENTITY_LOWERCASE}} object from the API
+   */
   it('DELETE /api/v1/{{ENTITY_LOWERCASE}}s/n succeed with 204', function (done) {
     agent
       .delete('/api/v1/{{ENTITY_LOWERCASE}}s/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });
-  {{ENTITY_CRUD_DELETE_END}}
+{{ENTITY_CRUD_DELETE_END}}
 });
