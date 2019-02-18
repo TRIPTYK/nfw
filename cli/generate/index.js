@@ -220,7 +220,7 @@ const _write = async items => {
 
     // handle model template separately
     if (item.template == 'model') {
-      //modelWrite.writeModel(lowercase,"sql");
+      modelWrite.writeModel(lowercase,"sql");
       return;
     }
 
@@ -244,10 +244,8 @@ const _write = async items => {
 
     if (crudOptions.read) {
       output = output
-        .replace(/{{ENTITY_CRUD_READ_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_READ_END}}/ig,"")
-        .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"");
+        .replace(/{{ENTITY_CRUD_READ_START}}|{{ENTITY_CRUD_READ_END}}/ig, "")
+        .replace(/{{ENTITY_CRUD_READ_ID_START}}|{{ENTITY_CRUD_READ_ID_END}}/ig, "");
     }else{
       output = output
         .replace(/{{ENTITY_CRUD_READ_START}}[\s\S]*{{ENTITY_CRUD_READ_END}}/mg, "")
@@ -256,11 +254,9 @@ const _write = async items => {
 
     if (crudOptions.update){
       output = output
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"")
+        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}|{{ENTITY_CRUD_UPDATE_PUT_END}}/ig, "")
         .replace(/({{ENTITY_PUT_VALIDATION}}|{{ENTITY_PATCH_VALIDATION}})/ig,validation.join(',\n'))
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"");
+        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}|{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig, "");
     }else{
       output = output
         .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}[\s\S]*{{ENTITY_CRUD_UPDATE_PUT_END}}/mg, "")
@@ -309,7 +305,6 @@ const build = async (items) => {
         Log.error(`Process aborted.`);
         process.exit(0);
       }else{
-        modelWrite.writeModel(lowercase,"sql");
         _write(items);
       }
 
@@ -317,7 +312,6 @@ const build = async (items) => {
     });
   }
   else {
-    modelWrite.writeModel(lowercase,"sql")
     _write(items);
   }
 };

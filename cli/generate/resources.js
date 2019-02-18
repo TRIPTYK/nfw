@@ -6,6 +6,7 @@
  */
 const items = [
   { template : 'controller', dest: 'controllers', ext: 'ts' },
+  { template : 'model', dest: 'models', ext: 'ts' },
   { template : 'repository', dest: 'repositories', ext: 'ts' },
   { template : 'validation', dest: 'validations', ext: 'ts' },
   { template : 'route', dest: 'routes/v1', ext: 'ts' },

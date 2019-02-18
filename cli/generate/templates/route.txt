@@ -3,7 +3,7 @@ import * as validate from "express-validation";
 import { Router } from "express";
 import { {{ENTITY_CAPITALIZE}}Controller } from "./../../controllers/{{ENTITY_LOWERCASE}}.controller";
 import { authorize, ADMIN, LOGGED_USER } from "./../../middlewares/auth.middleware";
-import { list{{ENTITY_CAPITALIZE}}s, get{{ENTITY_CAPITALIZE}}, create{{ENTITY_CAPITALIZE}}, replace{{ENTITY_CAPITALIZE}}, update{{ENTITY_CAPITALIZE}} } from "./../../validations/{{ENTITY_LOWERCASE}}.validation";
+import * as Validation from "./../../validations/{{ENTITY_LOWERCASE}}.validation";
 import { SecurityMiddleware } from "./../../middlewares/security.middleware";
 import { {{ENTITY_CAPITALIZE}}Middleware } from "./../../middlewares/{{ENTITY_LOWERCASE}}.middleware";
 
@@ -36,7 +36,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated {{ENTITY_LOWERCASE}}s can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-  .get(authorize([ADMIN]), validate(list{{ENTITY_CAPITALIZE}}s), {{ENTITY_LOWERCASE}}Controller.list)
+  .get(authorize([ADMIN]), validate(Validation.list{{ENTITY_CAPITALIZE}}s), {{ENTITY_LOWERCASE}}Controller.list)
 {{ENTITY_CRUD_READ_END}}
 
 {{ENTITY_CRUD_CREATE_START}}
@@ -61,7 +61,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated {{ENTITY_LOWERCASE}}s can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize([ADMIN]), validate(create{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.create);
+  .post(authorize([ADMIN]), validate(Validation.create{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.create);
 {{ENTITY_CRUD_CREATE_END}}
 
 router
@@ -84,7 +84,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
-  .get(authorize([ADMIN, LOGGED_USER]), validate(get{{ENTITY_CAPITALIZE}}), {{ENTITY_LOWERCASE}}Controller.get)
+  .get(authorize([ADMIN, LOGGED_USER]), validate(Validation.get{{ENTITY_CAPITALIZE}}), {{ENTITY_LOWERCASE}}Controller.get)
 {{ENTITY_CRUD_READ_ID_END}}
 
 {{ENTITY_CRUD_UPDATE_PUT_START}}
@@ -108,7 +108,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
-  .put(authorize([ADMIN, LOGGED_USER]), validate(replace{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
+  .put(authorize([ADMIN, LOGGED_USER]), validate(Validation.replace{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
 {{ENTITY_CRUD_UPDATE_PUT_END}}
 
 {{ENTITY_CRUD_UPDATE_PATCH_START}}
@@ -135,7 +135,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
-  .patch(authorize([ADMIN, LOGGED_USER]), validate(update{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
+  .patch(authorize([ADMIN, LOGGED_USER]), validate(Validation.update{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
 {{ENTITY_CRUD_UPDATE_PATCH_END}}
 
 {{ENTITY_CRUD_DELETE_START}}
