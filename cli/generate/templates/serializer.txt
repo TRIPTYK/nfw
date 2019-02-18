@@ -2,6 +2,6 @@ import { BaseSerializer } from "./base.serializer";
 
 export class {{ENTITY_CAPITALIZE}}Serializer extends BaseSerializer {
 
-  constructor() { super('{{ENTITY_LOWERCASE}}s', ['']) };
+  constructor() { super('{{ENTITY_LOWERCASE}}s', [{{ENTITY_COLUMNS}}]) };
 
 }

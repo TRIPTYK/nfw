@@ -7,7 +7,7 @@ chai.config.truncateThreshold = true;
 
 describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
 
-  var server, agent, password, credentials, token, refreshToken, id;
+  var server, agent, password, credentials, token, id;
   var expect = chai.expect;
 
   before(function (done) {
@@ -27,8 +27,6 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       .end(function(err, res) {
         expect(res.statusCode).to.equal(201);
         token = res.body.token.accessToken;
-        refreshToken = res.body.token.refreshToken;
-        id = res.body.user.data.id;
         done();
       });
 
@@ -46,10 +44,11 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
-      .send({ data : { attributes : {} } })
+      .send( {{ENTITY_PROPERTIES}} )
       .end(function(err, res) {
         let status = res.status | res.statusCode;
         expect(status).to.equal(201);
+        id = res.body.data.id;
         done();
       })
   });
@@ -71,7 +70,7 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
-      .send( { data : { attributes : {} } })
+      .send( {{ENTITY_PROPERTIES}} )
       .expect(200, done);
   });
 {{ENTITY_CRUD_UPDATE_PUT_END}}
@@ -83,11 +82,7 @@ describe("{{ENTITY_CAPITALIZE}} CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
-      .send({
-        data: {
-          attributes : {}
-        }
-      })
+      .send({{ENTITY_PROPERTIES}})
       .expect(200, done);
   });
 {{ENTITY_CRUD_UPDATE_PATCH_END}}
