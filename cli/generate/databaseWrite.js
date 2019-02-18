@@ -17,16 +17,25 @@ const lengthQuestion= [{type:'input',name:'enum',message:'what\'s the data lengt
 })}];
 
 
+/**
+ * @author Verliefden romain
+ * @description ask the user to configure future column of his table
+ * @return an array with the information 
+ */
 
 exports.dbParams = async (entity) => {
     var isDone = false;
     var paramsArray = [];
+    var Column = []
     console.log(colors.green(`Let's create a table for ${entity}`));
     console.log(colors.green('/!\\ id is added by default .'));
     while(!isDone){
         let value = await inquirer.prompt(res.questionsParams);
         if(value.column.toLowerCase() === 'id'){
-            console.log(colors.red('/!\\ id is added by default ! you can\'t add a column for id '));   
+            console.log(colors.red('/!\\ id is added by default ! you can\'t add a column for id '));
+            
+        }else if(Column.includes(value.column)){
+            console.log(colors.red('/!\\ You already added this column !'));
         }else{
             length_enum = [];
             if(needLength.includes(value.type)){
@@ -52,40 +61,42 @@ exports.dbParams = async (entity) => {
             }else{
                 length_enum[0]='NOTHING TO ADD'
             }
+            let tempParanthesis = ''
+            if(length_enum[0] !== 'NOTHING TO ADD'){
+                tempParanthesis += '('
+                length_enum[length_enum.length-1].enum=length_enum[length_enum.length-1].enum.replace(',','');
+                length_enum.forEach(elem => {
+                    tempParanthesis += elem.enum;    
+                });
+                tempParanthesis += ')'
+            }
+            if(['text','varchar','enum'].includes(value.type) && value.defaultValue!=='null'){
+                value.defaultValue=`'${value.defaultValue}'`;
+            }
+            let paramsTemp = {
+                Field : value.column.trim(),
+                Type : value.type.trim()+tempParanthesis.trim(),
+                Default : value.defaultValue.trim(),
+                Null : value.uniqueValue === true ? 'YES' : 'NO',
+                Key : value.constraintValue
+            };
+            console.clear();
+            console.log(paramsTemp);
+            let lastConfirm = await inquirer.prompt(confirmQuestion);
+            if(lastConfirm.confirmation){
+                Column[Column.length] = value.column;
+                paramsArray.push(paramsTemp);
+            }
+            let cont = await inquirer.prompt([{
+                type : 'confirm' ,
+                name : 'continueValue', 
+                message : "Want to add more column ?", 
+                default: true 
+            }]);
+            if(!cont.continueValue){
+                isDone = true;
+            }
         }
-        let tempParanthesis = ''
-        if(length_enum[0] !== 'NOTHING TO ADD'){
-            tempParanthesis += '('
-            length_enum[length_enum.length-1].enum=length_enum[length_enum.length-1].enum.replace(',','');
-            length_enum.forEach(elem => {
-                tempParanthesis += elem.enum;    
-            });
-            tempParanthesis += ')'
-        }
-        if(['text','varchar'].includes(value.type) && value.defaultValue!=='null'){
-            value.defaultValue=`'${value.defaultValue}'`;
-        }
-        let paramsTemp = {
-            Field : value.column,
-            Type : value.type+tempParanthesis,
-            Default : value.defaultValue
-        };
-        console.clear();
-        console.log(paramsTemp);
-        let lastConfirm = await inquirer.prompt(confirmQuestion);
-        if(lastConfirm.confirmation){
-            paramsArray.push(paramsTemp);
-        }
-        let cont = await inquirer.prompt([{
-            type : 'confirm' ,
-            name : 'continueValue', 
-            message : "Want to add more column ?", 
-            default: true 
-        }]);
-        if(!cont.continueValue){
-            isDone = true;
-        }
-
     }
     console.log(paramsArray);
     return paramsArray

@@ -29,8 +29,6 @@ const dbWrite = require('./databaseWrite');
 const _getTableInfo = async (dbType,tableName) => {
     if(dbType === "sql"){
         return data = await sqlAdaptator.getColumns(tableName);
-    }else if(dbType === "mongodb"){
-        //return data = mongoAdaptator.getColumns(tableName);
     }else{
         console.log(colors.Rainbow(dbType+" is not supported by this method yet"));
         process.exit(0);
@@ -53,22 +51,45 @@ const _dataWithoutLenght= (data) =>{
 /**
  * 
  * @param {column data} data 
- * @description mysql send data(lenght). Therefore , if i only need the lenght I need to split
+ * @description mysql send data(lenght/enumList). Therefore , if i only need the lenght/enumList I need to split
  * split then delete the ')'
- * @returns data lenght
+ * @returns data lenght/enum
  */
 const _getLength = (data) =>{
     type = data.split('(');
-
     if(type[0] === "enum"){
         let better = type[1].replace(')',"") ;
         return "enum  : ["+better+"],";
     }
-    if(type[1] != null){
+    else if(type[1] != null){
+        if(type[1].includes('int')){
+            let better = type[1].replace(')',"") ;
+            return "width : "+better+",";
+        }else{
         let better = type[1].replace(')',"") ;
         return "length : "+better+",";
+        }
     }else{
         return "";
+    }
+}
+
+const _getUnique = (data) => {
+    if(data === 'YES'){
+        return 'true'
+    }else{
+        return 'false'
+    }
+} 
+
+const _getKey = data =>{
+    console.log(data);
+    if (data === 'PRI'){
+        return ' primary : true,'
+    }else if ( data === 'UNI'){
+        return ' unique : true,'
+    }else{
+        return ''
     }
 }
 
@@ -76,7 +97,7 @@ const _getLength = (data) =>{
  * 
  * @param { column data} data 
  * @param {default value of column data} def 
- * @description if the default date is not null return function to write to get actual
+ * @return the default date is not null return function to write to get actual
  * date
  */
 const _dateDefaultIsNow = (data,def) =>{
@@ -103,8 +124,9 @@ exports.writeModel = async (table,dbType) =>{
         data = await _getTableInfo(dbType,table);
     }catch(err){
         data = await dbWrite.dbParams(table);
-        await sqlAdaptator.createTable(data,table);
+        //await sqlAdaptator.createTable(data,table);
     }
+    console.log(data);
     var Entities='';
     data.forEach(async col =>{
         if(col.Field === "id"){
@@ -114,6 +136,8 @@ exports.writeModel = async (table,dbType) =>{
         .replace(/{{ROW_NAME}}/ig, col.Field)
         .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default)) 
         .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
+        .replace(/{{ROW_NULL}}/ig, _getUnique(col.Null))
+        .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
         .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
         Entities += ' '+EntitiesTemp +"\n\n" ;
     });
@@ -121,7 +145,6 @@ exports.writeModel = async (table,dbType) =>{
     .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
     .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
     .replace(/{{ENTITIES}}/ig, Entities);
-    console.log(output);
     FS.writeFile(path, output, (err) => {
     console.log(colors.green("Model created in :"+path));
     process.exit(0);
