@@ -14,6 +14,7 @@ const {{ENTITY_LOWERCASE}}Middleware = new {{ENTITY_CAPITALIZE}}Middleware();
 
 router
   .route('/')
+{{ENTITY_CRUD_READ_START}}
   /**
    * @api {get} v1/{{ENTITY_LOWERCASE}}s List {{ENTITY_CAPITALIZE}}s
    * @apiDescription Get a list of {{ENTITY_LOWERCASE}}s
@@ -35,9 +36,10 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated {{ENTITY_LOWERCASE}}s can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-{{ENTITY_CRUD_READ_START}}
   .get(authorize([ADMIN]), validate(list{{ENTITY_CAPITALIZE}}s), {{ENTITY_LOWERCASE}}Controller.list)
 {{ENTITY_CRUD_READ_END}}
+
+{{ENTITY_CRUD_CREATE_START}}
   /**
    * @api {post} v1/{{ENTITY_LOWERCASE}}s Create {{ENTITY_CAPITALIZE}}
    * @apiDescription Create a new {{ENTITY_LOWERCASE}}
@@ -54,25 +56,17 @@ router
    * @apiParam  {String={{ENTITY_LOWERCASE}},admin}  [role]    {{ENTITY_CAPITALIZE}}'s role
    *
    * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.{{ENTITY_LOWERCASE}}name   {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.role       {{ENTITY_CAPITALIZE}}'s role
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.firstname  {{ENTITY_CAPITALIZE}}'s firstname
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.lastname   {{ENTITY_CAPITALIZE}}'s lastname
-   * @apiSuccess (Created 201) {String}  {{ENTITY_LOWERCASE}}.picture    {{ENTITY_CAPITALIZE}}'s picture
-   * @apiSuccess (Created 201) {Date}    {{ENTITY_LOWERCASE}}.createdAt  Date
-   * @apiSuccess (Created 201) {Date}    {{ENTITY_LOWERCASE}}.updatedAt  Date
-   * @apiSuccess (Created 201) {Date}    {{ENTITY_LOWERCASE}}.deletedAt  Date
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated {{ENTITY_LOWERCASE}}s can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-{{ENTITY_CRUD_CREATE_START}}
   .post(authorize([ADMIN]), validate(create{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.create);
 {{ENTITY_CRUD_CREATE_END}}
+
 router
   .route('/:id')
+{{ENTITY_CRUD_READ_ID_START}}
   /**
    * @api {get} v1/{{ENTITY_LOWERCASE}}s/:id Get {{ENTITY_CAPITALIZE}}
    * @apiDescription Get {{ENTITY_LOWERCASE}} information
@@ -84,18 +78,16 @@ router
    * @apiHeader {String} Athorization  {{ENTITY_CAPITALIZE}}'s access token
    *
    * @apiSuccess {String}  id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess {String}  name       {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess {String}  email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess {String}  role       {{ENTITY_CAPITALIZE}}'s role
    * @apiSuccess {Date}    createdAt  Timestamp
    *
    * @apiError (Unauthorized 401) Unauthorized Only authenticated {{ENTITY_LOWERCASE}}s can access the data
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
-{{ENTITY_CRUD_READ_ID_START}}
   .get(authorize([ADMIN, LOGGED_USER]), validate(get{{ENTITY_CAPITALIZE}}), {{ENTITY_LOWERCASE}}Controller.get)
 {{ENTITY_CRUD_READ_ID_END}}
+
+{{ENTITY_CRUD_UPDATE_PUT_START}}
   /**
    * @api {put} v1/{{ENTITY_LOWERCASE}}s/:id Replace {{ENTITY_CAPITALIZE}}
    * @apiDescription Replace the whole {{ENTITY_LOWERCASE}} document with a new one
@@ -106,26 +98,20 @@ router
    *
    * @apiHeader {String} Athorization  {{ENTITY_CAPITALIZE}}'s access token
    *
-   * @apiParam  {String}             email     {{ENTITY_CAPITALIZE}}'s email
-   * @apiParam  {String{6..128}}     password  {{ENTITY_CAPITALIZE}}'s password
-   * @apiParam  {String{..128}}      [name]    {{ENTITY_CAPITALIZE}}'s name
    * @apiParam  {String={{ENTITY_LOWERCASE}},admin}  [role]    {{ENTITY_CAPITALIZE}}'s role
    * (You must be an admin to change the {{ENTITY_LOWERCASE}}'s role)
    *
    * @apiSuccess {String}  id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess {String}  name       {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess {String}  email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess {String}  role       {{ENTITY_CAPITALIZE}}'s role
-   * @apiSuccess {Date}    createdAt  Timestamp
    *
    * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401) Unauthorized Only authenticated {{ENTITY_LOWERCASE}}s can modify the data
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
-{{ENTITY_CRUD_UPDATE_PUT_START}}
   .put(authorize([ADMIN, LOGGED_USER]), validate(replace{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
 {{ENTITY_CRUD_UPDATE_PUT_END}}
+
+{{ENTITY_CRUD_UPDATE_PATCH_START}}
   /**
    * @api {patch} v1/{{ENTITY_LOWERCASE}}s/:id Update {{ENTITY_CAPITALIZE}}
    * @apiDescription Update some fields of a {{ENTITY_LOWERCASE}} document
@@ -143,19 +129,16 @@ router
    * (You must be an admin to change the {{ENTITY_LOWERCASE}}'s role)
    *
    * @apiSuccess {String}  id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess {String}  name       {{ENTITY_CAPITALIZE}}'s name
-   * @apiSuccess {String}  email      {{ENTITY_CAPITALIZE}}'s email
-   * @apiSuccess {String}  role       {{ENTITY_CAPITALIZE}}'s role
-   * @apiSuccess {Date}    createdAt  Timestamp
    *
    * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401) Unauthorized Only authenticated {{ENTITY_LOWERCASE}}s can modify the data
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     {{ENTITY_CAPITALIZE}} does not exist
    */
-{{ENTITY_CRUD_UPDATE_PATCH_START}}
   .patch(authorize([ADMIN, LOGGED_USER]), validate(update{{ENTITY_CAPITALIZE}}), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.update)
 {{ENTITY_CRUD_UPDATE_PATCH_END}}
+
+{{ENTITY_CRUD_DELETE_START}}
   /**
    * @api {patch} v1/{{ENTITY_LOWERCASE}}s/:id Delete {{ENTITY_CAPITALIZE}}
    * @apiDescription Delete a {{ENTITY_LOWERCASE}}
@@ -172,7 +155,6 @@ router
    * @apiError (Forbidden 403)    Forbidden     Only {{ENTITY_LOWERCASE}} with same id or admins can delete the data
    * @apiError (Not Found 404)    NotFound      {{ENTITY_CAPITALIZE}} does not exist
    */
-{{ENTITY_CRUD_DELETE_START}}
   .delete(authorize([ADMIN, LOGGED_USER]), SecurityMiddleware.sanitize, {{ENTITY_LOWERCASE}}Controller.remove);
 {{ENTITY_CRUD_DELETE_END}}
 

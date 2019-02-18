@@ -1,3 +1,7 @@
+/**
+ * @module modelWrite
+ * @description shortcut to log colorfull text messages
+ */
 var colors = require('colors/safe');
 
 exports.error = text => {
