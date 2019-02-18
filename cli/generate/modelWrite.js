@@ -7,7 +7,6 @@
  * @exports writeModel
  */
 
-
 const sqlAdaptator = require('./database/sqlAdaptator');
 //const mongoAdaptator = require('./database/mongoAdaptator');
 const Util = require('util');
@@ -17,8 +16,6 @@ const ReadFile = Util.promisify(FS.readFile);
 const Exists = Util.promisify(FS.exists);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
-
-
 
 /**
  *
@@ -34,7 +31,7 @@ const _getTableInfo = async (dbType,tableName) => {
         console.log(colors.Rainbow(dbType+" is not supported by this method yet"));
         process.exit(0);
     }
-    return data="banane";
+    return [];
 }
 
 /**
@@ -84,7 +81,6 @@ const _getUnique = (data) => {
 }
 
 const _getKey = data =>{
-    console.log(data);
     if (data === 'PRI'){
         return ' primary : true,'
     }else if ( data === 'UNI'){
@@ -99,9 +95,9 @@ exports.getTableInfo = _getTableInfo;
 const _dateDefaultIsNow = (data,def) =>{
     type = data.split('(');
     if(type[0] === "datetime" && def != null){
-        return "DateUtils.mixedDateToDateString( new Date() )"
+        return "DateUtils.mixedDateToDateString( new Date() )";
     }else {
-        return def
+        return def;
     }
 }
 
@@ -110,35 +106,36 @@ exports.writeModel = async (table,dbType) =>{
     let lowercase   = table[0].toLowerCase() + table.substr(1);
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
     let file = await ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
-    let ColTemp = await ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
+    let colTemp = await ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
+
     try{
         data = await _getTableInfo(dbType,table);
     }catch(err){
         data = await dbWrite.dbParams(table);
     }
-    
-    var Entities='';
+
+    let entities='';
     data.forEach(async col =>{
-        if(col.Field === "id"){
+        if(col.Field === "id")
             return;
-        }
-        let EntitiesTemp = ColTemp
-        .replace(/{{ROW_NAME}}/ig, col.Field)
-        .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default))
-        .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
-        .replace(/{{ROW_NULL}}/ig, _getUnique(col.Null))
-        .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
-        .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-        Entities += ' '+EntitiesTemp +"\n\n" ;
+
+        let entitiesTemp = colTemp
+          .replace(/{{ROW_NAME}}/ig, col.Field)
+          .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default))
+          .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
+          .replace(/{{ROW_NULL}}/ig, _getUnique(col.Null))
+          .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
+          .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
+        entities += ' '+entitiesTemp +"\n\n" ;
     });
+
     let output = file
-    .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-    .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
-    .replace(/{{ENTITIES}}/ig, Entities);
+      .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
+      .replace(/{{ENTITIES}}/ig, entities);
+
     FS.writeFile(path, output, (err) => {
-    console.log(colors.green("Model created in :"+path));
-    Log.info("Dont forget to update your /src/config/typeorm.config.ts entities");
+      console.log(colors.green("Model created in :"+path));
+      Log.info("Dont forget to update your /src/config/typeorm.config.ts entities");
     });
-
-
 }
