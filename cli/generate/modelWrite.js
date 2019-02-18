@@ -2,7 +2,7 @@
  * @module modelWrite
  * @author Verliefden Romain
  * @description this module write the model.ts based on columns of the database
- * if the table exist. If the table doesn't exist , the user enter the columns of 
+ * if the table exist. If the table doesn't exist , the user enter the columns of
  * the futur table and the table is created in the database.
  * @exports writeModel
  */
@@ -21,9 +21,9 @@ const dbWrite = require('./databaseWrite');
 
 
 /**
- * 
- * @param {Technology use for database} dbType 
- * @param {name of the table in database} tableName 
+ *
+ * @param {Technology use for database} dbType
+ * @param {name of the table in database} tableName
  * @description call getColumns function in correct adapator to get data of columns
  * @returns data of a table
  */
@@ -38,8 +38,8 @@ const _getTableInfo = async (dbType,tableName) => {
 }
 
 /**
- * 
- * @param {data of a column} data 
+ *
+ * @param {data of a column} data
  * @description mysql send data(lenght). Therefore, I need to split if i only want
  * the datatype.
  * @returns data type
@@ -50,8 +50,8 @@ const _dataWithoutLenght= (data) =>{
 }
 
 /**
- * 
- * @param {column data} data 
+ *
+ * @param {column data} data
  * @description mysql send data(lenght/enumList). Therefore , if i only need the lenght/enumList I need to split
  * split then delete the ')'
  * @returns data lenght/enum
@@ -81,7 +81,7 @@ const _getUnique = (data) => {
     }else{
         return 'false'
     }
-} 
+}
 
 const _getKey = data =>{
     console.log(data);
@@ -94,7 +94,7 @@ const _getKey = data =>{
     }
 }
 
-exports.getTableInfo = getTableInfo;
+exports.getTableInfo = _getTableInfo;
 
 const _dateDefaultIsNow = (data,def) =>{
     type = data.split('(');
@@ -124,7 +124,7 @@ exports.writeModel = async (table,dbType) =>{
         }
         let EntitiesTemp = ColTemp
         .replace(/{{ROW_NAME}}/ig, col.Field)
-        .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default)) 
+        .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default))
         .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
         .replace(/{{ROW_NULL}}/ig, _getUnique(col.Null))
         .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
