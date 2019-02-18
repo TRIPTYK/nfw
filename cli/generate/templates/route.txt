@@ -78,7 +78,6 @@ router
    * @apiHeader {String} Athorization  {{ENTITY_CAPITALIZE}}'s access token
    *
    * @apiSuccess {String}  id         {{ENTITY_CAPITALIZE}}'s id
-   * @apiSuccess {Date}    createdAt  Timestamp
    *
    * @apiError (Unauthorized 401) Unauthorized Only authenticated {{ENTITY_LOWERCASE}}s can access the data
    * @apiError (Forbidden 403)    Forbidden    Only {{ENTITY_LOWERCASE}} with same id or admins can access the data
