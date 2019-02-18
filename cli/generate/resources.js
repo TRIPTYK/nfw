@@ -5,7 +5,6 @@
  * @ ext : file extension
  */
 const items = [
-  { template : 'model', dest: 'models', ext: 'ts' },
   { template : 'controller', dest: 'controllers', ext: 'ts' },
   { template : 'repository', dest: 'repositories', ext: 'ts' },
   { template : 'validation', dest: 'validations', ext: 'ts' },
@@ -15,4 +14,29 @@ const items = [
   { template : 'middleware', dest: 'middlewares', ext: 'ts' },
 ];
 
+const questionsParams = [
+    {type : 'input' ,name : 'column', message : "What's the new column name ?", validate : ( data) =>{
+      if(data === ""){
+        return "Name must contains at least one letter";
+      }else{
+        return true;
+      }
+    }, filter: (data) =>{
+      return data.replace(" ","_");
+    }},
+    {type : 'list' ,name: 'type', message : "What's the column type ?", choices : ['varchar','datetime','int','text','enum','json','tinyint','smallint','mediumint','blob']},
+    {type : 'input' ,name : 'defaultValue', message : "What's the column default value ?", default: "null"},
+    {type:'list', name:'constraintValue', message:'CONSTRAINT', default : ' ', choices:['primary','unique','no constraint'], filter : (data) =>{
+      if(data === 'primary'){
+        return 'PRI'
+      }else if ( data === 'unique'){
+        return 'UNI'
+      }else{
+        return '';
+      }
+    }},
+    {type:'confirm', name:'uniqueValue', message:'can be null ?', default : true}
+  ]
+
+exports.questionsParams = questionsParams;
 exports.items = items;
