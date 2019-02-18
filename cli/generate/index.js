@@ -151,18 +151,48 @@ const _writeRoutes = async () => {
       }else{
         Log.success(`Proxy router file updated.`);
         Log.success(`Files generating done.`);
-        Log.info(`Don\'t forget to update the api/models/${lowercase}.model.ts`);
-        Log.info(`Don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
         //process.exit(0);
       }
     });
   }else{
     Log.info(`Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
     Log.success(`Files generating done.`);
-    Log.info(`Don\'t forget to update the api/models/${lowercase}.model.ts`);
-    Log.info(`Don\'t forget to update the api/serializers/${lowercase}.serializer.ts`);
     //process.exit(0);
   }
+};
+
+/**
+ * @description generate an array of fake data to be send for given entity
+ * @param {*} items
+ */
+const _getTestFields = (columns) => {
+  return columns.map(elem => {
+    let elemLength = new RegExp("\\w\*\\\(\(\[0\-9\]\*\)\\\)","").exec(elem.Type);
+    let realType = new RegExp("(\\w*)","").exec(elem.Type)[1];
+    elemLength = elemLength === null ? elemLength = null : elemLength[1];
+
+    let elemVal = `fixtures.random${realType}(${elemLength})`;
+    return `${elem.Field} : ${elemVal}`;
+  });
+};
+
+/**
+ * @description generate an array of validation properties for entity
+ * @param {*} items
+ */
+const _getValidationFields = (columns) => {
+  return columns.map(elem => {
+    let elemLength = new RegExp("\\w\*\\\(\(\[0\-9\]\*\)\\\)","").exec(elem.Type);
+    let realType = new RegExp("(\\w*)","").exec(elem.Type)[1];
+    elemLength = elemLength === null ? elemLength : elemLength[1];
+
+    if (realType.match(/(char|text)+/i)) realType = 'string';
+    if (realType.match(/(date|time)+/i)) realType = 'date';
+    if (realType.match(/(int)+/i)) realType = 'number';
+
+    let elemVal = `Joi.${realType}()${elemLength === null ? '' : `.max(${elemLength})`}`;
+    return `${elem.Field} : ${elemVal}`;
+  });
 };
 
 /**
@@ -170,19 +200,35 @@ const _writeRoutes = async () => {
  * @param {*} items
  */
 const _write = async items => {
+  var tableColumns = await modelWrite.getTableInfo("sql",lowercase);
+  // remove id key from array
+  tableColumns.splice(tableColumns.findIndex(el => el.Field == 'id'),1);
+
+  const columnNames = tableColumns.map(elem => `'${elem.Field}'`);
+  const validation = _getValidationFields(tableColumns);
+  const testColumns = _getTestFields(tableColumns);
 
   items.forEach( async (item) => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
 
+    // handle model template separately
+    if (item.template == 'model') {
+      modelWrite.writeModel(lowercase,"sql");
+      return;
+    }
+
     // replacing entity names
     let output = file
       .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);    // ig -> global , case insensitive replacement
+      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize) // ig -> global , case insensitive replacement
+      .replace(/{{ENTITY_COLUMNS}}/ig,columnNames.join(',\n'))
+      .replace(/{{ENTITY_PROPERTIES}}/ig, `{${testColumns.join(',\n')}}`);
 
     // replacing all the placeholder depending on the crud options
     if (crudOptions.create) {
       output = output
         .replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "")
+        .replace(/{{ENTITY_CREATE_VALIDATION}}/ig,validation.join(',\n'))
         .replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"");
     }else{
       output = output
@@ -205,6 +251,7 @@ const _write = async items => {
       output = output
         .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "")
         .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"")
+        .replace(/({{ENTITY_PUT_VALIDATION}}|{{ENTITY_PATCH_VALIDATION}})/ig,validation.join(',\n'))
         .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig, "")
         .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"");
     }else{
@@ -256,7 +303,6 @@ const build = async (items) => {
         process.exit(0);
       }else{
         _write(items);
-        modelWrite.writeModel(lowercase,"sql");
       }
 
       rl.close();
@@ -264,7 +310,6 @@ const build = async (items) => {
   }
   else {
     _write(items);
-    modelWrite.writeModel(lowercase,"sql")
   }
 };
 
