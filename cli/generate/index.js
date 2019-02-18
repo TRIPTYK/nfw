@@ -23,18 +23,20 @@ const Log = require('./log');
  */
 const { countLines , capitalizeEntity } = require('./utils');
 /**
- * Set the function Fs.readfile as a promise
- */
-const ReadFile = Util.promisify(FS.readFile);
-/**
  * Transform a async method to a promise
  * @returns {Promise} returns FS.exists async function as a promise
  */
+const ReadFile = Util.promisify(FS.readFile);
+const WriteFile = Util.promisify(FS.writeFile);
 const Exists = Util.promisify(FS.exists);
 /**
  * Requirement of the library readline
  */
 const readline = require('readline');
+/**
+ * Requirement of the modelWrite module
+ */
+const routerWrite = require('./routerWrite');
 /**
  * Requirement of the modelWrite library
  */
@@ -98,68 +100,6 @@ if(!operations){
 }else{
   _checkForCrud(operations);
 }
-/**
- * @access private
- * @async
- * @description Read all template and replace {{****}} with variables then write them in their specified path
- */
-const _writeRoutes = async () => {
-  // Write in proxy router
-  let proxyPath = `${processPath}/src/api/routes/v1/index.ts`;
-  let lines = await countLines(proxyPath);
-  let proxy = await ReadFile(proxyPath, 'utf-8');
-  let proxyLines = proxy.split('\n');
-  let toRoute = `router.use('/${lowercase}s/', ${capitalize}Router);`;
-  let toImport = `import { router as ${capitalize}Router } from "./${lowercase}.route";`;
-  let isAlreadyImported = false;
-  let firstn = false;
-  let output = '';
-
-  for(let j = 0 ; j < proxyLines.length ; j++)
-  {
-    if(proxyLines[j] === toImport) {
-      isAlreadyImported = true;
-    }
-
-    if(!firstn && proxyLines[j].trim() === '') {
-      output += toImport + "\n\n";
-      firstn = true;
-    }
-    else if(j === lines) {
-      output += '\n';
-      output += '/**\n';
-      output += ' * ' + capitalize + ' routes \n';
-      output += ' */\n';
-      output += toRoute + "\n\n";
-    }
-    else if(proxyLines[j].trim() === '') { output += "\n"; }
-    else { output += proxyLines[j] + "\n" }
-  }
-  if(!isAlreadyImported)
-  {
-    FS.writeFile(proxyPath, output, (err) => {
-      if(err) {
-        console.log(err.message);
-        console.log('Original router file will be restored ...');
-        FS.writeFile(proxyPath, proxy, (err) => {
-          if(err) process.stdout.write(err.message);
-          Log.success(`Original router file restoring done.`);
-          Log.success(`Files generating done.`);
-          Log.warning(`Check the api/routes/v1/index.ts to update`);
-          process.exit(0);
-        });
-      }else{
-        Log.success(`Proxy router file updated.`);
-        Log.success(`Files generating done.`);
-        process.exit(0);
-      }
-    });
-  }else{
-    Log.info(`Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
-    Log.success(`Files generating done.`);
-    process.exit(0);
-  }
-};
 
 /**
  * @description generate an array of fake data to be send for given entity
@@ -220,7 +160,7 @@ const _write = async items => {
 
     // handle model template separately
     if (item.template == 'model') {
-      //modelWrite.writeModel(lowercase,"sql");
+      modelWrite.writeModel(lowercase,"sql");
       return;
     }
 
@@ -244,10 +184,8 @@ const _write = async items => {
 
     if (crudOptions.read) {
       output = output
-        .replace(/{{ENTITY_CRUD_READ_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_READ_END}}/ig,"")
-        .replace(/{{ENTITY_CRUD_READ_ID_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_READ_ID_END}}/ig,"");
+        .replace(/{{ENTITY_CRUD_READ_START}}|{{ENTITY_CRUD_READ_END}}/ig, "")
+        .replace(/{{ENTITY_CRUD_READ_ID_START}}|{{ENTITY_CRUD_READ_ID_END}}/ig, "");
     }else{
       output = output
         .replace(/{{ENTITY_CRUD_READ_START}}[\s\S]*{{ENTITY_CRUD_READ_END}}/mg, "")
@@ -256,11 +194,9 @@ const _write = async items => {
 
     if (crudOptions.update){
       output = output
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_END}}/ig,"")
+        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}|{{ENTITY_CRUD_UPDATE_PUT_END}}/ig, "")
         .replace(/({{ENTITY_PUT_VALIDATION}}|{{ENTITY_PATCH_VALIDATION}})/ig,validation.join(',\n'))
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig,"");
+        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}|{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig, "");
     }else{
       output = output
         .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}[\s\S]*{{ENTITY_CRUD_UPDATE_PUT_END}}/mg, "")
@@ -285,7 +221,7 @@ const _write = async items => {
     });
   });
 
-  _writeRoutes();
+  routerWrite();
 };
 
 /**
@@ -309,7 +245,6 @@ const build = async (items) => {
         Log.error(`Process aborted.`);
         process.exit(0);
       }else{
-        modelWrite.writeModel(lowercase,"sql");
         _write(items);
       }
 
@@ -317,7 +252,6 @@ const build = async (items) => {
     });
   }
   else {
-    modelWrite.writeModel(lowercase,"sql");
     _write(items);
   }
 };
