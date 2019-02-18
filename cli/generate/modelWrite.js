@@ -116,7 +116,7 @@ exports.writeModel = async (table,dbType) =>{
     }catch(err){
         data = await dbWrite.dbParams(table);
     }
-    console.log(data);
+    
     var Entities='';
     data.forEach(async col =>{
         if(col.Field === "id"){
