@@ -5,7 +5,6 @@ import { typeorm as TypeORM } from "./environment.config";
 import { User } from "../api/models/user.model";
 import { RefreshToken } from "../api/models/refresh-token.model";
 import { Document } from "../api/models/document.model";
-import { Recipe } from "../api/models/recipe.model";
 
 /**
  * Define TypeORM default configuration
