@@ -139,7 +139,7 @@ exports.writeModel = async (table,dbType) =>{
           let cap = capitalizeEntity(low);
 
           let {response} = await inquirer.prompt([
-            {type : 'list' ,name: 'response', message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${table}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of ralationship is this ?`, choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']},
+            {type : 'list' ,name: 'response', message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${table}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of relationship is this ?`, choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']},
           ]);
 
           let relationType = cap;
