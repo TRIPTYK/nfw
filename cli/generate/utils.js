@@ -2,6 +2,8 @@
  * Require the library FS
  */
 const FS = require('fs');
+const _ = require('lodash');
+
 /**
  * @description : count the lines of a file
  * @param {*} path
@@ -26,4 +28,5 @@ exports.countLines = (path) => {
   });
 };
 
+exports.removeEmptyLines = (string) => string.replace(/\\n?\^$/gm,"");
 exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);

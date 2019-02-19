@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , OneToOne , JoinColumn , OneToMany , ManyToMany } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { {{ENTITY_CAPITALIZE}}Serializer } from "./../serializers/{{ENTITY_LOWERCASE}}.serializer";
+{{FOREIGN_IMPORTS}}
 
 @Entity()
 export class {{ENTITY_CAPITALIZE}} {
@@ -14,9 +15,9 @@ export class {{ENTITY_CAPITALIZE}} {
   id: Number;
 
 
-{{ENTITIES}}
+  {{ENTITIES}}
 
   public whitelist() {
     return new {{ENTITY_CAPITALIZE}}Serializer().serializer.serialize(this);
-  } 
+  }
 }
