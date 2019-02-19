@@ -24,7 +24,7 @@ export class {{ENTITY_CAPITALIZE}}Controller extends BaseController {
    */
   public get(req: Request, res : Response) { 
     const repository = getRepository({{ENTITY_CAPITALIZE}});
-    const {{ENTITY_LOWERCASE}} = repository.findOneOrFailed(req.params.{{ENTITY_LOWERCASE}}Id);
+    const {{ENTITY_LOWERCASE}} = repository.findOneOrFail(req.params.{{ENTITY_LOWERCASE}}Id);
     res.json( {{ENTITY_LOWERCASE}}.whitelist() ); 
   }
 

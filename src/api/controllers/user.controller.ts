@@ -5,6 +5,7 @@ import { User } from "./../models/user.model";
 import { UserRepository } from "./../repositories/user.repository";
 import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
+import { UserSerializer } from "./../serializers/user.serializer";
 
 /**
  * 
@@ -90,7 +91,17 @@ export class UserController extends BaseController {
     try {
       const repository = getCustomRepository(UserRepository);
       const users = await repository.list(req.query);
-      const transformedUsers = users.map(user => user.whitelist());
+
+
+      console.log(users);
+
+      const transformedUsers = users.map( user => user.whitelist() );
+
+      let serializer = new UserSerializer();
+
+      console.log(transformedUsers);
+      console.log(serializer.serializer.serialize(transformedUsers));
+      
       res.json(transformedUsers);
     } 
     catch (e) { next(e); }
