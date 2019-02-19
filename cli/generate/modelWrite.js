@@ -14,10 +14,10 @@ const Util = require('util');
 const Log = require('./log');
 const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
-const Exists = Util.promisify(FS.exists);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
-
+const inquirer = require('inquirer');
+const options = [{type:'list',name:'value',message:'Entity doesn\'t exist. What must be done ',default:'create an entity',choices:['create an entity','create a basic model','nothing']}]
 
 
 /**
@@ -39,7 +39,7 @@ const _getTableInfo = async (dbType,tableName) => {
 
 /**
  *
- * @param {data of a column} data
+ * @param {type(n) of a  column} data
  * @description mysql send data(lenght). Therefore, I need to split if i only want
  * the datatype.
  * @returns data type
@@ -51,7 +51,7 @@ const _dataWithoutLenght= (data) =>{
 
 /**
  *
- * @param {column data} data
+ * @param {type(n) of a column} data
  * @description mysql send data(lenght/enumList). Therefore , if i only need the lenght/enumList I need to split
  * split then delete the ')'
  * @returns data lenght/enum
@@ -63,7 +63,7 @@ const _getLength = (data) =>{
         return "enum  : ["+better+"],";
     }
     else if(type[1] != null){
-        if(type[1].includes('int')){
+        if(type[0].includes('int')){
             let better = type[1].replace(')',"") ;
             return "width : "+better+",";
         }else{
@@ -75,16 +75,31 @@ const _getLength = (data) =>{
     }
 }
 
-const _getUnique = (data) => {
-    if(data === 'YES'){
-        return 'true'
+
+/**
+ *
+ * @param {column Nullable data} data
+ * @description  check if column can be null or not and check if key is primay. if key is primary , there's no need to check if column can be null
+ * because primary imply that value can't be null 
+ * @returns if column can be null or not
+ */
+const _getNull = (data,key) => {
+    if(key === 'PRI'){
+        return ''
+    }else if(data === 'YES' && key != 'PRI'){
+        return 'nullable:true,'
     }else{
-        return 'false'
+        return 'nullable:false,'
     }
 }
 
+/**
+ *
+ * @param {column key data} data
+ * @description  mysql send key value as PRI , UNI. but a column written for a typeorm model primary or unique as parameter 
+ * @returns primary or unique
+ */
 const _getKey = data =>{
-    console.log(data);
     if (data === 'PRI'){
         return ' primary : true,'
     }else if ( data === 'UNI'){
@@ -96,49 +111,64 @@ const _getKey = data =>{
 
 exports.getTableInfo = _getTableInfo;
 
-const _dateDefaultIsNow = (data,def) =>{
-    type = data.split('(');
-    if(type[0] === "datetime" && def != null){
-        return "DateUtils.mixedDateToDateString( new Date() )"
-    }else {
-        return def
-    }
-}
-
+/**
+ * @param {table to get data from/table to create} table
+ * @param {techonlogy use for database} dbType
+ * 
+ * @description get data from DB then write a model based on said data. If there's no data in database for cosen table then ask the user 
+ * if he want a basic model or get him to a prompt to create a new column or if nothing need to done. 
+ * 
+ *  
+ */
 exports.writeModel = async (table,dbType) =>{
+    console.log("banane");
     let capitalize  = table[0].toUpperCase() + table.substr(1);
     let lowercase   = table[0].toLowerCase() + table.substr(1);
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
     let file = await ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
     let ColTemp = await ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
+    let data;
     try{
         data = await _getTableInfo(dbType,table);
     }catch(err){
-        data = await dbWrite.dbParams(table);
+        let option = await inquirer.prompt(options);
+        if(option.value === 'create an entity' )data = await dbWrite.dbParams(table);
+        else if(option.value === 'create a basic model'){
+            let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
+            let basicModel = (" "+modelTemp)
+            .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+            .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
+            await FS.writeFile(path, basicModel, (err) => {
+            console.log(colors.green("Model created in :"+path));
+            process.exit(0);
+        });
+        }else process.exit(0);
     }
-    
-    var Entities='';
-    data.forEach(async col =>{
-        if(col.Field === "id"){
-            return;
-        }
-        let EntitiesTemp = ColTemp
-        .replace(/{{ROW_NAME}}/ig, col.Field)
-        .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default))
-        .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
-        .replace(/{{ROW_NULL}}/ig, _getUnique(col.Null))
-        .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
-        .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-        Entities += ' '+EntitiesTemp +"\n\n" ;
-    });
-    let output = file
-    .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-    .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
-    .replace(/{{ENTITIES}}/ig, Entities);
-    FS.writeFile(path, output, (err) => {
-    console.log(colors.green("Model created in :"+path));
-    Log.info("Dont forget to update your /src/config/typeorm.config.ts entities");
-    });
-
-
+    if( data != null){
+        var Entities='';
+        data.forEach(async col =>{
+            if(col.Field === "id"){
+                return;
+            }
+            let EntitiesTemp = ColTemp
+            .replace(/{{ROW_NAME}}/ig, col.Field)
+            .replace(/{{ROW_DEFAULT}}/ig, col.Default)
+            .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
+            .replace(/{{ROW_NULL}}/ig, _getNull(col.Null,col.Key))
+            .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
+            .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
+            Entities += ' '+EntitiesTemp +"\n\n" ;
+        });
+        let output = file
+        .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+        .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
+        .replace(/{{ENTITIES}}/ig, Entities);
+        console.log(output);
+       
+       // FS.writeFile(path, output, (err) => {
+        //console.log(colors.green("Model created in :"+path));
+        //});
+    }
 }
+
+
