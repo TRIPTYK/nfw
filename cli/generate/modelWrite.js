@@ -16,12 +16,7 @@ const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
-<<<<<<< HEAD
-const createQuestion =[{type : 'list', name:'option', message:'There is no such entity in the database, what must be done ?', default:'create a table',choices:['create a table','generate basic model','nothing']}];
-const inquirer = require('inquirer');
-=======
 const { countLines , capitalizeEntity , removeEmptyLines } = require('./utils');
->>>>>>> f88516940f7a913ca55b671639a1d1ac81142fa6
 
 /**
  *
