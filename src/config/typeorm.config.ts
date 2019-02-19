@@ -24,7 +24,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [ User, RefreshToken, Document , Recipe], // ^\s*entities.*$
+      entities: [ User, RefreshToken, Document ], // ^\s*entities.*$
       synchronize: true,
       logging: false
     });
