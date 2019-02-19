@@ -21,7 +21,7 @@ const Log = require('./log');
 /**
  * Requirement of the functions "countLine" and "capitalizeEntity" from the local file utils
  */
-const { countLines , capitalizeEntity , normalizeStringSpaces } = require('./utils');
+const { countLines , capitalizeEntity  } = require('./utils');
 /**
  * Transform a async method to a promise
  * @returns {Promise} returns FS.exists async function as a promise
@@ -217,7 +217,7 @@ const _write = async items => {
         .replace(/{{ENTITY_CRUD_DELETE_START}}[\s\S]*{{ENTITY_CRUD_DELETE_END}}/mg, "");
     }
 
-    FS.writeFile(`${processPath}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, normalizeStringSpaces(output) , (err) => {
+    FS.writeFile(`${processPath}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output , (err) => {
       if(err) {
         Log.error(`Error while ${item.template} file generating \n`);
         Log.warning(`Check the api/${item.dest}/${lowercase}.${item.template}.${item.ext} to update`);
@@ -225,7 +225,7 @@ const _write = async items => {
       else Log.success(`${capitalizeEntity(item.template)} generated.`);
     });
   });
-  
+
   routerWrite();
 };
 
