@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany,  } from "typeorm";
 import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environment.config";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { Document } from "./../models/document.model";
