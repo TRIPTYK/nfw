@@ -4,7 +4,8 @@
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
   "main": "./dist/app.bootstrap.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec --timeout 10000",
+    "testWin": "./node_modules/.bin/mocha --reporter spec --timeout 10000 --exit || ECHO",
+    "testUnix": "./node_modules/.bin/mocha --reporter spec --timeout 10000 --exit; exit 0",
     "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i typescript -g && npm i typeorm -g && npm i && tsc",
     "kickstart-win": "init_scripts\\windows.bat",
     "generate": "node ./cli/generate/",

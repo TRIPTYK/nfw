@@ -9,14 +9,19 @@
 
 const sqlAdaptator = require('./database/sqlAdaptator');
 //const mongoAdaptator = require('./database/mongoAdaptator');
+const inquirer = require('inquirer');
 const Util = require('util');
 const Log = require('./log');
 const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
+<<<<<<< HEAD
 const createQuestion =[{type : 'list', name:'option', message:'There is no such entity in the database, what must be done ?', default:'create a table',choices:['create a table','generate basic model','nothing']}];
 const inquirer = require('inquirer');
+=======
+const { countLines , capitalizeEntity , removeEmptyLines } = require('./utils');
+>>>>>>> f88516940f7a913ca55b671639a1d1ac81142fa6
 
 /**
  *
@@ -27,12 +32,19 @@ const inquirer = require('inquirer');
  */
 const _getTableInfo = async (dbType,tableName) => {
     if(dbType === "sql"){
-        return data = await sqlAdaptator.getColumns(tableName);
+        let p_columns = sqlAdaptator.getColumns(tableName);
+        let p_foreignKeys = sqlAdaptator.getForeignKeys(tableName);
+        let res = await Promise.all([p_columns,p_foreignKeys]);
+
+        return {
+          columns : res[0],
+          foreignKeys : res[1]
+        };
     }else{
         console.log(colors.Rainbow(dbType+" is not supported by this method yet"));
         process.exit(0);
     }
-    return [];
+    return {columns : [],foreignKeys : []};
 }
 
 /**
@@ -128,25 +140,51 @@ exports.writeModel = async (table,dbType) =>{
         else process.exit(0)
     }
 
+    let { columns , foreignKeys } = data;
+
     let entities='';
-    data.forEach(async col =>{
+    let imports='';
+
+    await Promise.all(columns.map(async col =>{
         if(col.Field === "id")
             return;
 
-        let entitiesTemp = colTemp
-          .replace(/{{ROW_NAME}}/ig, col.Field)
-          .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default))
-          .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
-          .replace(/{{ROW_NULL}}/ig, _getUnique(col.Null))
-          .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
-          .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-        entities += ' '+entitiesTemp +"\n\n" ;
-    });
+        let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
+        if (foreignKey !== undefined)
+        {
+          let low = foreignKey.REFERENCED_TABLE_NAME.toLowerCase();
+          let cap = capitalizeEntity(low);
+
+          let {response} = await inquirer.prompt([
+            {type : 'list' ,name: 'response', message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${table}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of relationship is this ?`, choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']},
+          ]);
+
+          let relationType = cap;
+
+          if(response == 'OneToMany' || response == 'ManyToMany') relationType = `${cap}[]`;
+
+          let relationTemplate = `@${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n@JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n${col.Field} : ${relationType};`;
+
+          entities += relationTemplate;
+          imports += `import {${cap}} from './${low}.model';\n`;
+
+        }else{
+          let entitiesTemp = colTemp
+            .replace(/{{ROW_NAME}}/ig, col.Field)
+            .replace(/{{ROW_DEFAULT}}/ig, _dateDefaultIsNow(col.Type,col.Default))
+            .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
+            .replace(/{{ROW_NULL}}/ig, _getUnique(col.Null))
+            .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
+            .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
+          entities += ' '+entitiesTemp +"\n\n" ;
+        }
+    }));
 
     let output = file
       .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
       .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
-      .replace(/{{ENTITIES}}/ig, entities);
+      .replace(/{{ENTITIES}}/ig, removeEmptyLines(entities))
+      .replace(/{{FOREIGN_IMPORTS}}/ig,imports);
 
     FS.writeFile(path, output, (err) => {
       console.log(colors.green("Model created in :"+path));
