@@ -6,7 +6,7 @@ const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
 const Exists = Util.promisify(FS.exists);
 
-// command line and process args 
+// command line and process args
 const action = process.argv[2];
 const processPath = process.cwd();
 const operations = process.argv[3];
@@ -42,16 +42,19 @@ module.exports = async () => {
       output += toImport + "\n\n";
       firstn = true;
     }
-    else if(j === lines) {
-      output += '\n';
-      output += '/**\n';
-      output += ' * ' + capitalize + ' routes \n';
-      output += ' */\n';
-      output += toRoute + "\n\n";
-    }
     else if(proxyLines[j].trim() === '') { output += "\n"; }
     else { output += proxyLines[j] + "\n" }
   }
+
+  // inserts route BEFORE the export statement , eliminaing some false-positive
+  let route = '\n\n';
+  route += '/**\n';
+  route += ' * ' + capitalize + ' routes \n';
+  route += ' */\n';
+  route += toRoute + "\n\n";
+  output = output.replace(/^\s*(?=.*export.*)/m,route); //regex positive lookbehind
+
+
   if(!isAlreadyImported)
   {
     FS.writeFile(proxyPath, output, (err) => {

@@ -9,12 +9,15 @@ var db = mysql.createConnection({
     database: env.database
 });
 
+const query = util.promisify(db.query.bind(db));
+
+exports.getForeignKeys = async (tableName) => {
+    let result = await query(`SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA='${env.database}' AND TABLE_NAME='${tableName}';`);
+    return result;
+};
 
 exports.getColumns = async (tableName) => {
-    var result;
-    sql = `SHOW COLUMNS FROM ${tableName} ;`
-    let query = util.promisify(db.query.bind(db));
-    result = await query(sql) ;
+    let result = await query(`SHOW COLUMNS FROM ${tableName} ;`);
     return result;
 };
 
