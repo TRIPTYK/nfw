@@ -6,15 +6,15 @@
   "username": "root",
   "password": "root",
   "database": "3rd_party_ts_boilerplate",
-  "synchronize": true,
   "logging": false,
   "entities": [
-    "src/api/models/**/*.ts"
+    "dist/api/models/*.js"
   ],
   "migrations": [
-    "src/migration/**/*.ts"
+    "dist/migration/*.js"
   ],
-  "subscribers": [
-    "src/subscribers/**/*.ts"
-  ]
+  "migrationsTableName" : "migration_table",
+  "cli":{
+    "migrationsDir": "migration"
+  }
 }
