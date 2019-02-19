@@ -11,7 +11,8 @@
     "generate": "node ./cli/generate/",
     "delete": "node ./cli/generate/delete",
     "todo": "leasot -x 'src/**/*.ts'",
-    "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md"
+    "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md",
+    "generateFromDB" : "node ./cli/generate/generateFromDB"
   },
   "repository": {
     "type": "git",
@@ -75,6 +76,7 @@
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
+    "shelljs": "^0.8.3",
     "supertest": "^3.4.2",
     "typeorm": "^0.2.13",
     "typescript": "^3.3.3",
