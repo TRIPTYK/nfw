@@ -157,10 +157,10 @@ const _write = async items => {
 
   items.forEach( async (item) => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
-
+    console.log(item.template);
     // handle model template separately
     if (item.template == 'model') {
-      modelWrite.writeModel(lowercase,"sql");
+      await modelWrite.writeModel(lowercase,"sql");
       return;
     }
 
