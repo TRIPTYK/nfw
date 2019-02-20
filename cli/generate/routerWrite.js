@@ -57,8 +57,13 @@ module.exports = async () => {
 
   if(!isAlreadyImported)
   {
+    try {
     await WriteFile(proxyPath,output)
-    .catch(async e => {
+      .then(() => {
+        Log.success(`Proxy router file updated.`);
+        Log.success(`Files generating done.`);
+      });
+    }catch(e){ // try-catch block needed , otherwise we will need to launch an async function in catch()
       console.log(e.message);
       console.log('Original router file will be restored ...');
       await WriteFile(proxyPath, proxy)
@@ -68,9 +73,7 @@ module.exports = async () => {
       Log.success(`Original router file restoring done.`);
       Log.success(`Files generating done.`);
       Log.warning(`Check the api/routes/v1/index.ts to update`);
-    });
-    Log.success(`Proxy router file updated.`);
-    Log.success(`Files generating done.`);
+    }
   }else{
     Log.info(`Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
     Log.success(`Files generating done.`);
