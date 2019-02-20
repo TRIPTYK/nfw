@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { router as AuthRouter } from "./auth.route";
 import { router as UserRouter } from "./user.route";
 import { router as DocumentRouter } from "./document.route";
-import { router as OtterRouter } from "./otter.route";
 
 
 const router = Router();
@@ -36,11 +35,6 @@ router.use('/users/', UserRouter);
  */
 router.use('/documents/', DocumentRouter);
 
-
-/**
- * Otter routes 
- */
-router.use('/otters/', OtterRouter);
 
 export { router }
 
