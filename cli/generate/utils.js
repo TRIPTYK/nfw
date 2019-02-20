@@ -28,5 +28,20 @@ exports.countLines = (path) => {
   });
 };
 
+const readline = require('readline');
+
+exports.prompt = (question) => {
+  const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+  });
+  
+  return new Promise((res, rej) => {
+      rl.question(question, (answer) => {
+          res(answer);
+          rl.close();
+      });
+  });
+}
 exports.removeEmptyLines = (string) => string.replace(/\\n?\^$/gm,"");
 exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);
