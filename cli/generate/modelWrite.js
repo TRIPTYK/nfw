@@ -164,8 +164,7 @@ exports.writeModel = async (table,dbType) =>{
             .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
             await FS.writeFile(path, basicModel, (err) => {
             console.log(colors.green("Model created in :"+path));
-              return;
-            });
+        });
         }else return;
     }
 
@@ -174,13 +173,16 @@ exports.writeModel = async (table,dbType) =>{
 
     if( data != null){
         var entities='';
+        console.log(data);
         await Promise.all(columns.map(async col =>{
             if(col.Field === "id"){
                 return;
             }
             let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
+            console.log(foreignKey);
             if (foreignKey !== undefined)
             {
+
               let low = foreignKey.REFERENCED_TABLE_NAME.toLowerCase();
               let cap = capitalizeEntity(low);
 

@@ -91,6 +91,7 @@ const _checkForCrud = (arg) => {
   return crudOptions;
 };
 
+
 if(!operations){
   Log.rainbow('Warning : ','No CRUD options, set every option to true by default');
   crudOptions.create = true;
@@ -98,8 +99,12 @@ if(!operations){
   crudOptions.read = true;
   crudOptions.delete = true;
 }else{
-  _checkForCrud(operations);
+  if(!_checkForCrud(operations)){
+    Log.error('Error : Wrong CRUD arguments');
+    process.exit(0);
+  }
 }
+
 
 /**
  * @description generate an array of fake data to be send for given entity
