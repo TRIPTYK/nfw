@@ -5,6 +5,8 @@ const Log = require('./log');
 const Util = require('util');
 const Exists = Util.promisify(FS.exists);
 const ReadFile = Util.promisify(FS.readFile);
+const Unlink = Util.promisify(FS.unlink);
+const WriteFile = Util.promisify(FS.writeFile);
 var colors = require('colors/safe');
 
 const action = process.argv[2];
@@ -37,10 +39,9 @@ const _unroute = async () => {
     .replace(toRoute,"")
     .replace(importStatement,"");
 
-  FS.writeFile(proxyPath, proxy, (err) => {
-    if(err) Log.error(`Failed to write to ${proxyPath}`);
-    Log.success(`Replaced ${proxyPath}`);
-  });
+  await WriteFile(proxyPath, proxy)
+    .then(() => Log.success(`Replaced ${proxyPath}`) )
+    .catch(e => Log.error(`Failed to write to ${proxyPath}`) );
 };
 
 /**
@@ -48,24 +49,23 @@ const _unroute = async () => {
  * @param {*} items
  */
 const _unlink = async (items) => {
-  items.forEach( async (item) => {
+  let promises = items.map( async (item) => {
     let relativeFilePath = `/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`;
     let filePath = processPath + relativeFilePath;
     let exists = await Exists(filePath);
 
     if (exists) {
-      FS.unlink(filePath, (err) => {
-        if(err)
-          Log.error(`Error while deleting ${item.template} \n`);
-        else
-          Log.success(`${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`)
-      });
+      await Unlink(filePath)
+      .then(() => Log.success(`${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
+      .catch(e => Log.error(`Error while deleting ${item.template} \n`) );
     }else{
       Log.warning(`Cannot delete ${relativeFilePath} : file does not exists`);
     }
   });
 
-  _unroute();
+  promises.push(_unroute());
+  await Promise.all(promises);
+  process.exit(0);
 };
 
 _unlink(items);
