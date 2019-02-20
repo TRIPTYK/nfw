@@ -19,6 +19,8 @@ const lengthQuestion= [{type:'input',name:'enum',message:'what\'s the data lengt
     }
 })}];
 
+const relation = [{type:'confirm',name:'addRelation',message:'do you want to add relation between table ? ',default:true}]
+
 
 /**
  * @author Verliefden romain
@@ -27,17 +29,16 @@ const lengthQuestion= [{type:'input',name:'enum',message:'what\'s the data lengt
  */
 
 exports.dbParams = async (entity) => {
-    var isDone = false;
+    var isDoneColumn = false;
     var paramsArray = [];
-    var column = []
+    paramsArray['columns'] = [];    
+    paramsArray['foreignKeys'] = [];    
+    var column = [];
     console.log(colors.green(`Let's create a table for ${entity}`));
     console.log(colors.green('/!\\ id is added by default .'));
-    while(!isDone){
+    while(!isDoneColumn){
         let value = await inquirer.prompt(res.questionsParams);
-        if(value.column.toLowerCase() === 'id'){
-            console.log(colors.red('/!\\ id is added by default ! you can\'t add a column for id '));
-
-        }else if(column.includes(value.column)){
+        if(column.includes(value.column)){
             console.log(colors.red('/!\\ You already added this column !'));
         }else{
             let length_enum = [];
@@ -86,9 +87,21 @@ exports.dbParams = async (entity) => {
             console.clear();
             console.log(paramsTemp);
             let lastConfirm = await inquirer.prompt(confirmQuestion);
+            if(value.constraintValue === 'foreign key'){
+                let {referencedTable, referencedColumn} = await inquirer.prompt(res.questionRelation);
+                let relationTemp = {
+                    TABLE_NAME : entity,
+                    COLUMN_NAME : value.column,
+                    REFERENCED_TABLE_NAME : referencedTable.trim(),
+                    REFERENCED_COLUMN_NAME : referencedColumn
+                };
+                console.log(relationTemp);
+                let {confirmation} = await inquirer.prompt(confirmQuestion);
+                if(confirmation) paramsArray['foreignKeys'].push(relationTemp);
+            }
             if(lastConfirm.confirmation){
                 column[column.length] = value.column;
-                paramsArray.push(paramsTemp);
+                paramsArray['columns'].push(paramsTemp);
             }
             let cont = await inquirer.prompt([{
                 type : 'confirm' ,
@@ -97,7 +110,7 @@ exports.dbParams = async (entity) => {
                 default: true
             }]);
             if(!cont.continueValue){
-                isDone = true;
+                isDoneColumn = true;
             }
         }
     }

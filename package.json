@@ -12,7 +12,7 @@
     "delete": "node ./cli/generate/delete",
     "todo": "leasot -x 'src/**/*.ts'",
     "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md",
-    "generateFromDB" : "node ./cli/generate/generateFromDB"
+    "generateFromDB": "node ./cli/generate/generateFromDB"
   },
   "repository": {
     "type": "git",
