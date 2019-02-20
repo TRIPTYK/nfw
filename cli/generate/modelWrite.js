@@ -159,10 +159,11 @@ exports.writeModel = async (table,dbType) =>{
         if(option.value === 'create an entity' )data = await dbWrite.dbParams(table);
         else if(option.value === 'create a basic model'){
             let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
+            console.log(modelTemp);
             let basicModel = (" "+modelTemp)
             .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
             .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
-            await FS.writeFile(path, basicModel, (err) => {
+            await WriteFile(path, basicModel, (err) => {
             console.log(colors.green("Model created in :"+path));
         });
         }else return;
