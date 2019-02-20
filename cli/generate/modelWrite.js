@@ -14,6 +14,7 @@ const Util = require('util');
 const Log = require('./log');
 const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
+const WriteFile = Util.promisify(FS.writeFile);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
 const { countLines , capitalizeEntity , removeEmptyLines } = require('./utils');
@@ -31,14 +32,11 @@ const _getTableInfo = async (dbType,tableName) => {
     if(dbType === "sql"){
         let p_columns = sqlAdaptator.getColumns(tableName);
         let p_foreignKeys = sqlAdaptator.getForeignKeys(tableName);
-        let res = await Promise.all([p_columns,p_foreignKeys]);
+        let [columns,foreignKeys] = await Promise.all([p_columns,p_foreignKeys]);
 
-        return {
-          columns : res[0],
-          foreignKeys : res[1]
-        };
+        return {columns,foreignKeys};
     }else{
-        console.log(colors.Rainbow(dbType+" is not supported by this method yet"));
+        Log.rainbow(dbType + " is not supported by this method yet");
         process.exit(0);
     }
     return {columns : [],foreignKeys : []};
@@ -202,9 +200,8 @@ exports.writeModel = async (table,dbType) =>{
         .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
         .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
         .replace(/{{ENTITIES}}/ig, entities);
-        console.log(output)
-        FS.writeFile(path, output, (err) => {
+
+        await WriteFile(path, output);
         console.log(colors.green("Model created in :"+path));
-        });
     }
 }
