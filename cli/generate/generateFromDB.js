@@ -4,13 +4,15 @@ const modelWrite = require ('./modelWrite')
 
 /**
  * @author Verliefden Romain
- * @description get all table from DB then call writeModel method for each table in the database 
- * 
+ * @description get all table from DB then call writeModel method for each table in the database
+ *
  */
-_generateFromDB = async () =>{
-    tables = await SqlAdaptator.getTables();
-    console.log(tables);
-    tablesIn = await SqlAdaptator.getTablesInName();
+const _generateFromDB = async () =>{
+    let p_tables = SqlAdaptator.getTables();
+    let p_tablesIn = SqlAdaptator.getTablesInName();
+
+    let [tables,tablesIn] = await Promise.all([p_tables,p_tablesIn]);
+
     tables.forEach(table => {
         modelWrite.writeModel(table[tablesIn],"sql");
     });
