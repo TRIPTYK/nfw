@@ -234,11 +234,6 @@ const _write = async items => {
  * @param {Array.<JSON>} items
  */
 const build = async (items) => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
   let entityExists = await Exists(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
 
   if(entityExists)
@@ -246,7 +241,7 @@ const build = async (items) => {
     let answer = await prompt('An entity with the same name already exists, will you overwrite it ? (y/n)')
       .catch(e => {
         Log.error("Failed to open stream , exiting ...");
-        process.exit(0);
+        process.exit(0); //no need to then() because process exit
       });
 
     if (!['y','yes'].includes(answer.toLowerCase().trim())) {
@@ -255,8 +250,6 @@ const build = async (items) => {
     }else{
       await _write(items);
     }
-
-    rl.close();
   }
   else {
     await _write(items);
