@@ -167,11 +167,9 @@ exports.writeModel = async (table,dbType) =>{
         });
         }else return;
     }
-
-    let { columns , foreignKeys } = data;
-    let imports = '';
-
     if( data != null){
+        let { columns , foreignKeys } = data;
+        let imports = '';
         var entities='';
         console.log(data);
         await Promise.all(columns.map(async col =>{
