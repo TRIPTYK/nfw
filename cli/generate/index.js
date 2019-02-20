@@ -21,7 +21,7 @@ const Log = require('./log');
 /**
  * Requirement of the functions "countLine" and "capitalizeEntity" from the local file utils
  */
-const { countLines , capitalizeEntity  } = require('./utils');
+const { countLines , capitalizeEntity , prompt } = require('./utils');
 /**
  * Transform a async method to a promise
  * @returns {Promise} returns FS.exists async function as a promise
@@ -91,6 +91,7 @@ const _checkForCrud = (arg) => {
   return crudOptions;
 };
 
+
 if(!operations){
   Log.rainbow('Warning : ','No CRUD options, set every option to true by default');
   crudOptions.create = true;
@@ -98,8 +99,12 @@ if(!operations){
   crudOptions.read = true;
   crudOptions.delete = true;
 }else{
-  _checkForCrud(operations);
+  if(!_checkForCrud(operations)){
+    Log.error('Error : Wrong CRUD arguments');
+    process.exit(0);
+  }
 }
+
 
 /**
  * @description generate an array of fake data to be send for given entity
@@ -141,17 +146,12 @@ const _getValidationFields = (columns) => {
  */
 const _write = async items => {
   let tableColumns;
-  /*
-  console.log(await modelWrite.getTableInfo("sql","refresh_token"));
-  process.exit(0);
-  */
+
   try {
     tableColumns = (await modelWrite.getTableInfo("sql",lowercase)).columns;
   }catch(err) {
     tableColumns = [];
   };
-
-
 
   // remove id key from array
   tableColumns.splice(tableColumns.findIndex(el => el.Field == 'id'),1);
@@ -160,9 +160,9 @@ const _write = async items => {
   const validation = _getValidationFields(tableColumns);
   const testColumns = _getTestFields(tableColumns);
 
-  items.forEach( async (item) => {
+  let promises = items.map( async (item) => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
-    console.log(item.template);
+
     // handle model template separately
     if (item.template == 'model') {
       await modelWrite.writeModel(lowercase,"sql");
@@ -217,16 +217,19 @@ const _write = async items => {
         .replace(/{{ENTITY_CRUD_DELETE_START}}[\s\S]*{{ENTITY_CRUD_DELETE_END}}/mg, "");
     }
 
-    FS.writeFile(`${processPath}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output , (err) => {
-      if(err) {
+    await WriteFile(`${processPath}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output)
+      .then(() => {
+        Log.success(`${capitalizeEntity(item.template)} generated.`)
+      })
+      .catch(e => {
         Log.error(`Error while ${item.template} file generating \n`);
         Log.warning(`Check the api/${item.dest}/${lowercase}.${item.template}.${item.ext} to update`);
-      }
-      else Log.success(`${capitalizeEntity(item.template)} generated.`);
+      });
     });
-  });
 
-  routerWrite();
+    promises.push(routerWrite()); // add the router write promise to the queue
+
+    await Promise.all(promises); // wait for all async to finish
 };
 
 /**
@@ -236,29 +239,29 @@ const _write = async items => {
  * @param {Array.<JSON>} items
  */
 const build = async (items) => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
   let entityExists = await Exists(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
 
   if(entityExists)
   {
-    rl.question('An entity with the same name already exists, will you overwrite it ? (y/n)', answer => {
-      if (!['y','yes'].includes(answer.toLowerCase().trim())) {
-        Log.error(`Process aborted.`);
-        process.exit(0);
-      }else{
-        _write(items);
-      }
+    let answer = await prompt('An entity with the same name already exists, will you overwrite it ? (y/n)')
+      .catch(e => {
+        Log.error("Failed to open stream , exiting ...");
+        process.exit(0); //no need to then() because process exit
+      });
 
-      rl.close();
-    });
+    if (!['y','yes'].includes(answer.toLowerCase().trim())) {
+      Log.error(`Process aborted.`);
+      process.exit(0);
+    }else{
+      await _write(items);
+    }
   }
   else {
-    _write(items);
+    await _write(items);
   }
+
+  Log.success('All done , exiting ...');
+  process.exit(0);
 };
 
 build(items);
