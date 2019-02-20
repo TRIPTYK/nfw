@@ -17,7 +17,7 @@ const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
-const { countLines , capitalizeEntity , removeEmptyLines } = require('./utils');
+const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent } = require('./utils');
 const options = [{type:'list',name:'value',message:'Entity doesn\'t exist. What must be done ',default:'create an entity',choices:['create an entity','create a basic model','nothing']}]
 
 
@@ -41,16 +41,6 @@ const _getTableInfo = async (dbType,tableName) => {
     }
     return {columns : [],foreignKeys : []};
 }
-
-const _dateDefaultIsNow = (data,def) =>{
-    type = data.split('(');
-    if(type[0] === "datetime" && def != null){
-        return "DateUtils.mixedDateToDateString( new Date() )";
-    }else {
-        return def;
-    }
-}
-
 
 /**
  *
@@ -109,6 +99,26 @@ const _getNull = (data,key) => {
 }
 
 /**
+*  @param {entity name to lowercase} lowercase
+*  @param {entity name with first letter to uppercase} capitalize
+ * @description
+ * @returns {null}
+ **/
+const _addToConfig = async (lowercase,capitalize) => {
+    let configFileName = `${process.cwd()}/src/config/typeorm.config.ts`;
+    let fileContent = await ReadFile(configFileName, 'utf-8');
+
+    if (!isImportPresent(fileContent,capitalize)) {
+      let imprt = writeToFirstEmptyLine(fileContent,`import { ${capitalize} } from "../api/models/${lowercase}.model";\n`)
+        .replace(/(.*entities.*)(?=])(.*)/,`$1,${capitalize}$2`);
+
+      await WriteFile(configFileName,imprt).catch(e => {
+        Log.error(`Failed to write to : ${configFileName}`);
+      });
+    }
+};
+
+/**
  *
  * @param {column key data} data
  * @description  mysql send key value as PRI , UNI. but a column written for a typeorm model primary or unique as parameter
@@ -136,7 +146,6 @@ exports.getTableInfo = _getTableInfo;
  *
  */
 exports.writeModel = async (table,dbType) =>{
-    console.log("banane");
     let capitalize  = table[0].toUpperCase() + table.substr(1);
     let lowercase   = table[0].toLowerCase() + table.substr(1);
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
@@ -155,9 +164,9 @@ exports.writeModel = async (table,dbType) =>{
             .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
             await FS.writeFile(path, basicModel, (err) => {
             console.log(colors.green("Model created in :"+path));
-            process.exit(0);
-        });
-        }else process.exit(0);
+              return;
+            });
+        }else return;
     }
 
     let { columns , foreignKeys } = data;
@@ -183,7 +192,7 @@ exports.writeModel = async (table,dbType) =>{
 
               if(response == 'OneToMany' || response == 'ManyToMany') relationType = `${cap}[]`;
 
-              let relationTemplate = `@${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n@JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n${col.Field} : ${relationType};`;
+              let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
 
               entities += relationTemplate;
               imports += `import {${cap}} from './${low}.model';\n`;
@@ -196,7 +205,7 @@ exports.writeModel = async (table,dbType) =>{
                 .replace(/{{ROW_NULL}}/ig, _getNull(col.Null))
                 .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
                 .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-              entities += ' '+entitiesTemp +"\n\n" ;
+              entities += ` ${removeEmptyLines(entitiesTemp)} \n\n`;
             }
         }));
 
@@ -206,7 +215,7 @@ exports.writeModel = async (table,dbType) =>{
         .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
         .replace(/{{ENTITIES}}/ig, entities);
 
-        await WriteFile(path, output);
+        await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
         console.log(colors.green("Model created in :"+path));
     }
 }
