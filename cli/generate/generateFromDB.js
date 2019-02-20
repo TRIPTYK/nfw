@@ -9,11 +9,10 @@ const modelWrite = require ('./modelWrite')
  */
 _generateFromDB = async () =>{
     tables = await SqlAdaptator.getTables();
-    console.log(tables);
     tablesIn = await SqlAdaptator.getTablesInName();
-    tables.forEach(table => {
-        modelWrite.writeModel(table[tablesIn],"sql");
-    });
+    for(let j = 0;j<tables.length;j++){
+        await modelWrite.writeModel(tables[j][tablesIn],"sql");
+    };
 }
 
 
