@@ -57,21 +57,20 @@ module.exports = async () => {
 
   if(!isAlreadyImported)
   {
-    FS.writeFile(proxyPath, output, (err) => {
-      if(err) {
-        console.log(err.message);
-        console.log('Original router file will be restored ...');
-        FS.writeFile(proxyPath, proxy, (err) => {
-          if(err) process.stdout.write(err.message);
-          Log.success(`Original router file restoring done.`);
-          Log.success(`Files generating done.`);
-          Log.warning(`Check the api/routes/v1/index.ts to update`);
+    await WriteFile(proxyPath,output)
+    .catch(async e => {
+      console.log(e.message);
+      console.log('Original router file will be restored ...');
+      await WriteFile(proxyPath, proxy)
+        .catch(e => {
+          process.stdout.write(e.message);
         });
-      }else{
-        Log.success(`Proxy router file updated.`);
-        Log.success(`Files generating done.`);
-      }
+      Log.success(`Original router file restoring done.`);
+      Log.success(`Files generating done.`);
+      Log.warning(`Check the api/routes/v1/index.ts to update`);
     });
+    Log.success(`Proxy router file updated.`);
+    Log.success(`Files generating done.`);
   }else{
     Log.info(`Proxy router already contains routes for this entity : routes/v1/index.ts generating ignored.`);
     Log.success(`Files generating done.`);
