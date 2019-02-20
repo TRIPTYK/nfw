@@ -44,14 +44,7 @@ const _getTableInfo = async (dbType,tableName) => {
     return {columns : [],foreignKeys : []};
 }
 
-const _dateDefaultIsNow = (data,def) =>{
-    type = data.split('(');
-    if(type[0] === "datetime" && def != null){
-        return "DateUtils.mixedDateToDateString( new Date() )";
-    }else {
-        return def;
-    }
-}
+
 
 
 /**
@@ -157,9 +150,8 @@ exports.writeModel = async (table,dbType) =>{
             .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
             await FS.writeFile(path, basicModel, (err) => {
             console.log(colors.green("Model created in :"+path));
-            process.exit(0);
         });
-        }else process.exit(0);
+        }else return;
     }
 
     let { columns , foreignKeys } = data;
@@ -167,13 +159,16 @@ exports.writeModel = async (table,dbType) =>{
 
     if( data != null){
         var entities='';
+        console.log(data);
         await Promise.all(columns.map(async col =>{
             if(col.Field === "id"){
                 return;
             }
             let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
+            console.log(foreignKey);
             if (foreignKey !== undefined)
             {
+              
               let low = foreignKey.REFERENCED_TABLE_NAME.toLowerCase();
               let cap = capitalizeEntity(low);
 
@@ -207,8 +202,11 @@ exports.writeModel = async (table,dbType) =>{
         .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
         .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
         .replace(/{{ENTITIES}}/ig, entities);
+        console.log(output)
+        /*
         FS.writeFile(path, output, (err) => {
         console.log(colors.green("Model created in :"+path));
         });
+        */
     }
 }
