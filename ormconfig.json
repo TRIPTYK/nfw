@@ -15,6 +15,6 @@
   ],
   "migrationsTableName" : "migration_table",
   "cli":{
-    "migrationsDir": "migration"
+    "migrationsDir": "src/migration"
   }
 }
