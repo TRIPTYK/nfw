@@ -1,5 +1,5 @@
 const { items } = require('./resources');
-const { countLines , capitalizeEntity } = require('./utils');
+const { countLines , capitalizeEntity , removeImport} = require('./utils');
 const FS = require('fs');
 const Log = require('./log');
 const Util = require('util');
@@ -31,13 +31,10 @@ const _unroute = async () => {
 
   // this regex will match a use statement and the associated JSDoc comment
   let toRoute = new RegExp(`\n?((\\\/\\*[\\w\\\'\\s\\r\\n\\*]*\\*\\\/)|(\\\/\\\/[\\w\\s\\\']*))\\s*(\\w*.use.*${capitalize}Router(.|\\s){1};)\n?`,"gm");
-  // match import statement of current entity
-  let importStatement = new RegExp(`\n{0,2}import.*${capitalize}Router.*;`,"g");
-
+  
   // replace match by nothing
-  proxy = proxy
-    .replace(toRoute,"")
-    .replace(importStatement,"");
+  proxy = removeImport(proxy,capitalize)
+    .replace(toRoute,"");
 
   await WriteFile(proxyPath, proxy)
     .then(() => Log.success(`Replaced ${proxyPath}`) )

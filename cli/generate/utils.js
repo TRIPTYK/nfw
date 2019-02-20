@@ -35,7 +35,7 @@ exports.prompt = (question) => {
       input: process.stdin,
       output: process.stdout
   });
-  
+
   return new Promise((res, rej) => {
       rl.question(question, (answer) => {
           res(answer);
@@ -43,5 +43,13 @@ exports.prompt = (question) => {
       });
   });
 }
-exports.removeEmptyLines = (string) => string.replace(/\\n?\^$/gm,"");
+
+exports.isImportPresent = (string,imprt) => {
+  let doesMatch = string.match(new RegExp(`import.*${imprt}.*;`,'')) !== null;
+  return doesMatch;
+};
+
+exports.removeImport = (string,imprt) => string.replace(new RegExp(`\n?import.*${imprt}.*;`,"g"),"");
+exports.writeToFirstEmptyLine = (string,by = "") => string.replace(/^\s*$/m,by);
+exports.removeEmptyLines = (string) => string.replace(/\n?^\s*$/gm,"");
 exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);
