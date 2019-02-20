@@ -203,10 +203,8 @@ exports.writeModel = async (table,dbType) =>{
         .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
         .replace(/{{ENTITIES}}/ig, entities);
         console.log(output)
-        /*
         FS.writeFile(path, output, (err) => {
         console.log(colors.green("Model created in :"+path));
         });
-        */
     }
 }
