@@ -5,7 +5,6 @@
  * @ ext : file extension
  */
 const items = [
-  /*
   { template : 'controller', dest: 'controllers', ext: 'ts' },
   { template : 'repository', dest: 'repositories', ext: 'ts' },
   { template : 'validation', dest: 'validations', ext: 'ts' },
@@ -13,7 +12,6 @@ const items = [
   { template : 'test', dest: '../../test', ext: 'js' },
   { template : 'serializer', dest: 'serializers', ext: 'ts' },
   { template : 'middleware', dest: 'middlewares', ext: 'ts' },
-  */
   { template : 'model', dest: 'models', ext: 'ts' },
 ];
 
@@ -59,7 +57,7 @@ const questionRelation = [
       return true;
     }
   }}
-] 
+]
 
 
 const questionsColumnrelation = [
