@@ -62,7 +62,6 @@ const _unroute = async () => {
     .replace(toRoute,"");
 
   await WriteFile(proxyPath, proxy)
-    .then(() => Log.success(`Replaced ${proxyPath}`) )
     .catch(e => Log.error(`Failed to write to ${proxyPath}`) );
 };
 

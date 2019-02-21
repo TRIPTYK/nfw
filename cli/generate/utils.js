@@ -83,4 +83,4 @@ exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1
  * @description lowercase first letter of string
  * @param {string} entity
  */
-exports.lowercaseEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);
+exports.lowercaseEntity = (entity) => entity[0].toLowerCase() + entity.substr(1);
