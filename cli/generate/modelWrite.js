@@ -18,7 +18,16 @@ const WriteFile = Util.promisify(FS.writeFile);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
 const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
-const options = [{type:'list',name:'value',message:'Entity doesn\'t exist. What must be done ',default:'create an entity',choices:['create an entity','create a basic model','nothing']}]
+
+const options = [
+  {
+    type:'list',
+    name:'value',
+    message:'Entity doesn\'t exist. What must be done ',
+    default:'create an entity',
+    choices:['create an entity','create a basic model','nothing']
+  }
+];
 
 
 /**
