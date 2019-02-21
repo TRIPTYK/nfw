@@ -91,7 +91,7 @@ const _unconfig = async () => {
  * @description Delete generated files
  * @param {*} items
  */
-const _unlink = async (items) => {
+module.exports = async () => {
   let promises = [
     _deleteTypescriptFiles(),
     _deleteCompiledJS(),
@@ -102,5 +102,3 @@ const _unlink = async (items) => {
   await Promise.all(promises);
   process.exit(0);
 };
-
-_unlink(items);
