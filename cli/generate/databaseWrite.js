@@ -40,7 +40,7 @@ const relation = [
     message:'do you want to add relation between table ? ',
     default:true
   }
-]
+];
 
 
 /**
