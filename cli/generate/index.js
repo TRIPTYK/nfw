@@ -61,11 +61,6 @@ const operations = process.argv[3];
 /**
  *  @description : Checks if the second parameter is present , otherwise exit
  */
-if(!action)
-{
-  Log.error('Nothing to generate. Please, get entity name parameter.');
-  process.exit(0);
-}
 
 // first letter of the entity to Uppercase
 let capitalize  = capitalizeEntity(action);
@@ -92,18 +87,7 @@ const _checkForCrud = (arg) => {
 };
 
 
-if(!operations){
-  Log.rainbow('Warning : ','No CRUD options, set every option to true by default');
-  crudOptions.create = true;
-  crudOptions.update = true;
-  crudOptions.read = true;
-  crudOptions.delete = true;
-}else{
-  if(!_checkForCrud(operations)){
-    Log.error('Error : Wrong CRUD arguments');
-    process.exit(0);
-  }
-}
+
 
 
 /**
@@ -238,7 +222,26 @@ const _write = async items => {
  *
  * @param {Array.<JSON>} items
  */
-const build = async (items) => {
+const build = async (modelName, crudArgs) => {
+
+  if(!modelName.length)
+  {
+    Log.error('Nothing to generate. Please, get entity name parameter.');
+    return;
+  }
+
+  if(!crudArgs.length){
+    Log.rainbow('Warning : ','No CRUD options, set every option to true by default');
+    crudOptions.create = true;
+    crudOptions.update = true;
+    crudOptions.read = true;
+    crudOptions.delete = true;
+  }else{
+    if(!_checkForCrud(crudArgs)){
+      Log.error('Error : Wrong CRUD arguments');
+      return;
+    }
+  }
   let entityExists = await Exists(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
 
   if(entityExists)
@@ -264,4 +267,5 @@ const build = async (items) => {
   process.exit(0);
 };
 
-build(items);
+
+module.exports = build;

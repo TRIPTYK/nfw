@@ -60,11 +60,6 @@ const questionRelation = [
 ]
 
 
-const questionsColumnrelation = [
-  {type : 'list' ,name: 'type', message : "What's the column type ?", choices : ['char','varchar','datetime','date','time','timestamp','year','tinyint','smallint','mediumint','binary','varbinary','int','bigint','float','double','decimal','tinytext','mediumtext','text','enum','json','tinyblob','smallblob','mediumblob','blob','bigblob','binary']},
-  {type : 'input' ,name : 'defaultValue', message : "What's the column default value ?", default: "null"},
-  {type:'confirm', name:'uniqueValue', message:'can be null ?', default : true}
-]
 exports.questionsParams = questionsParams;
 exports.questionRelation = questionRelation;
 exports.items = items;
