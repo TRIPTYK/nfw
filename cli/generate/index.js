@@ -258,7 +258,6 @@ const build = async (modelName, crudArgs) => {
   }
 
   Log.success('All done , exiting ...');
-  process.exit(0);
 };
 
 
