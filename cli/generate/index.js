@@ -86,10 +86,6 @@ const _checkForCrud = (arg) => {
   return crudOptions;
 };
 
-
-
-
-
 /**
  * @description generate an array of fake data to be send for given entity
  * @param {*} items
@@ -148,10 +144,7 @@ const _write = async items => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
 
     // handle model template separately
-    if (item.template == 'model') {
-      await modelWrite.writeModel(lowercase,"sql");
-      return;
-    }
+    if (item.template == 'model') return;
 
     // replacing entity names
     let output = file
@@ -212,8 +205,8 @@ const _write = async items => {
     });
 
     promises.push(routerWrite()); // add the router write promise to the queue
-
     await Promise.all(promises); // wait for all async to finish
+    await modelWrite.writeModel(lowercase,"sql");
 };
 
 /**
