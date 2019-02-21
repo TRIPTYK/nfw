@@ -1,5 +1,5 @@
 const { items } = require('./resources');
-const { countLines , capitalizeEntity , removeImport} = require('./utils');
+const { countLines , capitalizeEntity , removeImport , isImportPresent} = require('./utils');
 const FS = require('fs');
 const Log = require('./log');
 const Util = require('util');
@@ -31,7 +31,7 @@ const _unroute = async () => {
 
   // this regex will match a use statement and the associated JSDoc comment
   let toRoute = new RegExp(`\n?((\\\/\\*[\\w\\\'\\s\\r\\n\\*]*\\*\\\/)|(\\\/\\\/[\\w\\s\\\']*))\\s*(\\w*.use.*${capitalize}Router(.|\\s){1};)\n?`,"gm");
-  
+
   // replace match by nothing
   proxy = removeImport(proxy,capitalize)
     .replace(toRoute,"");
@@ -39,6 +39,20 @@ const _unroute = async () => {
   await WriteFile(proxyPath, proxy)
     .then(() => Log.success(`Replaced ${proxyPath}`) )
     .catch(e => Log.error(`Failed to write to ${proxyPath}`) );
+};
+
+const _unconfig = async () => {
+  let configFileName = `${process.cwd()}/src/config/typeorm.config.ts`;
+  let fileContent = await ReadFile(configFileName, 'utf-8');
+
+  if (isImportPresent(fileContent,capitalize)) {
+    let imprt = removeImport(fileContent,capitalize)
+      .replace(new RegExp(`(?=,?${capitalize}),${capitalize}|${capitalize},?`,"gm"),"");
+
+    await WriteFile(configFileName,imprt).catch(e => {
+      Log.error(`Failed to write to : ${configFileName}`);
+    });
+  }
 };
 
 /**
@@ -61,6 +75,7 @@ const _unlink = async (items) => {
   });
 
   promises.push(_unroute());
+  promises.push(_unconfig());
   await Promise.all(promises);
   process.exit(0);
 };
