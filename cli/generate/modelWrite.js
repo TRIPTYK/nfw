@@ -17,7 +17,7 @@ const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
-const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent } = require('./utils');
+const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
 const options = [{type:'list',name:'value',message:'Entity doesn\'t exist. What must be done ',default:'create an entity',choices:['create an entity','create a basic model','nothing']}]
 
 
@@ -141,7 +141,8 @@ exports.getTableInfo = _getTableInfo;
  *
  *
  */
-exports.writeModel = async (lowercase,dbType) =>{
+exports.writeModel = async (action,dbType) =>{
+    let lowercase = lowercaseEntity(action);
     let capitalize  = capitalizeEntity(lowercase);
 
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
@@ -153,12 +154,12 @@ exports.writeModel = async (lowercase,dbType) =>{
     let data;
 
     try{
-        data = await _getTableInfo(dbType,table);
+        data = await _getTableInfo(dbType,lowercase);
     }catch(err){
         let option = await inquirer.prompt(options);
 
         if(option.value === 'create an entity' )  {
-          data = await dbWrite.dbParams(table);
+          data = await dbWrite.dbParams(lowercase);
         }else if(option.value === 'create a basic model'){
             let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
             let basicModel = (" " + modelTemp)
@@ -172,7 +173,7 @@ exports.writeModel = async (lowercase,dbType) =>{
             });
 
             await Promise.all([_addToConfig(lowercase,capitalize),p_write]);
-        }else return;
+        }else process.exit(0);
     }
 
     if( data != null){
@@ -195,7 +196,7 @@ exports.writeModel = async (lowercase,dbType) =>{
                 {
                   type : 'list',
                   name: 'response',
-                  message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${table}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of relationship is this ?`,
+                  message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${lowercase}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of relationship is this ?`,
                   choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']
                 },
               ]);

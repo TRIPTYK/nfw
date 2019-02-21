@@ -58,6 +58,8 @@ const crudOptions = {
  *  @description : Checks if the second parameter is present , otherwise exit
  */
 
+const processPath = process.cwd();
+
 // false class properties
 var capitalize;
 var lowercase;
@@ -202,7 +204,7 @@ const _write = async items => {
       });
     });
 
-    promises.push(routerWrite(action)); // add the router write promise to the queue
+    promises.push(routerWrite(lowercase)); // add the router write promise to the queue
     await Promise.all(promises); // wait for all async to finish
 };
 

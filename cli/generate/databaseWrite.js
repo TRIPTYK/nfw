@@ -9,7 +9,7 @@ const enumQuestion = [
     type:'input',
     name:'enum',
     message:'add a value to enum array : ',
-    filter : data => return `'${data}',`;
+    filter : data => `'${data}',`
   }
 ];
 
