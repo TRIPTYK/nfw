@@ -97,4 +97,5 @@ module.exports = async (action) => {
     _unconfig()
   ];
   await Promise.all(promises);
+  Log.success('Delete task done');
 };
