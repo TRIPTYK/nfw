@@ -4,22 +4,43 @@ const colors = require('colors/safe');
 
 const needLength =  ['int','varchar','tinyint','smallint','mediumint','bigint','float','double','decimal','char','binary','varbinary'];
 
-const enumQuestion = [{type:'input',name:'enum', message:'add a value to enum array : ', filter : (data =>{
-    return "'"+data+"',";
-})}];
+const enumQuestion = [
+  {
+    type:'input',
+    name:'enum',
+    message:'add a value to enum array : ',
+    filter : data => return `'${data}',`;
+  }
+];
 
-const confirmQuestion = [{type:'confirm', name:'confirmation', message:'Add this data ?'}];
+const confirmQuestion = [
+  {
+    type:'confirm',
+    name:'confirmation',
+    message:'Add this data ?'
+  }
+];
 
-const lengthQuestion= [{type:'input',name:'enum',message:'what\'s the data length ? ', validate : (value =>{
-    let pass = value.match(/[0-9]+$/)
-    if(pass){
-        return true;
-    }else{
-        return "You must provide a number !";
+const lengthQuestion= [
+  {
+    type:'input',
+    name:'enum',
+    message:'what\'s the data length ? ',
+    validate : value =>{
+      let pass = value.match(/[0-9]+$/);
+      return pass ? true : "You must provide a number !";
     }
-})}];
+  }
+];
 
-const relation = [{type:'confirm',name:'addRelation',message:'do you want to add relation between table ? ',default:true}]
+const relation = [
+  {
+    type:'confirm',
+    name:'addRelation',
+    message:'do you want to add relation between table ? ',
+    default:true
+  }
+]
 
 
 /**
@@ -27,12 +48,11 @@ const relation = [{type:'confirm',name:'addRelation',message:'do you want to add
  * @description ask the user to configure future column of his table
  * @return an array with the information
  */
-
 exports.dbParams = async (entity) => {
     var isDoneColumn = false;
     var paramsArray = [];
-    paramsArray['columns'] = [];    
-    paramsArray['foreignKeys'] = [];    
+    paramsArray['columns'] = [];
+    paramsArray['foreignKeys'] = [];
     var column = [];
     console.log(colors.green(`Let's create a table for ${entity}`));
     console.log(colors.green('/!\\ id is added by default .'));
