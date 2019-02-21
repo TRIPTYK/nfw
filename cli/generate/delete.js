@@ -1,5 +1,5 @@
 const { items } = require('./resources');
-const { countLines , capitalizeEntity , removeImport , isImportPresent} = require('./utils');
+const { countLines , capitalizeEntity , removeImport , isImportPresent , lowercaseEntity} = require('./utils');
 const FS = require('fs');
 const Log = require('./log');
 const Util = require('util');
@@ -20,7 +20,7 @@ if(!action)
 
 // first letter of the entity to Uppercase
 let capitalize  = capitalizeEntity(action);
-let lowercase   = action;
+let lowercase   = lowercaseEntity(action);
 
 const _deleteCompiledJS = async() => {
   await Promise.all(items.map( async (item) => {
