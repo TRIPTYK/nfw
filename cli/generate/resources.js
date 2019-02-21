@@ -60,20 +60,26 @@ const questionsParams = [
 ];
 
 const questionRelation = [
-  {type:'input',name:'referencedTable',message:'Which table is related to this table ?', validate: (data) =>{
-    data = data.trim();
-    if(data ==null || data ==='' || data == undefined){
-      return "you must enter a value";
-    }else{
-      return true;
+  {
+    type:'input',
+    name:'referencedTable',
+    message:'Which table is related to this table ?',
+    validate: (data) =>{
+      data = data.trim();
+      if(data ==null || data ==='' || data == undefined){
+        return "you must enter a value";
+      }else{
+        return true;
+      }
     }
-  }},
-  {type:'input',name:'referencedColumn',message:'Which column is the referenced column ?',validate : data =>{
-     if(data ==null || data ==='' || data == undefined){
-      return "you must enter a value";
-    }else{
-      return true;
-    }
+  },
+  {
+    type:'input',
+    name:'referencedColumn',
+    message:'Which column is the referenced column ?',
+    validate : data =>{
+     if(data ==null || data === '' || data == undefined) return "you must enter a value";
+     else return true;
   }}
 ]
 
