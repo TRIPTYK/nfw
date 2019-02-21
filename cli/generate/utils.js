@@ -19,7 +19,7 @@ exports.countLines = (path) => {
             if (chunk[i] == 10) count++; // 10 -> line ending in ASCII table
         })
         .on('end', function(data) {
-          resolve(count); // return promise (https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Promise/resolve)
+          resolve(count); // return promise
         });
     }
     catch(e) {
@@ -78,3 +78,9 @@ exports.removeEmptyLines = (string) => string.replace(/\n?^\s*$/gm,"");
  * @param {string} entity
  */
 exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);
+
+/**
+ * @description lowercase first letter of string
+ * @param {string} entity
+ */
+exports.lowercaseEntity = (entity) => entity[0].toUpperCase() + entity.substr(1);
