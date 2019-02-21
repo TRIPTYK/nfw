@@ -259,7 +259,7 @@ const build = async (modelName, crudArgs) => {
     await _write(items);
   }
 
-  Log.success('All done , exiting ...');
+  Log.success('Generating task done');
 };
 
 
