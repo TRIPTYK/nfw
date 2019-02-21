@@ -17,6 +17,8 @@ const processPath = process.cwd();
 
 const _deleteCompiledJS = async() => {
   await Promise.all(items.map( async (item) => {
+    if (item.template == 'test') return; // no compiled tests
+
     let relativeFilePath = `/dist/api/${item.dest}/${lowercase}.${item.template}.js`;
     let filePath = processPath + relativeFilePath;
     let exists = await Exists(filePath);
@@ -24,7 +26,7 @@ const _deleteCompiledJS = async() => {
     if (exists) {
       await Unlink(filePath)
       .then(() => Log.success(`Compiled ${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
-      .catch(e => Log.error(`Error while deleting compiled ${item.template} \n`) );
+      .catch(e => Log.error(`Error while deleting compiled ${item.template}`) );
     }else{
       Log.warning(`Cannot delete compiled ${relativeFilePath} : file does not exists`);
     }
