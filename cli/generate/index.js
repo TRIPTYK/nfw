@@ -238,7 +238,7 @@ const build = async (modelName, crudArgs) => {
   lowercase = lowercaseEntity(modelName);
   capitalize = capitalizeEntity(modelName);
 
-  let entityExists = await Exists(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
+  let entityExists = await Exists(`${processPath}/src/api/models/${lowercase}.model.ts`);
 
   if(entityExists)
   {

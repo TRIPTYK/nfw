@@ -9,16 +9,22 @@ const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
 const Exists = Util.promisify(FS.exists);
 
+const processPath = process.cwd();
+
+// global properties
+var lowercase;
+var capitalize;
+
 /**
  * @access private
  * @async
  * @description Read all template and replace {{****}} with variables then write them in their specified path
  */
 module.exports = async (action) => {
-  // Write in proxy router
-  let capitalize  = capitalizeEntity(action);
-  let lowercase   = lowercaseEntity(action);
-  let proxyPath = `${process.cwd()}/src/api/routes/v1/index.ts`;
+  capitalize  = capitalizeEntity(action);
+  lowercase   = lowercaseEntity(action);
+
+  let proxyPath = `${processPath}/src/api/routes/v1/index.ts`;
 
   let p_lines = countLines(proxyPath);
   let p_proxy = ReadFile(proxyPath, 'utf-8');
