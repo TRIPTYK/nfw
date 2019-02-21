@@ -162,9 +162,14 @@ exports.writeModel = async (table,dbType) =>{
             let basicModel = (" "+modelTemp)
             .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
             .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
-            await FS.writeFile(path, basicModel, (err) => {
-            console.log(colors.green("Model created in :"+path));
-        });
+
+            let p_write = WriteFile(path, basicModel).catch(e => {
+                Log.error("Failed generating model");
+            }).then(() => {
+                Log.success("Model created in :" + path);
+            });
+
+            await Promise.all([_addToConfig(lowercase,capitalize),p_write]);
         }else return;
     }
     if( data != null){
