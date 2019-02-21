@@ -124,14 +124,10 @@ const _addToConfig = async (lowercase,capitalize) => {
  * @description  mysql send key value as PRI , UNI. but a column written for a typeorm model primary or unique as parameter
  * @returns primary or unique
  */
-const _getKey = data =>{
-    if (data === 'PRI'){
-        return ' primary : true,'
-    }else if ( data === 'UNI'){
-        return ' unique : true,'
-    }else{
-        return '';
-    }
+const _getKey = data => {
+    if (data === 'PRI') return ' primary : true,';
+    else if ( data === 'UNI') return ' unique : true,';
+    else return '';
 }
 
 exports.getTableInfo = _getTableInfo;
@@ -145,24 +141,29 @@ exports.getTableInfo = _getTableInfo;
  *
  *
  */
-exports.writeModel = async (table,dbType) =>{
-    let capitalize  = table[0].toUpperCase() + table.substr(1);
-    let lowercase   = table[0].toLowerCase() + table.substr(1);
+exports.writeModel = async (lowercase,dbType) =>{
+    let capitalize  = capitalizeEntity(lowercase);
+
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
-    let file = await ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
-    let colTemp = await ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
+    let p_file = ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
+    let p_colTemp = ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
+
+    let [file,colTemp] = await Promise.all([p_file,p_colTemp]);
+
     let data;
+
     try{
         data = await _getTableInfo(dbType,table);
     }catch(err){
         let option = await inquirer.prompt(options);
-        if(option.value === 'create an entity' )data = await dbWrite.dbParams(table);
-        else if(option.value === 'create a basic model'){
+
+        if(option.value === 'create an entity' )  {
+          data = await dbWrite.dbParams(table);
+        }else if(option.value === 'create a basic model'){
             let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
-            console.log(modelTemp);
-            let basicModel = (" "+modelTemp)
-            .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-            .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
+            let basicModel = (" " + modelTemp)
+              .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+              .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
 
             let p_write = WriteFile(path, basicModel).catch(e => {
                 Log.error("Failed generating model");
@@ -173,25 +174,30 @@ exports.writeModel = async (table,dbType) =>{
             await Promise.all([_addToConfig(lowercase,capitalize),p_write]);
         }else return;
     }
+
     if( data != null){
         let { columns , foreignKeys } = data;
         let imports = '';
         var entities='';
-        console.log(data);
+
         await Promise.all(columns.map(async col =>{
-            if(col.Field === "id"){
-                return;
-            }
+            if(col.Field === "id") return;
+
             let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
-            console.log(foreignKey);
+
             if (foreignKey !== undefined)
             {
 
-              let low = foreignKey.REFERENCED_TABLE_NAME.toLowerCase();
+              let low = foreignKey.REFERENCED_TABLE_NAME;
               let cap = capitalizeEntity(low);
 
               let {response} = await inquirer.prompt([
-                {type : 'list' ,name: 'response', message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${table}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of relationship is this ?`, choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']},
+                {
+                  type : 'list',
+                  name: 'response',
+                  message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${table}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of relationship is this ?`,
+                  choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']
+                },
               ]);
 
               let relationType = cap;
@@ -216,12 +222,12 @@ exports.writeModel = async (table,dbType) =>{
         }));
 
         let output = file
-        .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-        .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
-        .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
-        .replace(/{{ENTITIES}}/ig, entities);
+          .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+          .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
+          .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
+          .replace(/{{ENTITIES}}/ig, entities);
 
         await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
-        console.log(colors.green("Model created in :"+path));
+        Log.success("Model created in :" + path);
     }
 }

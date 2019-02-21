@@ -16,30 +16,48 @@ const items = [
 ];
 
 const questionsParams = [
-    {type : 'input' ,name : 'column', message : "What's the new column name ?", validate : ( data) =>{
-      if(data === ""){
-        return "Name must contains at least one letter";
-      }else if(data.toLowerCase() === 'id'){
-        return 'id is added by default';
-      }else{
-        return true;
+    {
+      type : 'input' ,
+      name : 'column',
+      message : "What's the new column name ?",
+      validate : data => {
+        if(data === "")                       return "Name must contains at least one letter";
+        else if(data.toLowerCase() === 'id')  return 'id is added by default';
+        else                                  return true;
+      },
+      filter: data => data.replace(" ","_")
+    },
+    {
+      type : 'list',
+      name: 'type',
+      message : "What's the column type ?",
+      choices : ['char','varchar','datetime','date','time','timestamp','year','tinyint','smallint','mediumint','binary','varbinary','int','bigint','float','double','decimal','tinytext','mediumtext','text','enum','json','tinyblob','smallblob','mediumblob','blob','bigblob','binary']
+    },
+    {
+      type : 'input',
+      name : 'defaultValue',
+      message : "What's the column default value ?",
+      default: "null"
+    },
+    {
+      type:'list',
+      name:'constraintValue',
+      message:'CONSTRAINT',
+      default : ' ',
+      choices: ['primary','unique','foreign key','no constraint'],
+      filter : data => {
+        if(data === 'primary') return 'PRI';
+        else if ( data === 'unique') return 'UNI';
+        else return data;
       }
-    }, filter: (data) =>{
-      return data.replace(" ","_");
-    }},
-    {type : 'list' ,name: 'type', message : "What's the column type ?", choices : ['char','varchar','datetime','date','time','timestamp','year','tinyint','smallint','mediumint','binary','varbinary','int','bigint','float','double','decimal','tinytext','mediumtext','text','enum','json','tinyblob','smallblob','mediumblob','blob','bigblob','binary']},
-    {type : 'input' ,name : 'defaultValue', message : "What's the column default value ?", default: "null"},
-    {type:'list', name:'constraintValue', message:'CONSTRAINT', default : ' ', choices:['primary','unique','foreign key','no constraint'], filter : (data) =>{
-      if(data === 'primary'){
-        return 'PRI'
-      }else if ( data === 'unique'){
-        return 'UNI'
-      }else{
-        return data;
-      }
-    }},
-    {type:'confirm', name:'uniqueValue', message:'can be null ?', default : true}
-  ]
+    },
+    {
+      type:'confirm',
+      name:'uniqueValue',
+      message:'can be null ?',
+      default : true
+    }
+];
 
 const questionRelation = [
   {type:'input',name:'referencedTable',message:'Which table is related to this table ?', validate: (data) =>{
