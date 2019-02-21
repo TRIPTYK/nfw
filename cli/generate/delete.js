@@ -24,9 +24,9 @@ const _deleteCompiledJS = async() => {
     if (exists) {
       await Unlink(filePath)
       .then(() => Log.success(`Compiled ${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
-      .catch(e => Log.error(`Error while deleting ${item.template} \n`) );
+      .catch(e => Log.error(`Error while deleting compiled ${item.template} \n`) );
     }else{
-      Log.warning(`Cannot delete ${relativeFilePath} : file does not exists`);
+      Log.warning(`Cannot delete compiled ${relativeFilePath} : file does not exists`);
     }
   }));
 };
