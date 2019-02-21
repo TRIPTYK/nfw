@@ -9,18 +9,11 @@ const Unlink = Util.promisify(FS.unlink);
 const WriteFile = Util.promisify(FS.writeFile);
 var colors = require('colors/safe');
 
-const action = process.argv[2];
+// simulate class properties
+var capitalize;
+var lowercase;
+
 const processPath = process.cwd();
-
-if(!action)
-{
-  Log.error('Nothing to delete. Please, get entity name parameter.');
-  process.exit(0);
-}
-
-// first letter of the entity to Uppercase
-let capitalize  = capitalizeEntity(action);
-let lowercase   = lowercaseEntity(action);
 
 const _deleteCompiledJS = async() => {
   await Promise.all(items.map( async (item) => {
@@ -91,14 +84,16 @@ const _unconfig = async () => {
  * @description Delete generated files
  * @param {*} items
  */
-module.exports = async () => {
+module.exports = async (action) => {
+  //constructor behavior
+  capitalize = capitalizeEntity(action);
+  lowercase = lowercaseEntity(action);
+
   let promises = [
     _deleteTypescriptFiles(),
     _deleteCompiledJS(),
     _unroute(),
     _unconfig()
   ];
-
   await Promise.all(promises);
-  process.exit(0);
 };

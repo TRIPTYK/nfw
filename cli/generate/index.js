@@ -21,7 +21,7 @@ const Log = require('./log');
 /**
  * Requirement of the functions "countLine" and "capitalizeEntity" from the local file utils
  */
-const { countLines , capitalizeEntity , prompt } = require('./utils');
+const { countLines , capitalizeEntity , prompt , lowercaseEntity } = require('./utils');
 /**
  * Transform a async method to a promise
  * @returns {Promise} returns FS.exists async function as a promise
@@ -54,17 +54,13 @@ const crudOptions = {
   delete: false
 };
 
-const action = process.argv[3];
-const processPath = process.cwd();
-const operations = process.argv[3];
-
 /**
  *  @description : Checks if the second parameter is present , otherwise exit
  */
 
-// first letter of the entity to Uppercase
-let capitalize  = capitalizeEntity(action);
-let lowercase   = action;
+// false class properties
+var capitalize;
+var lowercase;
 
 /**
  * @description : Check in a string if the letter C R U D are present and set the boolean of each Crud varable present in crudOption
@@ -140,6 +136,8 @@ const _write = async items => {
   const validation = _getValidationFields(tableColumns);
   const testColumns = _getTestFields(tableColumns);
 
+  await modelWrite.writeModel(lowercase,"sql"); //write model first
+
   let promises = items.map( async (item) => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
 
@@ -204,9 +202,8 @@ const _write = async items => {
       });
     });
 
-    promises.push(routerWrite()); // add the router write promise to the queue
+    promises.push(routerWrite(action)); // add the router write promise to the queue
     await Promise.all(promises); // wait for all async to finish
-    await modelWrite.writeModel(lowercase,"sql");
 };
 
 /**
@@ -216,7 +213,6 @@ const _write = async items => {
  * @param {Array.<JSON>} items
  */
 const build = async (modelName, crudArgs) => {
-
   if(!modelName.length)
   {
     Log.error('Nothing to generate. Please, get entity name parameter.');
@@ -235,6 +231,11 @@ const build = async (modelName, crudArgs) => {
       return;
     }
   }
+
+  // assign false class properties
+  lowercase = lowercaseEntity(modelName);
+  capitalize = capitalizeEntity(modelName);
+
   let entityExists = await Exists(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
 
   if(entityExists)
