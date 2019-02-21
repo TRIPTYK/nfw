@@ -222,22 +222,22 @@ const _write = async items => {
  *
  * @param {Array.<JSON>} items
  */
-const build = async (items) => {
+const build = async (modelName, crudArgs) => {
 
-  if(!action)
+  if(!modelName.length)
   {
     Log.error('Nothing to generate. Please, get entity name parameter.');
     return;
   }
 
-  if(!operations){
+  if(!crudArgs.length){
     Log.rainbow('Warning : ','No CRUD options, set every option to true by default');
     crudOptions.create = true;
     crudOptions.update = true;
     crudOptions.read = true;
     crudOptions.delete = true;
   }else{
-    if(!_checkForCrud(operations)){
+    if(!_checkForCrud(crudArgs)){
       Log.error('Error : Wrong CRUD arguments');
       return;
     }
