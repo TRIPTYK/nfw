@@ -22,6 +22,38 @@ if(!action)
 let capitalize  = capitalizeEntity(action);
 let lowercase   = action;
 
+const _deleteCompiledJS = async() => {
+  await Promise.all(items.map( async (item) => {
+    let relativeFilePath = `/dist/api/${item.dest}/${lowercase}.${item.template}.js`;
+    let filePath = processPath + relativeFilePath;
+    let exists = await Exists(filePath);
+
+    if (exists) {
+      await Unlink(filePath)
+      .then(() => Log.success(`Compiled ${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
+      .catch(e => Log.error(`Error while deleting ${item.template} \n`) );
+    }else{
+      Log.warning(`Cannot delete ${relativeFilePath} : file does not exists`);
+    }
+  }));
+};
+
+const _deleteTypescriptFiles = async() => {
+  await Promise.all(items.map( async (item) => {
+    let relativeFilePath = `/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`;
+    let filePath = processPath + relativeFilePath;
+    let exists = await Exists(filePath);
+
+    if (exists) {
+      await Unlink(filePath)
+      .then(() => Log.success(`${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
+      .catch(e => Log.error(`Error while deleting ${item.template} \n`) );
+    }else{
+      Log.warning(`Cannot delete ${relativeFilePath} : file does not exists`);
+    }
+  }));
+};
+
 /**
  * @description Delete route related informations in router index.ts
  */
@@ -60,22 +92,13 @@ const _unconfig = async () => {
  * @param {*} items
  */
 const _unlink = async (items) => {
-  let promises = items.map( async (item) => {
-    let relativeFilePath = `/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`;
-    let filePath = processPath + relativeFilePath;
-    let exists = await Exists(filePath);
+  let promises = [
+    _deleteTypescriptFiles(),
+    _deleteCompiledJS(),
+    _unroute(),
+    _unconfig()
+  ];
 
-    if (exists) {
-      await Unlink(filePath)
-      .then(() => Log.success(`${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
-      .catch(e => Log.error(`Error while deleting ${item.template} \n`) );
-    }else{
-      Log.warning(`Cannot delete ${relativeFilePath} : file does not exists`);
-    }
-  });
-
-  promises.push(_unroute());
-  promises.push(_unconfig());
   await Promise.all(promises);
   process.exit(0);
 };
