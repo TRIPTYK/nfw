@@ -54,7 +54,7 @@ const crudOptions = {
   delete: false
 };
 
-const action = process.argv[2];
+const action = process.argv[3];
 const processPath = process.cwd();
 const operations = process.argv[3];
 
