@@ -19,6 +19,9 @@ const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
 const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
 
+var lowercase;
+var capitalize;
+
 const options = [
   {
     type:'list',
@@ -98,13 +101,9 @@ const _getLength = (data) =>{
  * @returns if column can be null or not
  */
 const _getNull = (data,key) => {
-    if(key === 'PRI'){
-        return ''
-    }else if(data === 'YES' && key != 'PRI'){
-        return 'nullable:true,'
-    }else{
-        return 'nullable:false,'
-    }
+    if(key === 'PRI') return '';
+    else if(data === 'YES' && key != 'PRI') return 'nullable:true,';
+    else return 'nullable:false,';
 }
 
 /**
@@ -113,7 +112,7 @@ const _getNull = (data,key) => {
  * @description
  * @returns {null}
  **/
-const _addToConfig = async (lowercase,capitalize) => {
+const _addToConfig = async () => {
     let configFileName = `${process.cwd()}/src/config/typeorm.config.ts`;
     let fileContent = await ReadFile(configFileName, 'utf-8');
 
@@ -151,8 +150,8 @@ exports.getTableInfo = _getTableInfo;
  *
  */
 exports.writeModel = async (action,dbType) =>{
-    let lowercase = lowercaseEntity(action);
-    let capitalize  = capitalizeEntity(lowercase);
+    lowercase = lowercaseEntity(action);
+    capitalize  = capitalizeEntity(lowercase);
 
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
     let p_file = ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
@@ -237,7 +236,7 @@ exports.writeModel = async (action,dbType) =>{
           .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
           .replace(/{{ENTITIES}}/ig, entities);
 
-        await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
+        await Promise.all([WriteFile(path, output),_addToConfig()]);
         Log.success("Model created in :" + path);
     }
 }
