@@ -243,7 +243,7 @@ const main = async (action,name,data=undefined) => {
   }else if (action=='write'&& data != undefined){
     writeModel(name,data);
   }else if(action='db'){
-    writeModel(name);
+    await writeModel(name);
   }
   else{
     console.log("Bad syntax");
