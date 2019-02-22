@@ -1,7 +1,7 @@
 const SqlAdaptator = require ('./database/sqlAdaptator');
 const modelWrite = require ('./modelWrite')
 
-
+const noGenerate = ['user','document','refresh_token','migration_table'];
 /**
  * @author Verliefden Romain
  * @description get all table from DB then call writeModel method for each table in the database
@@ -14,7 +14,7 @@ const _generateFromDB = async () =>{
     let [tables,tablesIn] = await Promise.all([p_tables,p_tablesIn]);
 
     for(let j = 0;j<tables.length;j++){
-        await modelWrite.writeModel(tables[j][tablesIn],"sql");
+        if(!noGenerate.includes(tables[j][tablesIn])) await modelWrite('db',tables[j][tablesIn]);
     };
 }
 
