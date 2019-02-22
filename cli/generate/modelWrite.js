@@ -189,7 +189,7 @@ const writeModel = async (action,data=null) =>{
             }else{
               let entitiesTemp = colTemp
                 .replace(/{{ROW_NAME}}/ig, col.Field)
-                .replace(/{{ROW_DEFAULT}}/ig, col.Default)
+                .replace(/{{ROW_DEFAULT}}/ig,'null')
                 .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
                 .replace(/{{ROW_NULL}}/ig, _getNull(col.Null))
                 .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
