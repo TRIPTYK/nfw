@@ -1,3 +1,6 @@
+
+
+
 /**
  * @module modelWrite
  * @author Verliefden Romain
@@ -150,7 +153,7 @@ exports.getTableInfo = _getTableInfo;
  *
  *
  */
-exports.writeModel = async (action,dbType) =>{
+const writeModel = async (action,data=null) =>{
     let lowercase = lowercaseEntity(action);
     let capitalize  = capitalizeEntity(lowercase);
 
@@ -159,48 +162,18 @@ exports.writeModel = async (action,dbType) =>{
     let p_colTemp = ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
 
     let [file,colTemp] = await Promise.all([p_file,p_colTemp]);
-
-    let data;
-
-    try{
-        data = await _getTableInfo(dbType,lowercase);
-    }catch(err){
-        let option = await inquirer.prompt(options);
-
-        if(option.value === 'create an entity' )  {
-          data = await dbWrite.dbParams(lowercase);
-        }else if(option.value === 'create a basic model'){
-            let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
-            let basicModel = (" " + modelTemp)
-              .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-              .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
-
-            let p_write = WriteFile(path, basicModel).catch(e => {
-                Log.error("Failed generating model");
-            }).then(() => {
-                Log.success("Model created in :" + path);
-            });
-
-            await Promise.all([_addToConfig(lowercase,capitalize),p_write]);
-        }else process.exit(0);
+    if(data == null){
+      data = await _getTableInfo('sql',lowercase);
     }
-
-    if( data != null){
-        let { columns , foreignKeys } = data;
-        let imports = '';
-        var entities='';
-
-        await Promise.all(columns.map(async col =>{
-            if(col.Field === "id") return;
-
-            let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
-
-            if (foreignKey !== undefined)
-            {
-
+    let { columns , foreignKeys } = data;
+    let imports = '';
+    var entities='';
+    await Promise.all(columns.map(async col =>{
+          if(col.Field === "id") return;
+          let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
+          if (foreignKey !== undefined) {
               let low = foreignKey.REFERENCED_TABLE_NAME;
               let cap = capitalizeEntity(low);
-
               let {response} = await inquirer.prompt([
                 {
                   type : 'list',
@@ -209,16 +182,11 @@ exports.writeModel = async (action,dbType) =>{
                   choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']
                 },
               ]);
-
               let relationType = cap;
-
               if(response == 'OneToMany' || response == 'ManyToMany') relationType = `${cap}[]`;
-
               let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
-
               entities += relationTemplate;
               imports += `import {${cap}} from './${low}.model';\n`;
-
             }else{
               let entitiesTemp = colTemp
                 .replace(/{{ROW_NAME}}/ig, col.Field)
@@ -230,7 +198,6 @@ exports.writeModel = async (action,dbType) =>{
               entities += ` ${removeEmptyLines(entitiesTemp)} \n\n`;
             }
         }));
-
         let output = file
           .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
           .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
@@ -239,5 +206,52 @@ exports.writeModel = async (action,dbType) =>{
 
         await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
         Log.success("Model created in :" + path);
-    }
+  
 }
+
+const existInDB = async (name) =>{
+     try{
+        data = await _getTableInfo("sql",name);
+	      return true	
+     }catch(err){
+	      return false
+     }	     
+}
+
+const basicModel = async (action) => {
+  let lowercase = lowercaseEntity(action);
+  let capitalize  = capitalizeEntity(lowercase);
+  let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
+  let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
+  let basicModel = (" " + modelTemp)
+    .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
+    .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
+
+  let p_write = WriteFile(path, basicModel).catch(e => {
+      Log.error("Failed generating model");
+  }).then(() => {
+      Log.success("Model created in :" + path);
+  });
+
+  await Promise.all([_addToConfig(lowercase,capitalize),p_write])
+}
+
+const main = async (action,name/*,data=null*/) => {
+  if(action == 'check'){
+    return await existInDB(name);
+  }else if(action == 'basic'){
+    basicModel(name);
+  }else if (action=='write'&& data != null){
+    writeModel(name,data);
+  }else if(action='db'){
+    writeModel(name);
+  }
+  else{
+    console.log("Bad syntax");
+  }
+
+}
+
+
+module.exports =main;
+
