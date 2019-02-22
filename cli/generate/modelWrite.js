@@ -22,6 +22,9 @@ const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
 const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
 
+var lowercase;
+var capitalize;
+
 const options = [
   {
     type:'list',
@@ -101,13 +104,9 @@ const _getLength = (data) =>{
  * @returns if column can be null or not
  */
 const _getNull = (data,key) => {
-    if(key === 'PRI'){
-        return ''
-    }else if(data === 'YES' && key != 'PRI'){
-        return 'nullable:true,'
-    }else{
-        return 'nullable:false,'
-    }
+    if(key === 'PRI') return '';
+    else if(data === 'YES' && key != 'PRI') return 'nullable:true,';
+    else return 'nullable:false,';
 }
 
 /**
@@ -116,7 +115,7 @@ const _getNull = (data,key) => {
  * @description
  * @returns {null}
  **/
-const _addToConfig = async (lowercase,capitalize) => {
+const _addToConfig = async () => {
     let configFileName = `${process.cwd()}/src/config/typeorm.config.ts`;
     let fileContent = await ReadFile(configFileName, 'utf-8');
 
@@ -153,9 +152,15 @@ exports.getTableInfo = _getTableInfo;
  *
  *
  */
+<<<<<<< HEAD
 const writeModel = async (action,data=null) =>{
     let lowercase = lowercaseEntity(action);
     let capitalize  = capitalizeEntity(lowercase);
+=======
+exports.writeModel = async (action,dbType) =>{
+    lowercase = lowercaseEntity(action);
+    capitalize  = capitalizeEntity(lowercase);
+>>>>>>> 1d2790a55b528f8e92302c11d32fc0a048259414
 
     let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
     let p_file = ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
@@ -204,7 +209,7 @@ const writeModel = async (action,data=null) =>{
           .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
           .replace(/{{ENTITIES}}/ig, entities);
 
-        await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
+        await Promise.all([WriteFile(path, output),_addToConfig()]);
         Log.success("Model created in :" + path);
   
 }
