@@ -115,7 +115,7 @@ const _getNull = (data,key) => {
  * @description
  * @returns {null}
  **/
-const _addToConfig = async () => {
+const _addToConfig = async (lowercase,capitalize) => {
     let configFileName = `${process.cwd()}/src/config/typeorm.config.ts`;
     let fileContent = await ReadFile(configFileName, 'utf-8');
 
@@ -203,7 +203,7 @@ const writeModel = async (action,data=null) =>{
           .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
           .replace(/{{ENTITIES}}/ig, entities);
 
-        await Promise.all([WriteFile(path, output),_addToConfig()]);
+        await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
         Log.success("Model created in :" + path);
   
 }
