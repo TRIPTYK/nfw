@@ -24,16 +24,6 @@ const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
-const options = [
-  {
-    type:'list',
-    name:'value',
-    message:'Entity doesn\'t exist. What must be done ',
-    default:'create an entity',
-    choices:['create an entity','create a basic model','nothing']
-  }
-];
-
 /**
  *
  * @param {type(n) of a  column} data
@@ -140,18 +130,21 @@ const writeModel = async (action,data=null) =>{
 
     let { columns , foreignKeys } = data;
     let imports = '';
-    var entities='';
+    var entities ='';
 
     await Promise.all(columns.map(async col =>{
         if(col.Field === "id") return;
+
         let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
         if (foreignKey !== undefined) {
             let low = foreignKey.REFERENCED_TABLE_NAME;
             let cap = capitalizeEntity(low);
-            let response = foreignKey.type;
             let relationType = cap;
-            if(response == 'OneToMany' || response == 'ManyToMany') relationType = `${cap}[]`;
+
+            if(foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany') relationType = `${cap}[]`; // TODO : Uppercase type
+
             let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
+
             entities += relationTemplate;
             imports += `import {${cap}} from './${low}.model';\n`;
           }else{
@@ -173,7 +166,7 @@ const writeModel = async (action,data=null) =>{
 
         await Promise.all([WriteFile(pathModel, output),_addToConfig(lowercase,capitalize)]);
         Log.success("Model created in :" + pathModel);
-  
+
 }
 
 
@@ -195,7 +188,7 @@ const basicModel = async (action) => {
   await Promise.all([_addToConfig(lowercase,capitalize),p_write])
 }
 
-const main = async (action,name,data=undefined) => {
+module.exports = async (action,name,data=undefined) => {
   if(action == 'basic'){
     basicModel(name);
   }else if (action=='write'&& data != undefined){
@@ -206,6 +199,3 @@ const main = async (action,name,data=undefined) => {
     console.log("Bad syntax");
   }
 }
-
-
-module.exports =main;
