@@ -22,16 +22,12 @@ exports.getTableInfo = async (dbType,tableName) => {
     return {columns : [],foreignKeys : []};
 }
 
+
 /**
  * @param {name of the table in database} tableName
  * @description Check if table exists in database
  * @returns table exists
  */
 exports.tableExistsInDB = async (tableName) => {
-     try{
-        await exports.getTableInfo("sql",tableName); // TODO: don't use a try catch 
-	      return true;
-     }catch(err){
-	      return false;
-     }
+     return (await sqlAdaptator.tableExists(tableName));
 };
