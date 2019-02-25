@@ -18,6 +18,7 @@ const Log = require('./log');
 const FS = require('fs');
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
+const resolve = require('path');
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
 const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
@@ -189,7 +190,6 @@ const writeModel = async (action,data=null) =>{
             }else{
               let entitiesTemp = colTemp
                 .replace(/{{ROW_NAME}}/ig, col.Field)
-                .replace(/{{ROW_DEFAULT}}/ig,'null')
                 .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
                 .replace(/{{ROW_NULL}}/ig, _getNull(col.Null))
                 .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
@@ -204,7 +204,7 @@ const writeModel = async (action,data=null) =>{
           .replace(/{{ENTITIES}}/ig, entities);
 
         await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
-        Log.success("Model created in :" + path);
+        Log.success("Model created in :" + resolve.basename(path));
   
 }
 
@@ -229,7 +229,7 @@ const basicModel = async (action) => {
   let p_write = WriteFile(path, basicModel).catch(e => {
       Log.error("Failed generating model");
   }).then(() => {
-      Log.success("Model created in :" + path);
+      Log.success("Model created in :" + resole.basename(path));
   });
 
   await Promise.all([_addToConfig(lowercase,capitalize),p_write])
