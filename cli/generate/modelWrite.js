@@ -16,6 +16,7 @@ const FS = require('fs');
 const databaseInfo = require('./databaseInfo');
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
+const path = require('path');
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
 const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
@@ -129,7 +130,7 @@ const _getKey = data => {
 const writeModel = async (action,data=null) =>{
     let lowercase = lowercaseEntity(action);
     let capitalize  = capitalizeEntity(lowercase);
-    let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
+    let pathModel = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
     let p_file = ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
     let p_colTemp = ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
 
@@ -170,24 +171,25 @@ const writeModel = async (action,data=null) =>{
           .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
           .replace(/{{ENTITIES}}/ig, entities);
 
-        await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
-        Log.success("Model created in :" + path);
+        await Promise.all([WriteFile(pathModel, output),_addToConfig(lowercase,capitalize)]);
+        Log.success("Model created in :" + pathModel);
+  
 }
 
 
 const basicModel = async (action) => {
   let lowercase = lowercaseEntity(action);
   let capitalize  = capitalizeEntity(lowercase);
-  let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
+  let pathModel = path.resolve(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
   let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
   let basicModel = (" " + modelTemp)
     .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
     .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
 
-  let p_write = WriteFile(path, basicModel).catch(e => {
+  let p_write = WriteFile(pathModel, basicModel).catch(e => {
       Log.error("Failed generating model");
   }).then(() => {
-      Log.success("Model created in :" + path);
+      Log.success("Model created in :" + pathModel);
   });
 
   await Promise.all([_addToConfig(lowercase,capitalize),p_write])

@@ -3,7 +3,6 @@
     {{ROW_NULL}}
     {{ROW_LENGHT}}
    {{ROW_CONSTRAINT}}
-    default: {{ROW_DEFAULT}}
 
   })
   {{ROW_NAME}};
