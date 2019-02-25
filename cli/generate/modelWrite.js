@@ -1,6 +1,3 @@
-
-
-
 /**
  * @module modelWrite
  * @author Verliefden Romain
@@ -16,6 +13,7 @@ const inquirer = require('inquirer');
 const Util = require('util');
 const Log = require('./log');
 const FS = require('fs');
+const databaseInfo = require('./databaseInfo');
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
 const resolve = require('path');
@@ -35,28 +33,6 @@ const options = [
     choices:['create an entity','create a basic model','nothing']
   }
 ];
-
-
-/**
- *
- * @param {Technology use for database} dbType
- * @param {name of the table in database} tableName
- * @description call getColumns function in correct adapator to get data of columns
- * @returns data of a table
- */
-const _getTableInfo = async (dbType,tableName) => {
-    if(dbType === "sql"){
-        let p_columns = sqlAdaptator.getColumns(tableName);
-        let p_foreignKeys = sqlAdaptator.getForeignKeys(tableName);
-        let [columns,foreignKeys] = await Promise.all([p_columns,p_foreignKeys]);
-
-        return {columns,foreignKeys};
-    }else{
-        Log.rainbow(dbType + " is not supported by this method yet");
-        process.exit(0);
-    }
-    return {columns : [],foreignKeys : []};
-}
 
 /**
  *
@@ -142,8 +118,6 @@ const _getKey = data => {
     else return '';
 }
 
-exports.getTableInfo = _getTableInfo;
-
 /**
  * @param {table to get data from/table to create} table
  * @param {techonlogy use for database} dbType
@@ -153,7 +127,6 @@ exports.getTableInfo = _getTableInfo;
  *
  *
  */
-
 const writeModel = async (action,data=null) =>{
     let lowercase = lowercaseEntity(action);
     let capitalize  = capitalizeEntity(lowercase);
@@ -162,40 +135,35 @@ const writeModel = async (action,data=null) =>{
     let p_colTemp = ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
 
     let [file,colTemp] = await Promise.all([p_file,p_colTemp]);
-    if(data == null){
-      data = await _getTableInfo('sql',lowercase);
-    }
+
+    if(data == null) data = await databaseInfo.getTableInfo('sql',lowercase);
+
     let { columns , foreignKeys } = data;
     let imports = '';
     var entities='';
+
     await Promise.all(columns.map(async col =>{
-          if(col.Field === "id") return;
-          let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
-          if (foreignKey !== undefined) {
-              let low = foreignKey.REFERENCED_TABLE_NAME;
-              let cap = capitalizeEntity(low);
-              let {response} = await inquirer.prompt([
-                {
-                  type : 'list',
-                  name: 'response',
-                  message : `A relationship has been detected with table ${foreignKey.REFERENCED_TABLE_NAME} with the key ${lowercase}.${col.Field} to ${foreignKey.REFERENCED_TABLE_NAME}.${foreignKey.REFERENCED_COLUMN_NAME}\nWhat kind of relationship is this ?`,
-                  choices : ['OneToOne','ManyToMany','ManyToOne','OneToMany']
-                },
-              ]);
-              let relationType = cap;
-              if(response == 'OneToMany' || response == 'ManyToMany') relationType = `${cap}[]`;
-              let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
-              entities += relationTemplate;
-              imports += `import {${cap}} from './${low}.model';\n`;
-            }else{
-              let entitiesTemp = colTemp
-                .replace(/{{ROW_NAME}}/ig, col.Field)
-                .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
-                .replace(/{{ROW_NULL}}/ig, _getNull(col.Null))
-                .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
-                .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-              entities += ` ${removeEmptyLines(entitiesTemp)} \n\n`;
-            }
+        if(col.Field === "id") return;
+        let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
+        if (foreignKey !== undefined) {
+            let low = foreignKey.REFERENCED_TABLE_NAME;
+            let cap = capitalizeEntity(low);
+            let response = foreignKey.type;
+            let relationType = cap;
+            if(response == 'OneToMany' || response == 'ManyToMany') relationType = `${cap}[]`;
+            let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
+            entities += relationTemplate;
+            imports += `import {${cap}} from './${low}.model';\n`;
+          }else{
+            let entitiesTemp = colTemp
+              .replace(/{{ROW_NAME}}/ig, col.Field)
+              .replace(/{{ROW_DEFAULT}}/ig,'null')
+              .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
+              .replace(/{{ROW_NULL}}/ig, _getNull(col.Null))
+              .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
+              .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
+            entities += ` ${removeEmptyLines(entitiesTemp)} \n\n`;
+          }
         }));
         let output = file
           .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
@@ -208,14 +176,6 @@ const writeModel = async (action,data=null) =>{
   
 }
 
-const existInDB = async (name) =>{
-     try{
-        data = await _getTableInfo("sql",name);
-	      return true	
-     }catch(err){
-	      return false
-     }	     
-}
 
 const basicModel = async (action) => {
   let lowercase = lowercaseEntity(action);
@@ -236,21 +196,16 @@ const basicModel = async (action) => {
 }
 
 const main = async (action,name,data=undefined) => {
-  if(action == 'check'){
-    return await existInDB(name);
-  }else if(action == 'basic'){
+  if(action == 'basic'){
     basicModel(name);
   }else if (action=='write'&& data != undefined){
     writeModel(name,data);
   }else if(action='db'){
-    await writeModel(name);
-  }
-  else{
+    await writeModel(name,data);
+  }else{
     console.log("Bad syntax");
   }
-
 }
 
 
 module.exports =main;
-

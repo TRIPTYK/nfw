@@ -51,7 +51,10 @@ exports.prompt = (question) => {
  * @param {string} string
  * @param {string} imprt import name
  */
-exports.isImportPresent = (string,imprt) => (string.match(new RegExp(`import.*${imprt}.*;`,'')) !== null);
+exports.isImportPresent = (string,imprt) => {
+  let match = string.match(new RegExp(`import.*${imprt}.*;`,'gm'));
+  return match !== null;
+}
 
 /**
  * @description remove import from string

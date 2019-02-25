@@ -41,6 +41,9 @@ const routerWrite = require('./routerWrite');
  * Requirement of the modelWrite library
  */
 const modelWrite = require('./modelWrite');
+
+const databaseInfo = require('./databaseInfo');
+
 /**
  * Requirement of the library yargs
  * @description Handle the cli args
@@ -126,7 +129,7 @@ const _write = async items => {
   let tableColumns;
 
   try {
-    tableColumns = (await modelWrite.getTableInfo("sql",lowercase)).columns;
+    tableColumns = (await databaseInfo.getTableInfo("sql",lowercase)).columns;
   }catch(err) {
     tableColumns = [];
   };
@@ -137,7 +140,6 @@ const _write = async items => {
   const columnNames = tableColumns.map(elem => `'${elem.Field}'`);
   const validation = _getValidationFields(tableColumns);
   const testColumns = _getTestFields(tableColumns);
-
 
   let promises = items.map( async (item) => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
