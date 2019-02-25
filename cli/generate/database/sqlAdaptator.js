@@ -31,8 +31,19 @@ exports.getForeignKeys = async (tableName) => {
  * @returns data of all the column from chosen table
  */
 exports.getColumns = async (tableName) => {
-    let result = await query(`SHOW COLUMNS FROM ${tableName} ;`) ;
+    let result = await query(`SHOW COLUMNS FROM ${tableName} ;`);
     return result;
+};
+
+
+exports.tableExists = async (tableName) => {
+  let result = await query(  `
+    SELECT COUNT(*) as 'count'
+    FROM information_schema.tables
+    WHERE table_schema = '${env.database}'
+    AND table_name = '${tableName}';
+  `);
+  return result[0].count > 0;
 };
 
 /**
@@ -41,7 +52,6 @@ exports.getColumns = async (tableName) => {
 exports.getTables = async () =>{
     result = await query(`SHOW TABLES`);
     return result;
-
 }
 
 /**
