@@ -138,7 +138,6 @@ const _write = async items => {
   const validation = _getValidationFields(tableColumns);
   const testColumns = _getTestFields(tableColumns);
 
-  await modelWrite.writeModel(lowercase,"sql"); //write model first
 
   let promises = items.map( async (item) => {
     let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
