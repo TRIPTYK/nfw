@@ -30,19 +30,17 @@ module.exports = async (action) => {
   let p_proxy = ReadFile(proxyPath, 'utf-8');
   let [lines,proxy] = await  Promise.all([p_lines,p_proxy]); //wait for countlines and read to finish
 
-  let proxyLines = proxy.split('\n');
-
   let route = '\n\n';
   route += '/**\n';
   route += ' * ' + capitalize + ' routes \n';
   route += ' */\n';
   route += `router.use('/${lowercase}s/', ${capitalize}Router);\n\n`;
 
-  let output = writeToFirstEmptyLine(proxy,`import { router as ${capitalize}Router } from "./${lowercase}.route";`)
-    .replace(/^\s*(?=.*export.*)/m,route); // inserts route BEFORE the export statement , eliminaing some false-positive
-
-  if(!isImportPresent(proxy))
+  if(!isImportPresent(proxy,capitalize))
   {
+    let output = writeToFirstEmptyLine(proxy,`import { router as ${capitalize}Router } from "./${lowercase}.route";\n`)
+      .replace(/^\s*(?=.*export.*)/m,route); // inserts route BEFORE the export statement , eliminaing some false-positive
+
     try {
     await WriteFile(proxyPath,output)
       .then(() => {
