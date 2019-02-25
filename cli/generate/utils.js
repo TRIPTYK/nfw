@@ -76,6 +76,13 @@ exports.writeToFirstEmptyLine = (string,by = "") => string.replace(/^\s*$/m,by);
  */
 exports.removeEmptyLines = (string) => string.replace(/\n?^\s*$/gm,"");
 
+
+/**
+ * @description check if model file exists in projet
+ * @param {string} string
+ */
+ exports.modelFileExists = (entity) => Exists(`${process.cwd()}/src/api/models/${exports.lowercaseEntity(entity)}.model.ts`);
+
 /**
  * @description capitalize first letter of String
  * @param {string} entity
