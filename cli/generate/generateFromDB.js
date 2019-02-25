@@ -20,6 +20,7 @@ const _generateFromDB = async () =>{
             await modelWrite('db',tables[j][tablesIn]);
             }    
    };
+   process.exit(0);
 }
 
 module.exports=_generateFromDB;
