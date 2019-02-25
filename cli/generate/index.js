@@ -238,28 +238,7 @@ const build = async (modelName, crudArgs) => {
   // assign false class properties
   lowercase = lowercaseEntity(modelName);
   capitalize = capitalizeEntity(modelName);
-
-  let entityExists = false;//await Exists(`${processPath}/src/api/models/${lowercase}.model.ts`)/;
-
-  if(entityExists)
-  {
-    let answer = await prompt('An entity with the same name already exists, will you overwrite it ? (y/n)')
-      .catch(e => {
-        Log.error("Failed to open stream , exiting ...");
-        process.exit(0); //no need to then() because process exit
-      });
-
-    if (!['y','yes'].includes(answer.toLowerCase().trim())) {
-      Log.error(`Process aborted.`);
-      process.exit(0);
-    }else{
-      await _write(items);
-    }
-  }
-  else {
-    await _write(items);
-  }
-
+  await _write(items);
   Log.success('Generating task done');
 };
 
