@@ -22,4 +22,4 @@ const _generateFromDB = async () =>{
    };
 }
 
-module.exports=_generateFromDB();
+module.exports=_generateFromDB;
