@@ -16,8 +16,8 @@ const _generateFromDB = async () =>{
 
     for(let j = 0;j<tables.length;j++){
         if(!noGenerate.includes(tables[j][tablesIn])){
-             await modelWrite('db',tables[j][tablesIn]);
-             index(tables[j][tablesIn],'crud');
+            await index(tables[j][tablesIn],'crud');
+            await modelWrite('db',tables[j][tablesIn]);
             }    
    };
 }
