@@ -29,9 +29,9 @@ exports.getTableInfo = async (dbType,tableName) => {
  */
 exports.tableExistsInDB = async (tableName) => {
      try{
-        data = await exports.getTableInfo("sql",tableName);
-	      return true
+        await exports.getTableInfo("sql",tableName); // TODO: don't use a try catch 
+	      return true;
      }catch(err){
-	      return false
+	      return false;
      }
 };
