@@ -172,7 +172,7 @@ const writeModel = async (action,data=null) =>{
           .replace(/{{ENTITIES}}/ig, entities);
 
         await Promise.all([WriteFile(pathModel, output),_addToConfig(lowercase,capitalize)]);
-        Log.success("Model created in :" + path.basename(pathModel));
+        Log.success("Model created in :" + pathModel);
   
 }
 
@@ -189,7 +189,7 @@ const basicModel = async (action) => {
   let p_write = WriteFile(pathModel, basicModel).catch(e => {
       Log.error("Failed generating model");
   }).then(() => {
-      Log.success("Model created in :" + path.basename(pathModel));
+      Log.success("Model created in :" + pathModel);
   });
 
   await Promise.all([_addToConfig(lowercase,capitalize),p_write])
