@@ -16,10 +16,10 @@ const _generateFromDB = async () =>{
 
     for(let j = 0;j<tables.length;j++){
         if(!noGenerate.includes(tables[j][tablesIn])){
-            await index(tables[j][tablesIn],'crud');
+            await index(tables[j][tablesIn],crudValue);
             await modelWrite('db',tables[j][tablesIn]);
             }    
    };
 }
 
-module.exports=_generateFromDB();
+module.exports=_generateFromDB(crudValue);
