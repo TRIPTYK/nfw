@@ -76,7 +76,7 @@ const _checkForCrud = (arg) => {
 
 /**
  * @description generate an array of fake data to be send for given entity
- * @param {*} items
+ * @param {*} columns
  */
 const _getTestFields = (columns) => {
   return columns.map(elem => {
