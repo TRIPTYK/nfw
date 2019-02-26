@@ -33,22 +33,9 @@ const Exists = Util.promisify(FS.exists);
  * Requirement of the library readline
  */
 const readline = require('readline');
-/**
- * Requirement of the modelWrite module
- */
 const routerWrite = require('./routerWrite');
-/**
- * Requirement of the modelWrite library
- */
 const modelWrite = require('./modelWrite');
-
 const databaseInfo = require('./databaseInfo');
-
-/**
- * Requirement of the library yargs
- * @description Handle the cli args
- */
-const argv = require('yargs').argv;
 
 const crudOptions = {
   create: false,
@@ -89,7 +76,7 @@ const _checkForCrud = (arg) => {
 
 /**
  * @description generate an array of fake data to be send for given entity
- * @param {*} items
+ * @param {*} columns
  */
 const _getTestFields = (columns) => {
   return columns.map(elem => {
@@ -238,7 +225,9 @@ const build = async (modelName, crudArgs) => {
   // assign false class properties
   lowercase = lowercaseEntity(modelName);
   capitalize = capitalizeEntity(modelName);
+
   await _write(items);
+
   Log.success('Generating task done');
 };
 

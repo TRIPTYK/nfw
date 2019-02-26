@@ -16,7 +16,7 @@ const FS = require('fs');
 const databaseInfo = require('./databaseInfo');
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
-const resolve = require('path');
+const path = require('path');
 const colors = require('colors/safe');
 const dbWrite = require('./databaseWrite');
 const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
@@ -24,7 +24,10 @@ const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> bae8cc2cf048df358420d3647a716ab36624f2d0
 /**
  *
  * @param {type(n) of a  column} data
@@ -132,7 +135,7 @@ const _getKey = data => {
 const writeModel = async (action,data=null) =>{
     let lowercase = lowercaseEntity(action);
     let capitalize  = capitalizeEntity(lowercase);
-    let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
+    let pathModel = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
     let p_file = ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
     let p_colTemp = ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
 
@@ -142,18 +145,21 @@ const writeModel = async (action,data=null) =>{
 
     let { columns , foreignKeys } = data;
     let imports = '';
-    var entities='';
+    var entities ='';
 
     await Promise.all(columns.map(async col =>{
         if(col.Field === "id") return;
+
         let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
         if (foreignKey !== undefined) {
             let low = foreignKey.REFERENCED_TABLE_NAME;
             let cap = capitalizeEntity(low);
-            let response = foreignKey.type;
             let relationType = cap;
-            if(response == 'OneToMany' || response == 'ManyToMany') relationType = `${cap}[]`;
+
+            if(foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany') relationType = `${cap}[]`; // TODO : Uppercase type
+
             let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
+
             entities += relationTemplate;
             imports += `import {${cap}} from './${low}.model';\n`;
           }else{
@@ -173,31 +179,31 @@ const writeModel = async (action,data=null) =>{
           .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
           .replace(/{{ENTITIES}}/ig, entities);
 
-        await Promise.all([WriteFile(path, output),_addToConfig(lowercase,capitalize)]);
-        Log.success("Model created in :" + resolve.basename(path));
-  
+        await Promise.all([WriteFile(pathModel, output),_addToConfig(lowercase,capitalize)]);
+        Log.success("Model created in :" + pathModel);
+
 }
 
 
 const basicModel = async (action) => {
   let lowercase = lowercaseEntity(action);
   let capitalize  = capitalizeEntity(lowercase);
-  let path = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
+  let pathModel = path.resolve(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
   let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
   let basicModel = (" " + modelTemp)
     .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
     .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
 
-  let p_write = WriteFile(path, basicModel).catch(e => {
+  let p_write = WriteFile(pathModel, basicModel).catch(e => {
       Log.error("Failed generating model");
   }).then(() => {
-      Log.success("Model created in :" + resole.basename(path));
+      Log.success("Model created in :" + pathModel);
   });
 
   await Promise.all([_addToConfig(lowercase,capitalize),p_write])
 }
 
-const main = async (action,name,data=undefined) => {
+module.exports = async (action,name,data=undefined) => {
   if(action == 'basic'){
     basicModel(name);
   }else if (action=='write'&& data != undefined){
@@ -208,6 +214,3 @@ const main = async (action,name,data=undefined) => {
     console.log("Bad syntax");
   }
 }
-
-
-module.exports =main;
