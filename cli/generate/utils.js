@@ -4,6 +4,9 @@
 const FS = require('fs');
 const readline = require('readline');
 
+const Util = require('util');
+const Exists = Util.promisify(FS.exists);
+
 /**
  * @description : count the lines of a file
  * @param {string} path
