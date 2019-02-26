@@ -29,5 +29,11 @@ exports.getTableInfo = async (dbType,tableName) => {
  * @returns table exists
  */
 exports.tableExistsInDB = async (tableName) => {
-     return (await sqlAdaptator.tableExists(tableName));
+     return (
+       await sqlAdaptator.tableExists(tableName)
+        .catch(e => {
+          Log.error("Failed to connect to database");
+          return false;
+        })
+   );
 };
