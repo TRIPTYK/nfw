@@ -24,15 +24,6 @@ const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
-const options = [
-  {
-    type:'list',
-    name:'value',
-    message:'Entity doesn\'t exist. What must be done ',
-    default:'create an entity',
-    choices:['create an entity','create a basic model','nothing']
-  }
-];
 
 /**
  *
@@ -70,6 +61,17 @@ const _getLength = (data) =>{
     }else{
         return "";
     }
+}
+
+
+const _getDefault = (col) =>{
+  if ((!col.Null === 'YES' ||col.Key=== 'PRI') && col.Default == true){
+    return '';
+  }else if (col.Type.includes('int') || col.type === 'float' || col.type ==='double'){
+    return col.Default;
+  }else{
+    return `"${col.Default}"`;
+  }
 }
 
 
@@ -157,7 +159,7 @@ const writeModel = async (action,data=null) =>{
           }else{
             let entitiesTemp = colTemp
               .replace(/{{ROW_NAME}}/ig, col.Field)
-              .replace(/{{ROW_DEFAULT}}/ig,'null')
+              .replace(/{{ROW_DEFAULT}}/ig,_getDefault(col))
               .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
               .replace(/{{ROW_NULL}}/ig, _getNull(col.Null))
               .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
