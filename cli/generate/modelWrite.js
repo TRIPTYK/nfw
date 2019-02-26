@@ -24,10 +24,7 @@ const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> bae8cc2cf048df358420d3647a716ab36624f2d0
 /**
  *
  * @param {type(n) of a  column} data
