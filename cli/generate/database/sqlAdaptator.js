@@ -78,7 +78,7 @@ exports.dumpAll = async (table,path) => {
           user: env.user,
           password: env.pwd,
           database: env.database,
-      }
+      },
       dumpToFile: path + '.sql',
   });
 };
