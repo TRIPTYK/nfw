@@ -155,7 +155,7 @@ const writeModel = async (action,data=null) =>{
 
             if(foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany') relationType = `${cap}[]`; // TODO : Uppercase type
 
-            let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
+            let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};\n`;
 
             entities += relationTemplate;
             imports += `import {${cap}} from './${low}.model';\n`;
