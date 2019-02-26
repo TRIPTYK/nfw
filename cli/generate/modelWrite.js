@@ -67,7 +67,7 @@ const _getLength = (data) =>{
 const _getDefault = (col) =>{
   if ((!col.Null === 'YES' ||col.Key=== 'PRI') && col.Default == true){
     return '';
-  }else if (col.Type.includes('int') || col.type === 'float' || col.type ==='double'){
+  }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
     return col.Default;
   }else{
     return `"${col.Default}"`;
