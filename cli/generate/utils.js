@@ -4,6 +4,9 @@
 const FS = require('fs');
 const readline = require('readline');
 
+const Util = require('util');
+const Exists = Util.promisify(FS.exists);
+
 /**
  * @description : count the lines of a file
  * @param {string} path
@@ -75,6 +78,13 @@ exports.writeToFirstEmptyLine = (string,by = "") => string.replace(/^\s*$/m,by);
  * @param {string} string
  */
 exports.removeEmptyLines = (string) => string.replace(/\n?^\s*$/gm,"");
+
+
+/**
+ * @description check if model file exists in projet
+ * @param {string} string
+ */
+ exports.modelFileExists = (entity) => Exists(`${process.cwd()}/src/api/models/${exports.lowercaseEntity(entity)}.model.ts`);
 
 /**
  * @description capitalize first letter of String

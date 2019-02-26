@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import { Request, Response } from "express";
 import { router as AuthRouter } from "./auth.route";
 import { router as UserRouter } from "./user.route";
@@ -34,7 +35,6 @@ router.use('/users/', UserRouter);
  * Files routes
  */
 router.use('/documents/', DocumentRouter);
-
 
 export { router }
 
