@@ -17,9 +17,7 @@ const databaseInfo = require('./databaseInfo');
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
 const path = require('path');
-const colors = require('colors/safe');
-const dbWrite = require('./databaseWrite');
-const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
+const {  capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
 
 var lowercase;
 var capitalize;
