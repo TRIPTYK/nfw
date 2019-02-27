@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , OneToOne , JoinColumn , OneToMany , ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , OneToOne , JoinColumn , OneToMany , ManyToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { {{ENTITY_CAPITALIZE}}Serializer } from "./../serializers/{{ENTITY_LOWERCASE}}.serializer";
 {{FOREIGN_IMPORTS}}
