@@ -9,7 +9,7 @@
 const mysql = require('mysql');
 const env = require('./databaseEnv');
 const util = require('util');
-
+const mysqldump = require('mysqldump');
 
 var db = mysql.createConnection({
     host: env.host,
@@ -23,6 +23,11 @@ const query = util.promisify(db.query.bind(db));
 exports.getForeignKeys = async (tableName) => {
     let result = await query(`SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA='${env.database}' AND TABLE_NAME='${tableName}';`);
     return result;
+};
+
+exports.dropTable = async (tableName) => {
+  let result = await query(`DROP TABLE ${tableName};`);
+  return result;
 };
 
 /**
@@ -64,3 +69,32 @@ exports.getTablesInName = async () =>{
     let tableName = "Tables_in_"+env.database.replace('-','_');
     return tableName;
 }
+
+exports.dumpAll = async (table,path) => {
+  // dump the result straight to a file
+  await mysqldump({
+      connection: {
+          host: env.host,
+          user: env.user,
+          password: env.pwd,
+          database: env.database,
+      },
+      dumpToFile: path + '.sql',
+  });
+};
+
+exports.dumpTable = async (table,path) => {
+  // dump the result straight to a file
+  await mysqldump({
+      connection: {
+          host: env.host,
+          user: env.user,
+          password: env.pwd,
+          database: env.database,
+      },
+      dump : {
+         tables : [table]
+      },
+      dumpToFile: path + '.sql',
+  })
+};

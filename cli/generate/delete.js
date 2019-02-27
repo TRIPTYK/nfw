@@ -7,7 +7,9 @@ const Exists = Util.promisify(FS.exists);
 const ReadFile = Util.promisify(FS.readFile);
 const Unlink = Util.promisify(FS.unlink);
 const WriteFile = Util.promisify(FS.writeFile);
+const SqlAdaptator = require('./database/sqlAdaptator');
 var colors = require('colors/safe');
+const mysqldump = require('mysqldump');
 
 // simulate class properties
 var capitalize;
@@ -94,8 +96,22 @@ module.exports = async (action) => {
     _deleteTypescriptFiles(),
     _deleteCompiledJS(),
     _unroute(),
-    _unconfig()
+    _unconfig(),
   ];
+
   await Promise.all(promises);
+
+  let dumpPath = `./dist/migration/dump/${+ new Date()}-${action}`;
+
+  if (await SqlAdaptator.tableExists(action)) {
+    await SqlAdaptator.dumpTable(action,dumpPath)
+      .then(() => Log.success(`SQL dump created at : ${dumpPath}`))
+      .catch(e => Log.error("Failed to create table dump"));
+    await SqlAdaptator.dropTable(action)
+      .then(() => Log.success("Table dropped"))
+      .catch(e => Log.error("Failed to delete table"));
+  };
+
+
   Log.success('Delete task done');
 };
