@@ -24,6 +24,10 @@ const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b73109b568d727a262be56398da9658ee9fea456
 /**
  *
  * @param {type(n) of a  column} data
@@ -64,6 +68,7 @@ const _getLength = (data) =>{
 
 
 const _getDefault = (col) =>{
+<<<<<<< HEAD
   console.log(col);
   if (col.Default === null){
     if(col.Null === 'NO' ||col.Key=== 'PRI') {
@@ -73,6 +78,12 @@ const _getDefault = (col) =>{
     }  
   }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
     return `default : ${col.Default}`;
+=======
+  if ((!col.Null === 'YES' ||col.Key=== 'PRI') && col.Default == true){
+    return '';
+  }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
+    return col.Default;
+>>>>>>> b73109b568d727a262be56398da9658ee9fea456
   }else{
     return `default :"${col.Default}"`;
   }
@@ -164,7 +175,11 @@ const writeModel = async (action,data=null) =>{
 
             if(foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany') relationType = `${cap}[]`; // TODO : Uppercase type
 
+<<<<<<< HEAD
             let relationTemplate = `  @${foreignKey.type}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
+=======
+            let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};\n`;
+>>>>>>> b73109b568d727a262be56398da9658ee9fea456
 
             entities += relationTemplate;
             imports += `import {${cap}} from './${low}.model';\n`;
@@ -196,15 +211,13 @@ const basicModel = async (action) => {
   let capitalize  = capitalizeEntity(lowercase);
   let pathModel = path.resolve(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
   let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
-  let basicModel = (" " + modelTemp)
+  let basicModel = ` ${modelTemp}`
     .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
     .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
 
-  let p_write = WriteFile(pathModel, basicModel).catch(e => {
-      Log.error("Failed generating model");
-  }).then(() => {
-      Log.success("Model created in :" + pathModel);
-  });
+  let p_write = WriteFile(pathModel, basicModel)
+    .then(() => Log.success("Model created in :" + pathModel))
+    .catch(e => Log.error("Failed generating model"));
 
   await Promise.all([_addToConfig(lowercase,capitalize),p_write])
 }
