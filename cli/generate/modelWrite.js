@@ -187,15 +187,13 @@ const basicModel = async (action) => {
   let capitalize  = capitalizeEntity(lowercase);
   let pathModel = path.resolve(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
   let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
-  let basicModel = (" " + modelTemp)
+  let basicModel = ` ${modelTemp}`
     .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
     .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
 
-  let p_write = WriteFile(pathModel, basicModel).catch(e => {
-      Log.error("Failed generating model");
-  }).then(() => {
-      Log.success("Model created in :" + pathModel);
-  });
+  let p_write = WriteFile(pathModel, basicModel)
+    .then(() => Log.success("Model created in :" + pathModel))
+    .catch(e => Log.error("Failed generating model"));
 
   await Promise.all([_addToConfig(lowercase,capitalize),p_write])
 }
