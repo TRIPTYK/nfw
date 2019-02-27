@@ -1,10 +1,10 @@
 /**
  * array of each element to generate with the provided entity
- * @ template : template file name in /cli/generate/template folder
- * @ dest : destination folder
- * @ ext : file extension
+ * @template : template file name in /cli/generate/template folder
+ * @dest : destination folder
+ * @ext : file extension
  */
-const items = [
+exports.items = [
   { template : 'controller', dest: 'controllers', ext: 'ts' },
   { template : 'repository', dest: 'repositories', ext: 'ts' },
   { template : 'validation', dest: 'validations', ext: 'ts' },
@@ -15,7 +15,7 @@ const items = [
   { template : 'model', dest: 'models', ext: 'ts' },
 ];
 
-const questionsParams = [
+exports.questionsParams = [
     {
       type : 'input' ,
       name : 'column',
@@ -31,13 +31,16 @@ const questionsParams = [
       type : 'list',
       name: 'type',
       message : "What's the column type ?",
-      choices : ['char','varchar','datetime','date','time','timestamp','year','tinyint','smallint','mediumint','binary','varbinary','int','bigint','float','double','decimal','tinytext','mediumtext','text','enum','json','tinyblob','smallblob','mediumblob','blob','bigblob','binary']
+      choices : ['char','varchar','datetime','date','time','timestamp','year','tinyint','smallint','mediumint','binary','varbinary','int','bigint','float','double','decimal','tinytext','mediumtext','text','enum','json','tinyblob','smallblob','mediumblob','blob','bigblob','binary'],
     },
     {
       type : 'input',
       name : 'defaultValue',
       message : "What's the column default value ?",
-      default: "null"
+      default: "null",
+      validate : data => {
+        console.log(this);
+      }
     },
     {
       type:'list',
@@ -59,7 +62,7 @@ const questionsParams = [
     }
 ];
 
-const questionRelation = [
+exports.questionRelation = [
   {
     type:'input',
     name:'referencedTable',
@@ -81,9 +84,4 @@ const questionRelation = [
      if(data ==null || data === '' || data == undefined) return "you must enter a value";
      else return true;
   }}
-]
-
-
-exports.questionsParams = questionsParams;
-exports.questionRelation = questionRelation;
-exports.items = items;
+];
