@@ -67,7 +67,6 @@ const _getLength = (data) =>{
  * @returns default : value or nothing  
  */
 const _getDefault = (col) =>{
-  console.log(col);
   if (col.Default === null){
     if(col.Null === 'NO' ||col.Key=== 'PRI') {
       return '';
@@ -159,7 +158,6 @@ const writeModel = async (action,data=null) =>{
     
     await Promise.all(columns.map(async col =>{
         if(col.Field === "id") return;
-        console.log(foreignKeys);
         let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
         if (foreignKey !== undefined) {
             let low = foreignKey.REFERENCED_TABLE_NAME;
