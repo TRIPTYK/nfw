@@ -24,10 +24,6 @@ const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> bae8cc2cf048df358420d3647a716ab36624f2d0
 /**
  *
  * @param {type(n) of a  column} data
@@ -68,12 +64,17 @@ const _getLength = (data) =>{
 
 
 const _getDefault = (col) =>{
-  if ((!col.Null === 'YES' ||col.Key=== 'PRI') && col.Default == true){
-    return '';
-  }else if (col.Type.includes('int') || col.type === 'float' || col.type ==='double'){
-    return col.Default;
+  console.log(col);
+  if (col.Default === null){
+    if(col.Null === 'NO' ||col.Key=== 'PRI') {
+      return '';
+    }else{
+      return 'default : null';
+    }  
+  }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
+    return `default : ${col.Default}`;
   }else{
-    return `"${col.Default}"`;
+    return `default :"${col.Default}"`;
   }
 }
 
@@ -142,14 +143,19 @@ const writeModel = async (action,data=null) =>{
     let [file,colTemp] = await Promise.all([p_file,p_colTemp]);
 
     if(data == null) data = await databaseInfo.getTableInfo('sql',lowercase);
-
+    
     let { columns , foreignKeys } = data;
     let imports = '';
     var entities ='';
 
+    if (data.createUpdate != null){
+      if(data.createUpdate.createAt) entities += "@CreateDateColumn() \n"
+      if(data.createUpdate.updateAt) entities += "@UpdateDateColumn() \n"
+    }
+    
     await Promise.all(columns.map(async col =>{
         if(col.Field === "id") return;
-
+        console.log(foreignKeys);
         let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
         if (foreignKey !== undefined) {
             let low = foreignKey.REFERENCED_TABLE_NAME;
@@ -158,7 +164,7 @@ const writeModel = async (action,data=null) =>{
 
             if(foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany') relationType = `${cap}[]`; // TODO : Uppercase type
 
-            let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
+            let relationTemplate = `  @${foreignKey.type}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
 
             entities += relationTemplate;
             imports += `import {${cap}} from './${low}.model';\n`;
