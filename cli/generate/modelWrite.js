@@ -24,13 +24,9 @@ const { countLines , capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> b73109b568d727a262be56398da9658ee9fea456
 /**
  *
- * @param {type(n) of a  column} data
+ * @param {String} data
  * @description mysql send data(lenght). Therefore, I need to split if i only want
  * the datatype.
  * @returns data type
@@ -42,7 +38,7 @@ const _dataWithoutLenght= (data) =>{
 
 /**
  *
- * @param {type(n) of a column} data
+ * @param {String} data
  * @description mysql send data(lenght/enumList). Therefore , if i only need the lenght/enumList I need to split
  * split then delete the ')'
  * @returns data lenght/enum
@@ -66,9 +62,13 @@ const _getLength = (data) =>{
     }
 }
 
-
+/**
+ * 
+ * @param {Array} col
+ * @description set default value for the column and check that default is not null when value can't be null
+ * @returns default : value or nothing  
+ */
 const _getDefault = (col) =>{
-<<<<<<< HEAD
   console.log(col);
   if (col.Default === null){
     if(col.Null === 'NO' ||col.Key=== 'PRI') {
@@ -78,12 +78,6 @@ const _getDefault = (col) =>{
     }  
   }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
     return `default : ${col.Default}`;
-=======
-  if ((!col.Null === 'YES' ||col.Key=== 'PRI') && col.Default == true){
-    return '';
-  }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
-    return col.Default;
->>>>>>> b73109b568d727a262be56398da9658ee9fea456
   }else{
     return `default :"${col.Default}"`;
   }
@@ -92,7 +86,8 @@ const _getDefault = (col) =>{
 
 /**
  *
- * @param {column Nullable data} data
+ * @param {String} data
+ * @param {String} key
  * @description  check if column can be null or not and check if key is primay. if key is primary , there's no need to check if column can be null
  * because primary imply that value can't be null
  * @returns if column can be null or not
@@ -104,8 +99,8 @@ const _getNull = (data,key) => {
 }
 
 /**
-*  @param {entity name to lowercase} lowercase
-*  @param {entity name with first letter to uppercase} capitalize
+*  @param {String} lowercase
+*  @param {String} capitalize
  * @description
  * @returns {null}
  **/
@@ -175,11 +170,7 @@ const writeModel = async (action,data=null) =>{
 
             if(foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany') relationType = `${cap}[]`; // TODO : Uppercase type
 
-<<<<<<< HEAD
             let relationTemplate = `  @${foreignKey.type}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
-=======
-            let relationTemplate = `  @${response}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};\n`;
->>>>>>> b73109b568d727a262be56398da9658ee9fea456
 
             entities += relationTemplate;
             imports += `import {${cap}} from './${low}.model';\n`;
