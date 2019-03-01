@@ -45,17 +45,8 @@ export class Document implements IModelize {
   })
   user: User;
 
-  @Column({
-    type: Date,
-    default: DateUtils.mixedDateToDateString( new Date() )
-  })
-  createdAt;
-
-  @Column({
-    type: Date,
-    default: null
-  })
-  updatedAt;
+  @CreateDateColumn()
+  @UpdateDateColumn()
 
   @Column({
     type: Date,
