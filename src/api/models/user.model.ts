@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany , CreateDateColumn , UpdateDateColumn } from "typeorm";
 import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environment.config";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { Document } from "./../models/document.model";
@@ -18,7 +18,7 @@ export class User implements IModelize {
    * @param payload Object data to assign
    */
   constructor(payload: Object) { Object.assign(this, payload); }
-  
+
   private temporaryPassword;
 
   @PrimaryGeneratedColumn()
@@ -86,7 +86,7 @@ export class User implements IModelize {
   })
   deletedAt;
 
-  @AfterLoad() 
+  @AfterLoad()
   storeTemporaryPassword() : void {
     this.temporaryPassword = this.password;
   }
@@ -97,15 +97,15 @@ export class User implements IModelize {
     try {
 
       if (this.temporaryPassword === this.password) return true;
-  
+
       const rounds = env === 'test' ? 1 : 10;
-  
+
       const hash = await Bcrypt.hash(this.password, rounds);
-  
+
       this.password = hash;
-  
+
       return true;
-    } 
+    }
     catch (error) {
       throw Boom.badImplementation(error.message);
     }
@@ -115,7 +115,7 @@ export class User implements IModelize {
     return new UserSerializer().serializer.serialize(this);
   }
   /**
-   * 
+   *
    */
   token() {
     const payload = {
@@ -127,21 +127,21 @@ export class User implements IModelize {
   }
 
   /**
-   * 
-   * @param password 
+   *
+   * @param password
    */
   async passwordMatches(password: string) {
     return Bcrypt.compare(password, this.password);
   }
 
   /**
-   * @param error 
+   * @param error
    */
   static checkDuplicateEmail(error) {
     if (error.name === 'QueryFailedError' && error.errno === 1062) {
       return Boom.conflict(
-        'Validation error', 
-        { 
+        'Validation error',
+        {
           errors: [{
             field: 'email',
             location: 'body',
