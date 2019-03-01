@@ -68,17 +68,8 @@ export class User implements IModelize {
   })
   role: "admin" | "user" | "ghost";
 
-  @Column({
-    type: Date,
-    default: DateUtils.mixedDateToDateString( new Date() )
-  })
-  createdAt;
-
-  @Column({
-    type: Date,
-    default: null
-  })
-  updatedAt;
+  @CreateDateColumn()
+  @UpdateDateColumn()
 
   @Column({
     type: Date,
