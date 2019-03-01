@@ -1,0 +1,7 @@
+ @Column({
+    type: <%- entity.type %>,
+    <% if (entity.null === '') %><%- entity.null  %>
+    <% if (entity.lenght === '') %><%- entity.lenght %>
+    <% if (entity.constraints === '') %><%- entity.constraints %>
+})
+<%- entity.name %>;
