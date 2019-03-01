@@ -1,0 +1,113 @@
+var request = require('supertest');
+var fixtures = require('./fixtures');
+var chai = require("chai");
+
+chai.config.includeStack = false;
+chai.config.truncateThreshold = true;
+
+describe("<%- entityCapitalize %> CRUD", function () {
+
+  var server, agent, password, credentials, token, id;
+  var expect = chai.expect;
+
+  before(function (done) {
+
+    let express = require('./../dist/app.bootstrap');
+
+    server      = express.App;
+    agent       = request.agent(server);
+    password    = fixtures.password();
+    credentials = { data : { attributes : fixtures.user('admin', password) } };
+
+    agent
+      .post('/api/v1/auth/register')
+      .send(credentials)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .end(function(err, res) {
+        expect(res.statusCode).to.equal(201);
+        token = res.body.token.accessToken;
+        done();
+      });
+
+  });
+
+  after(function () {
+    server = undefined;
+    delete server;
+  });
+
+{{ENTITY_CRUD_CREATE_START}}
+  /**
+   * POST a <%- entityLowercase %> object to the API
+   */
+  it('POST /api/v1/<%- entityLowercase %>s succeed with 201', function (done) {
+    agent
+      .post('/api/v1/<%- entityLowercase %>s')
+      .set('Authorization', 'Bearer ' + token)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send( <%- entityProperties %> )
+      .end(function(err, res) {
+        let status = res.status | res.statusCode;
+        expect(status).to.equal(201);
+        id = res.body.data.id;
+        done();
+      })
+  });
+{{ENTITY_CRUD_CREATE_END}}
+
+{{ENTITY_CRUD_READ_ID_START}}
+  /**
+   * GET a <%- entityLowercase %> object from the API
+   */
+  it('GET /api/v1/<%- entityLowercase %>s/n succeed with 200', function (done) {
+    agent
+      .get('/api/v1/<%- entityLowercase %>s/' + id)
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200, done);
+  });
+{{ENTITY_CRUD_READ_ID_END}}
+
+{{ENTITY_CRUD_UPDATE_PUT_START}}
+  /**
+   * PUT a <%- entityLowercase %> object to the API
+   */
+  it('PUT /api/v1/<%- entityLowercase %>s/n succeed with 200', function (done) {
+    agent
+      .put('/api/v1/<%- entityLowercase %>s/' + id)
+      .set('Authorization', 'Bearer ' + token)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send( {{ENTITY_PROPERTIES}} )
+      .expect(200, done);
+  });
+{{ENTITY_CRUD_UPDATE_PUT_END}}
+
+{{ENTITY_CRUD_UPDATE_PATCH_START}}
+  /**
+   * PATCH a <%- entityLowercase %> object to the API
+   */
+  it('PATCH /api/v1/<%- entityLowercase %>s/n succeed with 200', function (done) {
+    agent
+      .patch('/api/v1/<%- entityLowercase %>s/' + id)
+      .set('Authorization', 'Bearer ' + token)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send({{ENTITY_PROPERTIES}})
+      .expect(200, done);
+  });
+{{ENTITY_CRUD_UPDATE_PATCH_END}}
+
+{{ENTITY_CRUD_DELETE_START}}
+  /**
+   * DELETE a <%- entityLowercase %> object from the API
+   */
+  it('DELETE /api/v1/<%- entityLowercase %>s/n succeed with 204', function (done) {
+    agent
+      .delete('/api/v1/<%- entityLowercase %>s/' + id)
+      .set('Authorization', 'Bearer ' + token)
+      .expect(204, done);
+  });
+{{ENTITY_CRUD_DELETE_END}}
+});

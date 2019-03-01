@@ -1,0 +1,15 @@
+import * as Boom from "boom";
+
+import { Request, Response } from "express";
+import { getRepository } from "typeorm";
+import { <%- entityCapitalize %>Serializer } from "./../serializers/<%- entityLowercase %>.serializer";
+import { BaseMiddleware } from "./base.middleware";
+
+/**
+ * <%- entityCapitalize %> middleware
+ */
+export class <%- entityCapitalize %>Middleware extends BaseMiddleware {
+
+  constructor() { super( new <%- entityCapitalize %>Serializer() ); }
+
+}

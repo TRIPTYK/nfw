@@ -1,0 +1,35 @@
+import * as Boom from "boom";
+
+import { <%- entityCapitalize %> } from "../models/<%- entityLowercase %>.model";
+import { Repository, EntityRepository, getRepository } from "typeorm";
+import { omitBy, isNil } from "lodash";
+
+@EntityRepository(<%- entityCapitalize %>)
+export class <%- entityCapitalize %>Repository extends Repository< <%- entityCapitalize %> >  {
+
+  /** */
+  constructor() { super(); }
+
+  /**
+   * Get a list of <%- entityLowercase %>s according to current query parameters
+   *
+   * @public
+   */
+  public async list({ page = 1, perPage = 30, /** TODO path, fieldname, filename, size, mimetype **/ }) {
+
+    try {
+      const repository = getRepository(<%- entityCapitalize %>);
+      const options = omitBy({ /** TODO implements params path, fieldname, filename, size, mimetype */ }, isNil);
+
+      const <%- entityLowercase %>s = await repository.find({
+        where: options,
+        skip: ( page - 1 ) * perPage,
+        take: perPage
+      });
+
+      return <%- entityLowercase %>s;
+    }
+    catch(e) { throw Boom.expectationFailed(e.message); }
+
+  }
+}
