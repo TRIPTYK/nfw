@@ -1,9 +1,8 @@
 const { items } = require('./resources');
-const { countLines , capitalizeEntity , removeImport , isImportPresent , lowercaseEntity} = require('./utils');
+const { countLines , capitalizeEntity , removeImport , isImportPresent , lowercaseEntity , fileExists} = require('./utils');
 const FS = require('fs');
 const Log = require('./log');
 const Util = require('util');
-const Exists = Util.promisify(FS.exists);
 const ReadFile = Util.promisify(FS.readFile);
 const Unlink = Util.promisify(FS.unlink);
 const WriteFile = Util.promisify(FS.writeFile);
@@ -23,9 +22,8 @@ const _deleteCompiledJS = async() => {
 
     let relativeFilePath = `/dist/api/${item.dest}/${lowercase}.${item.template}.js`;
     let filePath = processPath + relativeFilePath;
-    let exists = await Exists(filePath);
 
-    if (exists) {
+    if (fileExists(filePath)) {
       await Unlink(filePath)
       .then(() => Log.success(`Compiled ${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
       .catch(e => Log.error(`Error while deleting compiled ${item.template}`) );
@@ -39,9 +37,8 @@ const _deleteTypescriptFiles = async() => {
   await Promise.all(items.map( async (item) => {
     let relativeFilePath = `/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`;
     let filePath = processPath + relativeFilePath;
-    let exists = await Exists(filePath);
 
-    if (exists) {
+    if (fileExists(filePath)) {
       await Unlink(filePath)
       .then(() => Log.success(`${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
       .catch(e => Log.error(`Error while deleting ${item.template} \n`) );
@@ -59,7 +56,7 @@ const _unroute = async () => {
   let proxy = await ReadFile(proxyPath, 'utf-8');
 
   // this regex will match a use statement and the associated JSDoc comment
-  let toRoute = new RegExp(`\n?((\\\/\\*[\\w\\\'\\s\\r\\n\\*]*\\*\\\/)|(\\\/\\\/[\\w\\s\\\']*))\\s*(\\w*.use.*${capitalize}Router(.|\\s){1};)\n?`,"gm");
+  let toRoute = new RegExp(`\\n?(?<Comments>\\\/\\*[\\S\\s]*\\*\\\/)\\s*(?<useStatement>\\w*\\.use.*${capitalize}Router.*;)\\n?`,"gm");
 
   // replace match by nothing
   proxy = removeImport(proxy,capitalize)

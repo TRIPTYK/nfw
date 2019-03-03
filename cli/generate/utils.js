@@ -3,9 +3,7 @@
  */
 const FS = require('fs');
 const readline = require('readline');
-
 const Util = require('util');
-const Exists = Util.promisify(FS.exists);
 
 /**
  * @description : count the lines of a file
@@ -84,7 +82,7 @@ exports.removeEmptyLines = (string) => string.replace(/\n?^\s*$/gm,"");
  * @description check if model file exists in projet
  * @param {string} string
  */
- exports.modelFileExists = (entity) => Exists(`${process.cwd()}/src/api/models/${exports.lowercaseEntity(entity)}.model.ts`);
+ exports.modelFileExists = (entity) => exports.fileExists(`${process.cwd()}/src/api/models/${exports.lowercaseEntity(entity)}.model.ts`);
 
 /**
  * @description capitalize first letter of String
@@ -97,3 +95,11 @@ exports.capitalizeEntity = (entity) => entity[0].toUpperCase() + entity.substr(1
  * @param {string} entity
  */
 exports.lowercaseEntity = (entity) => entity[0].toLowerCase() + entity.substr(1);
+
+/**
+ * @description transform an sql type string to an object with type and length
+ * @param {string} type
+ */
+exports.sqlTypeData = (type) => /(?<type>\w+)(?:\((?<length>\d+)\))?/.exec(type).groups;
+
+exports.fileExists = (file) => FS.accessSync(file,FS.constants.R_OK) !== undefined;

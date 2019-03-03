@@ -22,14 +22,13 @@ const Log = require('./log');
 /**
  * Requirement of the functions "countLine" and "capitalizeEntity" from the local file utils
  */
-const { countLines , capitalizeEntity , prompt , lowercaseEntity } = require('./utils');
+const { countLines , capitalizeEntity , prompt , lowercaseEntity , fileExists} = require('./utils');
 /**
  * Transform a async method to a promise
  * @returns {Promise} returns FS.exists async function as a promise
  */
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
-const Exists = Util.promisify(FS.exists);
 /**
  * Requirement of the library readline
  */
@@ -44,10 +43,6 @@ const crudOptions = {
   update: false,
   delete: false
 };
-
-/**
- *  @description : Checks if the second parameter is present , otherwise exit
- */
 
 const processPath = process.cwd();
 
