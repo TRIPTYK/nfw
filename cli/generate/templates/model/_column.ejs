@@ -1,7 +1,8 @@
- @Column({
-    type: <%- entity.type %>,
-    <% if (entity.null === '') %><%- entity.null  %>
-    <% if (entity.lenght === '') %><%- entity.lenght %>
-    <% if (entity.constraints === '') %><%- entity.constraints %>
+@Column({
+  type: <%- `'${entity.Type.type}'` %>,
+  <% if (entity.Null !== '') { %><%- entity.Null  %><% } %>
+  <% if (entity.Type.lenght !== '') { %><%- entity.Type.lenght %><% } %>
+  <% if (entity.Key !== '') { %><%- entity.Key %><% } %>
+  <% if (entity.Default !== '') { %><%- entity.Default %><% } %>
 })
-<%- entity.name %>;
+<%- entity.Field %>;
