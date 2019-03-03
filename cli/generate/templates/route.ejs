@@ -48,12 +48,8 @@ router
    * @apiGroup <%- entityCapitalize %>
    * @apiPermission admin
    *
-   * @apiHeader {String} Athorization  <%- entityCapitalize %>'s access token
+   * @apiHeader {String} Authorization  <%- entityCapitalize %>'s access token
    *
-   * @apiParam  {String}             email     <%- entityCapitalize %>'s email
-   * @apiParam  {String{8..16}}     password   <%- entityCapitalize %>'s password
-   * @apiParam  {String{..32}}      [name]     <%- entityCapitalize %>'s <%- entityLowercase %>name
-   * @apiParam  {String=<%- entityLowercase %>,admin}  [role]    <%- entityCapitalize %>'s role
    *
    * @apiSuccess (Created 201) {String}  <%- entityLowercase %>.id         <%- entityCapitalize %>'s id
    *
@@ -119,11 +115,8 @@ router
    * @apiGroup <%- entityCapitalize %>
    * @apiPermission <%- entityLowercase %>
    *
-   * @apiHeader {String} Athorization  <%- entityCapitalize %>'s access token
+   * @apiHeader {String} Authorization  <%- entityCapitalize %>'s access token
    *
-   * @apiParam  {String}             email     <%- entityCapitalize %>'s email
-   * @apiParam  {String{6..128}}     password  <%- entityCapitalize %>'s password
-   * @apiParam  {String{..128}}      [name]    <%- entityCapitalize %>'s name
    * @apiParam  {String=<%- entityLowercase %>,admin}  [role]    <%- entityCapitalize %>'s role
    * (You must be an admin to change the <%- entityLowercase %>'s role)
    *
