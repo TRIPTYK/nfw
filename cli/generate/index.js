@@ -3,6 +3,7 @@
  * @description Handle read/write stream I/O
  */
 const FS = require('fs');
+const ejs = require('ejs');
 /**
  * Requirement of the library Utils
  * @description Needed to promisify async methods
@@ -21,14 +22,13 @@ const Log = require('./log');
 /**
  * Requirement of the functions "countLine" and "capitalizeEntity" from the local file utils
  */
-const { countLines , capitalizeEntity , prompt , lowercaseEntity } = require('./utils');
+const { countLines , capitalizeEntity , prompt , lowercaseEntity , fileExists} = require('./utils');
 /**
  * Transform a async method to a promise
  * @returns {Promise} returns FS.exists async function as a promise
  */
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
-const Exists = Util.promisify(FS.exists);
 /**
  * Requirement of the library readline
  */
@@ -43,10 +43,6 @@ const crudOptions = {
   update: false,
   delete: false
 };
-
-/**
- *  @description : Checks if the second parameter is present , otherwise exit
- */
 
 const processPath = process.cwd();
 
@@ -80,8 +76,8 @@ const _checkForCrud = (arg) => {
  */
 const _getTestFields = (columns) => {
   return columns.map(elem => {
-    let elemLength = new RegExp("\\w\*\\\(\(\[0\-9\]\*\)\\\)","").exec(elem.Type);
-    let realType = new RegExp("(\\w*)","").exec(elem.Type)[1];
+    let elemLength = elem.Type.length;
+    let realType = elem.Type.type;
     elemLength = elemLength === null ? elemLength = null : elemLength[1];
 
     let elemVal = `fixtures.random${realType}(${elemLength})`;
@@ -129,58 +125,19 @@ const _write = async items => {
   const testColumns = _getTestFields(tableColumns);
 
   let promises = items.map( async (item) => {
-    let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.txt`, 'utf-8');
-
     // handle model template separately
     if (item.template == 'model') return;
 
-    // replacing entity names
-    let output = file
-      .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-      .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize) // ig -> global , case insensitive replacement
-      .replace(/{{ENTITY_COLUMNS}}/ig,columnNames.join(',\n'))
-      .replace(/{{ENTITY_PROPERTIES}}/ig, `{${testColumns.join(',\n')}}`);
+    let file = await ReadFile(`${processPath}/cli/generate/templates/${item.template}.ejs`, 'utf-8');
 
-    // replacing all the placeholder depending on the crud options
-    if (crudOptions.create) {
-      output = output
-        .replace(/{{ENTITY_CRUD_CREATE_START}}/ig, "")
-        .replace(/{{ENTITY_CREATE_VALIDATION}}/ig,validation.join(',\n'))
-        .replace(/{{ENTITY_CRUD_CREATE_END}}/ig,"");
-    }else{
-      output = output
-        .replace(/{{ENTITY_CRUD_CREATE_START}}[\s\S]*{{ENTITY_CRUD_CREATE_END}}/mg,"");
-    }
-
-    if (crudOptions.read) {
-      output = output
-        .replace(/{{ENTITY_CRUD_READ_START}}|{{ENTITY_CRUD_READ_END}}/ig, "")
-        .replace(/{{ENTITY_CRUD_READ_ID_START}}|{{ENTITY_CRUD_READ_ID_END}}/ig, "");
-    }else{
-      output = output
-        .replace(/{{ENTITY_CRUD_READ_START}}[\s\S]*{{ENTITY_CRUD_READ_END}}/mg, "")
-        .replace(/{{ENTITY_CRUD_READ_ID_START}}[\s\S]*{{ENTITY_CRUD_READ_ID_END}}/mg,"");
-    }
-
-    if (crudOptions.update){
-      output = output
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}|{{ENTITY_CRUD_UPDATE_PUT_END}}/ig, "")
-        .replace(/({{ENTITY_PUT_VALIDATION}}|{{ENTITY_PATCH_VALIDATION}})/ig,validation.join(',\n'))
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}|{{ENTITY_CRUD_UPDATE_PATCH_END}}/ig, "");
-    }else{
-      output = output
-        .replace(/{{ENTITY_CRUD_UPDATE_PUT_START}}[\s\S]*{{ENTITY_CRUD_UPDATE_PUT_END}}/mg, "")
-        .replace(/{{ENTITY_CRUD_UPDATE_PATCH_START}}[\s\S]*{{ENTITY_CRUD_UPDATE_PATCH_END}}/mg,"");
-    }
-
-    if (crudOptions.delete) {
-      output = output
-        .replace(/{{ENTITY_CRUD_DELETE_START}}/ig, "")
-        .replace(/{{ENTITY_CRUD_DELETE_END}}/ig,"");
-    }else{
-      output = output
-        .replace(/{{ENTITY_CRUD_DELETE_START}}[\s\S]*{{ENTITY_CRUD_DELETE_END}}/mg, "");
-    }
+    let output = ejs.compile(file)({
+      entityLowercase : lowercase,
+      entityCapitalize : capitalize,
+      options : crudOptions,
+      entityColumns : columnNames,
+      entityProperties : `{${testColumns.join(',\n')}}`,
+      validation : validation.join(',\n')
+    });
 
     await WriteFile(`${processPath}/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`, output)
       .then(() => {

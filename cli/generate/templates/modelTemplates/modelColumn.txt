@@ -1,8 +1,0 @@
- @Column({
-    type: {{ROW_TYPE}},
-    {{ROW_NULL}}
-    {{ROW_LENGHT}}
-   {{ROW_CONSTRAINT}}
-
-  })
-  {{ROW_NAME}};

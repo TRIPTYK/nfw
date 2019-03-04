@@ -1,0 +1,3 @@
+@<%- foreignKey.type %>(type => <%- entityCapitalize %>,<%- entityLowercase %> => <%- entityLowercase %>.<%- foreignKey.REFERENCED_COLUMN_NAME %>)
+  @JoinColumn({ name: '<%- foreignKey.COLUMN_NAME %>' , referencedColumnName: '<%- foreignKey.REFERENCED_COLUMN_NAME %>' })
+  <%- foreignKey.COLUMN_NAME %> : <%- foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany' ? `${capitalizeEntity(foreignKey.REFERENCED_TABLE_NAME)}[]` : capitalizeEntity(foreignKey.REFERENCED_TABLE_NAME) %>

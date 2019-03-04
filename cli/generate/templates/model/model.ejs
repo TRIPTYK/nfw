@@ -1,0 +1,33 @@
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , OneToOne , JoinColumn , OneToMany , ManyToMany , CreateDateColumn , UpdateDateColumn } from "typeorm";
+import { DateUtils } from "typeorm/util/DateUtils";
+import { <%- entityCapitalize %>Serializer } from "./../serializers/<%- entityLowercase %>.serializer";
+<% imports.forEach(imprt => {%>
+<%- imprt -%>
+<% }); %>
+
+@Entity()
+export class <%- entityCapitalize %> {
+
+  /**
+   * @param payload Object data to assign
+   */
+  constructor(payload: Object ) { Object.assign(this, payload); }
+
+  @PrimaryGeneratedColumn()
+  id: Number;
+
+<% entities.forEach(entity => {%>
+  <%- include('/model/_column',{entity}) -%>
+<%});-%>
+
+<% foreignKeys.forEach(foreignKey => {%>
+  <%- include('/model/_foreignKey',{foreignKey}) -%>
+<%});-%>
+
+<% if (createUpdate && createUpdate.createAt) { %> @CreateDateColumn() <% } -%>
+<% if (createUpdate && createUpdate.updateAt) { %> @UpdateDateColumn() <% } -%>
+
+  public whitelist() {
+    return new <%- entityCapitalize %>Serializer().serializer.serialize(this);
+  }
+}
