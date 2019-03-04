@@ -75,6 +75,8 @@ const _getDefault = (col) =>{
     }  
   }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
     return `default : ${col.Default}`;
+  }else if (col.Default === ':no'){
+    return '';
   }else{
     return `default :"${col.Default}"`;
   }
