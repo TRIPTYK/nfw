@@ -102,4 +102,14 @@ exports.lowercaseEntity = (entity) => entity[0].toLowerCase() + entity.substr(1)
  */
 exports.sqlTypeData = (type) => /(?<type>\w+)(?:\((?<length>\d+)\))?/.exec(type).groups;
 
-exports.fileExists = (file) => FS.accessSync(file,FS.constants.R_OK) !== undefined;
+/**
+ * @description check if file exists
+ * @param {string} filePath
+ */
+exports.fileExists = (filePath) => {
+  try{
+    return fs.statSync(filePath).isFile();
+  }catch(err){
+    return false
+  }
+}
