@@ -51,7 +51,7 @@ const _getDefault = (col) =>{
     else
       return 'default : null';
 
-  if (['float','int','double'].contains(col.Type.type)) return `default : ${col.Default}`;
+  if (['float','int','double'].includes(col.Type.type)) return `default : ${col.Default}`;
 
   return `default :"${col.Default}"`;
 }
