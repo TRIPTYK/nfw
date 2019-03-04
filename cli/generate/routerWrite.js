@@ -52,9 +52,7 @@ module.exports = async (action) => {
       console.log(e.message);
       console.log('Original router file will be restored ...');
       await WriteFile(proxyPath, proxy)
-        .catch(e => {
-          process.stdout.write(e.message);
-        });
+        .catch(e => Log.error(e.message));
       Log.success(`Original router file restoring done.`);
       Log.success(`Files generating done.`);
       Log.warning(`Check the api/routes/v1/index.ts to update`);

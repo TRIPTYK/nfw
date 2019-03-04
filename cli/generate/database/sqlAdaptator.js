@@ -20,11 +20,21 @@ var db = mysql.createConnection({
 
 const query = util.promisify(db.query.bind(db));
 
+
+/**
+ * @description : get table foreign keys
+ * @param {string} tableName
+ */
 exports.getForeignKeys = async (tableName) => {
     let result = await query(`SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA='${env.database}' AND TABLE_NAME='${tableName}';`);
     return result;
 };
 
+
+/**
+ * @description : deletes a table
+ * @param {string} tableName
+ */
 exports.dropTable = async (tableName) => {
   let result = await query(`DROP TABLE ${tableName};`);
   return result;
@@ -41,6 +51,10 @@ exports.getColumns = async (tableName) => {
 };
 
 
+/**
+ * @description checks if table exists
+ * @param {string} tableName
+ */
 exports.tableExists = async (tableName) => {
   let result = await query(  `
     SELECT COUNT(*) as 'count'
@@ -70,7 +84,12 @@ exports.getTablesInName = async () =>{
     return tableName;
 }
 
-exports.dumpAll = async (table,path) => {
+
+/**
+ * @description dump all into file
+ * @param {string} path
+ */
+exports.dumpAll = async (path) => {
   // dump the result straight to a file
   await mysqldump({
       connection: {
@@ -83,6 +102,11 @@ exports.dumpAll = async (table,path) => {
   });
 };
 
+/**
+* @description dump a table into file
+* @param {string} table
+* @param {string} path
+ */
 exports.dumpTable = async (table,path) => {
   // dump the result straight to a file
   await mysqldump({
