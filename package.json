@@ -6,7 +6,7 @@
   "scripts": {
     "testWin": "./node_modules/.bin/mocha --reporter spec --timeout 10000 --exit || ECHO",
     "testUnix": "./node_modules/.bin/mocha --reporter spec --timeout 10000 --exit; exit 0",
-    "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i highlight.js@9.14.2 -D -g && npm i typescript -g && npm i typeorm -g && npm i && tsc",
+    "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/migration/dump ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i highlight.js@9.14.2 -D -g && npm i typescript -g && npm i typeorm -g && npm i && tsc",
     "kickstart-win": "init_scripts\\windows.bat",
     "generate": "node ./cli/generate/",
     "delete": "node ./cli/generate/delete",
