@@ -56,7 +56,7 @@ const _unroute = async () => {
   let proxy = await ReadFile(proxyPath, 'utf-8');
 
   // this regex will match a use statement and the associated JSDoc comment
-  let toRoute = new RegExp(`\\n?(?<Comments>\\\/\\*[\\S\\s]*\\*\\\/)\\s*(?<useStatement>\\w*\\.use.*${capitalize}Router.*;)\\n?`,"gm");
+  let toRoute = new RegExp(`\n?((\\\/\\*[\\w\\\'\\s\\r\\n\\*]*\\*\\\/)|(\\\/\\\/[\\w\\s\\\']*))\\s*(\\w*.use.*${capitalize}Router(.|\\s){1};)\n?`,"gm");
 
   // replace match by nothing
   proxy = removeImport(proxy,capitalize)
