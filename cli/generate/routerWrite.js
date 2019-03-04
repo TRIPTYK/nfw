@@ -40,16 +40,14 @@ module.exports = async (action) => {
   if(!isImportPresent(proxy,capitalize))
   {
     let output = writeToFirstEmptyLine(proxy,`import { router as ${capitalize}Router } from "./${lowercase}.route";\n`)
-      .replace(/^\s*(?=.*export.*)/m,route); // inserts route BEFORE the export statement , eliminaing some false-positive
-
-    console.log(output);
+      .replace(/^\s*(?=.*export.*)/m,`\n\n${route}\n\n`); // inserts route BEFORE the export statement , eliminaing some false-positive
 
     try {
-    await WriteFile(proxyPath,output)
-      .then(() => {
-        Log.success(`Proxy router file updated.`);
-        Log.success(`Files generating done.`);
-      });
+      await WriteFile(proxyPath,output)
+        .then(() => {
+          Log.success(`Proxy router file updated.`);
+          Log.success(`Files generating done.`);
+        });
     }catch(e){ // try-catch block needed , otherwise we will need to launch an async function in catch()
       console.log(e.message);
       console.log('Original router file will be restored ...');
