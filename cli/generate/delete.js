@@ -94,7 +94,7 @@ const _unconfig = async () => {
  * @description module export main entry , it deletes generated files
  * @param {*} items
  */
-module.exports = async (action) => {
+module.exports = async (action,drop) => {
   //constructor behavior
   capitalize = capitalizeEntity(action);
   lowercase = lowercaseEntity(action);
@@ -110,7 +110,7 @@ module.exports = async (action) => {
 
   let dumpPath = `./dist/migration/dump/${+ new Date()}-${action}`;
 
-  if (await SqlAdaptator.tableExists(action)) {
+  if (await SqlAdaptator.tableExists(action) && drop) {
     await SqlAdaptator.dumpTable(action,dumpPath)
       .then(() => Log.success(`SQL dump created at : ${dumpPath}`))
       .catch(e => Log.error("Failed to create table dump"));

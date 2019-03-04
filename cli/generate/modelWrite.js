@@ -45,15 +45,16 @@ const _getLength = (info) => {
  * @returns default : value or nothing
  */
 const _getDefault = (col) =>{
-  if (col.Default === null)
-    if(col.Null === 'NO' || col.Key=== 'PRI')
-      return '';
-    else
-      return 'default : null';
-
-  if (['float','int','double'].includes(col.Type.type)) return `default : ${col.Default}`;
-
-  return `default :"${col.Default}"`;
+  if (col.Default === null){
+    if(col.Null === 'NO' || col.Key=== 'PRI') return '';
+    else return 'default : null'; 
+  }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
+    return `default : ${col.Default}`;
+  }else if (col.Default === ':no'){
+    return '';
+  }else{
+    return `default :"${col.Default}"`;
+  }
 }
 
 
