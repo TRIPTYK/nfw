@@ -1,0 +1,8 @@
+@Column({
+  type: <%- `'${entity.Type.type}'` %>,
+  <% if (entity.Null !== '') { %><%- entity.Null  %><% } %>
+  <% if (entity.Type.lenght !== '') { %><%- entity.Type.lenght %><% } %>
+  <% if (entity.Key !== '') { %><%- entity.Key %><% } %>
+  <% if (entity.Default !== '') { %><%- entity.Default %><% } %>
+})
+<%- entity.Field %>;

@@ -6,7 +6,7 @@
  * the futur table and the table is created in the database.
  * @exports writeModel
  */
-
+const ejs = require('ejs');
 const sqlAdaptator = require('./database/sqlAdaptator');
 //const mongoAdaptator = require('./database/mongoAdaptator');
 const inquirer = require('inquirer');
@@ -17,22 +17,10 @@ const databaseInfo = require('./databaseInfo');
 const ReadFile = Util.promisify(FS.readFile);
 const WriteFile = Util.promisify(FS.writeFile);
 const path = require('path');
-const {  capitalizeEntity , removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity } = require('./utils');
+const {  capitalizeEntity , fileExists, removeEmptyLines , writeToFirstEmptyLine , isImportPresent , lowercaseEntity , sqlTypeData } = require('./utils');
 
 var lowercase;
 var capitalize;
-
-/**
- *
- * @param {String} data
- * @description mysql send data(lenght). Therefore, I need to split if i only want
- * the datatype.
- * @returns data type
- */
-const _dataWithoutLenght= (data) =>{
-    type = data.split('(')
-    return `"${type[0]}"`;
-}
 
 /**
  *
@@ -41,44 +29,31 @@ const _dataWithoutLenght= (data) =>{
  * split then delete the ')'
  * @returns data lenght/enum
  */
-const _getLength = (data) =>{
-    type = data.split('(');
-    if(type[0] === "enum"){
-        let better = type[1].replace(')',"") ;
-        return "enum  : ["+better+"],";
+const _getLength = (info) => {
+    if(info.type == "enum") return `enum  : [${info.type}],`;
+    if(info.length != undefined) {
+        if(info.type.includes('int')) return `width : ${info.length},`;
+        return `length : ${info.length},`;
     }
-    else if(type[1] != null){
-        if(type[0].includes('int')){
-            let better = type[1].replace(')',"") ;
-            return "width : "+better+",";
-        }else{
-        let better = type[1].replace(')',"") ;
-        return "length : "+better+",";
-        }
-    }else{
-        return "";
-    }
+    return "";
 }
 
 /**
- * 
+ *
  * @param {Array} col
  * @description set default value for the column and check that default is not null when value can't be null
- * @returns default : value or nothing  
+ * @returns default : value or nothing
  */
 const _getDefault = (col) =>{
-  console.log(col);
-  if (col.Default === null){
-    if(col.Null === 'NO' ||col.Key=== 'PRI') {
+  if (col.Default === null)
+    if(col.Null === 'NO' || col.Key=== 'PRI')
       return '';
-    }else{
+    else
       return 'default : null';
-    }  
-  }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
-    return `default : ${col.Default}`;
-  }else{
-    return `default :"${col.Default}"`;
-  }
+
+  if (['float','int','double'].includes(col.Type.type)) return `default : ${col.Default}`;
+
+  return `default :"${col.Default}"`;
 }
 
 
@@ -92,8 +67,8 @@ const _getDefault = (col) =>{
  */
 const _getNull = (data,key) => {
     if(key === 'PRI') return '';
-    else if(data === 'YES' && key != 'PRI') return 'nullable:true,';
-    else return 'nullable:false,';
+    if(data === 'YES' && key != 'PRI') return 'nullable:true,';
+    return 'nullable:false,';
 }
 
 /**
@@ -124,8 +99,8 @@ const _addToConfig = async (lowercase,capitalize) => {
  */
 const _getKey = data => {
     if (data === 'PRI') return ' primary : true,';
-    else if ( data === 'UNI') return ' unique : true,';
-    else return '';
+    if (data === 'UNI') return ' unique : true,';
+    return '';
 }
 
 /**
@@ -140,58 +115,51 @@ const _getKey = data => {
 const writeModel = async (action,data=null) =>{
     let lowercase = lowercaseEntity(action);
     let capitalize  = capitalizeEntity(lowercase);
-    let pathModel = `${process.cwd()}/src/api/models/${lowercase}.model.ts`
-    let p_file = ReadFile(`${process.cwd()}/cli/generate/templates/modelTemplates/modelHeader.txt`, 'utf-8');
-    let p_colTemp = ReadFile(`${process.cwd()}/cli/generate/templates//modelTemplates/modelColumn.txt`, 'utf-8');
 
-    let [file,colTemp] = await Promise.all([p_file,p_colTemp]);
+    let p_file = await ReadFile(`${process.cwd()}/cli/generate/templates/model/model.ejs`, 'utf-8');
+    let pathModel = path.resolve(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
 
     if(data == null) data = await databaseInfo.getTableInfo('sql',lowercase);
-    
-    let { columns , foreignKeys } = data;
-    let imports = '';
-    var entities ='';
 
-    if (data.createUpdate != null){
-      if(data.createUpdate.createAt) entities += "@CreateDateColumn() \n"
-      if(data.createUpdate.updateAt) entities += "@UpdateDateColumn() \n"
-    }
-    
+    let { columns , foreignKeys } = data;
+    let entities = [] , f_keys = [] , imports = [];
+
     await Promise.all(columns.map(async col =>{
         if(col.Field === "id") return;
-        console.log(foreignKeys);
+
         let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
-        if (foreignKey !== undefined) {
+
+        if (foreignKey) {
             let low = foreignKey.REFERENCED_TABLE_NAME;
             let cap = capitalizeEntity(low);
-            let relationType = cap;
 
-            if(foreignKey.type == 'OneToMany' || foreignKey.type == 'ManyToMany') relationType = `${cap}[]`; // TODO : Uppercase type
+            f_keys.push(foreignKey);
 
-            let relationTemplate = `  @${foreignKey.type}(type => ${cap},${low} => ${low}.${foreignKey.REFERENCED_COLUMN_NAME})\n  @JoinColumn({ name: '${col.Field}' , referencedColumnName: '${foreignKey.REFERENCED_COLUMN_NAME}' })\n  ${col.Field} : ${relationType};`;
-
-            entities += relationTemplate;
-            imports += `import {${cap}} from './${low}.model';\n`;
+            if (foreignKey.REFERENCED_TABLE_NAME != foreignKey.TABLE_NAME)
+              imports.push(`import {${cap}} from './${low}.model';`);
           }else{
-            let entitiesTemp = colTemp
-              .replace(/{{ROW_NAME}}/ig, col.Field)
-              .replace(/{{ROW_DEFAULT}}/ig,_getDefault(col))
-              .replace(/{{ROW_LENGHT}}/ig, _getLength(col.Type))
-              .replace(/{{ROW_NULL}}/ig, _getNull(col.Null))
-              .replace(/{{ROW_CONSTRAINT}}/ig, _getKey(col.Key))
-              .replace(/{{ROW_TYPE}}/ig, _dataWithoutLenght(col.Type));
-            entities += ` ${removeEmptyLines(entitiesTemp)} \n\n`;
+            col.Type = sqlTypeData(col.Type);
+            col.Null = _getNull(col.Null);
+            col.Key = _getKey(col.Key);
+            col.Default = _getDefault(col);
+
+            entities.push(col);
           }
         }));
-        let output = file
-          .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-          .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize)
-          .replace(/{{FOREIGN_IMPORTS}}/ig,imports)
-          .replace(/{{ENTITIES}}/ig, entities);
 
-        await Promise.all([WriteFile(pathModel, output),_addToConfig(lowercase,capitalize)]);
-        Log.success("Model created in :" + pathModel);
+      let output = ejs.compile(p_file,{root : `${process.cwd()}/cli/generate/templates/`})({
+        entityLowercase : lowercase,
+        entityCapitalize : capitalize,
+        entities,
+        imports,
+        foreignKeys : f_keys,
+        createUpdate : data.createUpdate,
+        capitalizeEntity,
+        lowercaseEntity
+      });
 
+      await Promise.all([WriteFile(pathModel, output),_addToConfig(lowercase,capitalize)]);
+      Log.success("Model created in :" + pathModel);
 }
 
 
@@ -199,10 +167,16 @@ const basicModel = async (action) => {
   let lowercase = lowercaseEntity(action);
   let capitalize  = capitalizeEntity(lowercase);
   let pathModel = path.resolve(`${process.cwd()}/src/api/models/${lowercase}.model.ts`);
-  let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model.txt`);
-  let basicModel = ` ${modelTemp}`
-    .replace(/{{ENTITY_LOWERCASE}}/ig, lowercase)
-    .replace(/{{ENTITY_CAPITALIZE}}/ig, capitalize);
+  let modelTemp = await ReadFile(`${process.cwd()}/cli/generate/templates/model/model.ejs`);
+
+  let basicModel = ejs.compile(modelTemp.toString())({
+    entityLowercase : lowercase,
+    entityCapitalize : capitalize,
+    entities : [],
+    imports : [],
+    foreignKeys : [],
+    createUpdate : null
+  });
 
   let p_write = WriteFile(pathModel, basicModel)
     .then(() => Log.success("Model created in :" + pathModel))

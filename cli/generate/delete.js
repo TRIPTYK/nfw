@@ -1,9 +1,8 @@
 const { items } = require('./resources');
-const { countLines , capitalizeEntity , removeImport , isImportPresent , lowercaseEntity} = require('./utils');
+const { countLines , capitalizeEntity , removeImport , isImportPresent , lowercaseEntity , fileExists} = require('./utils');
 const FS = require('fs');
 const Log = require('./log');
 const Util = require('util');
-const Exists = Util.promisify(FS.exists);
 const ReadFile = Util.promisify(FS.readFile);
 const Unlink = Util.promisify(FS.unlink);
 const WriteFile = Util.promisify(FS.writeFile);
@@ -23,9 +22,8 @@ const _deleteCompiledJS = async() => {
 
     let relativeFilePath = `/dist/api/${item.dest}/${lowercase}.${item.template}.js`;
     let filePath = processPath + relativeFilePath;
-    let exists = await Exists(filePath);
 
-    if (exists) {
+    if (fileExists(filePath)) {
       await Unlink(filePath)
       .then(() => Log.success(`Compiled ${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
       .catch(e => Log.error(`Error while deleting compiled ${item.template}`) );
@@ -39,9 +37,8 @@ const _deleteTypescriptFiles = async() => {
   await Promise.all(items.map( async (item) => {
     let relativeFilePath = `/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`;
     let filePath = processPath + relativeFilePath;
-    let exists = await Exists(filePath);
 
-    if (exists) {
+    if (fileExists(filePath)) {
       await Unlink(filePath)
       .then(() => Log.success(`${item.template[0].toUpperCase()}${item.template.substr(1)} deleted.`) )
       .catch(e => Log.error(`Error while deleting ${item.template} \n`) );

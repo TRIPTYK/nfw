@@ -47,7 +47,7 @@ exports.tableExists = async (tableName) => {
     FROM information_schema.tables
     WHERE table_schema = '${env.database}'
     AND table_name = '${tableName}';
-  `);
+  `).catch(e => [{count : false}]);
   return result[0].count > 0;
 };
 
