@@ -126,7 +126,6 @@ const writeModel = async (action,data=null) =>{
 
     await Promise.all(columns.map(async col =>{
         if(col.Field === "id") return;
-
         let foreignKey = foreignKeys.find(elem => elem.COLUMN_NAME == col.Field);
 
         if (foreignKey) {
