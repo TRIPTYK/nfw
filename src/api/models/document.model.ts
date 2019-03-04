@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , CreateDateColumn , UpdateDateColumn } from "typeorm";
 import { User } from "./user.model";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { mimeTypes } from "./../enums/mime-type.enum";
@@ -45,17 +45,8 @@ export class Document implements IModelize {
   })
   user: User;
 
-  @Column({
-    type: Date,
-    default: DateUtils.mixedDateToDateString( new Date() )
-  })
-  createdAt;
-
-  @Column({
-    type: Date,
-    default: null
-  })
-  updatedAt;
+  @CreateDateColumn()
+  @UpdateDateColumn()
 
   @Column({
     type: Date,

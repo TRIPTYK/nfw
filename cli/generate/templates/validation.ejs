@@ -1,0 +1,44 @@
+import * as Joi from "joi";
+
+// GET /v1/<%- entityLowercase %>
+<% if (options.read) { %>
+export const list<%- entityCapitalize %>s = {
+  query: {}
+};
+<% } %>
+
+<% if (options.read) { %>
+// GET /v1/<%- entityLowercase %>s/<%- entityLowercase %>Id
+export const get<%- entityCapitalize %> = {
+  params: {
+    id: Joi.string().regex(/^[0-9]{0,4}$/).required(),
+  }
+};
+<% } %>
+
+<% if (options.create) { %>
+// POST /v1/<%- entityLowercase %>s
+export const create<%- entityCapitalize %> = {
+  body: { <%- validation %> }
+};
+<% } %>
+
+// PUT /v1/<%- entityLowercase %>s/:Id
+<% if (options.update) { %>
+export const replace<%- entityCapitalize %> =  {
+  body: { <%- validation %> },
+  params: {
+    id: Joi.string().regex(/^[0-9]{0,4}$/).required(),
+  }
+};
+<% } %>
+
+<% if (options.update) { %>
+// PATCH /v1/<%- entityLowercase %>s/:Id
+export const update<%- entityCapitalize %> =  {
+  body: { <%- validation %> },
+  params: {
+    id: Joi.string().regex(/^[0-9]{0,4}$/).required(),
+  }
+};
+<% } %>

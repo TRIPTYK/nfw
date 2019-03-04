@@ -1,0 +1,124 @@
+import * as HttpStatus from "http-status";
+
+import { Request, Response } from "express";
+import { <%- entityCapitalize %> } from "./../models/<%- entityLowercase %>.model";
+import { <%- entityCapitalize %>Repository } from "./../repositories/<%- entityLowercase %>.repository";
+import { getRepository, getCustomRepository } from "typeorm";
+import { BaseController } from "./base.controller";
+const promisify = require('util')
+
+/**
+ *
+ */
+export class <%- entityCapitalize %>Controller extends BaseController {
+
+  /** */
+  constructor() { super(); }
+
+<% if (options.read) { %>
+  /**
+   * Get serialized <%- entityLowercase %>
+   *
+   * @param req Request
+   * @param res Response
+   *
+   * @public
+   */
+   public async get(req: Request, res : Response) {
+    const repository = getRepository(<%- entityCapitalize %>);
+    const <%- entityLowercase %> = await repository.findOneOrFail(req.params.<%- entityLowercase %>Id);
+    res.json( <%- entityLowercase %>.whitelist() );
+  }
+<% } %>
+
+<% if (options.create) { %>
+  /**
+   * Create new <%- entityLowercase %>
+   *
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   *
+   * @public
+   */
+  public async create (req: Request, res : Response, next: Function) {
+    try {
+      const repository = getRepository(<%- entityCapitalize %>);
+      const <%- entityLowercase %> = new <%- entityCapitalize %>(req.body);
+      const saved<%- entityCapitalize %> = await repository.save(<%- entityLowercase %>);
+      res.status( HttpStatus.CREATED );
+      res.json( saved<%- entityCapitalize %>.whitelist() );
+    }
+    catch (e) { next( e.message ); }
+  }
+<% } %>
+
+<% if (options.update) { %>
+  /**
+   * Update existing <%- entityLowercase %>
+   *
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   *
+   * @public
+   */
+  public async update (req: Request, res : Response, next: Function) {
+
+    try {
+      const repository = getRepository(<%- entityCapitalize %>);
+      const <%- entityLowercase %> = await repository.findOne(req.params.<%- entityLowercase %>Id);
+      repository.merge(<%- entityLowercase %>, req.body);
+      repository.save(<%- entityLowercase %>);
+      res.json( <%- entityLowercase %>.whitelist() );
+    }
+    catch(e) { next( e.message ); }
+
+  };
+<% } %>
+
+<% if (options.read) {%>
+  /**
+   * Get <%- entityLowercase %> list
+   *
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   *
+   * @public
+   */
+  public async list (req: Request, res : Response, next: Function) {
+
+    try {
+      const repository = getCustomRepository(<%- entityCapitalize %>Repository);
+      const <%- entityLowercase %>s = await repository.list(req.query);
+      res.json(<%- entityLowercase %>s);
+    }
+    catch (e) { next(e); }
+  }
+<% } %>
+
+<% if (options.delete) {%>
+  /**
+   * Delete <%- entityLowercase %>
+   *
+   * @param req Request
+   * @param res Response
+   * @param next Function
+   *
+   * @public
+   */
+  public async remove (req: Request, res : Response, next: Function) {
+
+    try {
+      const <%- entityLowercase %>Repository = getRepository(<%- entityCapitalize %>);
+      const <%- entityLowercase %> = await <%- entityLowercase %>Repository.findOne(req.params.<%- entityLowercase %>Id);
+      const repository = getRepository(<%- entityCapitalize %>);
+      await repository.remove(<%- entityLowercase %>);
+      res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+    catch(e) { next(e); }
+
+  }
+<% } %>
+}
