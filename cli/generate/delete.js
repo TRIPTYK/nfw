@@ -16,6 +16,10 @@ var lowercase;
 
 const processPath = process.cwd();
 
+
+/**
+ * @description delete compiled typescript files , ignoring tests
+ */
 const _deleteCompiledJS = async() => {
   await Promise.all(items.map( async (item) => {
     if (item.template == 'test') return; // no compiled tests
@@ -33,6 +37,9 @@ const _deleteCompiledJS = async() => {
   }));
 };
 
+/**
+ *  @description delete typescript files
+ */
 const _deleteTypescriptFiles = async() => {
   await Promise.all(items.map( async (item) => {
     let relativeFilePath = `/src/api/${item.dest}/${lowercase}.${item.template}.${item.ext}`;
@@ -66,6 +73,9 @@ const _unroute = async () => {
     .catch(e => Log.error(`Failed to write to ${proxyPath}`) );
 };
 
+/**
+ * @description removes Object and import from typeorm config file
+ */
 const _unconfig = async () => {
   let configFileName = `${process.cwd()}/src/config/typeorm.config.ts`;
   let fileContent = await ReadFile(configFileName, 'utf-8');
@@ -81,7 +91,7 @@ const _unconfig = async () => {
 };
 
 /**
- * @description Delete generated files
+ * @description module export main entry , it deletes generated files
  * @param {*} items
  */
 module.exports = async (action) => {
@@ -89,7 +99,7 @@ module.exports = async (action) => {
   capitalize = capitalizeEntity(action);
   lowercase = lowercaseEntity(action);
 
-  let promises = [
+  let promises = [  // launch all tasks in async
     _deleteTypescriptFiles(),
     _deleteCompiledJS(),
     _unroute(),

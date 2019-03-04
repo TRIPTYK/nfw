@@ -2,7 +2,6 @@ const sqlAdaptator = require('./database/sqlAdaptator');
 const Log = require('./log');
 
 /**
- *
  * @param {Technology use for database} dbType
  * @param {name of the table in database} tableName
  * @description call getColumns function in correct adapator to get data of columns
