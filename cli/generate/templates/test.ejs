@@ -37,7 +37,7 @@ describe("<%- entityCapitalize %> CRUD", function () {
     delete server;
   });
 
-{{ENTITY_CRUD_CREATE_START}}
+<% if (options.create) { %>
   /**
    * POST a <%- entityLowercase %> object to the API
    */
@@ -55,9 +55,9 @@ describe("<%- entityCapitalize %> CRUD", function () {
         done();
       })
   });
-{{ENTITY_CRUD_CREATE_END}}
+<% } %>
 
-{{ENTITY_CRUD_READ_ID_START}}
+<% if (options.read) { %>
   /**
    * GET a <%- entityLowercase %> object from the API
    */
@@ -67,9 +67,9 @@ describe("<%- entityCapitalize %> CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .expect(200, done);
   });
-{{ENTITY_CRUD_READ_ID_END}}
+<% } %>
 
-{{ENTITY_CRUD_UPDATE_PUT_START}}
+<% if (options.update) { %>
   /**
    * PUT a <%- entityLowercase %> object to the API
    */
@@ -79,12 +79,12 @@ describe("<%- entityCapitalize %> CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
-      .send( {{ENTITY_PROPERTIES}} )
+      .send(<%- entityProperties %>)
       .expect(200, done);
   });
-{{ENTITY_CRUD_UPDATE_PUT_END}}
+<% } %>
 
-{{ENTITY_CRUD_UPDATE_PATCH_START}}
+<% if (options.update) { %>
   /**
    * PATCH a <%- entityLowercase %> object to the API
    */
@@ -94,12 +94,12 @@ describe("<%- entityCapitalize %> CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
-      .send({{ENTITY_PROPERTIES}})
+      .send(<%- entityProperties %>)
       .expect(200, done);
   });
-{{ENTITY_CRUD_UPDATE_PATCH_END}}
+<% } %>
 
-{{ENTITY_CRUD_DELETE_START}}
+<% if (options.delete) { %>
   /**
    * DELETE a <%- entityLowercase %> object from the API
    */
@@ -109,5 +109,5 @@ describe("<%- entityCapitalize %> CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });
-{{ENTITY_CRUD_DELETE_END}}
+<% } %>
 });
