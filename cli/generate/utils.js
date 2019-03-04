@@ -107,8 +107,8 @@ exports.sqlTypeData = (type) => /(?<type>\w+)(?:\((?<length>\d+)\))?/.exec(type)
  * @param {string} filePath
  */
 exports.fileExists = (filePath) => {
-  try{
-    return fs.statSync(filePath).isFile();
+  try {
+    return FS.statSync(filePath).isFile();
   }catch(err){
     return false
   }
