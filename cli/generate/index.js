@@ -76,8 +76,8 @@ const _checkForCrud = (arg) => {
  */
 const _getTestFields = (columns) => {
   return columns.map(elem => {
-    let elemLength = new RegExp("\\w\*\\\(\(\[0\-9\]\*\)\\\)","").exec(elem.Type);
-    let realType = new RegExp("(\\w*)","").exec(elem.Type)[1];
+    let elemLength = elem.Type.length;
+    let realType = elem.Type.type;
     elemLength = elemLength === null ? elemLength = null : elemLength[1];
 
     let elemVal = `fixtures.random${realType}(${elemLength})`;
