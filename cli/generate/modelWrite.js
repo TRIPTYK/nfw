@@ -22,21 +22,6 @@ const {  capitalizeEntity , fileExists, removeEmptyLines , writeToFirstEmptyLine
 var lowercase;
 var capitalize;
 
-/**
- *
- * @param {String} data
- * @description mysql send data(lenght/enumList). Therefore , if i only need the lenght/enumList I need to split
- * split then delete the ')'
- * @returns data lenght/enum
- */
-const _getLength = (info) => {
-    if(info.type == "enum") return `enum  : [${info.type}],`;
-    if(info.length != undefined) {
-        if(info.type.includes('int')) return `width : ${info.length},`;
-        return `length : ${info.length},`;
-    }
-    return "";
-}
 
 /**
  *
@@ -45,10 +30,11 @@ const _getLength = (info) => {
  * @returns default : value or nothing
  */
 const _getDefault = (col) =>{
+  console.log(col);
   if (col.Default === null){
     if(col.Null === 'NO' || col.Key=== 'PRI') return '';
     else return 'default : null'; 
-  }else if (col.Type.includes('int') || col.Type === 'float' || col.Type ==='double'){
+  }else if (col.Type.type.includes('int') || col.Type.type === 'float' || col.Type.type ==='double'){
     return `default : ${col.Default}`;
   }else if (col.Default === ':no'){
     return '';
