@@ -6,14 +6,14 @@ chai.config.includeStack = false;
 chai.config.truncateThreshold = true;
 
 describe("User CRUD", function () {
-  
+
   var server, agent, password, credentials, token, refreshToken, id;
   var expect = chai.expect;
 
   before(function (done) {
 
     let express = require('./../dist/app.bootstrap');
-  
+
     server      = express.App;
     agent       = request.agent(server);
     password    = fixtures.password();
@@ -33,7 +33,7 @@ describe("User CRUD", function () {
       });
 
   });
-  
+
   after(function () {
     server = undefined;
     delete server;
@@ -61,7 +61,7 @@ describe("User CRUD", function () {
           'created-at'
         );
         done();
-      }) 
+      })
   });
 
   it('GET /api/v1/users/profile succeed with 200', function (done) {
@@ -84,7 +84,7 @@ describe("User CRUD", function () {
           'created-at'
         );
         done();
-      }) 
+      })
   });
 
   it('GET /api/v1/users/n succeed with 200', function (done) {

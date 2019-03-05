@@ -2,11 +2,12 @@ const SqlAdaptator = require ('./database/sqlAdaptator');
 const modelWrite = require ('./modelWrite');
 const index = require ('./index')
 
+// basic peoject tables to ignore
 const noGenerate = ['user','document','refresh_token','migration_table'];
+
 /**
  * @author Verliefden Romain
  * @description get all table from DB then call writeModel method for each table in the database
- *
  */
 module.exports = async () =>{
     let p_tables = SqlAdaptator.getTables();

@@ -97,7 +97,6 @@ const _getKey = data => {
  * @description get data from DB then write a model based on said data. If there's no data in database for cosen table then ask the user
  * if he want a basic model or get him to a prompt to create a new column or if nothing need to done.
  *
- *
  */
 const writeModel = async (action,data=null) =>{
     let lowercase = lowercaseEntity(action);
@@ -148,7 +147,9 @@ const writeModel = async (action,data=null) =>{
       Log.success("Model created in :" + pathModel);
 }
 
-
+/**
+ *  @description creates a basic model , with no entites , imports or foreign keys
+ */
 const basicModel = async (action) => {
   let lowercase = lowercaseEntity(action);
   let capitalize  = capitalizeEntity(lowercase);
