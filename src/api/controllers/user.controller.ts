@@ -7,7 +7,7 @@ import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
 
 /**
- * 
+ *
  */
 export class UserController extends BaseController {
 
@@ -16,31 +16,31 @@ export class UserController extends BaseController {
 
   /**
    * Get serialized user
-   * 
+   *
    * @param req Request
    * @param res Response
-   * 
+   *
    * @public
    */
   public get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
 
   /**
    * Get logged in user info
-   * 
+   *
    * @param req Request
    * @param res Response
-   * 
+   *
    * @public
    */
   public loggedIn (req: Request, res : Response) { res.json( req['user'].whitelist() ); }
 
   /**
    * Create new user
-   * 
+   *
    * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async create (req: Request, res : Response, next: Function) {
@@ -50,17 +50,17 @@ export class UserController extends BaseController {
       const savedUser = await repository.save(user);
       res.status( HttpStatus.CREATED );
       res.json( savedUser.whitelist() );
-    } 
+    }
     catch (e) { next( User.checkDuplicateEmail(e) ); }
   }
 
   /**
    * Update existing user
-   * 
+   *
    * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async update (req: Request, res : Response, next: Function) {
@@ -73,36 +73,36 @@ export class UserController extends BaseController {
       res.json( user.whitelist() );
     }
     catch(e) { next( User.checkDuplicateEmail(e) ); }
-    
+
   };
 
   /**
    * Get user list
-   * 
+   *
    * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async list (req: Request, res : Response, next: Function) {
 
     try {
       const repository = getCustomRepository(UserRepository);
-      const users = await repository.list(req.query);
-      const transformedUsers = users.map(user => user.whitelist());
-      res.json(transformedUsers);
-    } 
+      const users = await (await repository.JSONAPIRequest(req.query)).getMany();
+
+      res.json(users.map(user => user.whitelist()));
+    }
     catch (e) { next(e); }
   }
 
   /**
    * Delete user
-   * 
+   *
    * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async remove (req: Request, res : Response, next: Function) {
@@ -114,6 +114,6 @@ export class UserController extends BaseController {
       res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
     catch(e) { console.log(e.message); next(e); }
-    
+
   }
 }

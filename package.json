@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/TRIPTYK/3rd-party-ts-boilerplate#readme",
   "dependencies": {
+    "@holidayextras/jsonapi-client": "^1.0.0",
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.1",
     "@types/node": "^10.12.27",
@@ -60,6 +61,7 @@
     "jimp": "^0.6.0",
     "joi": "^14.3.1",
     "jsdoc": "^3.5.5",
+    "jsonapi-client": "0.0.12",
     "jsonapi-serializer": "^3.6.4",
     "jwt-simple": "^0.5.5",
     "leasot": "^7.3.4",
@@ -79,6 +81,7 @@
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
     "shelljs": "^0.8.3",
+    "sqlstring": "^2.3.1",
     "supertest": "^3.4.2",
     "typeorm": "^0.2.14",
     "typescript": "^3.3.3333",
