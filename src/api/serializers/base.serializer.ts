@@ -12,12 +12,14 @@ export abstract class BaseSerializer implements ISerialize {
    */
   public type;
 
-  public options: Object;
+  public options;
 
   /**
    *
    */
-  public withelist;
+  public withelist : Array<String> = [];
+  public static withelist : Array<String> = [];
+
 
   /**
    *
@@ -35,13 +37,12 @@ export abstract class BaseSerializer implements ISerialize {
    * @param whitelist
    */
   constructor(type: String, options: Object) {
-
     this.type = type;
-    //this.withelist = whitelist;
 
     this.options = options;
     this.options["convertCase"] = "kebab-case";
     this.options["unconvertCase"] = "camelCase";
+    this.withelist = this.options.attributes;
 
     this.serializer = new JSONAPISerializer(type, this.options);
     this.deserializer = new JSONAPIDeserializer(this.options);
