@@ -8,69 +8,67 @@ import * as Boom from "boom";
 export abstract class BaseSerializer implements ISerialize {
 
   /**
-   * 
+   *
    */
   public type;
-  
+
+  public options: Object;
+
   /**
-   * 
+   *
    */
   public withelist;
 
   /**
-   * 
+   *
    */
   public serializer: JSONAPISerializer;
 
   /**
-   * 
+   *
    */
   public deserializer: JSONAPIDeserializer;
 
   /**
-   * 
-   * @param type 
-   * @param whitelist 
+   *
+   * @param type
+   * @param whitelist
    */
-  constructor(type: String, whitelist: Array<String>) {  
+  constructor(type: String, options: Object) {
 
     this.type = type;
-    this.withelist = whitelist;
-    this.serializer = new JSONAPISerializer(type, {
-      id: 'id',
-      attributes: whitelist,
-      convertCase: "kebab-case",
-      unconvertCase: "camelCase"
-    });
-    this.deserializer = new JSONAPIDeserializer({
-      attributes: whitelist,
-      convertCase: "kebab-case",
-      unconvertCase: "camelCase"
-    });
-   
+    //this.withelist = whitelist;
+
+    this.options = options;
+    this.options["convertCase"] = "kebab-case";
+    this.options["unconvertCase"] = "camelCase";
+
+    this.serializer = new JSONAPISerializer(type, this.options);
+    this.deserializer = new JSONAPIDeserializer(this.options);
   }
 
   /**
-   * 
+   *
    */
-  public serialize = async (payload) => {
+  public serialize = (payload) => {
     try {
-      return await this.serializer.serialize(payload);
+      let p = this.serializer.serialize(payload);
+      return p;
     }
     catch(e) { throw Boom.expectationFailed(e.message) }
   }
 
   /**
    * Deserialize
-   * 
-   * @param req 
-   * @param res 
-   * @param next 
+   *
+   * @param req
+   * @param res
+   * @param next
    */
   public deserialize = async(req: Request) => {
     try {
       return await this.deserializer.deserialize(req.body);
-    } 
+    }
     catch (e) { throw Boom.expectationFailed(e.message); }
   }
 }
