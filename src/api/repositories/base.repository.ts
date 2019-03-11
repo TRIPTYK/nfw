@@ -36,10 +36,15 @@ class BaseRepository<T> extends Repository<T> {
     {
       let select = [];
 
-      for (let property in query.fields) {
-        if ((query.include && query.include.includes(property)) || property == currentTable) {
-          splitAndFilter(query.fields[property])
-            .forEach(elem => select.push(`${property}.${elem}`));
+      if (typeof query.fields === "string") {
+        splitAndFilter(query.fields)
+          .forEach(elem => select.push(`${currentTable}.${elem}`));
+      }else{
+        for (let property in query.fields) {
+          if ((query.include && query.include.includes(property)) || property == currentTable) {
+            splitAndFilter(query.fields[property])
+              .forEach(elem => select.push(`${property}.${elem}`));
+          }
         }
       }
 
