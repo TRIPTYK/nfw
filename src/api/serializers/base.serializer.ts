@@ -17,7 +17,6 @@ export abstract class BaseSerializer implements ISerialize {
   /**
    *
    */
-  public withelist : Array<String> = [];
   public static withelist : Array<String> = [];
 
 
@@ -42,7 +41,6 @@ export abstract class BaseSerializer implements ISerialize {
     this.options = options;
     this.options["convertCase"] = "kebab-case";
     this.options["unconvertCase"] = "camelCase";
-    this.withelist = this.options.attributes;
 
     this.serializer = new JSONAPISerializer(type, this.options);
     this.deserializer = new JSONAPIDeserializer(this.options);
