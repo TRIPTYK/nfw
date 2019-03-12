@@ -90,7 +90,8 @@ export class UserController extends BaseController {
 
     try {
       const repository = getCustomRepository(UserRepository);
-      const users = await (await repository.JSONAPIRequest(req.query)).getMany();
+
+      const users = await repository.find(BaseController.JSONAPIRequest(req.query));
 
       res.json(  new UserSerializer().serialize(users) );
     }
