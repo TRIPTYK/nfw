@@ -29,7 +29,7 @@ class DocumentController extends BaseController {
   public async list (req: Request, res : Response, next: Function) {
     try {
       const repository = getCustomRepository(DocumentRepository);
-      const documents = await repository.find(BaseController.JSONAPIRequest(req.query));
+      const documents = await repository.JSONAPIRequest(req.query).getMany();
       res.json( new DocumentSerializer().serialize(documents) );
     }
     catch (e) { next(e); }
@@ -65,8 +65,10 @@ class DocumentController extends BaseController {
    */
   public async get(req: Request, res: Response, next: Function) {
     try {
-      const documentRepository = getRepository(Document);
-      let document = await documentRepository.findOneOrFail(BaseController.JSONAPIRequest(req.query));
+      const documentRepository = getCustomRepository(DocumentRepository);
+      let document = await documentRepository.JSONAPIRequest(req.query)
+        .where("document.id = :id",req.params.documentId)
+        .getOne();
       res.json(document.whitelist());
     }
     catch(e) { next(Boom.expectationFailed(e.message)); }
