@@ -1,4 +1,5 @@
 import { BaseSerializer } from "./base.serializer";
+import { DocumentSerializer } from "./document.serializer";
 
 export class UserSerializer extends BaseSerializer {
   public static withelist : Array<String> = ['username','email','services','documents','recipes','firstname','lastname','role','createdAt'];
@@ -6,7 +7,11 @@ export class UserSerializer extends BaseSerializer {
   constructor() {
     super('users',{
       id: 'id',
-      attributes : UserSerializer.withelist
+      attributes : UserSerializer.withelist,
+      documents : {
+        ref : 'id',
+        attributes : DocumentSerializer.withelist,
+      }
     })
   };
 }

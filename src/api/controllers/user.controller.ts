@@ -5,6 +5,7 @@ import { User } from "./../models/user.model";
 import { UserRepository } from "./../repositories/user.repository";
 import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
+import { UserSerializer } from "../serializers/user.serializer";
 
 /**
  *
@@ -91,7 +92,7 @@ export class UserController extends BaseController {
       const repository = getCustomRepository(UserRepository);
       const users = await (await repository.JSONAPIRequest(req.query)).getMany();
 
-      res.json(users.map(user => user.whitelist()));
+      res.json(  new UserSerializer().serialize(users) );
     }
     catch (e) { next(e); }
   }
