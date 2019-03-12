@@ -57,7 +57,7 @@ export class User implements IModelize {
   lastname: string;
 
   @OneToMany(type => Document, document => document.user, {
-    eager: true
+    eager: false
   })
   documents: Document[];
 
