@@ -7,9 +7,10 @@ import { Request, Response } from "express";
 import { getRepository, getCustomRepository } from "typeorm";
 import { DocumentRepository } from "./../repositories/document.repository";
 import { BaseController } from "./base.controller";
+import { DocumentSerializer } from "../serializers/document.serializer";
 
 /**
- * 
+ *
  */
 class DocumentController extends BaseController {
 
@@ -18,29 +19,29 @@ class DocumentController extends BaseController {
 
   /**
    * Retrieve a list of documents, according to some parameters
-   * 
+   *
    * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async list (req: Request, res : Response, next: Function) {
     try {
       const repository = getCustomRepository(DocumentRepository);
       const documents = await repository.list(req.query);
-      res.json( documents.map(document => document.whitelist()) );
-    } 
+      res.json( new DocumentSerializer().serialize(documents) );
+    }
     catch (e) { next(e); }
   }
 
   /**
    * Create a new document
-   * 
+   *
    * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async create(req: Request, res: Response, next: Function) {
@@ -55,11 +56,11 @@ class DocumentController extends BaseController {
 
   /**
    * Retrieve one document according to :documentId
-   * 
-   * @param req Request 
+   *
+   * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async get(req: Request, res: Response, next: Function) {
@@ -73,11 +74,11 @@ class DocumentController extends BaseController {
 
   /**
    * Update one document according to :documentId
-   * 
+   *
    * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   async update(req: Request, res: Response, next: Function) {
@@ -102,11 +103,11 @@ class DocumentController extends BaseController {
 
   /**
    * Delete one document according to :documentId
-   * 
-   * @param req Request 
+   *
+   * @param req Request
    * @param res Response
    * @param next Function
-   * 
+   *
    * @public
    */
   public async remove (req: Request, res : Response, next: Function) {
@@ -121,7 +122,7 @@ class DocumentController extends BaseController {
       });
     }
     catch(e) { next(e); }
-    
+
   }
 };
 
