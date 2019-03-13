@@ -35,12 +35,15 @@ export abstract class BaseSerializer implements ISerialize {
    * @param type
    * @param whitelist
    */
-  constructor(type: String, options: Object) {
+  constructor(type: String,attributes : Array<String>,relations : Object = {})  {
     this.type = type;
 
-    this.options = options;
-    this.options["convertCase"] = "kebab-case";
-    this.options["unconvertCase"] = "camelCase";
+    this.options = {
+      attributes,
+      relations,
+      convertCase : "kebab-case",
+      unconvertCase : "camelCase"
+    };
 
     this.serializer = new JSONAPISerializer(type, this.options);
     this.deserializer = new JSONAPIDeserializer(this.options);
