@@ -40,10 +40,13 @@ export abstract class BaseSerializer implements ISerialize {
 
     this.options = {
       attributes,
-      relations,
       convertCase : "kebab-case",
       unconvertCase : "camelCase"
     };
+
+    for (let key in relations) {
+      this.options[key] = relations[key];
+    }
 
     this.serializer = new JSONAPISerializer(type, this.options);
     this.deserializer = new JSONAPIDeserializer(this.options);
