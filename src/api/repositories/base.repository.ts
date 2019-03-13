@@ -55,15 +55,26 @@ class BaseRepository<T> extends Repository<T> {
     {
       let select = [];
 
-      if (typeof query.fields === "string") {
-        splitAndFilter(query.fields)
-          .forEach(elem => select.push(`${currentTable}.${elem}`));
-      }else{
-        for (let property in query.fields) {
-            splitAndFilter(query.fields[property])
-              .forEach(elem => select.push(`${property}.${elem}`));
+      /**
+       * Recursive function to populate select statement with fields array
+       */
+      let fillFields : Function = (props : object|string,parents : Array<String> = []) => {
+
+        if (typeof props === "string") {
+          if (!parents.length) parents = [currentTable];
+          splitAndFilter(props)
+            .forEach(elem => select.push(`${parents.join('.')}.${elem}`));
+          }else{
+            for (let index in props) {
+                let property = props[index];
+                let copy = parents.slice(); //slice makes a copy
+                if (+index !== +index) copy.push(index); // fast way to check if string is number
+                fillFields(property,copy);
+            }
         }
       }
+
+      fillFields(query.fields);
 
       queryBuilder.select(select); // select parameters are escaped by default , no need to escape sql string
     }
@@ -104,6 +115,7 @@ class BaseRepository<T> extends Repository<T> {
         .take( size );
     }
 
+    console.log(queryBuilder.getSql());
     return queryBuilder;
   }
 }

@@ -5,13 +5,11 @@ export class UserSerializer extends BaseSerializer {
   public static withelist : Array<String> = ['username','email','services','documents','recipes','firstname','lastname','role','createdAt'];
 
   constructor() {
-    super('users',{
-      id: 'id',
-      attributes : UserSerializer.withelist,
+    super('users',UserSerializer.withelist,{
       documents : {
         ref : 'id',
         attributes : DocumentSerializer.withelist,
       }
-    })
+    });
   };
 }
