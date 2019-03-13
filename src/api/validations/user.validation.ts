@@ -4,13 +4,7 @@ import { roles } from "./../enums/role.enum";
 // GET /v1/users
 const listUsers = {
   query: {
-    page: Joi.number().min(1),
-    perPage: Joi.number().min(1).max(100),
-    username: Joi.string(),
-    email: Joi.string(),
-    firstname: Joi.string(),
-    lastname: Joi.string(),
-    role: Joi.string().valid(roles),
+    
   }
 };
 
