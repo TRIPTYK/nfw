@@ -59,8 +59,8 @@ const exit = (err, req, res, next) => {
 
   res.json(new Error({
     status:  _getErrorCode(err).toString(),
-    title:  err.output.payload.error,
-    detail: err.output.payload.message
+    title:  err.error,
+    detail: err.message
   }));
 };
 
