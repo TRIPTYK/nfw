@@ -50,6 +50,7 @@
     "errorhandler": "^1.5.0",
     "es6-promisify": "^6.0.1",
     "express": "^4.16.4",
+    "express-list-endpoints": "^4.0.0",
     "express-rate-limit": "^3.4.0",
     "express-validation": "^1.0.2",
     "express-validator": "^5.3.1",

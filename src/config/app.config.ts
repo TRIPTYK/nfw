@@ -1,4 +1,5 @@
 import * as Express from "express";
+import {Request,Response} from "express";
 import * as BodyParser from "body-parser";
 import * as Morgan from "morgan";
 import * as Cors from "cors";
@@ -8,11 +9,12 @@ import * as ExpressValidator from "express-validator";
 import * as ServiceErrorHandler from "../api/services/error-handler.service";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
-
 import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, authorized, api, env, environments } from "./environment.config";
-
+import { BaseSerializer } from "./../api/serializers/base.serializer";
+import { authorize, ADMIN, LOGGED_USER } from "./../api/middlewares/auth.middleware";
 import { router as ProxyRouter } from "./../api/routes/v1";
+import { RouteSerializer } from "../api/serializers/route.serializer";
 
 /**
  * Instanciate Express application
@@ -21,7 +23,7 @@ let app = Express();
 
 /**
  * Expose body on req.body
- * 
+ *
  * @inheritdoc https://www.npmjs.com/package/body-parser
  */
 app.use( BodyParser.urlencoded( { extended : false } ) );
@@ -29,7 +31,7 @@ app.use( BodyParser.json({ type: 'application/vnd.api+json' }) );
 
 /**
  * GZIP compression
- * 
+ *
  * @inheritdoc https://github.com/expressjs/compression
  */
 app.use( Compression() );
@@ -41,14 +43,14 @@ app.use( Express.static('public') );
 
 /**
  * Enable and set Helmet security middleware
- * 
+ *
  * @inheritdoc https://github.com/helmetjs/helmet
  */
 app.use( Helmet() );
 
 /**
  * Enable CORS - Cross Origin Resource Sharing
- * 
+ *
  * @inheritdoc https://www.npmjs.com/package/cors
  */
 let CORSOptions = {
@@ -60,7 +62,7 @@ app.use( Cors( CORSOptions) );
 
 /**
  * Passport configuration
- * 
+ *
  * @inheritdoc http://www.passportjs.org/
  */
 app.use( Passport.initialize() );
@@ -77,11 +79,11 @@ app.use( ExpressValidator() );
 /**
  * Configure API Rate limit
  * Note that you can also set limit on specific route path
- * 
+ *
  * @inheritdoc https://www.npmjs.com/package/express-rate-limit
  */
 app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
- 
+
 const apiLimiter = RateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 100,
@@ -93,10 +95,22 @@ const apiLimiter = RateLimit({
  */
 app.use(`/api/${api}`, apiLimiter, ProxyRouter);
 
+
+/**
+ * get routes of API , needed AFTER the other routes were set
+ */
+app.use(`/api/${api}/routes`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
+  let allRoutes = require('express-list-endpoints')(ProxyRouter);
+  for (let i = 0; i < allRoutes.length; i++) { //id needed for json-api format
+      allRoutes[i]['id'] = i + 1;
+  }
+  res.json(new RouteSerializer().serialize(allRoutes));
+});
+
 /**
  * Request logging with Morgan
  * dev : console | production : file
- * 
+ *
  * @inheritdoc https://github.com/expressjs/morgan
  */
 if(env.toUpperCase() !== environments.TEST)
