@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
 import { Deserializer as JSONAPIDeserializer } from "jsonapi-serializer";
 import { ISerialize } from "./../interfaces/ISerialize.interface";
+import { api, env , port, url } from "../../config/environment.config";
 
 import * as Boom from "boom";
 
@@ -30,19 +31,32 @@ export abstract class BaseSerializer implements ISerialize {
    */
   public deserializer: JSONAPIDeserializer;
 
+  protected replacePage : Function = (url : string,newPage : number) : string => {
+    return url.replace(/(page%5Bnumber%5D=)(?<pageNumber>[0-9]+)(.*)/i,`$1${newPage}$3`);
+  };
+
   /**
    *
    * @param type
    * @param whitelist
    */
-  constructor(type: String,attributes : Array<String>,relations : Object = {})  {
+  constructor(type: String,attributes : Array<String>,relations : Object = {},links : Object = {})  {
     this.type = type;
 
     this.options = {
       attributes,
+      dataLinks : {
+        self : (dataSet,data) => {
+          return `${url}/api/${api}/${this.type}/${data.id}`;
+        }
+      },
       convertCase : "kebab-case",
       unconvertCase : "camelCase"
     };
+
+    for (let key in links) {
+      this.options.dataLinks[key] = links[key];
+    }
 
     for (let key in relations) {
       this.options[key] = relations[key];
@@ -57,8 +71,7 @@ export abstract class BaseSerializer implements ISerialize {
    */
   public serialize = (payload) => {
     try {
-      let p = this.serializer.serialize(payload);
-      return p;
+      return this.serializer.serialize(payload);
     }
     catch(e) { throw Boom.expectationFailed(e.message) }
   }
@@ -70,7 +83,7 @@ export abstract class BaseSerializer implements ISerialize {
    * @param res
    * @param next
    */
-  public deserialize = async(req: Request) => {
+  public deserialize = async (req: Request) => {
     try {
       return await this.deserializer.deserialize(req.body);
     }
