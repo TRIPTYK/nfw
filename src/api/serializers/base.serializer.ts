@@ -32,7 +32,7 @@ export abstract class BaseSerializer implements ISerialize {
   public deserializer: JSONAPIDeserializer;
 
   protected replacePage : Function = (url : string,newPage : number) : string => {
-    return url.replace(/(page%5Bnumber%5D=)(?<pageNumber>[0-9]+)(.*)/i,`$1${newPage}$3`);
+    return url.replace(/(.*page%5Bnumber%5D=)(?<pageNumber>[0-9]+)(.*)/i,`$1${newPage}$3`);
   };
 
   /**
@@ -40,7 +40,7 @@ export abstract class BaseSerializer implements ISerialize {
    * @param type
    * @param whitelist
    */
-  constructor(type: String,attributes : Array<String>,relations : Object = {},links : Object = {})  {
+  constructor(type: String,attributes : Array<String>,relations : Object = {},dataLinks : Object = {},topLevelLinks : Object = {})  {
     this.type = type;
 
     this.options = {
@@ -50,12 +50,19 @@ export abstract class BaseSerializer implements ISerialize {
           return `${url}/api/${api}/${this.type}/${data.id}`;
         }
       },
+      topLevelLinks : {
+
+      },
       convertCase : "kebab-case",
       unconvertCase : "camelCase"
     };
 
-    for (let key in links) {
-      this.options.dataLinks[key] = links[key];
+    for (let key in topLevelLinks) {
+      this.options.topLevelLinks[key] = topLevelLinks[key];
+    }
+
+    for (let key in dataLinks) {
+      this.options.dataLinks[key] = dataLinks[key];
     }
 
     for (let key in relations) {
