@@ -12,25 +12,30 @@ export class UserSerializer extends BaseSerializer {
         ref : 'id',
         attributes : DocumentSerializer.withelist,
       }
-    },{
-      first : (dataSet,set) => {
+    },{},{
+      self : (dataSet) => {
+        if (request && request.query.page) {
+          return `${url}/api/${api}/${this.type}${request.url}`;
+        }
+      },
+      first : (dataSet) => {
         if (request && request.query.page) {
           return `${url}/api/${api}/${this.type}${this.replacePage(request.url,1)}`;
         }
       },
-      next : (dataSet,set) => {
+      next : (dataSet) => {
         if (request && request.query.page) {
           let page = request.query.page.number;
           return `${url}/api/${api}/${this.type}${this.replacePage(request.url,parseInt(page) + 1)}`;
         }
       },
-      prev : (dataSet,set) => {
+      prev : (dataSet) => {
         if (request && request.query.page) {
           let page = request.query.page.number;
           return `${url}/api/${api}/${this.type}${this.replacePage(request.url,parseInt(page) - 1 < 1 ? page : page - 1)}`;
         }
       },
-      last : (dataSet,set) => {
+      last : (dataSet) => {
         if (request && request.query.page) {
           let page = request.query.page.number;
           let size = request.query.page.size;
