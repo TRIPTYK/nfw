@@ -115,7 +115,6 @@ class BaseRepository<T> extends Repository<T> {
         .take( size );
     }
 
-    console.log(queryBuilder.getSql());
     return queryBuilder;
   }
 }

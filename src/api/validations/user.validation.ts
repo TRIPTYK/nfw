@@ -4,7 +4,6 @@ import { roles } from "./../enums/role.enum";
 // GET /v1/users
 const listUsers = {
   query: {
-    
   }
 };
 
