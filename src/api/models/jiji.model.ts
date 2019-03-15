@@ -14,13 +14,25 @@ export class Jiji {
   id: Number;
 
 
-
-
-  @CreateDateColumn()
+  @Column({
+  type: 'datetime',
+    nullable:false,
+    precision : 6,
+    
+     default : () => "CURRENT_TIMESTAMP(6)"
+  })
   create_at;
 
-  @UpdateDateColumn()
+  @Column({
+  type: 'datetime',
+    nullable:false,
+    precision : 6,
+    
+     default : () => "CURRENT_TIMESTAMP(6)"
+  })
   update_at;
+
+
 
   public whitelist() {
     return new JijiSerializer().serialize(this);

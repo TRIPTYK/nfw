@@ -1,15 +1,15 @@
 import * as Joi from "joi";
 
-// GET /v1/banana
+// GET /v1/sandwich
 
-export const listBananas = {
+export const listSandwichs = {
   query: {}
 };
 
 
 
-// GET /v1/bananas/bananaId
-export const getBanana = {
+// GET /v1/sandwichs/sandwichId
+export const getSandwich = {
   params: {
     id: Joi.string().regex(/^[0-9]{0,4}$/).required(),
   }
@@ -17,8 +17,8 @@ export const getBanana = {
 
 
 
-// POST /v1/bananas
-export const createBanana = {
+// POST /v1/sandwichs
+export const createSandwich = {
   body: {
     data : {
       attributes : { 
@@ -28,9 +28,9 @@ export const createBanana = {
 };
 
 
-// PUT /v1/bananas/:Id
+// PUT /v1/sandwichs/:Id
 
-export const replaceBanana =  {
+export const replaceSandwich =  {
   body: {
     data : {
       attributes : { 
@@ -44,8 +44,8 @@ export const replaceBanana =  {
 
 
 
-// PATCH /v1/bananas/:Id
-export const updateBanana =  {
+// PATCH /v1/sandwichs/:Id
+export const updateSandwich =  {
   body: {
     data : {
       attributes : { 

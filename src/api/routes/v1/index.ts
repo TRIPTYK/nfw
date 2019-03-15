@@ -11,6 +11,8 @@ import { router as PotatoRouter } from "./potato.route";
 import { router as TestRouter } from "./test.route";
 import { router as KickerRouter } from "./kicker.route";
 import { router as JijiRouter } from "./jiji.route";
+import { router as SandwichRouter } from "./sandwich.route";
+import { router as WaterRouter } from "./water.route";
 
 import { Request, Response } from "express";
 import { router as AuthRouter } from "./auth.route";
@@ -120,6 +122,18 @@ router.use('/kickers/', KickerRouter);
  *Jiji routes
  */
 router.use('/jijis/', JijiRouter);
+
+
+/**
+ *Sandwich routes
+ */
+router.use('/sandwichs/', SandwichRouter);
+
+
+/**
+ *Water routes
+ */
+router.use('/waters/', WaterRouter);
 
 
 export { router }

@@ -5,7 +5,7 @@ var chai = require("chai");
 chai.config.includeStack = false;
 chai.config.truncateThreshold = true;
 
-describe("Banana CRUD", function () {
+describe("Water CRUD", function () {
 
   var server, agent, password, credentials, token, id;
   var expect = chai.expect;
@@ -39,11 +39,11 @@ describe("Banana CRUD", function () {
 
 
   /**
-   * POST a banana object to the API
+   * POST a water object to the API
    */
-  it('POST /api/v1/bananas succeed with 201', function (done) {
+  it('POST /api/v1/waters succeed with 201', function (done) {
     agent
-      .post('/api/v1/bananas')
+      .post('/api/v1/waters')
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
@@ -67,11 +67,11 @@ describe("Banana CRUD", function () {
 
 
   /**
-   * GET a banana object from the API
+   * GET a water object from the API
    */
-  it('GET /api/v1/bananas/n succeed with 200', function (done) {
+  it('GET /api/v1/waters/n succeed with 200', function (done) {
     agent
-      .get('/api/v1/bananas/' + id)
+      .get('/api/v1/waters/' + id)
       .set('Authorization', 'Bearer ' + token)
       .end(function (err,res) {
         let status = res.status | res.statusCode;
@@ -86,38 +86,11 @@ describe("Banana CRUD", function () {
 
 
   /**
-   * PUT a banana object to the API
+   * PUT a water object to the API
    */
-  it('PUT /api/v1/bananas/n succeed with 200', function (done) {
+  it('PUT /api/v1/waters/n succeed with 200', function (done) {
     agent
-      .put('/api/v1/bananas/' + id)
-      .set('Authorization', 'Bearer ' + token)
-      .set('Accept', 'application/vnd.api+json')
-      .set('Content-Type', 'application/vnd.api+json')
-      .send({
-        data : {
-          attributes : { 
-          }
-        }
-      })
-      .end(function (err,res) {
-        let status = res.status | res.statusCode;
-        expect(status).to.equal(200);
-        expect(res.body.data.attributes).to.include.all.keys(
-          
-        );
-        done();
-      })
-  });
-
-
-
-  /**
-   * PATCH a banana object to the API
-   */
-  it('PATCH /api/v1/bananas/n succeed with 200', function (done) {
-    agent
-      .patch('/api/v1/bananas/' + id)
+      .put('/api/v1/waters/' + id)
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
@@ -140,11 +113,38 @@ describe("Banana CRUD", function () {
 
 
   /**
-   * DELETE a banana object from the API
+   * PATCH a water object to the API
    */
-  it('DELETE /api/v1/bananas/n succeed with 204', function (done) {
+  it('PATCH /api/v1/waters/n succeed with 200', function (done) {
     agent
-      .delete('/api/v1/bananas/' + id)
+      .patch('/api/v1/waters/' + id)
+      .set('Authorization', 'Bearer ' + token)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send({
+        data : {
+          attributes : { 
+          }
+        }
+      })
+      .end(function (err,res) {
+        let status = res.status | res.statusCode;
+        expect(status).to.equal(200);
+        expect(res.body.data.attributes).to.include.all.keys(
+          
+        );
+        done();
+      })
+  });
+
+
+
+  /**
+   * DELETE a water object from the API
+   */
+  it('DELETE /api/v1/waters/n succeed with 204', function (done) {
+    agent
+      .delete('/api/v1/waters/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });

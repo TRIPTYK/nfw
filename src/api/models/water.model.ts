@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , OneToOne , JoinColumn , OneToMany , ManyToMany , CreateDateColumn , UpdateDateColumn } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
-import { TestSerializer } from "./../serializers/test.serializer";
+import { WaterSerializer } from "./../serializers/water.serializer";
 
 @Entity()
-export class Test {
+export class Water {
 
   /**
    * @param payload Object data to assign
@@ -16,16 +16,16 @@ export class Test {
 
   @Column({
   type: 'varchar',
-    nullable:true,
-    length : 255,
     
+    length : 255,
+     primary : true,
     default : null
   })
-  amaury;
+  pri;
 
 
 
   public whitelist() {
-    return new TestSerializer().serialize(this);
+    return new WaterSerializer().serialize(this);
   }
 }

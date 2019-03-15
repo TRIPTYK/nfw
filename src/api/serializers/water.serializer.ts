@@ -3,12 +3,12 @@ import { api, env , port, url } from "../../config/environment.config";
 import { Request } from "express";
 
 
-export class KickerSerializer extends BaseSerializer {
+export class WaterSerializer extends BaseSerializer {
 
   public static withelist : Array<String> = [];
 
   constructor(request : Request = null,totalCount : number = 0) {
-    super('kickers', KickerSerializer.withelist,{ 
+    super('waters', WaterSerializer.withelist,{ 
     },{},{
       self : (dataSet) => {
         if (request && request.query.page) {
