@@ -1,4 +1,7 @@
 import { Router } from "express";
+import { router as SandwichRouter } from "./sandwich.route";
+import { router as BananaRouter } from "./banana.route";
+import { router as PlzRouter } from "./plz.route";
 
 import { Request, Response } from "express";
 import { router as AuthRouter } from "./auth.route";
@@ -35,6 +38,25 @@ router.use('/users/', UserRouter);
  * Files routes
  */
 router.use('/documents/', DocumentRouter);
+
+
+/**
+ *Sandwich routes
+ */
+router.use('/sandwichs/', SandwichRouter);
+
+
+/**
+ *Banana routes
+ */
+router.use('/bananas/', BananaRouter);
+
+
+/**
+ *Plz routes
+ */
+router.use('/plzs/', PlzRouter);
+
 
 export { router }
 
