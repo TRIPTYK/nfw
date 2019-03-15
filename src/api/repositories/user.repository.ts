@@ -37,26 +37,6 @@ export class UserRepository extends BaseRepository<User>  {
   }
 
   /**
-   * Get a list of users according to current query parameters
-   *
-   */
-  list({ page = 1, perPage = 30, username, email, lastname, firstname, role }) {
-
-    try {
-      const repository = getRepository(User);
-      const options = omitBy({ username, email, lastname, firstname, role }, isNil);
-
-      return repository.find({
-        where: options,
-        skip: ( page - 1 ) * perPage,
-        take: perPage
-      });
-    }
-    catch(e) { throw Boom.expectationFailed(e.message); }
-
-  }
-
-  /**
    * Find user by email and tries to generate a JWT token
    *
    * @param {Object} - Payload data
