@@ -5,7 +5,7 @@ var chai = require("chai");
 chai.config.includeStack = false;
 chai.config.truncateThreshold = true;
 
-describe("Sandwich CRUD", function () {
+describe("Chocolat CRUD", function () {
 
   var server, agent, password, credentials, token, id;
   var expect = chai.expect;
@@ -39,18 +39,17 @@ describe("Sandwich CRUD", function () {
 
 
   /**
-   * POST a sandwich object to the API
+   * POST a chocolat object to the API
    */
-  it('POST /api/v1/sandwichs succeed with 201', function (done) {
+  it('POST /api/v1/chocolats succeed with 201', function (done) {
     agent
-      .post('/api/v1/sandwichs')
+      .post('/api/v1/chocolats')
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
       .send({
         data : {
           attributes : { 
-              enum : fixtures.randomenum('banana','otter','yeah'),            
           }
         }
       })
@@ -58,7 +57,7 @@ describe("Sandwich CRUD", function () {
         let status = res.status | res.statusCode;
         expect(status).to.equal(201);
         expect(res.body.data.attributes).to.include.all.keys(
-          'enum'
+          
         );
         id = res.body.data.id;
         done();
@@ -68,17 +67,17 @@ describe("Sandwich CRUD", function () {
 
 
   /**
-   * GET a sandwich object from the API
+   * GET a chocolat object from the API
    */
-  it('GET /api/v1/sandwichs/n succeed with 200', function (done) {
+  it('GET /api/v1/chocolats/n succeed with 200', function (done) {
     agent
-      .get('/api/v1/sandwichs/' + id)
+      .get('/api/v1/chocolats/' + id)
       .set('Authorization', 'Bearer ' + token)
       .end(function (err,res) {
         let status = res.status | res.statusCode;
         expect(status).to.equal(200);
         expect(res.body.data.attributes).to.include.all.keys(
-          'enum'
+          
         );
         done();
       })
@@ -87,18 +86,17 @@ describe("Sandwich CRUD", function () {
 
 
   /**
-   * PUT a sandwich object to the API
+   * PUT a chocolat object to the API
    */
-  it('PUT /api/v1/sandwichs/n succeed with 200', function (done) {
+  it('PUT /api/v1/chocolats/n succeed with 200', function (done) {
     agent
-      .put('/api/v1/sandwichs/' + id)
+      .put('/api/v1/chocolats/' + id)
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
       .send({
         data : {
           attributes : { 
-              enum : fixtures.randomenum('banana','otter','yeah'),            
           }
         }
       })
@@ -106,7 +104,7 @@ describe("Sandwich CRUD", function () {
         let status = res.status | res.statusCode;
         expect(status).to.equal(200);
         expect(res.body.data.attributes).to.include.all.keys(
-          'enum'
+          
         );
         done();
       })
@@ -115,18 +113,17 @@ describe("Sandwich CRUD", function () {
 
 
   /**
-   * PATCH a sandwich object to the API
+   * PATCH a chocolat object to the API
    */
-  it('PATCH /api/v1/sandwichs/n succeed with 200', function (done) {
+  it('PATCH /api/v1/chocolats/n succeed with 200', function (done) {
     agent
-      .patch('/api/v1/sandwichs/' + id)
+      .patch('/api/v1/chocolats/' + id)
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
       .send({
         data : {
           attributes : { 
-              enum : fixtures.randomenum('banana','otter','yeah'),            
           }
         }
       })
@@ -134,7 +131,7 @@ describe("Sandwich CRUD", function () {
         let status = res.status | res.statusCode;
         expect(status).to.equal(200);
         expect(res.body.data.attributes).to.include.all.keys(
-          'enum'
+          
         );
         done();
       })
@@ -143,11 +140,11 @@ describe("Sandwich CRUD", function () {
 
 
   /**
-   * DELETE a sandwich object from the API
+   * DELETE a chocolat object from the API
    */
-  it('DELETE /api/v1/sandwichs/n succeed with 204', function (done) {
+  it('DELETE /api/v1/chocolats/n succeed with 204', function (done) {
     agent
-      .delete('/api/v1/sandwichs/' + id)
+      .delete('/api/v1/chocolats/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });

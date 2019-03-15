@@ -5,7 +5,7 @@ var chai = require("chai");
 chai.config.includeStack = false;
 chai.config.truncateThreshold = true;
 
-describe("Plz CRUD", function () {
+describe("Date CRUD", function () {
 
   var server, agent, password, credentials, token, id;
   var expect = chai.expect;
@@ -39,11 +39,11 @@ describe("Plz CRUD", function () {
 
 
   /**
-   * POST a plz object to the API
+   * POST a date object to the API
    */
-  it('POST /api/v1/plzs succeed with 201', function (done) {
+  it('POST /api/v1/dates succeed with 201', function (done) {
     agent
-      .post('/api/v1/plzs')
+      .post('/api/v1/dates')
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
@@ -67,11 +67,11 @@ describe("Plz CRUD", function () {
 
 
   /**
-   * GET a plz object from the API
+   * GET a date object from the API
    */
-  it('GET /api/v1/plzs/n succeed with 200', function (done) {
+  it('GET /api/v1/dates/n succeed with 200', function (done) {
     agent
-      .get('/api/v1/plzs/' + id)
+      .get('/api/v1/dates/' + id)
       .set('Authorization', 'Bearer ' + token)
       .end(function (err,res) {
         let status = res.status | res.statusCode;
@@ -86,38 +86,11 @@ describe("Plz CRUD", function () {
 
 
   /**
-   * PUT a plz object to the API
+   * PUT a date object to the API
    */
-  it('PUT /api/v1/plzs/n succeed with 200', function (done) {
+  it('PUT /api/v1/dates/n succeed with 200', function (done) {
     agent
-      .put('/api/v1/plzs/' + id)
-      .set('Authorization', 'Bearer ' + token)
-      .set('Accept', 'application/vnd.api+json')
-      .set('Content-Type', 'application/vnd.api+json')
-      .send({
-        data : {
-          attributes : { 
-          }
-        }
-      })
-      .end(function (err,res) {
-        let status = res.status | res.statusCode;
-        expect(status).to.equal(200);
-        expect(res.body.data.attributes).to.include.all.keys(
-          
-        );
-        done();
-      })
-  });
-
-
-
-  /**
-   * PATCH a plz object to the API
-   */
-  it('PATCH /api/v1/plzs/n succeed with 200', function (done) {
-    agent
-      .patch('/api/v1/plzs/' + id)
+      .put('/api/v1/dates/' + id)
       .set('Authorization', 'Bearer ' + token)
       .set('Accept', 'application/vnd.api+json')
       .set('Content-Type', 'application/vnd.api+json')
@@ -140,11 +113,38 @@ describe("Plz CRUD", function () {
 
 
   /**
-   * DELETE a plz object from the API
+   * PATCH a date object to the API
    */
-  it('DELETE /api/v1/plzs/n succeed with 204', function (done) {
+  it('PATCH /api/v1/dates/n succeed with 200', function (done) {
     agent
-      .delete('/api/v1/plzs/' + id)
+      .patch('/api/v1/dates/' + id)
+      .set('Authorization', 'Bearer ' + token)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .send({
+        data : {
+          attributes : { 
+          }
+        }
+      })
+      .end(function (err,res) {
+        let status = res.status | res.statusCode;
+        expect(status).to.equal(200);
+        expect(res.body.data.attributes).to.include.all.keys(
+          
+        );
+        done();
+      })
+  });
+
+
+
+  /**
+   * DELETE a date object from the API
+   */
+  it('DELETE /api/v1/dates/n succeed with 204', function (done) {
+    agent
+      .delete('/api/v1/dates/' + id)
       .set('Authorization', 'Bearer ' + token)
       .expect(204, done);
   });
