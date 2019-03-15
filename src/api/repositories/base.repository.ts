@@ -1,6 +1,6 @@
 import { Repository, SelectQueryBuilder } from "typeorm";
 import * as SqlString from "sqlstring";
-
+import { Request } from "express";
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -117,6 +117,20 @@ class BaseRepository<T> extends Repository<T> {
 
     return queryBuilder;
   }
+
+  public jsonAPI_findOne(req : Request,id : any) : Promise<T>
+  {
+    return this.JSONAPIRequest(req.query)
+      .where(`${this.metadata.tableName}.id = :id`,{id})
+      .getOne()
+  }
+
+  public jsonAPI_find(req : Request) : Promise<Array<T>>
+  {
+    return this.JSONAPIRequest(req.query)
+      .getMany()
+  }
+
 }
 
 export { BaseRepository };

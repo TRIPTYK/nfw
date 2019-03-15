@@ -12,6 +12,7 @@ import * as RateLimit from "express-rate-limit";
 import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, authorized, api, env, environments } from "./environment.config";
 import { BaseSerializer } from "./../api/serializers/base.serializer";
+import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
 import { authorize, ADMIN, LOGGED_USER } from "./../api/middlewares/auth.middleware";
 import { router as ProxyRouter } from "./../api/routes/v1";
 import { RouteSerializer } from "../api/serializers/route.serializer";
@@ -86,7 +87,7 @@ app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Blu
 
 const apiLimiter = RateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 100,
+  max: 1000,
   message: "Too many requests from this IP, please try again after an hour"
 });
 
@@ -99,12 +100,12 @@ app.use(`/api/${api}`, apiLimiter, ProxyRouter);
 /**
  * get routes of API , needed AFTER the other routes were set
  */
-app.use(`/api/${api}/routes`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
+app.use(`/api/${api}/apiRoutes`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
   let allRoutes = require('express-list-endpoints')(ProxyRouter);
   for (let i = 0; i < allRoutes.length; i++) { //id needed for json-api format
       allRoutes[i]['id'] = i + 1;
   }
-  res.json(new RouteSerializer().serialize(allRoutes));
+  res.json(new JSONAPISerializer("apiRoutes",{attributes : ["methods","path"]}).serialize(allRoutes));
 });
 
 /**
