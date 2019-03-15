@@ -1,6 +1,7 @@
 import { logger as Logger } from "./../../config/logger.config";
 import * as Notifier from "node-notifier";
 import * as Boom from "boom";
+import { Error } from "jsonapi-serializer";
 
 const _getErrorCode = (error) : number => {
 
@@ -13,10 +14,10 @@ const _getErrorCode = (error) : number => {
 
 /**
  * Write errors in a log file
- * 
- * @param {*} err 
- * @param {*} str 
- * @param {*} req 
+ *
+ * @param {*} err
+ * @param {*} str
+ * @param {*} req
  */
 const log = (err, str, req) => {
   let message = 'Error in ' + req.method + ' ' + req.url + ' : ' + str + '\n';
@@ -25,11 +26,11 @@ const log = (err, str, req) => {
 
 /**
  * Display error in desktop notification
- * 
- * @param {*} err 
- * @param {*} str 
- * @param {*} req 
- * 
+ *
+ * @param {*} err
+ * @param {*} str
+ * @param {*} req
+ *
  * @requires libnotify-bin
  */
 const notify = (err, str, req) => {
@@ -42,25 +43,34 @@ const notify = (err, str, req) => {
 
 /**
  * Display clean error for final user
- * 
- * @param {*} err 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ *
+ * @param {*} err
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 const exit = (err, req, res, next) => {
+  /*
+
+  res.json(err);
+  */
   if(!err.httpStatusCode && !err.status && !err.isBoom) err = Boom.expectationFailed(err.message);
   res.status( _getErrorCode(err) );
-  res.json(err);
+
+  res.json(new Error({
+    status:  _getErrorCode(err).toString(),
+    title:  err.error,
+    detail: err.message
+  }));
 };
 
 /**
  * Display clean error for final user when whe are on the last stack step
- * 
- * @param {*} err 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ *
+ * @param {*} err
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 const notFound = (req, res, next) => {
   res.status( 404 );

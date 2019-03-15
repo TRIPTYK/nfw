@@ -112,7 +112,7 @@ export class User implements IModelize {
   }
 
   public whitelist() {
-    return new UserSerializer().serializer.serialize(this);
+    return new UserSerializer().serialize(this);
   }
   /**
    *
