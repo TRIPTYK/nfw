@@ -50,8 +50,6 @@ describe("Kicker CRUD", function () {
       .send({
         data : {
           attributes : { 
-              create_at : fixtures.randomdatetime(6),            
-              update_at : fixtures.randomdatetime(6),            
           }
         }
       })
@@ -59,7 +57,7 @@ describe("Kicker CRUD", function () {
         let status = res.status | res.statusCode;
         expect(status).to.equal(201);
         expect(res.body.data.attributes).to.include.all.keys(
-          'create-at','update-at'
+          
         );
         id = res.body.data.id;
         done();
@@ -79,7 +77,7 @@ describe("Kicker CRUD", function () {
         let status = res.status | res.statusCode;
         expect(status).to.equal(200);
         expect(res.body.data.attributes).to.include.all.keys(
-          'create-at','update-at'
+          
         );
         done();
       })
@@ -99,8 +97,6 @@ describe("Kicker CRUD", function () {
       .send({
         data : {
           attributes : { 
-              create_at : fixtures.randomdatetime(6),            
-              update_at : fixtures.randomdatetime(6),            
           }
         }
       })
@@ -108,7 +104,7 @@ describe("Kicker CRUD", function () {
         let status = res.status | res.statusCode;
         expect(status).to.equal(200);
         expect(res.body.data.attributes).to.include.all.keys(
-          'create-at','update-at'
+          
         );
         done();
       })
@@ -128,8 +124,6 @@ describe("Kicker CRUD", function () {
       .send({
         data : {
           attributes : { 
-              create_at : fixtures.randomdatetime(6),            
-              update_at : fixtures.randomdatetime(6),            
           }
         }
       })
@@ -137,7 +131,7 @@ describe("Kicker CRUD", function () {
         let status = res.status | res.statusCode;
         expect(status).to.equal(200);
         expect(res.body.data.attributes).to.include.all.keys(
-          'create-at','update-at'
+          
         );
         done();
       })

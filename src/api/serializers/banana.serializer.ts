@@ -5,7 +5,7 @@ import { Request } from "express";
 
 export class BananaSerializer extends BaseSerializer {
 
-  public static withelist : Array<String> = ['title'];
+  public static withelist : Array<String> = [];
 
   constructor(request : Request = null,totalCount : number = 0) {
     super('bananas', BananaSerializer.withelist,{ 

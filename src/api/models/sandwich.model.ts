@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , OneToOne , JoinColumn , OneToMany , ManyToMany , CreateDateColumn , UpdateDateColumn } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
-import { TestSerializer } from "./../serializers/test.serializer";
+import { SandwichSerializer } from "./../serializers/sandwich.serializer";
 
 @Entity()
-export class Test {
+export class Sandwich {
 
   /**
    * @param payload Object data to assign
@@ -15,17 +15,17 @@ export class Test {
 
 
   @Column({
-  type: 'varchar',
+  type: 'datetime',
     nullable:true,
-    length : 255,
+    
     
     default : null
   })
-  amaury;
+  title;
 
 
 
   public whitelist() {
-    return new TestSerializer().serialize(this);
+    return new SandwichSerializer().serialize(this);
   }
 }

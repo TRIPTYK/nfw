@@ -1,5 +1,7 @@
 import { Kicker } from "../api/models/kicker.model";
 import { Jiji } from "../api/models/jiji.model";
+import { Sandwich } from "../api/models/sandwich.model";
+import { Water } from "../api/models/water.model";
 
 import { Banana } from "../api/models/banana.model";
 import { Plz } from "../api/models/plz.model";
@@ -38,7 +40,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [User,RefreshToken,Document,Banana,Plz,Banane,Abort,Chocolat,Colde_one,Date,Moartest,Potato,Test,Kicker,Jiji],
+      entities: [User,RefreshToken,Document,Banana,Plz,Banane,Abort,Chocolat,Colde_one,Date,Moartest,Potato,Test,Kicker,Jiji,Sandwich,Water],
       migrationsTableName: "custom_migration_table",
       migrations: ["../migration/*.js"],
       cli: {
