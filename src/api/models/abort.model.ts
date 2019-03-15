@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , OneToOne , JoinColumn , OneToMany , ManyToMany , CreateDateColumn , UpdateDateColumn } from "typeorm";
 import { DateUtils } from "typeorm/util/DateUtils";
-import { SandwichSerializer } from "./../serializers/sandwich.serializer";
+import { AbortSerializer } from "./../serializers/abort.serializer";
 
 @Entity()
-export class Sandwich {
+export class Abort {
 
   /**
    * @param payload Object data to assign
@@ -15,17 +15,26 @@ export class Sandwich {
 
 
   @Column({
-  type: 'enum',
-    nullable:true,
-    enum  : ['banana','otter','yeah'],
+  type: 'datetime',
+    nullable:false,
+    precision : 6,
     
-    default : null
+     default : () => "CURRENT_TIMESTAMP(6)"
   })
-  enum;
+  create_at;
+
+  @Column({
+  type: 'datetime',
+    nullable:false,
+    precision : 6,
+    
+     default : () => "CURRENT_TIMESTAMP(6)"
+  })
+  update_at;
 
 
 
   public whitelist() {
-    return new SandwichSerializer().serialize(this);
+    return new AbortSerializer().serialize(this);
   }
 }

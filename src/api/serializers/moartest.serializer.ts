@@ -3,12 +3,12 @@ import { api, env , port, url } from "../../config/environment.config";
 import { Request } from "express";
 
 
-export class PlzSerializer extends BaseSerializer {
+export class MoartestSerializer extends BaseSerializer {
 
   public static withelist : Array<String> = [];
 
   constructor(request : Request = null,totalCount : number = 0) {
-    super('plzs', PlzSerializer.withelist,{ 
+    super('moartests', MoartestSerializer.withelist,{ 
     },{},{
       self : (dataSet) => {
         if (request && request.query.page) {

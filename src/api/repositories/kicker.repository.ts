@@ -1,10 +1,10 @@
 import * as Boom from "boom";
 
-import { Sandwich } from "../models/sandwich.model";
+import { Kicker } from "../models/kicker.model";
 import { Repository, EntityRepository, getRepository } from "typeorm";
 import { BaseRepository } from "./base.repository";
 
-@EntityRepository(Sandwich)
-export class SandwichRepository extends BaseRepository< Sandwich >  {
+@EntityRepository(Kicker)
+export class KickerRepository extends BaseRepository< Kicker >  {
   constructor() { super(); }
 }
