@@ -1,3 +1,6 @@
+import { Sandwich } from "../api/models/sandwich.model";
+import { Banana } from "../api/models/banana.model";
+import { Plz } from "../api/models/plz.model";
 
 import "reflect-metadata";
 
@@ -25,7 +28,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [User,RefreshToken,Document],
+      entities: [User,RefreshToken,Document,Sandwich,Banana,Plz],
       migrationsTableName: "custom_migration_table",
       migrations: ["../migration/*.js"],
       cli: {
