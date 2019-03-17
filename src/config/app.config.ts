@@ -9,13 +9,14 @@ import * as ExpressValidator from "express-validator";
 import * as ServiceErrorHandler from "../api/services/error-handler.service";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
+import * as Boom from "boom";
 import { strategies as Strategies } from "./passport.config";
 import { HTTPLogs, authorized, api, env, environments } from "./environment.config";
 import { BaseSerializer } from "./../api/serializers/base.serializer";
 import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
 import { authorize, ADMIN, LOGGED_USER } from "./../api/middlewares/auth.middleware";
 import { router as ProxyRouter } from "./../api/routes/v1";
-import { RouteSerializer } from "../api/serializers/route.serializer";
+import { getRepository, getCustomRepository } from "typeorm";
 
 /**
  * Instanciate Express application
@@ -96,17 +97,23 @@ const apiLimiter = RateLimit({
  */
 app.use(`/api/${api}`, apiLimiter, ProxyRouter);
 
-
 /**
  * get routes of API , needed AFTER the other routes were set
  */
-app.use(`/api/${api}/apiRoutes`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
-  let allRoutes = require('express-list-endpoints')(ProxyRouter);
-  for (let i = 0; i < allRoutes.length; i++) { //id needed for json-api format
-      allRoutes[i]['id'] = i + 1;
-  }
-  res.json(new JSONAPISerializer("apiRoutes",{attributes : ["methods","path"]}).serialize(allRoutes));
+const allRoutes : Array<any> = require('express-list-endpoints')(ProxyRouter);
+const serializer : JSONAPISerializer = new JSONAPISerializer("api-routes",{attributes : ["methods","path"]});
+for (let i = 0; i < allRoutes.length; i++)  allRoutes[i]['id'] = i + 1;
+const allRoutesSerialized = serializer.serialize(allRoutes);
+
+app.get(`/api/${api}/apiRoutes`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
+   res.json(allRoutesSerialized);
 });
+app.get(`/api/${api}/apiRoutes/:id`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
+   const route = allRoutes.find(e => e.id == req.params.id);
+   if (route === undefined) throw Boom.notFound();
+   res.json(serializer.serialize(route));
+});
+
 
 /**
  * Request logging with Morgan
