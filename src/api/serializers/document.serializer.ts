@@ -15,7 +15,7 @@ export class DocumentSerializer extends BaseSerializer {
       self : (dataSet,data) => `${url}/api/${api}/${this.type}/${data.id}`
     });
 
-    if (request && request.query.page && totalCount) {
+    if (request && request.query.page.number && totalCount) {
       const page = parseInt(request.query.page.number);
       const size = request.query.page.size;
       const baseUrl = `${url}/api/${api}`;

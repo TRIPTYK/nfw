@@ -3,16 +3,8 @@ import { BaseSerializer } from "./base.serializer";
 class SerializerParams {
     private options : any = {
         attributes : [],
-        dataLinks : {
-          self : null
-        },
-        topLevelLinks : {
-          self : null,
-          next : null,
-          prev : null,
-          first : null,
-          last : null
-        }
+        dataLinks : {},
+        topLevelLinks : {}
     };
 
     constructor(options = null) {
