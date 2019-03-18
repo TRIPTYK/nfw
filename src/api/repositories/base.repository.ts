@@ -115,6 +115,30 @@ class BaseRepository<T> extends Repository<T> {
         .take( size );
     }
 
+    if (query.filter)
+    {
+       for (let key in query.filter) {
+         let filtered : Array<String> = splitAndFilter(query.filter[key]);
+         filtered.forEach((e : string) => {
+           let [ strategy , value ] = e.split(":");
+
+           // TODO : fix params not working with TypeORM where
+           if(strategy == "like") {
+             queryBuilder.where(SqlString.format(`?? LIKE ?`,[key,value]));
+           }
+           if(strategy == "eq") {
+             queryBuilder.where(SqlString.format(`?? = ?`,[key,value]));
+           }
+           if(strategy == "orlike") {
+             queryBuilder.orWhere(SqlString.format(`?? LIKE ?`,[key,value]));
+           }
+           if(strategy == "oreq") {
+             queryBuilder.orWhere(SqlString.format(`?? = ?`,[key,value]));
+           }
+         });
+       }
+    }
+
     return queryBuilder;
   }
 

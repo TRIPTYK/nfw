@@ -41,6 +41,14 @@ const notify = (err, str, req) => {
   });
 };
 
+const _boomToJSONAPI = (err : Boom) => {
+  return new Error({
+    status:  _getErrorCode(err).toString(),
+    title:  err.output.payload ? err.output.payload.error : "Error",
+    detail: err.message
+  });
+};
+
 /**
  * Display clean error for final user
  *
@@ -50,18 +58,9 @@ const notify = (err, str, req) => {
  * @param {*} next
  */
 const exit = (err, req, res, next) => {
-  /*
-
-  res.json(err);
-  */
   if(!err.httpStatusCode && !err.status && !err.isBoom) err = Boom.expectationFailed(err.message);
   res.status( _getErrorCode(err) );
-
-  res.json(new Error({
-    status:  _getErrorCode(err).toString(),
-    title:  err.error,
-    detail: err.message
-  }));
+  res.json(_boomToJSONAPI(err));
 };
 
 /**
@@ -74,7 +73,7 @@ const exit = (err, req, res, next) => {
  */
 const notFound = (req, res, next) => {
   res.status( 404 );
-  res.json( Boom.notFound('End point not found') );
+  res.json( _boomToJSONAPI(Boom.notFound('End point not found')) );
 };
 
 export { log, notify, exit, notFound };
