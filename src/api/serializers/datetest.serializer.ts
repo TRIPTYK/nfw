@@ -4,15 +4,15 @@ import { SerializerParams } from "./serializerParams";
 import { Request } from "express";
 
 
-export class Colde_oneSerializer extends BaseSerializer {
+export class DatetestSerializer extends BaseSerializer {
 
-  public static withelist : Array<string> = [];
+  public static withelist : Array<string> = ['datetest'];
 
   constructor(request : Request = null,totalCount : number = null) {
     let params = new SerializerParams();
 
     params
-    .setAttributes(Colde_oneSerializer.withelist)
+    .setAttributes(DatetestSerializer.withelist)
     
     .setDataLinks({
       self : (dataSet,data) => `${url}/api/${api}/${this.type}/${data.id}`
@@ -33,6 +33,6 @@ export class Colde_oneSerializer extends BaseSerializer {
       })
     }
 
-    super('colde_ones',params);
+    super('datetests',params);
   }
 }
