@@ -1,18 +1,12 @@
-import { Kicker } from "../api/models/kicker.model";
-import { Jiji } from "../api/models/jiji.model";
-import { Sandwich } from "../api/models/sandwich.model";
-import { Water } from "../api/models/water.model";
-
-import { Banana } from "../api/models/banana.model";
-import { Plz } from "../api/models/plz.model";
 import { Banane } from "../api/models/banane.model";
 import { Abort } from "../api/models/abort.model";
+import { Banana } from "../api/models/banana.model";
 import { Chocolat } from "../api/models/chocolat.model";
 import { Colde_one } from "../api/models/colde_one.model";
 import { Date } from "../api/models/date.model";
-import { Moartest } from "../api/models/moartest.model";
-import { Potato } from "../api/models/potato.model";
-import { Test } from "../api/models/test.model";
+import { Datetest } from "../api/models/datetest.model";
+
+import { Track } from "../api/models/track.model";
 
 import "reflect-metadata";
 
@@ -40,7 +34,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [User,RefreshToken,Document,Banana,Plz,Banane,Abort,Chocolat,Colde_one,Date,Moartest,Potato,Test,Kicker,Jiji,Sandwich,Water],
+      entities: [User,RefreshToken,Document,Track,Banane,Abort,Banana,Chocolat,Colde_one,Date,Datetest],
       migrationsTableName: "custom_migration_table",
       migrations: ["../migration/*.js"],
       cli: {

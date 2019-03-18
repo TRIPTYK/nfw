@@ -3,17 +3,24 @@ import { api, env , port, url } from "../../config/environment.config";
 import { SerializerParams } from "./serializerParams";
 import { Request } from "express";
 
+import { UserSerializer } from "./user.serializer"
 
-export class Colde_oneSerializer extends BaseSerializer {
 
-  public static withelist : Array<string> = [];
+export class TrackSerializer extends BaseSerializer {
+
+  public static withelist : Array<string> = ['title','userID'];
 
   constructor(request : Request = null,totalCount : number = null) {
     let params = new SerializerParams();
 
     params
-    .setAttributes(Colde_oneSerializer.withelist)
+    .setAttributes(TrackSerializer.withelist)
     
+    .addRelation('userID', {
+       ref : 'id',
+       attributes : UserSerializer.withelist,
+      }
+    ) 
     .setDataLinks({
       self : (dataSet,data) => `${url}/api/${api}/${this.type}/${data.id}`
     });
@@ -33,6 +40,6 @@ export class Colde_oneSerializer extends BaseSerializer {
       })
     }
 
-    super('colde_ones',params);
+    super('tracks',params);
   }
 }
