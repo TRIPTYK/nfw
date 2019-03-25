@@ -71,7 +71,7 @@ router
  */
 router
   .route('/login')
-    .post(validate(login), SecurityMiddleware.sanitize, authController.login);
+    .post(userMiddleware.deserialize,validate(login), SecurityMiddleware.sanitize, authController.login);
     
 /**
  * @api {post} v1/auth/refresh-token Refresh Token
@@ -94,7 +94,7 @@ router
  */
 router
   .route('/refresh-token')
-    .post( validate(refresh), (req, res, next) => { console.log('In'); next(); },  SecurityMiddleware.sanitize, authController.refresh);
+    .post( validate(refresh),  SecurityMiddleware.sanitize, authController.refresh);
 
 /**
  * @api {post} v1/auth/facebook Facebook Login

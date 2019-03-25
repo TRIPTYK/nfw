@@ -1,6 +1,7 @@
-import { Repository, SelectQueryBuilder } from "typeorm";
+import { Repository, SelectQueryBuilder, Brackets } from "typeorm";
 import * as SqlString from "sqlstring";
 import { Request } from "express";
+const pluralize = require ('pluralize')
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -12,7 +13,7 @@ class BaseRepository<T> extends Repository<T> {
    */
   public JSONAPIRequest(query : any) : SelectQueryBuilder<T> {
     const currentTable = this.metadata.tableName;
-    const splitAndFilter = (string : string) => string.split(',').filter(string => string != '');  //split parameters and filter empty strings
+    const splitAndFilter = (string : string) => string.split(',').map(e => e.trim()).filter(string => string != '');  //split parameters and filter empty strings
     let queryBuilder = this.createQueryBuilder(currentTable);
 
     /**
@@ -23,10 +24,6 @@ class BaseRepository<T> extends Repository<T> {
     if (query.include)
     {
       let includes = splitAndFilter(query.include);
-      /*
-        qb.leftJoinAndSelect("potage.user","user");
-        qb.leftJoinAndSelect("user.documents","documents");
-      */
 
       includes.forEach( (include: string) => {
 
@@ -35,7 +32,9 @@ class BaseRepository<T> extends Repository<T> {
         if (include.indexOf(".") !== -1)
         {
           property = include;
-          alias = include;
+          let test = include.split(".");
+          alias = pluralize.isPlural(test[test.length-1]) ? `${test[0]}.${pluralize.singular(test[test.length-1])}` : test[test.length-1];
+           //we need to singularize the table name for some reasons on the alias or deep includes will not work properly
         }else{
           property = `${currentTable}.${include}`;
           alias = include;
@@ -43,6 +42,7 @@ class BaseRepository<T> extends Repository<T> {
 
         queryBuilder.leftJoinAndSelect(property,alias);
       });
+      
     }
 
 
@@ -117,28 +117,31 @@ class BaseRepository<T> extends Repository<T> {
 
     if (query.filter)
     {
-       for (let key in query.filter) {
-         let filtered : Array<String> = splitAndFilter(query.filter[key]);
-         filtered.forEach((e : string) => {
-           let [ strategy , value ] = e.split(":");
+       let queryBrackets = new Brackets(qb => { //put everything into sub brackets to not interfere with more important search params
+         for (let key in query.filter) {
+           let filtered : Array<string> = splitAndFilter(query.filter[key]);
+           filtered.forEach((e : string) => {
+             let [ strategy , value ] = e.split(":");
 
-           // TODO : fix params not working with TypeORM where
-           if(strategy == "like") {
-             queryBuilder.where(SqlString.format(`?? LIKE ?`,[key,value]));
-           }
-           if(strategy == "eq") {
-             queryBuilder.where(SqlString.format(`?? = ?`,[key,value]));
-           }
-           if(strategy == "orlike") {
-             queryBuilder.orWhere(SqlString.format(`?? LIKE ?`,[key,value]));
-           }
-           if(strategy == "oreq") {
-             queryBuilder.orWhere(SqlString.format(`?? = ?`,[key,value]));
-           }
-         });
-       }
+             // TODO : fix params not working with TypeORM where
+             if(strategy == "like") {
+               qb.where(SqlString.format(`?? LIKE ?`,[key,value]));
+             }
+             if(strategy == "eq") {
+               qb.where(SqlString.format(`?? = ?`,[key,value]));
+             }
+             if(strategy == "orlike") {
+               qb.orWhere(SqlString.format(`?? LIKE ?`,[key,value]));
+             }
+             if(strategy == "oreq") {
+               qb.orWhere(SqlString.format(`?? = ?`,[key,value]));
+             }
+           });
+          }
+        });
+        queryBuilder.where(queryBrackets);
     }
-
+    console.log(queryBuilder.getSql());
     return queryBuilder;
   }
 

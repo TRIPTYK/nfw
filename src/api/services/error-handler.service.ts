@@ -44,7 +44,7 @@ const notify = (err, str, req) => {
 const _boomToJSONAPI = (err : Boom) => {
   return new Error({
     status:  _getErrorCode(err).toString(),
-    title:  err.output.payload ? err.output.payload.error : "Error",
+    title:  err.output ? err.output.payload.error : "Error",
     detail: err.message
   });
 };
