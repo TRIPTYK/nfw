@@ -46,8 +46,9 @@ export class Document implements IModelize {
   user: User;
 
   @CreateDateColumn()
+  createAt;
   @UpdateDateColumn()
-
+  UpdateAt;
   @Column({
     type: Date,
     default: null
