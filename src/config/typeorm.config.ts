@@ -1,12 +1,3 @@
-import { Banane } from "../api/models/banane.model";
-import { Abort } from "../api/models/abort.model";
-import { Banana } from "../api/models/banana.model";
-import { Chocolat } from "../api/models/chocolat.model";
-import { Colde_one } from "../api/models/colde_one.model";
-import { Date } from "../api/models/date.model";
-import { Datetest } from "../api/models/datetest.model";
-
-import { Track } from "../api/models/track.model";
 
 import "reflect-metadata";
 
@@ -34,7 +25,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [User,RefreshToken,Document,Track,Banane,Abort,Banana,Chocolat,Colde_one,Date,Datetest],
+      entities: [User,RefreshToken,Document],
       migrationsTableName: "custom_migration_table",
       migrations: ["../migration/*.js"],
       cli: {

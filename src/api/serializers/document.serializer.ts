@@ -2,6 +2,8 @@ import { BaseSerializer } from "./base.serializer";
 import { SerializerParams } from "./serializerParams";
 import { api, env , port, url } from "../../config/environment.config";
 import { Request } from "express";
+import { getRepository } from "typeorm";
+import { User } from "../models/user.model";
 
 export class DocumentSerializer extends BaseSerializer {
   public static withelist : Array<string> = ['fieldname','filename','path','mimetype','size','user','createdAt'];
@@ -13,9 +15,16 @@ export class DocumentSerializer extends BaseSerializer {
     .setAttributes(DocumentSerializer.withelist)
     .setDataLinks({
       self : (dataSet,data) => `${url}/api/${api}/${this.type}/${data.id}`
+    })
+    .addRelation('user',{
+      ref : 'id',
+      attributes : DocumentSerializer.withelist,
+      valueForRelationship: async function (relationship) {
+        return await getRepository(User).findOne(relationship.id);
+      }
     });
 
-    if (request && request.query.page && totalCount) {
+    if (request && (request.query.page && request.query.page.number && request.query.page.size) && totalCount) {
       const page = parseInt(request.query.page.number);
       const size = request.query.page.size;
       const baseUrl = `${url}/api/${api}`;

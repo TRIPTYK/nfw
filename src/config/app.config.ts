@@ -101,14 +101,14 @@ app.use(`/api/${api}`, apiLimiter, ProxyRouter);
  * get routes of API , needed AFTER the other routes were set
  */
 const allRoutes : Array<any> = require('express-list-endpoints')(ProxyRouter);
-const serializer : JSONAPISerializer = new JSONAPISerializer("api-routes",{attributes : ["methods","path"]});
+const serializer : JSONAPISerializer = new JSONAPISerializer("apiroutes",{attributes : ["methods","path"]});
 for (let i = 0; i < allRoutes.length; i++)  allRoutes[i]['id'] = i + 1;
 const allRoutesSerialized = serializer.serialize(allRoutes);
 
-app.get(`/api/${api}/apiRoutes`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
+app.get(`/api/${api}/apiroutes`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
    res.json(allRoutesSerialized);
 });
-app.get(`/api/${api}/apiRoutes/:id`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
+app.get(`/api/${api}/apiroutes/:id`, /*authorize([ADMIN]),*/ (req : Request,res : Response) => {
    const route = allRoutes.find(e => e.id == req.params.id);
    if (route === undefined) throw Boom.notFound();
    res.json(serializer.serialize(route));

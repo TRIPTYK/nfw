@@ -3,16 +3,8 @@ import { BaseSerializer } from "./base.serializer";
 class SerializerParams {
     private options : any = {
         attributes : [],
-        dataLinks : {
-          self : null
-        },
-        topLevelLinks : {
-          self : null,
-          next : null,
-          prev : null,
-          first : null,
-          last : null
-        }
+        dataLinks : {},
+        topLevelLinks : {}
     };
 
     constructor(options = null) {
@@ -38,7 +30,7 @@ class SerializerParams {
       return this;
     }
 
-    public addRelation(key : string,relation : { ref : string , attributes : Array<string> })
+    public addRelation(key : string,relation : any)
     {
       this.options[key] = relation;
       return this;
