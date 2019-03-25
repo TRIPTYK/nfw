@@ -32,7 +32,12 @@ export abstract class BaseSerializer implements ISerialize {
     this.options["unconvertCase"] = "camelCase";
 
     this.serializer = new JSONAPISerializer(type, this.options);
-    this.deserializer = new JSONAPIDeserializer(this.options);
+
+    let deserializerOptions = { ...this.options, ...{
+      keyForAttribute: "underscore_case"
+    }};
+
+    this.deserializer = new JSONAPIDeserializer(deserializerOptions); //merge objects
   }
 
   /**

@@ -49,6 +49,7 @@ export class Document implements IModelize {
   createAt;
   @UpdateDateColumn()
   UpdateAt;
+  
   @Column({
     type: Date,
     default: null
