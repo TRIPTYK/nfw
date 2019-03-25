@@ -5,30 +5,14 @@ import { ISerialize } from "./../interfaces/ISerialize.interface";
 import { api, env , port, url } from "../../config/environment.config";
 
 import * as Boom from "boom";
+import { SerializerParams } from "./serializerParams";
 
 export abstract class BaseSerializer implements ISerialize {
 
-  /**
-   *
-   */
-  public type;
-
-  public options;
-
-  /**
-   *
-   */
+  public type : string;
+  public options : Object;
   public static withelist : Array<String> = [];
-
-
-  /**
-   *
-   */
   public serializer: JSONAPISerializer;
-
-  /**
-   *
-   */
   public deserializer: JSONAPIDeserializer;
 
   protected replacePage : Function = (url : string,newPage : number) : string => {
@@ -40,37 +24,20 @@ export abstract class BaseSerializer implements ISerialize {
    * @param type
    * @param whitelist
    */
-  constructor(type: String,attributes : Array<String>,relations : Object = {},dataLinks : Object = {},topLevelLinks : Object = {})  {
+  constructor(type: string,params : SerializerParams) {
     this.type = type;
 
-    this.options = {
-      attributes,
-      dataLinks : {
-        self : (dataSet,data) => {
-          return `${url}/api/${api}/${this.type}/${data.id}`;
-        }
-      },
-      topLevelLinks : {
-
-      },
-      convertCase : "kebab-case",
-      unconvertCase : "camelCase"
-    };
-
-    for (let key in topLevelLinks) {
-      this.options.topLevelLinks[key] = topLevelLinks[key];
-    }
-
-    for (let key in dataLinks) {
-      this.options.dataLinks[key] = dataLinks[key];
-    }
-
-    for (let key in relations) {
-      this.options[key] = relations[key];
-    }
+    this.options = params.getOptions();
+    this.options["convertCase"] = "kebab-case";
+    this.options["unconvertCase"] = "camelCase";
 
     this.serializer = new JSONAPISerializer(type, this.options);
-    this.deserializer = new JSONAPIDeserializer(this.options);
+
+    let deserializerOptions = { ...this.options, ...{
+      keyForAttribute: "underscore_case"
+    }};
+
+    this.deserializer = new JSONAPIDeserializer(deserializerOptions); //merge objects
   }
 
   /**
