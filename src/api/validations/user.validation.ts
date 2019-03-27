@@ -45,7 +45,7 @@ const replaceUser = {
 const updateUser = {
   body: {
     email: Joi.string().email(),
-    password: Joi.string().min(8).max(16),
+    password: Joi.string().allow('').allow(null).min(8).max(16),
     username: Joi.string().max(32),
     lastname: Joi.string().max(32),
     firstname: Joi.string().max(32),
