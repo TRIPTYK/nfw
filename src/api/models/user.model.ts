@@ -70,10 +70,12 @@ export class User implements IModelize {
 
   
   @CreateDateColumn()
-  createAt;
+  createdAt;
 
-  @UpdateDateColumn()
-  UpdateAt;
+  @UpdateDateColumn({
+    nullable: true
+  })
+  updatedAt;
 
   @Column({
     type: Date,
