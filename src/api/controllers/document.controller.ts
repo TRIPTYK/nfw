@@ -14,15 +14,17 @@ import { DocumentSerializer } from "../serializers/document.serializer";
  */
 class DocumentController extends BaseController {
 
-  /** */
+  /**
+   * @constructor
+   */
   constructor() { super(); }
 
   /**
    * Retrieve a list of documents, according to some parameters
    *
-   * @param req Request
-   * @param res Response
-   * @param next Function
+   * @param {Object}req Request
+   * @param {Object}res Response
+   * @param {Function}next Function
    *
    * @public
    */
@@ -38,9 +40,9 @@ class DocumentController extends BaseController {
   /**
    * Create a new document
    *
-   * @param req Request
-   * @param res Response
-   * @param next Function
+   * @param {Object}req Request
+   * @param {Object}res Response
+   * @param {Function}next Function
    *
    * @public
    */
@@ -57,9 +59,9 @@ class DocumentController extends BaseController {
   /**
    * Retrieve one document according to :documentId
    *
-   * @param req Request
-   * @param res Response
-   * @param next Function
+   * @param {Object}req Request
+   * @param {Object}res Response
+   * @param {Function}next Function
    *
    * @public
    */
@@ -75,9 +77,9 @@ class DocumentController extends BaseController {
   /**
    * Update one document according to :documentId
    *
-   * @param req Request
-   * @param res Response
-   * @param next Function
+   * @param {Object}req Request
+   * @param {Object}res Response
+   * @param {Function}next Function
    *
    * @public
    */
@@ -104,9 +106,9 @@ class DocumentController extends BaseController {
   /**
    * Delete one document according to :documentId
    *
-   * @param req Request
-   * @param res Response
-   * @param next Function
+   * @param {Object}req Request
+   * @param {Object}res Response
+   * @param {Function}next Function
    *
    * @public
    */
