@@ -10,19 +10,22 @@ import { generateTokenResponse } from "./../utils/auth.util";
 import { BaseController } from "./base.controller";
 
 /**
- * 
+ * Authentification Controller!
+ * @module controllers/auth.controller.ts 
  */
 class AuthController extends BaseController {
 
-  /** */
+  /** 
+   * @constructor
+  */
   constructor() { super(); }
 
   /**
    * Create and save a new user
    * 
-   * @param req 
-   * @param res 
-   * @param next 
+   * @param {Object} req 
+   * @param {Object}res 
+   * @param {Function}next 
    * 
    * @return JWT|next
    * 
@@ -54,9 +57,9 @@ class AuthController extends BaseController {
   /**
    * Login with an existing user or creates a new one if valid accessToken token
    * 
-   * @param req 
-   * @param res 
-   * @param next 
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Function} next
    * 
    * @return JWT|next
    * 

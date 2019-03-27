@@ -1,6 +1,7 @@
 import * as Joi from "joi";
 import { roles } from "./../enums/role.enum";
 
+
 // GET /v1/users
 const listUsers = {
   query: {
@@ -45,7 +46,7 @@ const replaceUser = {
 const updateUser = {
   body: {
     email: Joi.string().email(),
-    password: Joi.string().min(8).max(16),
+    password: Joi.string().allow(null).allow('').min(8).max(32),
     username: Joi.string().max(32),
     lastname: Joi.string().max(32),
     firstname: Joi.string().max(32),

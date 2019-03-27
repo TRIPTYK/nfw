@@ -141,7 +141,6 @@ class BaseRepository<T> extends Repository<T> {
         });
         queryBuilder.where(queryBrackets);
     }
-    console.log(queryBuilder.getSql());
     return queryBuilder;
   }
 

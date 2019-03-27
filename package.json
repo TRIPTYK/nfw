@@ -75,6 +75,7 @@
     "mysql": "^2.16.0",
     "mysqldump": "^2.2.1",
     "node-notifier": "^5.4.0",
+    "node-os-utils": "^1.0.7",
     "nodemon": "^1.18.10",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
