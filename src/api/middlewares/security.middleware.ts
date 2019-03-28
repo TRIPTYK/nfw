@@ -5,14 +5,14 @@ import * as Boom from "boom";
 export class SecurityMiddleware {
 
   constructor() {}
-  
+
   /**
    * Sanitize data before using|insertion
    * FIXME fix embeded objects/arrays
    * @inheritdoc https://www.npmjs.com/package/xss
-   * 
-   * @param req Request
-   * @param res Response
+   *
+   * @param req Request object
+   * @param res Response object
    * @param next Function
    */
   public static sanitize = (req: Request, res: Response, next: Function) => {

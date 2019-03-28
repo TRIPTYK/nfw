@@ -9,24 +9,22 @@ import { imageMimeTypes } from "./../enums/mime-type.enum";
 import { DocumentSerializer } from "./../serializers/document.serializer";
 import { BaseMiddleware } from "./base.middleware";
 
-/**
- * 
- */
+
 export class DocumentMiddleware extends BaseMiddleware {
 
   constructor() { super( new DocumentSerializer() ); }
 
   /**
    * Create Document and append it to req
-   * 
+   *
    * @param {Object} req
    * @param {Object} res
    * @param {Function} next
-   * 
+   *
    * @returns {Function}
-   *  
+   *
    * @public
-   * 
+   *
    */
   public create = (req: Request, res: Response, next: Function) => {
     try {
@@ -35,21 +33,21 @@ export class DocumentMiddleware extends BaseMiddleware {
       documentRepository.save(document);
       req['doc'] = document;
       return next();
-    } 
+    }
     catch (e) { return next( Boom.expectationFailed(e.message) ); }
   };
 
   /**
    * Resize image according to .env file directives
-   * 
+   *
    * @param {Object} req
    * @param {Object} res
    * @param {Function} next
-   * 
+   *
    * @returns {Function}
-   *  
+   *
    * @public
-   * 
+   *
    */
   public resize = async (req: Request, res: Response, next: Function) => {
 
@@ -87,7 +85,7 @@ export class DocumentMiddleware extends BaseMiddleware {
       }
 
       return next();
-    } 
+    }
     catch (e) { return next( Boom.expectationFailed(e.message) ); }
   };
 

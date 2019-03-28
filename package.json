@@ -11,6 +11,7 @@
     "generate": "node ./cli/generate/",
     "delete": "node ./cli/generate/delete",
     "todo": "leasot -x 'src/**/*.ts'",
+    "typedoc": "typedoc --out /dist/docs --ignoreCompilerErrors",
     "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md",
     "generateFromDB": "node ./cli/generate/generateFromDB"
   },
@@ -91,5 +92,8 @@
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
     "xss": "^1.0.3"
+  },
+  "devDependencies": {
+    "typedoc": "^0.14.2"
   }
 }
