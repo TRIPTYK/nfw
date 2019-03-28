@@ -10,9 +10,9 @@ import * as Pluralize from 'pluralize';
 class BaseRepository<T> extends Repository<T>  {
 
   /**
-   * @description : Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/ (VERSION 1.0)
+   * @description Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/ (VERSION 1.0)
    */
-  public JSONAPIRequest(query : any,allowedIncludes : Array<string> = []) : SelectQueryBuilder<T> {
+  public JsonApiRequest(query : any,allowedIncludes : Array<string> = []) : SelectQueryBuilder<T> {
     const currentTable = this.metadata.tableName;
     const splitAndFilter = (string : string) => string.split(',').map(e => e.trim()).filter(string => string != '');  //split parameters and filter empty strings
     let queryBuilder = this.createQueryBuilder(currentTable);
@@ -21,14 +21,14 @@ class BaseRepository<T> extends Repository<T>  {
     /**
      * Check if include parameter exists
      * An endpoint MAY also support an include request parameter to allow the client to customize which related resources should be returned.
-     * @ref : https://jsonapi.org/format/#fetching-includes
+     * @ref https://jsonapi.org/format/#fetching-includes
      */
     if (query.include)
     {
       let includes = splitAndFilter(query.include);
 
       includes.forEach( (include: string) => {
-        select.push(`${include}.id`); // push to select include , because id is always included 
+        select.push(`${include}.id`); // push to select include , because id is always included
 
         if (allowedIncludes.indexOf(include) > -1) {
           let property : string,alias : string;
@@ -55,7 +55,7 @@ class BaseRepository<T> extends Repository<T>  {
     /**
      * Check if fields parameter exists
      * A client MAY request that an endpoint return only specific fields in the response on a per-type basis by including a fields[TYPE] parameter.
-     * @ref : https://jsonapi.org/format/#fetching-sparse-fieldsets
+     * @ref https://jsonapi.org/format/#fetching-sparse-fieldsets
      */
     if (query.fields)
     {
@@ -86,7 +86,7 @@ class BaseRepository<T> extends Repository<T>  {
     /**
      * Check if sort parameter exists
      * A server MAY choose to support requests to sort resource collections according to one or more criteria (“sort fields”).
-     * @ref : https://jsonapi.org/format/#fetching-sorting
+     * @ref https://jsonapi.org/format/#fetching-sorting
      */
     if (query.sort)
     {
@@ -106,7 +106,7 @@ class BaseRepository<T> extends Repository<T>  {
     /**
      * Check if pagination is enabled
      * A server MAY choose to limit the number of resources returned in a response to a subset (“page”) of the whole set available.
-     * @ref : https://jsonapi.org/format/#fetching-pagination
+     * @ref https://jsonapi.org/format/#fetching-pagination
      */
     if (query.page && query.page.number && query.page.size)
     {
@@ -148,17 +148,24 @@ class BaseRepository<T> extends Repository<T>  {
     return queryBuilder;
   }
 
-  public jsonAPI_findOne(req : Request,id : any,allowedIncludes : Array<string> = []) : Promise<T>
+
+  /**
+   * Shortcut function to make a JSON-API findOne request on id key
+   */
+  public jsonApiFindOne(req : Request,id : any,allowedIncludes : Array<string> = []) : Promise<T>
   {
-    return this.JSONAPIRequest(req.query,allowedIncludes)
+    return this.JsonApiRequest(req.query,allowedIncludes)
       .where(`${this.metadata.tableName}.id = :id`,{id})
       .getOne()
   }
 
-  public jsonAPI_find(req : Request,allowedIncludes : Array<string> = []) : Promise<Array<T>>
+  /**
+   * Shortcut function to make a JSON-API findMany request with data used for pagination
+   */
+  public jsonApiFind(req : Request,allowedIncludes : Array<string> = []) : Promise<[T[],number]>
   {
-    return this.JSONAPIRequest(req.query,allowedIncludes)
-      .getMany()
+    return this.JsonApiRequest(req.query,allowedIncludes)
+      .getManyAndCount()
   }
 
 }

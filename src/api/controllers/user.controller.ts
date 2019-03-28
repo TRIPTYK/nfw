@@ -18,31 +18,28 @@ export class UserController extends BaseController {
   /**
    * Get serialized user
    *
-   * @param req Request
-   * @param res Response
+   * @param req Request object
+   * @param res Response object
    *
-   * @public
    */
   public get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
 
   /**
    * Get logged in user info
    *
-   * @param req Request
-   * @param res Response
+   * @param req Request object
+   * @param res Response object
    *
-   * @public
    */
   public loggedIn (req: Request, res : Response) { res.json( req['user'].whitelist() ); }
 
   /**
    * Create new user
    *
-   * @param req Request
-   * @param res Response
-   * @param next Function
+   * @param req Request object
+   * @param res Response object
+   * @param next Next middleware function
    *
-   * @public
    */
   public async create (req: Request, res : Response, next: Function) {
     try {
@@ -60,9 +57,8 @@ export class UserController extends BaseController {
    *
    * @param req Request
    * @param res Response
-   * @param next Function
+   * @param next Next middleware function
    *
-   * @public
    */
   public async update (req: Request, res : Response, next: Function) {
 
@@ -85,15 +81,14 @@ export class UserController extends BaseController {
    *
    * @param req Request
    * @param res Response
-   * @param next Function
+   * @param next Next middleware function
    *
-   * @public
    */
   public async list (req: Request, res : Response, next: Function) {
 
     try {
       const repository = getCustomRepository(UserRepository);
-      const [users,totalUsers] = await repository.JSONAPIRequest(req.query,['documents']).getManyAndCount();
+      const [users,totalUsers] = await repository.JsonApiRequest(req.query,['documents']).getManyAndCount();
 
       res.json(  new UserSerializer(req,totalUsers).serialize(users) );
     }
@@ -105,9 +100,8 @@ export class UserController extends BaseController {
    *
    * @param req Request
    * @param res Response
-   * @param next Function
+   * @param next Next middleware function
    *
-   * @public
    */
   public async remove (req: Request, res : Response, next: Function) {
 

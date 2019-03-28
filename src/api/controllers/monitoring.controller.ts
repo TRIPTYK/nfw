@@ -5,19 +5,17 @@ import { BaseController } from "./base.controller";
 import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
 import * as Osu from "node-os-utils";
 import * as Os from "os";
-import * as util from 'util';
-/**
- *
- */
+
 export class MonitoringController extends BaseController {
 
   /** */
   constructor() { super(); }
+
   /**
    * Get the server ressources infos
    *
-   * @param {Object}req Request
-   * @param {Function}res Response
+   * @param req Request
+   * @param res Response
    *
    * @public
    */
@@ -33,6 +31,7 @@ export class MonitoringController extends BaseController {
         Osu.cpu.free(),
         Osu.drive.info(),
     ]);
+
     let ressources = {
         id: "1",
         os,
@@ -42,7 +41,7 @@ export class MonitoringController extends BaseController {
         driveInfo,
         ramInfo
     }
-    
+
     const serializer : JSONAPISerializer = new JSONAPISerializer("ressources",{attributes : ["os","cpuCount","cpuUsage","cpuFree","driveInfo","ramInfo"]});
 
     res.json( serializer.serialize(ressources) );
