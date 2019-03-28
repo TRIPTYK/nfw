@@ -1,4 +1,5 @@
 
+
 import "reflect-metadata";
 
 import { createConnection, Connection } from "typeorm";
@@ -25,12 +26,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [User,RefreshToken,Document],
-      migrationsTableName: "custom_migration_table",
-      migrations: ["../migration/*.js"],
-      cli: {
-        migrationsDir: "migration"
-      }
+      entities: [User,RefreshToken,Document]
     });
     return await this.connection;
   }
