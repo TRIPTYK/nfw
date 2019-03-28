@@ -42,8 +42,9 @@ export class MonitoringController extends BaseController {
         driveInfo,
         ramInfo
     }
+    
     const serializer : JSONAPISerializer = new JSONAPISerializer("ressources",{attributes : ["os","cpuCount","cpuUsage","cpuFree","driveInfo","ramInfo"]});
-    const RessourcesSerialized = serializer.serialize(ressources);
-    res.json(RessourcesSerialized);
+
+    res.json( serializer.serialize(ressources) );
    }
 }
