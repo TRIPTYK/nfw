@@ -1,17 +1,19 @@
 import { Repository, SelectQueryBuilder, Brackets } from "typeorm";
 import * as SqlString from "sqlstring";
 import { Request } from "express";
+import * as Boom from "boom";
 import * as Pluralize from 'pluralize';
+import { IRepository } from "../interfaces/IRepository.interface";
 
 /**
  * Base Repository class , inherited for all current repositories
  */
-class BaseRepository<T> extends Repository<T> {
+class BaseRepository<T> extends Repository<T>  {
 
   /**
    * @description : Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/ (VERSION 1.0)
    */
-  public JSONAPIRequest(query : any) : SelectQueryBuilder<T> {
+  public JSONAPIRequest(query : any,allowedIncludes : Array<string> = []) : SelectQueryBuilder<T> {
     const currentTable = this.metadata.tableName;
     const splitAndFilter = (string : string) => string.split(',').map(e => e.trim()).filter(string => string != '');  //split parameters and filter empty strings
     let queryBuilder = this.createQueryBuilder(currentTable);
@@ -26,21 +28,23 @@ class BaseRepository<T> extends Repository<T> {
       let includes = splitAndFilter(query.include);
 
       includes.forEach( (include: string) => {
+        if (allowedIncludes.indexOf(include) > -1) {
+          let property : string,alias : string;
 
-        let property : string,alias : string;
-
-        if (include.indexOf(".") !== -1)
-        {
-          property = include;
-          let test = include.split(".");
-          alias = Pluralize.isPlural(test[test.length-1]) ? `${test[0]}.${Pluralize.singular(test[test.length-1])}` : test[test.length-1];
-           //we need to singularize the table name for some reasons on the alias or deep includes will not work properly
+          if (include.indexOf(".") !== -1)
+          {
+            property = include;
+            let test = include.split(".");
+            alias = Pluralize.isPlural(test[test.length-1]) ? `${test[0]}.${Pluralize.singular(test[test.length-1])}` : test[test.length-1];
+             //we need to singularize the table name for some reasons on the alias or deep includes will not work properly
+          }else{
+            property = `${currentTable}.${include}`;
+            alias = include;
+          }
+          queryBuilder.leftJoinAndSelect(property,alias);
         }else{
-          property = `${currentTable}.${include}`;
-          alias = include;
+          throw Boom.expectationFailed(`Relation with ${include} not authorized`); //TODO : XSS ?
         }
-
-        queryBuilder.leftJoinAndSelect(property,alias);
       });
 
     }
@@ -145,16 +149,16 @@ class BaseRepository<T> extends Repository<T> {
     return queryBuilder;
   }
 
-  public jsonAPI_findOne(req : Request,id : any) : Promise<T>
+  public jsonAPI_findOne(req : Request,id : any,allowedIncludes : Array<string> = []) : Promise<T>
   {
-    return this.JSONAPIRequest(req.query)
+    return this.JSONAPIRequest(req.query,allowedIncludes)
       .where(`${this.metadata.tableName}.id = :id`,{id})
       .getOne()
   }
 
-  public jsonAPI_find(req : Request) : Promise<Array<T>>
+  public jsonAPI_find(req : Request,allowedIncludes : Array<string> = []) : Promise<Array<T>>
   {
-    return this.JSONAPIRequest(req.query)
+    return this.JSONAPIRequest(req.query,allowedIncludes)
       .getMany()
   }
 
