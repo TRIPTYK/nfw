@@ -1,7 +1,7 @@
 import { Repository, SelectQueryBuilder, Brackets } from "typeorm";
 import * as SqlString from "sqlstring";
 import { Request } from "express";
-const pluralize = require ('pluralize')
+import * as Pluralize from 'pluralize';
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -33,7 +33,7 @@ class BaseRepository<T> extends Repository<T> {
         {
           property = include;
           let test = include.split(".");
-          alias = pluralize.isPlural(test[test.length-1]) ? `${test[0]}.${pluralize.singular(test[test.length-1])}` : test[test.length-1];
+          alias = Pluralize.isPlural(test[test.length-1]) ? `${test[0]}.${Pluralize.singular(test[test.length-1])}` : test[test.length-1];
            //we need to singularize the table name for some reasons on the alias or deep includes will not work properly
         }else{
           property = `${currentTable}.${include}`;
@@ -42,7 +42,7 @@ class BaseRepository<T> extends Repository<T> {
 
         queryBuilder.leftJoinAndSelect(property,alias);
       });
-      
+
     }
 
 
