@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , CreateDateColumn , UpdateDateColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , CreateDateColumn , UpdateDateColumn } from "typeorm";
 import { User } from "./user.model";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { mimeTypes } from "./../enums/mime-type.enum";
@@ -46,8 +46,12 @@ export class Document implements IModelize {
   user: User;
 
   @CreateDateColumn()
-  @UpdateDateColumn()
-
+  createdAt;
+  @UpdateDateColumn({
+    nullable:true
+  })
+  updatedAt;
+  
   @Column({
     type: Date,
     default: null

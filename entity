@@ -1,0 +1,9 @@
+{
+ "Name" : "Tree",
+ "Columns" : [{
+     "type" : "varchar",
+     "length" : "255",
+     "default" : ":no"
+ }]
+}
+

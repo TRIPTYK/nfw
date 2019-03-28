@@ -30,7 +30,7 @@ class SerializerParams {
       return this;
     }
 
-    public addRelation(key : string,relation : { ref : string , attributes : Array<string> })
+    public addRelation(key : string,relation : any)
     {
       this.options[key] = relation;
       return this;
