@@ -16,6 +16,7 @@ class BaseRepository<T> extends Repository<T>  {
     const currentTable = this.metadata.tableName;
     const splitAndFilter = (string : string) => string.split(',').map(e => e.trim()).filter(string => string != '');  //split parameters and filter empty strings
     let queryBuilder = this.createQueryBuilder(currentTable);
+    let select : Array<string> = [`${currentTable}.id`];
 
     /**
      * Check if include parameter exists
@@ -27,6 +28,8 @@ class BaseRepository<T> extends Repository<T>  {
       let includes = splitAndFilter(query.include);
 
       includes.forEach( (include: string) => {
+        select.push(`${include}.id`); // push to select include , because id is always included 
+
         if (allowedIncludes.indexOf(include) > -1) {
           let property : string,alias : string;
 
@@ -56,8 +59,6 @@ class BaseRepository<T> extends Repository<T>  {
      */
     if (query.fields)
     {
-      let select = ['id'];
-
       /**
        * Recursive function to populate select statement with fields array
        */
@@ -78,7 +79,6 @@ class BaseRepository<T> extends Repository<T>  {
       }
 
       fillFields(query.fields);
-
       queryBuilder.select(select); // select parameters are escaped by default , no need to escape sql string
     }
 
