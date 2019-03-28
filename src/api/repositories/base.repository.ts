@@ -3,7 +3,6 @@ import * as SqlString from "sqlstring";
 import { Request } from "express";
 import * as Boom from "boom";
 import * as Pluralize from 'pluralize';
-import { IRepository } from "../interfaces/IRepository.interface";
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -57,7 +56,7 @@ class BaseRepository<T> extends Repository<T>  {
      */
     if (query.fields)
     {
-      let select = [];
+      let select = ['id'];
 
       /**
        * Recursive function to populate select statement with fields array
