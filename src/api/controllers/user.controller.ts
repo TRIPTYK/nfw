@@ -69,6 +69,9 @@ export class UserController extends BaseController {
     try {
       const repository = getRepository(User);
       const user = await repository.findOne(req.params.userId);
+      if(req.body.password === null || req.body.password === ''){
+        req.body.password = undefined;
+      }
       repository.merge(user, req.body);
       repository.save(user);
       res.json( user.whitelist() );
