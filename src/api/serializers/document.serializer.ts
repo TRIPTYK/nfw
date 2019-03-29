@@ -4,6 +4,7 @@ import { api, env , port, url } from "../../config/environment.config";
 import { Request } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../models/user.model";
+import { UserSerializer } from "./user.serializer";
 
 export class DocumentSerializer extends BaseSerializer {
   public static withelist : Array<string> = ['fieldname','filename','path','mimetype','size','user','createdAt'];
@@ -18,7 +19,7 @@ export class DocumentSerializer extends BaseSerializer {
     })
     .addRelation('user',{
       ref : 'id',
-      attributes : DocumentSerializer.withelist,
+      attributes : UserSerializer.withelist,
       valueForRelationship: async function (relationship) {
         return await getRepository(User).findOne(relationship.id);
       }
