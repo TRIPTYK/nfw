@@ -3,7 +3,7 @@ import { BaseSerializer } from "./base.serializer";
 class SerializerParams {
 
     /**
-     * Serializer options    
+     * Serializer options
      */
     private options : any = {
         attributes : [],
