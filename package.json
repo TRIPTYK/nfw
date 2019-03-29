@@ -11,7 +11,7 @@
     "generate": "node ./cli/generate/",
     "delete": "node ./cli/generate/delete",
     "todo": "leasot -x 'src/**/*.ts'",
-    "typedoc": "typedoc --out /dist/docs --ignoreCompilerErrors",
+    "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
     "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md",
     "generateFromDB": "node ./cli/generate/generateFromDB"
   },
