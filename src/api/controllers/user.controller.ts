@@ -6,6 +6,7 @@ import { UserRepository } from "./../repositories/user.repository";
 import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
 import { UserSerializer } from "../serializers/user.serializer";
+import { relations as userRelations } from "../enums/relations/user.relations";
 
 /**
  *
@@ -88,7 +89,7 @@ export class UserController extends BaseController {
 
     try {
       const repository = getCustomRepository(UserRepository);
-      const [users,totalUsers] = await repository.JsonApiRequest(req.query,['documents']).getManyAndCount();
+      const [users,totalUsers] = await repository.JsonApiRequest(req.query,userRelations).getManyAndCount();
 
       res.json(  new UserSerializer(req,totalUsers).serialize(users) );
     }
