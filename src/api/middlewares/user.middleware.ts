@@ -13,22 +13,19 @@ export class UserMiddleware extends BaseMiddleware {
 
   /**
    * Load user and append to req
-   * 
-   * @param {Object} req
-   * @param {Object} res
-   * @param {Function} next
-   * @param {String} id 
    *
-   * @returns {Function}
-   *  
-   * @public
+   * @param req Request object
+   * @param res Response object
+   * @param next Next middleware function
+   * @param id User id
+   *
    */
-  public load = async (req: Request, res: Response, next: Function, id: number) => {
+  public load = async (req: Request, res: Response, next: Function, id: number): Promise<Function> => {
     try {
       const repository = getCustomRepository(UserRepository);
       req['locals'] = new User(await repository.one(id));
       return next();
-    } 
+    }
     catch (e) { return next(Boom.expectationFailed(e.message)); }
   };
 

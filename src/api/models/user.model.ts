@@ -19,7 +19,7 @@ export class User implements IModelize {
    */
   constructor(payload: Object) { Object.assign(this, payload); }
 
-  private temporaryPassword;
+  private temporaryPassword : string;
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -68,7 +68,7 @@ export class User implements IModelize {
   })
   role: "admin" | "user" | "ghost";
 
-  
+
   @CreateDateColumn()
   createdAt;
 
@@ -90,7 +90,7 @@ export class User implements IModelize {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword() {
+  async hashPassword() : Promise<boolean> {
     try {
 
       if (this.temporaryPassword === this.password) return true;
@@ -108,9 +108,14 @@ export class User implements IModelize {
     }
   }
 
-  public whitelist() {
+
+  /**
+   * @return Serialized user object in JSON-API format
+   */
+  public whitelist() : object {
     return new UserSerializer().serialize(this);
   }
+
   /**
    *
    */
@@ -124,10 +129,9 @@ export class User implements IModelize {
   }
 
   /**
-   *
    * @param password
    */
-  async passwordMatches(password: string) {
+  async passwordMatches(password: string) : Promise<boolean> {
     return Bcrypt.compare(password, this.password);
   }
 
