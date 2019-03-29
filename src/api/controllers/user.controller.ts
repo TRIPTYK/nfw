@@ -89,7 +89,7 @@ export class UserController extends BaseController {
 
     try {
       const repository = getCustomRepository(UserRepository);
-      const [users,totalUsers] = await repository.JsonApiRequest(req.query,userRelations).getManyAndCount();
+      const [users,totalUsers] = await repository.jsonApiRequest(req.query,userRelations).getManyAndCount();
 
       res.json(  new UserSerializer(req,totalUsers).serialize(users) );
     }
