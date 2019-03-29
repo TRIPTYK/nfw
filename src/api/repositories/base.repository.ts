@@ -12,7 +12,7 @@ class BaseRepository<T> extends Repository<T>  {
   /**
    * @description Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/ (VERSION 1.0)
    */
-  public JsonApiRequest(query : any,allowedIncludes : Array<string> = []) : SelectQueryBuilder<T> {
+  public jsonApiRequest(query : any,allowedIncludes : Array<string> = []) : SelectQueryBuilder<T> {
     const currentTable = this.metadata.tableName;
     const splitAndFilter = (string : string) => string.split(',').map(e => e.trim()).filter(string => string != '');  //split parameters and filter empty strings
     let queryBuilder = this.createQueryBuilder(currentTable);
@@ -154,7 +154,7 @@ class BaseRepository<T> extends Repository<T>  {
    */
   public jsonApiFindOne(req : Request,id : any,allowedIncludes : Array<string> = []) : Promise<T>
   {
-    return this.JsonApiRequest(req.query,allowedIncludes)
+    return this.jsonApiRequest(req.query,allowedIncludes)
       .where(`${this.metadata.tableName}.id = :id`,{id})
       .getOne()
   }
@@ -164,7 +164,7 @@ class BaseRepository<T> extends Repository<T>  {
    */
   public jsonApiFind(req : Request,allowedIncludes : Array<string> = []) : Promise<[T[],number]>
   {
-    return this.JsonApiRequest(req.query,allowedIncludes)
+    return this.jsonApiRequest(req.query,allowedIncludes)
       .getManyAndCount()
   }
 
