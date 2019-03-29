@@ -4,7 +4,7 @@ This repository contains badass 3rd party REST API boilerplate [Express.js](http
 
 As a starter project, he implements some classic features :
 
-* ORM couch
+* ORM layer
 * User's management
 * Document's management
 * Authentification
@@ -261,13 +261,13 @@ You can get these informations via the /api/v1/monitoring
 *NOTE : will not work on WINDOWS systems*
 
 #### Example :
-  ```
-    >EXAMPLE NEEDED<
+  ```javascript
+    EXAMPLE NEEDED
   ```
 
 ### Routing informations
 
-You can also get all the routes of the Api with /api/v1/apiroutes
+You can also get all the routes of the API with /api/v1/apiroutes
 
 #### Example :
 
