@@ -45,7 +45,7 @@ const _boomToJSONAPI = (err : Boom) => {
   return new Error({
     status:  _getErrorCode(err).toString(),
     title:  err.output ? err.output.payload.error : "Error",
-    errors : err.errors ? err.errors : [],
+    meta : { validation :  err.errors ? err.errors : undefined  },
     detail: err.message
   });
 };
