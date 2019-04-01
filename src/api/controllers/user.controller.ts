@@ -19,13 +19,8 @@ export class UserController extends BaseController {
   /**
    * Get serialized user
    *
-<<<<<<< HEAD
-   * @param {Object} req Request
-   * @param {Object} res Response
-=======
    * @param req Request object
    * @param res Response object
->>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
    */
   public get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
@@ -33,13 +28,8 @@ export class UserController extends BaseController {
   /**
    * Get logged in user info
    *
-<<<<<<< HEAD
-   * @param {Object} req Request
-   * @param {Object} res Response
-=======
    * @param req Request object
    * @param res Response object
->>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
    */
   public loggedIn (req: Request, res : Response) { res.json( req['user'].whitelist() ); }
@@ -47,15 +37,9 @@ export class UserController extends BaseController {
   /**
    * Create new user
    *
-<<<<<<< HEAD
-   * @param {Object} req Request
-   * @param {Object} res Response
-   * @param {Function} next Function
-=======
    * @param req Request object
    * @param res Response object
    * @param next Next middleware function
->>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
    */
   public async create (req: Request, res : Response, next: Function) {
@@ -72,15 +56,9 @@ export class UserController extends BaseController {
   /**
    * Update existing user
    *
-<<<<<<< HEAD
-   * @param {Object} req Request
-   * @param {Object} res Response
-   * @param {Function} next Function
-=======
    * @param req Request
    * @param res Response
    * @param next Next middleware function
->>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
    */
   public async update (req: Request, res : Response, next: Function) {
@@ -88,12 +66,7 @@ export class UserController extends BaseController {
     try {
       const repository = getRepository(User);
       const user = await repository.findOne(req.params.userId);
-<<<<<<< HEAD
-      
-      if(req.body.password === null || req.body.password === ""){
-=======
       if(req.body.password === null || req.body.password === ''){
->>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
         req.body.password = undefined;
       }
       repository.merge(user, req.body);
@@ -107,15 +80,9 @@ export class UserController extends BaseController {
   /**
    * Get user list
    *
-<<<<<<< HEAD
-   * @param {Object} req Request
-   * @param {Object} res Response
-   * @param {Function} next Function
-=======
    * @param req Request
    * @param res Response
    * @param next Next middleware function
->>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
    */
   public async list (req: Request, res : Response, next: Function) {
@@ -132,15 +99,9 @@ export class UserController extends BaseController {
   /**
    * Delete user
    *
-<<<<<<< HEAD
-   * @param {Object} req Request
-   * @param {Object} res Response
-   * @param {Function} next Function
-=======
    * @param req Request
    * @param res Response
    * @param next Next middleware function
->>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
    */
   public async remove (req: Request, res : Response, next: Function) {
