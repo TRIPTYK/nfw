@@ -80,4 +80,5 @@ out/
 
 credentials.json
 
+package-lock.json
 *.lock
