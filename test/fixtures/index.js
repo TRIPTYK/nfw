@@ -32,7 +32,7 @@ exports.randomint = (lenght) => {
   return Math.floor(Math.random() * lenght);
 };
 
-exports.randomvarchar = (lenght) => {
+exports.randomvarchar = exports.randomchar = (lenght) => {
   if (!lenght) lenght = 20;
   return Math.random().toString(36).substr(2 , lenght);
 };
