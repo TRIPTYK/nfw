@@ -6,6 +6,7 @@ import { UserRepository } from "./../repositories/user.repository";
 import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
 import { UserSerializer } from "../serializers/user.serializer";
+import { relations as userRelations } from "../enums/relations/user.relations";
 
 /**
  *
@@ -18,31 +19,44 @@ export class UserController extends BaseController {
   /**
    * Get serialized user
    *
+<<<<<<< HEAD
    * @param {Object} req Request
    * @param {Object} res Response
+=======
+   * @param req Request object
+   * @param res Response object
+>>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
-   * @public
    */
   public get(req: Request, res : Response) { res.json( req['locals'].whitelist() ); }
 
   /**
    * Get logged in user info
    *
+<<<<<<< HEAD
    * @param {Object} req Request
    * @param {Object} res Response
+=======
+   * @param req Request object
+   * @param res Response object
+>>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
-   * @public
    */
   public loggedIn (req: Request, res : Response) { res.json( req['user'].whitelist() ); }
 
   /**
    * Create new user
    *
+<<<<<<< HEAD
    * @param {Object} req Request
    * @param {Object} res Response
    * @param {Function} next Function
+=======
+   * @param req Request object
+   * @param res Response object
+   * @param next Next middleware function
+>>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
-   * @public
    */
   public async create (req: Request, res : Response, next: Function) {
     try {
@@ -58,19 +72,28 @@ export class UserController extends BaseController {
   /**
    * Update existing user
    *
+<<<<<<< HEAD
    * @param {Object} req Request
    * @param {Object} res Response
    * @param {Function} next Function
+=======
+   * @param req Request
+   * @param res Response
+   * @param next Next middleware function
+>>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
-   * @public
    */
   public async update (req: Request, res : Response, next: Function) {
 
     try {
       const repository = getRepository(User);
       const user = await repository.findOne(req.params.userId);
+<<<<<<< HEAD
       
       if(req.body.password === null || req.body.password === ""){
+=======
+      if(req.body.password === null || req.body.password === ''){
+>>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
         req.body.password = undefined;
       }
       repository.merge(user, req.body);
@@ -84,18 +107,22 @@ export class UserController extends BaseController {
   /**
    * Get user list
    *
+<<<<<<< HEAD
    * @param {Object} req Request
    * @param {Object} res Response
    * @param {Function} next Function
+=======
+   * @param req Request
+   * @param res Response
+   * @param next Next middleware function
+>>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
-   * @public
    */
   public async list (req: Request, res : Response, next: Function) {
 
     try {
       const repository = getCustomRepository(UserRepository);
-
-      const [users,totalUsers] = await Promise.all([repository.jsonAPI_find(req),repository.count()]);
+      const [users,totalUsers] = await repository.jsonApiRequest(req.query,userRelations).getManyAndCount();
 
       res.json(  new UserSerializer(req,totalUsers).serialize(users) );
     }
@@ -105,11 +132,16 @@ export class UserController extends BaseController {
   /**
    * Delete user
    *
+<<<<<<< HEAD
    * @param {Object} req Request
    * @param {Object} res Response
    * @param {Function} next Function
+=======
+   * @param req Request
+   * @param res Response
+   * @param next Next middleware function
+>>>>>>> 5a6a04bb75f5cacbe7849473ab944f6f56882d64
    *
-   * @public
    */
   public async remove (req: Request, res : Response, next: Function) {
 

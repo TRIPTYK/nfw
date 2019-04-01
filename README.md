@@ -4,7 +4,7 @@ This repository contains badass 3rd party REST API boilerplate [Express.js](http
 
 As a starter project, he implements some classic features :
 
-* ORM couch
+* ORM layer
 * User's management
 * Document's management
 * Authentification
@@ -12,8 +12,9 @@ As a starter project, he implements some classic features :
 * File upload
 * Logger
 * Error handling
-* Files generating
-* Testing
+* Json-Api 1.0 compliant
+* Os ressources usage
+* Unit testing
 
 ## Start with
 
@@ -25,15 +26,21 @@ $ git clone https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git your-project
 
 Remove .git directory :
 
-```bash
+```shell
 $ cd your-project-name/
 $ rm -rf .git
 ```
 
 Kickstart project (create *dist* directory and sub-directories, install packages, install typescript and typeorm globaly, and run a first compilation) :
 
-```bash
+For UNIX systems
+```shell
 $ npm run kickstart
+```
+
+For WINDOWS systems
+```shell
+$ npm run kickstart-win
 ```
 
 Adapt yours .env files (dev, test, staging, production) with your own configuration :
@@ -54,7 +61,7 @@ URL = "http://your-development-url.com"
 # CORS authorized domains, by coma separated WITHOUT spacing
 AUTHORIZED = "http://localhost:8001"
 
-# HTTPS configuration 
+# HTTPS configuration
 HTTPS_IS_ACTIVE = 0
 HTTPS_CERT = "my-api.cert"
 HTTPS_KEY = "my-api.key"
@@ -84,6 +91,7 @@ JIMP_SIZE_XL = 1920
 MAIL_API_ID = 'PIvyWM9y2hFR0cie'
 MAIL_API_ROUTE = 'http://api.mail.triptyk.eu/api/1.0/'
 ```
+
 Enjoy with :
 
 ```bash
@@ -164,37 +172,11 @@ A TypeORM migration is a DB synchronizing. If your schema have pending changes, 
 
 More info about [typeorm migration](http://typeorm.io/#/migrations).
 
-## Files generating
-
-The boilerplate expose a basic files generator which be used as NPM task. This generate following files :
-
-* Model
-* Controller 
-* Custom repository
-* Validation 
-* Route
-* Test
-* Serializer
-
-So, the proxy router file (index.ts) is updated with the dedicated entity router which has just been created.
-
-To use the file generating, run the following command :
-
-```bash
-$ npm run generate YOUR_ENTITY_NAME
-```
-
-Note that the generated files contains only basic features. Note also that some parts must be filled by hand :
-
-* Validation rules: body rules are created but empty by default. Fill it with your rules.
-* Model: model is filled with a primary auto-incremented id, and date system columns. Fill it with your columns and relations.
-* Serializer: attributes as empty by default.Fill it with your entity attributes.
-
 ## Testing
 
 Some basic tests are already writted with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). They are located in *test* directory.
 
-[Jenkins](https://jenkins.io/) is also available in the project, but not used from scratch. 
+[Jenkins](https://jenkins.io/) is also available in the project, but not used from scratch.
 
 To run your tests, launch the following command :
 
@@ -261,3 +243,65 @@ $ pm2 deploy production exec "pm2 reload all"
 More info about [PM2 deploy](https://pm2.io/doc/en/runtime/guide/easy-deploy-with-ssh/).
 
 More info about [PM2](http://pm2.keymetrics.io/docs/usage/quick-start/).
+
+### Json-Api
+
+This Api is [JSON-API 1.0 compliant](https://jsonapi.org/format/)
+
+### Resources informations   
+
+You can get these informations via the /api/v1/monitoring
+  * os : operating system
+  * cpuCount : number of cpu
+  * cpuUsage : usage of CPU in percent
+  * cpuFree : cpu free percentage
+  * driveInfo : Total space , used space , free space , percentage used , percentage free
+  * ramInfo : Total memory , used memory , free memory , free memory percentage
+
+*NOTE : will not work on WINDOWS systems*
+
+#### Example :
+  ```javascript
+    EXAMPLE NEEDED
+  ```
+
+### Routing informations
+
+You can also get all the routes of the API with /api/v1/apiroutes
+
+#### Example :
+
+```json
+{
+  "data": [
+    {
+      "type": "apiroutes",
+      "id": "1",
+      "attributes": {
+        "methods": [
+          "GET"
+        ],
+        "path": "/status"
+      }
+    },
+    {
+      "type": "apiroutes",
+      "id": "2",
+      "attributes": {
+        "methods": [
+          "POST"
+        ],
+        "path": "/auth/register"
+      }
+    },
+    {
+      "type": "apiroutes",
+      "id": "3",
+      "attributes": {
+        "methods": [
+          "POST"
+        ],
+        "path": "/auth/login"
+      }
+    }
+```

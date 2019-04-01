@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import * as Boom from "boom";
 
 /**
- * 
+ *
  */
 export class MailMiddleware {
 
@@ -12,11 +12,11 @@ export class MailMiddleware {
 
   /**
    * Wrap API email sending service.
-   * 
-   * @description Send an email before/after action, on a route. 
-   * 
-   * @param req Request
-   * @param res Response
+   *
+   * Send an email before/after action, on a route.
+   *
+   * @param req Request object
+   * @param res Response object
    * @param next Function
    */
   public mail = async (req: Request, res: Response, next: Function) => {
@@ -29,4 +29,3 @@ export class MailMiddleware {
   };
 
 };
-

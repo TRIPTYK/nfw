@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany , CreateDateColumn , UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany , CreateDateColumn , UpdateDateColumn,ManyToMany, JoinTable } from "typeorm";
 import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environment.config";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { Document } from "./../models/document.model";
@@ -19,7 +19,7 @@ export class User implements IModelize {
    */
   constructor(payload: Object) { Object.assign(this, payload); }
 
-  private temporaryPassword;
+  private temporaryPassword : string;
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -68,15 +68,12 @@ export class User implements IModelize {
   })
   role: "admin" | "user" | "ghost";
 
-  @Column({
-    type: Date,
-    default: DateUtils.mixedDateToDateString( new Date() )
-  })
+
+  @CreateDateColumn()
   createdAt;
 
-  @Column({
-    type: Date,
-    default: null
+  @UpdateDateColumn({
+    nullable: true
   })
   updatedAt;
 
@@ -93,7 +90,7 @@ export class User implements IModelize {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword() {
+  async hashPassword() : Promise<boolean> {
     try {
 
       if (this.temporaryPassword === this.password) return true;
@@ -111,9 +108,14 @@ export class User implements IModelize {
     }
   }
 
-  public whitelist() {
+
+  /**
+   * @return Serialized user object in JSON-API format
+   */
+  public whitelist() : object {
     return new UserSerializer().serialize(this);
   }
+
   /**
    *
    */
@@ -127,10 +129,9 @@ export class User implements IModelize {
   }
 
   /**
-   *
    * @param password
    */
-  async passwordMatches(password: string) {
+  async passwordMatches(password: string) : Promise<boolean> {
     return Bcrypt.compare(password, this.password);
   }
 

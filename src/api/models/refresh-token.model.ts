@@ -10,7 +10,7 @@ export class RefreshToken {
    * @param user
    * @param expires
    */
-  constructor(token: String, user: User, expires: Date)
+  constructor(token: string, user: User, expires: Date)
   {
     this.token = token;
     this.expires = expires;
