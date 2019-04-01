@@ -25,7 +25,7 @@ export class MonitoringController extends BaseController {
     let ramInfo = {
       total: Os.totalmem(),
       free: Os.freemem(),
-      used: ((Os.freemem()/Os.totalmem())*100).toFixed(1)
+      used: (100-((Os.freemem()/Os.totalmem())*100)).toFixed(1)
     }
     let [os, cpuUsage, cpuFree, driveInfo] = await Promise.all([
         Osu.os.oos(),
