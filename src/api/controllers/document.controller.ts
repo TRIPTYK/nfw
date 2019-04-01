@@ -68,7 +68,7 @@ class DocumentController extends BaseController {
     try {
       const documentRepository = getCustomRepository(DocumentRepository);
       const document = await documentRepository.jsonApiFindOne(req,req.params.documentId,documentRelations);
-      res.json(document.whitelist());
+      res.json( new DocumentSerializer().serialize(document) );
     }
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }

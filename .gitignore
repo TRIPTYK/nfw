@@ -79,3 +79,5 @@ out/
 .nfw
 
 credentials.json
+
+*.lock
