@@ -44,7 +44,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-  .get(/*authorize([ADMIN]),*/ validate(listUsers), userController.list)
+  .get(authorize([ADMIN]), validate(listUsers), userController.list)
 
   /**
    * @api {post} v1/users Create User
@@ -122,7 +122,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .get(/*authorize([ADMIN, LOGGED_USER]),*/ validate(getUser), userController.get)
+  .get(authorize([ADMIN, LOGGED_USER]), validate(getUser), userController.get)
 
   /**
    * @api {put} v1/users/:id Replace User
