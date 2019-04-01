@@ -39,11 +39,11 @@ export class UserRepository extends BaseRepository<User>  {
   /**
    * Find user by email and tries to generate a JWT token
    *
-   * @param {Object} - Payload data
+   * @param options email , password and refreshObject
    *
-   * @returns {Object|Error}
+   * @returns
    */
-  async findAndGenerateToken(options) {
+  async findAndGenerateToken(options : any): Promise<any> {
 
     const { email, password, refreshObject } = options;
 

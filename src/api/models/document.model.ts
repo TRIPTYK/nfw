@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , CreateDateColumn , UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , CreateDateColumn , UpdateDateColumn, Timestamp } from "typeorm";
 import { User } from "./user.model";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { mimeTypes } from "./../enums/mime-type.enum";
@@ -46,14 +46,22 @@ export class Document implements IModelize {
   user: User;
 
   @CreateDateColumn()
-  @UpdateDateColumn()
+  createdAt : Date;
+
+  @UpdateDateColumn({
+    nullable:true
+  })
+  updatedAt : Date;
 
   @Column({
-    type: Date,
     default: null
   })
-  deletedAt;
+  deletedAt : Date;
 
+
+  /**
+   * @return Serialized user object in JSON-API format
+   */
   public whitelist() {
     return new DocumentSerializer().serializer.serialize(this);
   }

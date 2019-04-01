@@ -15,14 +15,16 @@ export abstract class BaseSerializer implements ISerialize {
   public serializer: JSONAPISerializer;
   public deserializer: JSONAPIDeserializer;
 
+  /**
+   *  Replace page number parameter value in given URL
+   */
   protected replacePage : Function = (url : string,newPage : number) : string => {
-    return url.replace(/(.*page%5Bnumber%5D=)(?<pageNumber>[0-9]+)(.*)/i,`$1${newPage}$3`);
+    return url.replace(/(.*page(?:\[|%5B)number(?:\]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i,`$1${newPage}$3`);
   };
 
   /**
-   *
-   * @param type
-   * @param whitelist
+   * @param type Entity type
+   * @param params Serializer parameters
    */
   constructor(type: string,params : SerializerParams) {
     this.type = type;
@@ -41,9 +43,11 @@ export abstract class BaseSerializer implements ISerialize {
   }
 
   /**
+   * Serialize a payload to json-api format
    *
+   * @param payload Payload
    */
-  public serialize = (payload) => {
+  public serialize = (payload: any) : any => {
     try {
       return this.serializer.serialize(payload);
     }
@@ -51,13 +55,11 @@ export abstract class BaseSerializer implements ISerialize {
   }
 
   /**
-   * Deserialize
+   * Deserialize a payload from json-api format
    *
    * @param req
-   * @param res
-   * @param next
    */
-  public deserialize = async (req: Request) => {
+  public deserialize = async (req: Request) : Promise<any> => {
     try {
       return await this.deserializer.deserialize(req.body);
     }

@@ -9,9 +9,7 @@ abstract class BaseController {
 
   /**
    * Store the TypeORM current connection to database
-   *
    * @property Connection
-   * @protected
    */
   protected connection : Connection;
 
