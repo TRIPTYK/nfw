@@ -1,3 +1,5 @@
+
+
 import "reflect-metadata";
 
 import { createConnection, Connection } from "typeorm";
@@ -8,14 +10,14 @@ import { Document } from "../api/models/document.model";
 
 /**
  * Define TypeORM default configuration
- * 
+ *
  * @inheritdoc https://http://typeorm.io
  */
 class TypeORMConfiguration {
   private static connection : Connection;
   constructor () { }
-  public static async connect() 
-  { 
+  public static async connect()
+  {
     this.connection = await createConnection({
       type: "mysql",
       name: TypeORM.name,
@@ -24,9 +26,7 @@ class TypeORMConfiguration {
       username: TypeORM.user,
       password: TypeORM.pwd,
       database: TypeORM.database,
-      entities: [ User, RefreshToken, Document],
-      synchronize: true,
-      logging: false
+      entities: [User,RefreshToken,Document]
     });
     return await this.connection;
   }

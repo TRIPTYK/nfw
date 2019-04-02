@@ -5,7 +5,6 @@ import { Deserializer as JSONAPIDeserializer } from "jsonapi-serializer";
  * Define required members for serialize middleware
  */
 interface ISerialize {
-  withelist: Array<String>;
   serializer: JSONAPISerializer;
   deserializer: JSONAPIDeserializer;
   serialize: Function;

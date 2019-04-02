@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , CreateDateColumn , UpdateDateColumn, Timestamp } from "typeorm";
 import { User } from "./user.model";
-import { DateUtils } from "typeorm/util/DateUtils";
 import { mimeTypes } from "./../enums/mime-type.enum";
 import { documentTypes } from "./../enums/document-type.enum";
 import { DocumentSerializer } from "./../serializers/document.serializer";
@@ -45,24 +44,23 @@ export class Document implements IModelize {
   })
   user: User;
 
-  @Column({
-    type: Date,
-    default: DateUtils.mixedDateToDateString( new Date() )
+  @CreateDateColumn()
+  createdAt : Date;
+
+  @UpdateDateColumn({
+    nullable:true
   })
-  createdAt;
+  updatedAt : Date;
 
   @Column({
-    type: Date,
     default: null
   })
-  updatedAt;
+  deletedAt : Date;
 
-  @Column({
-    type: Date,
-    default: null
-  })
-  deletedAt;
 
+  /**
+   * @return Serialized user object in JSON-API format
+   */
   public whitelist() {
     return new DocumentSerializer().serializer.serialize(this);
   }
