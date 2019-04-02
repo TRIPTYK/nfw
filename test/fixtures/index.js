@@ -25,4 +25,22 @@ exports.user = (role, pwd) => {
     services: '{}',
     role: role || roles[ Math.floor(Math.random() * 3) + 1 ]
   };
-}
+};
+
+exports.randomint = (lenght) => {
+  if (!lenght) lenght = 11;
+  return Math.floor(Math.random() * lenght);
+};
+
+exports.randomvarchar = exports.randomchar = (lenght) => {
+  if (!lenght) lenght = 20;
+  return Math.random().toString(36).substr(2 , lenght);
+};
+
+exports.randomdate = (lenght) => {
+  return new Date(Date.now() + Math.random() * (999*9999*9999));
+};
+
+exports.randomdatetime = (lenght) => {
+  return new Date(Date.now() + Math.random() * (999*9999*9999));
+};

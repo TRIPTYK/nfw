@@ -10,19 +10,22 @@ import { generateTokenResponse } from "./../utils/auth.util";
 import { BaseController } from "./base.controller";
 
 /**
- * 
+ * Authentification Controller!
+ * @module controllers/auth.controller.ts 
  */
 class AuthController extends BaseController {
 
-  /** */
+  /** 
+   * @constructor
+  */
   constructor() { super(); }
 
   /**
    * Create and save a new user
    * 
-   * @param req 
-   * @param res 
-   * @param next 
+   * @param {Object} req 
+   * @param {Object}res 
+   * @param {Function}next 
    * 
    * @return JWT|next
    * 
@@ -54,9 +57,9 @@ class AuthController extends BaseController {
   /**
    * Login with an existing user or creates a new one if valid accessToken token
    * 
-   * @param req 
-   * @param res 
-   * @param next 
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Function} next
    * 
    * @return JWT|next
    * 
@@ -120,10 +123,10 @@ class AuthController extends BaseController {
       const refreshObject = await refreshTokenRepository.findOne({
         where : { token: token.refreshToken }
       });
-      refreshTokenRepository.remove(refreshObject);
 
       if(typeof(refreshObject) === 'undefined') return next(Boom.expectationFailed('RefreshObject cannot be empty'));
 
+      refreshTokenRepository.remove(refreshObject);
       // Get owner user of the token
       const { user, accessToken } = await userRepository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject });;
       const response = await generateTokenResponse(user, accessToken);

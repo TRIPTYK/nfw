@@ -3,30 +3,20 @@ import { BaseSerializer } from "../serializers/base.serializer";
 
 import * as Boom from "boom";
 
-/**
- * 
- */
 export abstract class BaseMiddleware {
 
-  /**
-   * 
-   */
   protected serializer: BaseSerializer;
 
-  /**
-   * 
-   * @param deserializer 
-   */
   constructor(serializer: BaseSerializer) { this.serializer = serializer }
 
   /**
-   * Deserialize
-   * 
-   * @param req 
-   * @param res 
-   * @param next 
+   * Deserialize a POST-PUT-PATCH-DELETE request
+   *
+   * @param req Request object
+   * @param res Response object
+   * @param next Next middleware function
    */
-  public deserialize = async(req: Request, res: Response, next: Function) => {
+  public deserialize = async(req: Request, _res: Response, next: Function) => {
 
     try {
 
@@ -44,7 +34,7 @@ export abstract class BaseMiddleware {
       }
 
       return next();
-    } 
+    }
     catch (e) { return next(Boom.expectationFailed(e.message)); }
   }
 }

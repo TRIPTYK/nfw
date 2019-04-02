@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany,  } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany , CreateDateColumn , UpdateDateColumn,ManyToMany, JoinTable } from "typeorm";
 import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environment.config";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { Document } from "./../models/document.model";
@@ -18,8 +18,8 @@ export class User implements IModelize {
    * @param payload Object data to assign
    */
   constructor(payload: Object) { Object.assign(this, payload); }
-  
-  private temporaryPassword;
+
+  private temporaryPassword : string;
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -57,7 +57,7 @@ export class User implements IModelize {
   lastname: string;
 
   @OneToMany(type => Document, document => document.user, {
-    eager: true
+    eager: false
   })
   documents: Document[];
 
@@ -68,15 +68,12 @@ export class User implements IModelize {
   })
   role: "admin" | "user" | "ghost";
 
-  @Column({
-    type: Date,
-    default: DateUtils.mixedDateToDateString( new Date() )
-  })
+
+  @CreateDateColumn()
   createdAt;
 
-  @Column({
-    type: Date,
-    default: null
+  @UpdateDateColumn({
+    nullable: true
   })
   updatedAt;
 
@@ -86,36 +83,41 @@ export class User implements IModelize {
   })
   deletedAt;
 
-  @AfterLoad() 
+  @AfterLoad()
   storeTemporaryPassword() : void {
     this.temporaryPassword = this.password;
   }
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword() {
+  async hashPassword() : Promise<boolean> {
     try {
 
       if (this.temporaryPassword === this.password) return true;
-  
+
       const rounds = env === 'test' ? 1 : 10;
-  
+
       const hash = await Bcrypt.hash(this.password, rounds);
-  
+
       this.password = hash;
-  
+
       return true;
-    } 
+    }
     catch (error) {
       throw Boom.badImplementation(error.message);
     }
   }
 
-  public whitelist() {
-    return new UserSerializer().serializer.serialize(this);
-  }
+
   /**
-   * 
+   * @return Serialized user object in JSON-API format
+   */
+  public whitelist() : object {
+    return new UserSerializer().serialize(this);
+  }
+
+  /**
+   *
    */
   token() {
     const payload = {
@@ -127,21 +129,20 @@ export class User implements IModelize {
   }
 
   /**
-   * 
-   * @param password 
+   * @param password
    */
-  async passwordMatches(password: string) {
+  async passwordMatches(password: string) : Promise<boolean> {
     return Bcrypt.compare(password, this.password);
   }
 
   /**
-   * @param error 
+   * @param error
    */
   static checkDuplicateEmail(error) {
     if (error.name === 'QueryFailedError' && error.errno === 1062) {
       return Boom.conflict(
-        'Validation error', 
-        { 
+        'Validation error',
+        {
           errors: [{
             field: 'email',
             location: 'body',

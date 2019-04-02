@@ -1,6 +1,9 @@
+/**
+ * Different types of documents in database
+ */
 const documentTypes = [
-  "picture", 
-  "document", 
+  "picture",
+  "document",
   "avatar"
 ];
 
