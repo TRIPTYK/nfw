@@ -19,9 +19,10 @@ const _getErrorCode = (error) : number => {
  * @param {*} str
  * @param {*} req
  */
-const log = (err, str, req) => {
-  let message = 'Error in ' + req.method + ' ' + req.url + ' : ' + str + '\n';
+const log = (req,res,next) => {
+  let message = 'Error in ' + req.method + ' ' + req.url + '\n';
   Logger.error(message);
+  next();
 };
 
 /**
