@@ -8,7 +8,6 @@ import * as fs from 'fs';
 const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
 
 const environment = process.argv[2] && process.argv[2] === '--env' && process.argv[3] && environments.hasOwnProperty(process.argv[3].toUpperCase()) ? process.argv[3] : 'development';
-let authorized : any = process.env.AUTHORIZED.trim();
 
 const envConfig = Dotenv.parse(fs.readFileSync(`${process.cwd()}/${environment}.env`));
 for (let k in envConfig) {
@@ -16,6 +15,7 @@ for (let k in envConfig) {
 }
 Dotenv.config( { path : `${process.cwd()}/${environment}.env` } );
 
+let authorized : any = process.env.AUTHORIZED.trim();
 
 const env                   = process.env.NODE_ENV;
 const port                  = process.env.PORT;
