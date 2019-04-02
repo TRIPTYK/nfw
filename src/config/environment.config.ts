@@ -1,4 +1,5 @@
 import * as Dotenv from "dotenv";
+import * as fs from 'fs';
 
 /**
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in 
@@ -8,7 +9,13 @@ const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUC
 
 const environment = process.argv[2] && process.argv[2] === '--env' && process.argv[3] && environments.hasOwnProperty(process.argv[3].toUpperCase()) ? process.argv[3] : 'development';
 
+
+const envConfig = Dotenv.parse(fs.readFileSync(`${process.cwd()}/${environment}.env`));
+for (let k in envConfig) {
+  process.env[k] = envConfig[k]
+}
 Dotenv.config( { path : `${process.cwd()}/${environment}.env` } );
+
 
 const env                   = process.env.NODE_ENV;
 const port                  = process.env.PORT;

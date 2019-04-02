@@ -5,9 +5,10 @@ import { uuidv4 } from "uuid/v4";
 
 import * as Moment from "moment-timezone";
 import * as Boom from "boom";
+import { BaseRepository } from "./base.repository";
 
 @EntityRepository(User)
-export class UserRepository extends Repository<User>  {
+export class UserRepository extends BaseRepository<User>  {
 
   /** */
   constructor() { super(); }
@@ -16,69 +17,49 @@ export class UserRepository extends Repository<User>  {
    * Get one user
    *
    * @param {number} id - The id of user
-   * 
+   *
    * @returns {User}
    */
   async one(id: number) {
 
     try {
 
-      let user = await getRepository(User).findOne(id); 
+      let user = await getRepository(User).findOne(id);
 
-      if (!user) 
+      if (!user)
       {
         throw Boom.notFound('User not found');
       }
 
       return user;
-    } 
-    catch (e) { throw Boom.expectationFailed(e.message); }
-  }
-
-  /**
-   * Get a list of users according to current query parameters
-   * 
-   */
-  list({ page = 1, perPage = 30, username, email, lastname, firstname, role }) {
-    
-    try {
-      const repository = getRepository(User);
-      const options = omitBy({ username, email, lastname, firstname, role }, isNil);
-  
-      return repository.find({
-        where: options,
-        skip: ( page - 1 ) * perPage,
-        take: perPage
-      });
     }
-    catch(e) { throw Boom.expectationFailed(e.message); }
-    
+    catch (e) { throw Boom.expectationFailed(e.message); }
   }
 
   /**
    * Find user by email and tries to generate a JWT token
    *
-   * @param {Object} - Payload data
-   * 
-   * @returns {Object|Error}
+   * @param options email , password and refreshObject
+   *
+   * @returns
    */
-  async findAndGenerateToken(options) {
+  async findAndGenerateToken(options : any): Promise<any> {
 
     const { email, password, refreshObject } = options;
 
     if (!email) throw Boom.badRequest('An email is required to generate a token');
-    
+
     const user = await this.findOne({ email });
 
-    if (!user) 
+    if (!user)
     {
       throw Boom.notFound('User not found');
     }
-    else if (password && await user.passwordMatches(password) === false) 
+    else if (password && await user.passwordMatches(password) === false)
     {
       throw Boom.unauthorized('Password must match to authorize a token generating');
     }
-    else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) 
+    else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore())
     {
       throw Boom.unauthorized('Invalid refresh token.');
     }
@@ -87,7 +68,7 @@ export class UserRepository extends Repository<User>  {
   }
 
   /**
-   * 
+   *
    * @param param
    */
   async oAuthLogin({ service, id, email, username, picture }) {
