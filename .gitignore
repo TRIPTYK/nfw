@@ -71,3 +71,14 @@ ormconfig.json
 
 # Dist directory
 dist/
+
+# JSDoc
+
+out/
+
+.nfw
+
+credentials.json
+
+package-lock.json
+*.lock
