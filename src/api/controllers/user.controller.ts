@@ -48,7 +48,7 @@ export class UserController extends BaseController {
       const user = new User(req.body);
       const savedUser = await repository.save(user);
       res.status( HttpStatus.CREATED );
-      res.json( savedUser.whitelist() );
+      res.json( new UserSerializer().serialize(savedUser) );
     }
     catch (e) { next( User.checkDuplicateEmail(e) ); }
   }
@@ -70,8 +70,8 @@ export class UserController extends BaseController {
         req.body.password = undefined;
       }
       repository.merge(user, req.body);
-      repository.save(user);
-      res.json( user.whitelist() );
+      const saved = await repository.save(user);
+      res.json( new UserSerializer().serialize(saved) );
     }
     catch(e) { next( User.checkDuplicateEmail(e) ); }
 
