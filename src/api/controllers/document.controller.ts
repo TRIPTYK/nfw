@@ -102,9 +102,9 @@ class DocumentController extends BaseController {
       }
 
       documentRepository.merge(document, req['file']);
-      documentRepository.save(document);
+      const saved = await documentRepository.save(document);
 
-      res.json(document.whitelist());
+      res.json( new DocumentSerializer().serialize(saved) );
     }
     catch(e) { next(e); }
   }
