@@ -68,7 +68,7 @@
 				<p>This repository contains badass 3rd party REST API boilerplate <a href="http://expressjs.com/en/4x/api.html">Express.js</a>, <a href="https://github.com/Microsoft/TypeScript">Typescript</a> and <a href="https://github.com/typeorm/typeorm">TypeORM</a> based.</p>
 				<p>As a starter project, he implements some classic features :</p>
 				<ul>
-					<li>ORM couch</li>
+					<li>ORM layer</li>
 					<li>User&#39;s management</li>
 					<li>Document&#39;s management</li>
 					<li>Authentification</li>
@@ -76,17 +76,21 @@
 					<li>File upload</li>
 					<li>Logger</li>
 					<li>Error handling</li>
-					<li>Files generating</li>
-					<li>Testing</li>
+					<li>Json-Api 1.0 compliant</li>
+					<li>Os ressources usage</li>
+					<li>Unit testing</li>
 				</ul>
 				<h2 id="start-with">Start with</h2>
 				<p>Clone the boilerplate on your machine :</p>
 				<pre><code class="language-bash">$ git <span class="hljs-built_in">clone</span> https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git your-project-name/</code></pre>
 				<p>Remove .git directory :</p>
-				<pre><code class="language-bash">$ <span class="hljs-built_in">cd</span> your-project-name/
-$ rm -rf .git</code></pre>
+				<pre><code class="language-shell"><span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">cd</span> your-project-name/</span>
+<span class="hljs-meta">$</span><span class="bash"> rm -rf .git</span></code></pre>
 				<p>Kickstart project (create <em>dist</em> directory and sub-directories, install packages, install typescript and typeorm globaly, and run a first compilation) :</p>
-				<pre><code class="language-bash">$ npm run kickstart</code></pre>
+				<p>For UNIX systems</p>
+				<pre><code class="language-shell"><span class="hljs-meta">$</span><span class="bash"> npm run kickstart</span></code></pre>
+				<p>For WINDOWS systems</p>
+				<pre><code class="language-shell"><span class="hljs-meta">$</span><span class="bash"> npm run kickstart-win</span></code></pre>
 				<p>Adapt yours .env files (dev, test, staging, production) with your own configuration :</p>
 				<pre><code class="language-env"># Environment
 NODE_ENV = &quot;development&quot;
@@ -103,7 +107,7 @@ URL = &quot;http://your-development-url.com&quot;
 # CORS authorized domains, by coma separated WITHOUT spacing
 AUTHORIZED = &quot;http://localhost:8001&quot;
 
-# HTTPS configuration 
+# HTTPS configuration
 HTTPS_IS_ACTIVE = 0
 HTTPS_CERT = &quot;my-api.cert&quot;
 HTTPS_KEY = &quot;my-api.key&quot;
@@ -184,29 +188,9 @@ MAIL_API_ROUTE = &#39;http://api.mail.triptyk.eu/api/1.0/&#39;</code></pre>
 				<h3 id="database-migration">Database migration</h3>
 				<p>A TypeORM migration is a DB synchronizing. If your schema have pending changes, migration tool allow you to synchronize it.</p>
 				<p>More info about <a href="http://typeorm.io/#/migrations">typeorm migration</a>.</p>
-				<h2 id="files-generating">Files generating</h2>
-				<p>The boilerplate expose a basic files generator which be used as NPM task. This generate following files :</p>
-				<ul>
-					<li>Model</li>
-					<li>Controller </li>
-					<li>Custom repository</li>
-					<li>Validation </li>
-					<li>Route</li>
-					<li>Test</li>
-					<li>Serializer</li>
-				</ul>
-				<p>So, the proxy router file (index.ts) is updated with the dedicated entity router which has just been created.</p>
-				<p>To use the file generating, run the following command :</p>
-				<pre><code class="language-bash">$ npm run generate YOUR_ENTITY_NAME</code></pre>
-				<p>Note that the generated files contains only basic features. Note also that some parts must be filled by hand :</p>
-				<ul>
-					<li>Validation rules: body rules are created but empty by default. Fill it with your rules.</li>
-					<li>Model: model is filled with a primary auto-incremented id, and date system columns. Fill it with your columns and relations.</li>
-					<li>Serializer: attributes as empty by default.Fill it with your entity attributes.</li>
-				</ul>
 				<h2 id="testing">Testing</h2>
 				<p>Some basic tests are already writted with <a href="https://mochajs.org/">Mocha</a> and <a href="https://www.chaijs.com/">Chai</a>. They are located in <em>test</em> directory.</p>
-				<p><a href="https://jenkins.io/">Jenkins</a> is also available in the project, but not used from scratch. </p>
+				<p><a href="https://jenkins.io/">Jenkins</a> is also available in the project, but not used from scratch.</p>
 				<p>To run your tests, launch the following command :</p>
 				<pre><code class="language-bash">$ npm run <span class="hljs-built_in">test</span> --env <span class="hljs-built_in">test</span></code></pre>
 				<h2 id="deployment-with-pm2">Deployment with PM2</h2>
@@ -251,6 +235,56 @@ $ pm2 deploy production revert 1
 $ pm2 deploy production <span class="hljs-built_in">exec</span> <span class="hljs-string">"pm2 reload all"</span></code></pre>
 				<p>More info about <a href="https://pm2.io/doc/en/runtime/guide/easy-deploy-with-ssh/">PM2 deploy</a>.</p>
 				<p>More info about <a href="http://pm2.keymetrics.io/docs/usage/quick-start/">PM2</a>.</p>
+				<h3 id="json-api">Json-Api</h3>
+				<p>This Api is <a href="https://jsonapi.org/format/">JSON-API 1.0 compliant</a></p>
+				<h3 id="resources-informations">Resources informations</h3>
+				<p>You can get these informations via the /api/v1/monitoring</p>
+				<ul>
+					<li>os : operating system</li>
+					<li>cpuCount : number of cpu</li>
+					<li>cpuUsage : usage of CPU in percent</li>
+					<li>cpuFree : cpu free percentage</li>
+					<li>driveInfo : Total space , used space , free space , percentage used , percentage free</li>
+					<li>ramInfo : Total memory , used memory , free memory , free memory percentage</li>
+				</ul>
+				<p><em>NOTE : will not work on WINDOWS systems</em></p>
+				<h4 id="example-">Example :</h4>
+				<pre><code class="language-javascript">    EXAMPLE NEEDED</code></pre>
+				<h3 id="routing-informations">Routing informations</h3>
+				<p>You can also get all the routes of the API with /api/v1/apiroutes</p>
+				<h4 id="example-">Example :</h4>
+				<pre><code class="language-json">{
+  <span class="hljs-attr">"data"</span>: [
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"apiroutes"</span>,
+      <span class="hljs-attr">"id"</span>: <span class="hljs-string">"1"</span>,
+      <span class="hljs-attr">"attributes"</span>: {
+        <span class="hljs-attr">"methods"</span>: [
+          <span class="hljs-string">"GET"</span>
+        ],
+        <span class="hljs-attr">"path"</span>: <span class="hljs-string">"/status"</span>
+      }
+    },
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"apiroutes"</span>,
+      <span class="hljs-attr">"id"</span>: <span class="hljs-string">"2"</span>,
+      <span class="hljs-attr">"attributes"</span>: {
+        <span class="hljs-attr">"methods"</span>: [
+          <span class="hljs-string">"POST"</span>
+        ],
+        <span class="hljs-attr">"path"</span>: <span class="hljs-string">"/auth/register"</span>
+      }
+    },
+    {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"apiroutes"</span>,
+      <span class="hljs-attr">"id"</span>: <span class="hljs-string">"3"</span>,
+      <span class="hljs-attr">"attributes"</span>: {
+        <span class="hljs-attr">"methods"</span>: [
+          <span class="hljs-string">"POST"</span>
+        ],
+        <span class="hljs-attr">"path"</span>: <span class="hljs-string">"/auth/login"</span>
+      }
+    }</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">

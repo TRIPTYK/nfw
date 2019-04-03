@@ -2,18 +2,18 @@ var request = require('supertest');
 var fixtures = require('./fixtures');
 
 describe("Authentification", function () {
-  
+
   var server, agent, password, credentials, token, refreshToken, id;
   var expect = require('chai').expect;
 
   before(function (done) {
 
     let express = require('../dist/app.bootstrap');
-  
+
     server      = express.App;
     agent       = request.agent(server);
     password    = fixtures.password();
-    credentials = { 
+    credentials = {
       data: { attributes: fixtures.user('admin', password) }
     }
 
@@ -30,7 +30,7 @@ describe("Authentification", function () {
       });
 
   });
-  
+
   after(function () {
     server = undefined;
     delete server;
@@ -69,7 +69,7 @@ describe("Authentification", function () {
           username: credentials.data.attributes.username,
           email: credentials.data.attributes.email,
           password: password
-        })    
+        })
         .end(function(err, res) {
           expect(res.statusCode).to.equal(200);
           refreshToken = res.body.token.refreshToken;
@@ -130,7 +130,7 @@ describe("Authentification", function () {
           .get('/api/v1/users')
           .expect(403, done);
       });
-  
+
       it('GET /api/v1/users/1 rejected with 403', function (done) {
         request(server)
           .get('/api/v1/users/1')
@@ -148,19 +148,19 @@ describe("Authentification", function () {
           .post('/api/v1/users')
           .expect(403, done);
       });
-  
+
       it('PUT /api/v1/users/1 rejected with 403', function (done) {
         request(server)
           .put('/api/v1/users/1')
           .expect(403, done);
       });
-  
+
       it('PATCH /api/v1/users/1 rejected with 403', function (done) {
         request(server)
           .patch('/api/v1/users/1')
           .expect(403, done);
       });
-  
+
       it('DELETE /api/v1/users/1 rejected as 403', function (done) {
         request(server)
           .delete('/api/v1/users/1')
@@ -182,19 +182,19 @@ describe("Authentification", function () {
           .post('/api/v1/documents')
           .expect(403, done);
       });
-  
+
       it('PUT /api/v1/documents rejected with 403', function (done) {
         request(server)
           .put('/api/v1/documents/1')
           .expect(403, done);
       });
-  
+
       it('PATCH /api/v1/documents rejected with 403', function (done) {
         request(server)
           .patch('/api/v1/documents/1')
           .expect(403, done);
       });
-  
+
       it('DELETE /api/v1/documents rejected with 403', function (done) {
         request(server)
           .delete('/api/v1/documents/1')

@@ -15,7 +15,10 @@ export class DocumentSerializer extends BaseSerializer {
     params
     .setAttributes(DocumentSerializer.withelist)
     .setDataLinks({
-      self : (dataSet,data) => `${url}/api/${api}/${this.type}/${data.id}`
+      self : (dataSet,data) => {
+        if (data.id)
+          return `${url}/api/${api}/${this.type}/${data.id}`
+      }
     })
     .addRelation('user',{
       ref : 'id',

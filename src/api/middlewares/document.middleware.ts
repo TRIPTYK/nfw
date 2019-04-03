@@ -50,9 +50,7 @@ export class DocumentMiddleware extends BaseMiddleware {
    *
    */
   public resize = async (req: Request, res: Response, next: Function) => {
-
     try {
-
       // If image optimization is activated and is image mime type
       if(JimpConfiguration.isActive === 1 && imageMimeTypes.lastIndexOf(req['file'].mimetype) !== -1)
       {

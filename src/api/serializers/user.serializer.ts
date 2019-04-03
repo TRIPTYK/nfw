@@ -24,7 +24,10 @@ export class UserSerializer extends BaseSerializer {
         }
       })
       .setDataLinks({
-        self : (dataSet,data) => `${url}/api/${api}/${this.type}/${data.id}`
+        self : (dataSet,data) => {
+          if (data.id)
+            return `${url}/api/${api}/${this.type}/${data.id}`
+        }
       });
 
       if (request && (request.query.page && request.query.page.number && request.query.page.size) && totalCount) {

@@ -6,9 +6,24 @@ export class SecurityMiddleware {
 
   constructor() {}
 
+
   /**
+   * @private static - XSS filter nested properties in request
+   *
+   * @param content
+   */
+  private static filterXSS(content : any): void {
+    for(let key in content)
+    {
+      if (typeof key === "object")
+        SecurityMiddleware.filterXSS(content[key]);
+      else
+        content[key] = XSS.filterXSS(content[key]);
+    }
+  }
+
+  /**t
    * Sanitize data before using|insertion
-   * FIXME fix embeded objects/arrays
    * @inheritdoc https://www.npmjs.com/package/xss
    *
    * @param req Request object
@@ -16,11 +31,9 @@ export class SecurityMiddleware {
    * @param next Function
    */
   public static sanitize = (req: Request, res: Response, next: Function) => {
+
     try {
-      for(let key in req.body)
-      {
-        //req.body[key] = XSS(req.body[key]);
-      }
+      SecurityMiddleware.filterXSS(req.body);
       next();
     }
     catch(e) { next(Boom.expectationFailed(e.message)); }

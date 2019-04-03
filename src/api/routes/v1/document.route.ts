@@ -65,7 +65,7 @@ router
    * @apiSuccess (Created 201) {Date}    document.createdAt  Date
    * @apiSuccess (Created 201) {Date}    document.updatedAt  Date
    * @apiSuccess (Created 201) {Date}    document.deletedAt  Date
-   * 
+   *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
