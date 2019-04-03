@@ -50,9 +50,7 @@ export class DocumentMiddleware extends BaseMiddleware {
    *
    */
   public resize = async (req: Request, res: Response, next: Function) => {
-
     try {
-
       // If image optimization is activated and is image mime type
       if(JimpConfiguration.isActive === 1 && imageMimeTypes.lastIndexOf(req['file'].mimetype) !== -1)
       {
@@ -86,7 +84,7 @@ export class DocumentMiddleware extends BaseMiddleware {
 
       return next();
     }
-    catch (e) { return next( Boom.expectationFailed(e.message) ); }
+    catch (e) { console.log(e); return next( Boom.expectationFailed(e.message) ); }
   };
 
 }
