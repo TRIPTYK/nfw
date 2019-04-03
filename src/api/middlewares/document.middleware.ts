@@ -84,7 +84,7 @@ export class DocumentMiddleware extends BaseMiddleware {
 
       return next();
     }
-    catch (e) { console.log(e); return next( Boom.expectationFailed(e.message) ); }
+    catch (e) { return next( Boom.expectationFailed(e.message) ); }
   };
 
 }
