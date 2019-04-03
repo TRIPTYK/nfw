@@ -50,7 +50,29 @@ describe("Document CRUD", function () {
       })
   });
 
+  it('POST failed with wrong file format', function (done) {
+    agent
+      .post('/api/v1/documents')
+      .attach('document', 'test/fixtures/documents/text.txt')
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .set('Authorization', 'Bearer ' + token)
+      .end(function(err, res) {
+        expect(res.statusCode).to.equal(415);
+        done();
+      })
+  });
+
   it('GET succeed as 200 on /api/v1/documents/n', function (done) {
+    agent
+      .get('/api/v1/documents/' + id)
+      .set('Accept', 'application/vnd.api+json')
+      .set('Content-Type', 'application/vnd.api+json')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200, done);
+  });
+
+  it('GET succeed as 200 on /api/v1/documents', function (done) {
     agent
       .get('/api/v1/documents/' + id)
       .set('Accept', 'application/vnd.api+json')
