@@ -27,6 +27,18 @@ exports.user = (role, pwd) => {
   };
 };
 
+exports.admin = () => {
+  return {
+    username: 'amauryD',
+    email:'amaury@triptyk.be',
+    password: 'test123*',
+    lastname: "Amaury",
+    firstname: "Deflorenne",
+    services: '{}',
+    role: 'admin'
+  };
+};
+
 exports.randomint = (lenght) => {
   if (!lenght) lenght = 11;
   return Math.floor(Math.random() * lenght);

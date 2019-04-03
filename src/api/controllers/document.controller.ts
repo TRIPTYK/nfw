@@ -51,8 +51,8 @@ class DocumentController extends BaseController {
     try {
       const documentRepository = getRepository(Document);
       let document = new Document(req['file']);
-      documentRepository.save(document);
-      res.json(document.whitelist());
+      const saved = await documentRepository.save(document);
+      res.json( new DocumentSerializer().serialize(saved) );
     }
     catch(e) { next(Boom.expectationFailed(e.message)); }
   }
@@ -70,9 +70,12 @@ class DocumentController extends BaseController {
     try {
       const documentRepository = getCustomRepository(DocumentRepository);
       const document = await documentRepository.jsonApiFindOne(req,req.params.documentId,documentRelations);
+
+      if (!document) throw Boom.notFound('Document not found');
+
       res.json( new DocumentSerializer().serialize(document) );
     }
-    catch(e) { next(Boom.expectationFailed(e.message)); }
+    catch(e) { next(e); }
   }
 
   /**
@@ -89,6 +92,8 @@ class DocumentController extends BaseController {
       const documentRepository = getRepository(Document);
       const document = await documentRepository.findOne(req.params.documentId);
 
+      if (!document) throw Boom.notFound('Document not found');
+
       if(req['file'].filename !== document.filename)
       {
         Fs.unlink(document.path.toString(), (err) => {
@@ -97,11 +102,11 @@ class DocumentController extends BaseController {
       }
 
       documentRepository.merge(document, req['file']);
-      documentRepository.save(document);
+      const saved = await documentRepository.save(document);
 
-      res.json(document.whitelist());
+      res.json( new DocumentSerializer().serialize(saved) );
     }
-    catch(e) { next(Boom.expectationFailed(e.message)); }
+    catch(e) { next(e); }
   }
 
   /**
@@ -118,6 +123,9 @@ class DocumentController extends BaseController {
     try {
       const documentRepository = getRepository(Document);
       const document = await documentRepository.findOne(req.params.documentId);
+
+      if (!document) throw Boom.notFound('Document not found');
+
       Fs.unlink(document.path.toString(), (err) => {
         if(err) throw Boom.expectationFailed(err.message);
         documentRepository.remove(document);

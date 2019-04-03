@@ -108,6 +108,21 @@ describe("User CRUD", function () {
       });
   });
 
+  it('GET Json-api fields' , function(done) {
+    agent
+      .get(`/api/v1/users/${id}?fields=username`)
+      .set('Authorization', 'Bearer ' + token)
+      .end(function(err, res) {
+        expect(res.statusCode).to.equal(200);
+        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.id).to.be.a('string');
+        expect(res.body.data.attributes).to.include.all.keys(
+          'username'
+        );
+        done();
+      });
+  });
+
   it('PUT /api/v1/users/n succeed with 200', function (done) {
     agent
       .put('/api/v1/users/' + id)
