@@ -2,15 +2,7 @@ import * as Joi from "joi";
 
 // GET /v1/documents
 const listDocuments = {
-  query: {
-    page: Joi.number().min(1),
-    perPage: Joi.number().min(1).max(100),
-    fieldname: Joi.string(),
-    filename: Joi.string(),
-    path: Joi.string(),
-    mimetype: Joi.string(),
-    size: Joi.string(),
-  }
+  query: {}
 };
 
 // GET /v1/documents/:documentId
