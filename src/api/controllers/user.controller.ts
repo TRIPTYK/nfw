@@ -7,6 +7,7 @@ import { getRepository, getCustomRepository } from "typeorm";
 import { BaseController } from "./base.controller";
 import { UserSerializer } from "../serializers/user.serializer";
 import { relations as userRelations } from "../enums/relations/user.relations";
+import { DocumentRepository } from "../repositories/document.repository";
 
 /**
  *
@@ -65,10 +66,14 @@ export class UserController extends BaseController {
 
     try {
       const repository = getRepository(User);
-      const user = await repository.findOne(req.params.userId);
+      const user = await repository.findOne(req.params.userId, { relations : ["documents"] });
+
       if(req.body.password === null || req.body.password === ''){
         req.body.password = undefined;
       }
+
+      if(req.body.documents) user.documents = await getCustomRepository(DocumentRepository).findByIds(req.body.documents);
+
       repository.merge(user, req.body);
       const saved = await repository.save(user);
       res.json( new UserSerializer().serialize(saved) );
