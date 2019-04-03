@@ -97,7 +97,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     File does not exist
    */
-  .get(/*authorize([ADMIN, LOGGED_USER]),*/ validate(getDocument), documentController.get)
+  .get(authorize([ADMIN, LOGGED_USER]), validate(getDocument), documentController.get)
 
   /**
    * @api {put} v1/documents/:id Replace File
