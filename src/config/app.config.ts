@@ -103,7 +103,6 @@ const serializer : JSONAPISerializer = new JSONAPISerializer("apiroutes",{attrib
 for (let i = 0; i < allRoutes.length; i++)  allRoutes[i]['id'] = i + 1;
 const allRoutesSerialized = serializer.serialize(allRoutes);
 app.get(`/api/${api}/apiroutes`, authorize([ADMIN]), (req : Request,res : Response) => {
-console.log(allRoutesSerialized)
    res.json(allRoutesSerialized);
 });
 app.get(`/api/${api}/apiroutes/:id`, authorize([ADMIN]), (req : Request,res : Response) => {
