@@ -7,7 +7,7 @@ import { oAuth as oAuthLogin } from "./../../middlewares/auth.middleware";
 import { SecurityMiddleware } from "../../middlewares/security.middleware";
 import { UserMiddleware } from "../../middlewares/user.middleware";
 
-const router = Router();      
+const router = Router();
 const authController = new AuthController();
 const userMiddleware = new UserMiddleware();  /* Todo injecter comme dépendance */
 
@@ -71,8 +71,8 @@ router
  */
 router
   .route('/login')
-    .post(userMiddleware.deserialize,validate(login), SecurityMiddleware.sanitize, authController.login);
-    
+    .post(userMiddleware.deserialize,validate(login),SecurityMiddleware.sanitize, authController.login);
+
 /**
  * @api {post} v1/auth/refresh-token Refresh Token
  * @apiDescription Refresh expired accessToken
@@ -94,7 +94,7 @@ router
  */
 router
   .route('/refresh-token')
-    .post( validate(refresh),  SecurityMiddleware.sanitize, authController.refresh);
+    .post( validate(refresh), authController.refresh);
 
 /**
  * @api {post} v1/auth/facebook Facebook Login
