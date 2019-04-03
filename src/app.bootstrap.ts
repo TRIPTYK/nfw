@@ -1,6 +1,5 @@
 import * as Fs from "fs";
 import * as HTTPS from "https";
-
 import { logger as Logger } from "./config/logger.config";
 import { port, env, https, typeorm, environments } from "./config/environment.config";
 import { TypeORMConfiguration } from "./config/typeorm.config";
@@ -18,7 +17,7 @@ TypeORMConfiguration
   });
 
 import { app as App } from "./config/app.config";
-
+let server = undefined;
 /**
  * HTTPS configuration
  */
@@ -38,7 +37,7 @@ if(https.isActive === 1)
 }
 else 
 {
-  App.listen( port, () => {
+  server = App.listen( port, () => {
     if(env !== environments.TEST.toLowerCase())
       Logger.info(`HTTP server is now running on port ${port} (${env})`)
   });
