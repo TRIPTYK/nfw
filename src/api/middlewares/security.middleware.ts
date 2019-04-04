@@ -15,14 +15,14 @@ export class SecurityMiddleware {
   private static filterXSS(content : any): void {
     for(let key in content)
     {
-      if (typeof key === "object")
+      if (typeof key == "object")
         SecurityMiddleware.filterXSS(content[key]);
       else
         content[key] = XSS.filterXSS(content[key]);
     }
   }
 
-  /**t
+  /**
    * Sanitize data before using|insertion
    * @inheritdoc https://www.npmjs.com/package/xss
    *
