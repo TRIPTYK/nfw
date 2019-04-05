@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as XSS from "xss";
 import * as Boom from "boom";
+import { fullLog } from "../utils/log.util";
 
 export class SecurityMiddleware {
 
@@ -15,10 +16,12 @@ export class SecurityMiddleware {
   private static filterXSS(content : any): void {
     for(let key in content)
     {
-      if (typeof key == "object")
+      if (typeof content[key] == "object")
         SecurityMiddleware.filterXSS(content[key]);
       else
-        content[key] = XSS.filterXSS(content[key]);
+        if (typeof content[key] == "string")
+          content[key] = XSS.filterXSS(content[key]);
+
     }
   }
 
