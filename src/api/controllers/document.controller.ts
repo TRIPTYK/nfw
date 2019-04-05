@@ -7,8 +7,11 @@ import { Request, Response } from "express";
 import { getRepository, getCustomRepository } from "typeorm";
 import { DocumentRepository } from "./../repositories/document.repository";
 import { BaseController } from "./base.controller";
+import * as Pluralize from "pluralize";
 import { DocumentSerializer } from "../serializers/document.serializer";
 import { relations as documentRelations } from "../enums/relations/document.relations";
+import { Serializer as JSONAPISerializer } from "jsonapi-serializer";
+import { api, env , port, url } from "../../config/environment.config";
 
 /**
  *
@@ -37,6 +40,47 @@ class DocumentController extends BaseController {
     }
     catch (e) { next(e); }
   }
+
+
+  /**
+   * public async - description
+   *
+   * @param  {type} req: Request   description
+   * @param  {type} res : Response description
+   * @param  {type} next: Function description
+   * @return {type}                description
+   */
+   public async relationships (req: Request, res : Response, next: Function) {
+     try {
+       const docRepository = getCustomRepository(DocumentRepository);
+       const tableName = docRepository.metadata.tableName;
+       let { documentId , relation } = req.params;
+       const serializer = new JSONAPISerializer(relation,{
+         topLevelLinks : {
+           self : () =>  `${url}/${tableName}s${req.url}`,
+           related : () => `${url}/${tableName}s/${documentId}/${relation}`
+         }
+       });
+
+       const exists = docRepository.metadata.relations.find(e => [Pluralize.plural(relation),Pluralize.singular(relation)].includes(e.propertyName));
+
+       if (!exists) throw Boom.notFound();
+
+       if (['many-to-one','one-to-one'].includes(exists.relationType))
+        relation = Pluralize.singular(relation);
+
+       const user = await docRepository.createQueryBuilder(docRepository.metadata.tableName)
+         .leftJoinAndSelect(`${tableName}.${relation}`,relation)
+         .select([`${relation}.id`,`${tableName}.id`]) // select minimal informations
+         .where({id : documentId})
+         .getOne();
+
+       if (!user) throw Boom.notFound();
+
+       res.json( serializer.serialize(user[relation]) );
+     }
+     catch(e) { next(e); }
+   }
 
   /**
    * Create a new document
