@@ -1,6 +1,7 @@
 import * as Boom from "boom";
 import { default as Axios } from "axios";
 import { Request, Response } from "express";
+import * as Mailgun from "mailgun-js";
 
 const _getError = (error) => {
 
@@ -70,6 +71,10 @@ const sendmail = async (req: Request) => {
 
 };
 
+
+/**
+ * Mailgun API 
+ */
 const sendmailGun = async (req : Request) => {
   const mailgun : Mailgun = new Mailgun({
     apiKey : process.env.MAILGUN_API_KEY,

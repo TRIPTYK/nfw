@@ -8,8 +8,6 @@ const monitoringController = new MonitoringController(); // Todo injecter comme 
 
 
 router
-  .route('/')
-
-  .get( monitoringController.get)
+  .route('/').get( monitoringController.get)
 
 export { router };
