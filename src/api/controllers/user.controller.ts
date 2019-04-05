@@ -12,6 +12,8 @@ import { relations as userRelations } from "../enums/relations/user.relations";
 import { DocumentRepository } from "../repositories/document.repository";
 import { Serializer as JSONAPISerializer } from "jsonapi-serializer";
 import { api, env , port, url } from "../../config/environment.config";
+import { fullLog } from "../utils/log.util";
+
 
 /**
  *
@@ -117,10 +119,19 @@ export class UserController extends BaseController {
         req.body.password = undefined;
       }
 
+      if(req.body.avatar) {
+        const avatar = await getCustomRepository(DocumentRepository).findOne(req.body.avatar.id);
+        if (avatar.mimetype == "image/png") {
+          user.avatar = avatar;
+        }else{
+          throw Boom.expectationFailed('Wrong document mimetype');
+        }
+      }
       if(req.body.documents) user.documents = await getCustomRepository(DocumentRepository).findByIds(req.body.documents);
 
       repository.merge(user, req.body);
       const saved = await repository.save(user);
+
       res.json( new UserSerializer().serialize(saved) );
     }
     catch(e) { next( User.checkDuplicateEmail(e) ); }
