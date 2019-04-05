@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { BaseSerializer } from "../serializers/base.serializer";
 
 import * as Boom from "boom";
+import { fullLog } from "../utils/log.util";
 
 export abstract class BaseMiddleware {
 
@@ -29,7 +30,9 @@ export abstract class BaseMiddleware {
 
       for(let key in fields)
       {
-        if(key !== 'id') req.body[key] = fields[key];
+        if(key !== 'id') {
+          req.body[key] = fields[key];
+        }
         else delete req.body[key];
       }
 
