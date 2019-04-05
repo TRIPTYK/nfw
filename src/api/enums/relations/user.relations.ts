@@ -1,5 +1,6 @@
 const relations : string[] = [
-  'documents'
+  'documents',
+  'avatar'
 ];
 
 export { relations }

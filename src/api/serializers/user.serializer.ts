@@ -10,13 +10,18 @@ import { DocumentSerializer } from "./document.serializer";
 
 
 export class UserSerializer extends BaseSerializer {
-  public static withelist : Array<string> = ['username','email','services','documents','recipes','firstname','lastname','role','createdAt','updatedAt'];
+  public static withelist : Array<string> = ['username','email','services','documents','recipes','firstname','lastname','role','createdAt','updatedAt','avatar'];
 
   constructor(request : Request = null,totalCount : number = null) {
     let params = new SerializerParams();
 
     params
       .setAttributes(UserSerializer.withelist)
+      .addRelation('avatar',{
+        typeForAttribute : 'documents',
+        ref:'id',
+        attributes:DocumentSerializer.withelist
+      })
       .addRelation('documents',{
          ref:'id',
          attributes:DocumentSerializer.withelist,
