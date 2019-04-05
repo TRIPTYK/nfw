@@ -73,6 +73,10 @@ router
   .post(authorize([ADMIN, LOGGED_USER]), upload.single('document'), documentMiddleware.resize, documentController.create);
 
 router
+  .route('/:documentId/relationships/:relation')
+  .get(documentController.relationships);
+
+router
   .route('/:documentId')
   /**
    * @api {get} v1/documents/:id Get File
