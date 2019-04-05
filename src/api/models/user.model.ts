@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany , CreateDateColumn , UpdateDateColumn,ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany , CreateDateColumn , UpdateDateColumn,ManyToMany, JoinTable, OneToOne, JoinColumn } from "typeorm";
 import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environment.config";
 import { DateUtils } from "typeorm/util/DateUtils";
 import { Document } from "./../models/document.model";
@@ -58,6 +58,10 @@ export class User implements IModelize {
 
   @OneToMany(type => Document, document => document.user)
   documents: Document[];
+
+  @OneToOne(type => Document, document => document.user)
+  @JoinColumn()
+  avatar : Document;
 
   @Column({
     type: "enum",
