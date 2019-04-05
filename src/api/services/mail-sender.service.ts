@@ -1,6 +1,7 @@
 import * as Boom from "boom";
 import { default as Axios } from "axios";
 import { Request, Response } from "express";
+import * as Mailgun from "mailgun-js";
 
 const _getError = (error) => {
 
@@ -12,17 +13,17 @@ const _getError = (error) => {
   else if(typeof(error.response.data) !== 'undefined' && typeof(error.response.data.statusCode) !== 'undefined') {
     message = error.response.data.message;
   }
- 
+
   return message;
 };
 
 /**
- * Contact Triptyk API mail about email sending 
- * 
+ * Contact Triptyk API mail about email sending
+ *
  * @description Must be used as a called service. If you wish send an email before/after another action, you should use the associate middleware and place it on your route.
- * 
+ *
  * @param req Request
- *   
+ *
  * @inheritdoc https://github.com/TRIPTYK/api-mail
  */
 const sendmail = async (req: Request) => {
@@ -68,6 +69,38 @@ const sendmail = async (req: Request) => {
     });
   });
 
+};
+
+
+/**
+ * Mailgun API 
+ */
+const sendmailGun = async (req : Request) => {
+  const mailgun : Mailgun = new Mailgun({
+    apiKey : process.env.MAILGUN_API_KEY,
+    publicApiKey : process.env.MAILGUN_PUBLIC_KEY,
+    host : process.env.MAILGUN_HOST,
+    domain : process.env.MAILGUN_DOMAIN,
+    timeout : 2000
+  });
+
+  if (!req.body) {
+    return Boom.badRequest('Payload cannot be empty');
+  }
+
+  const data = {
+      from : "Mailgun Sandbox <postmaster@sandboxcd6790cbfc4b402ba15d6eb8d92b8a9d.mailgun.org>",
+      to : req.body.to,
+      subject : req.body.subject,
+      text : req.body.text
+  };
+
+  return new Promise((res,rej) => {
+    mailgun.messages().send(data, function (error, body) {
+      if (error) rej(error);
+      res(body);
+    });
+  });
 };
 
 export { sendmail };

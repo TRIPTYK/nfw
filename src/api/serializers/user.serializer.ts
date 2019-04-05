@@ -3,13 +3,14 @@ import { api, env , port, url } from "../../config/environment.config";
 import { Request } from "express";
 import { SerializerParams } from "./serializerParams";
 import { User } from "../models/user.model";
+import { Document } from "../models/document.model";
 import { getRepository } from "typeorm";
 import { UserRepository } from "../repositories/user.repository";
 import { DocumentSerializer } from "./document.serializer";
 
 
 export class UserSerializer extends BaseSerializer {
-  public static withelist : Array<string> = ['username','email','services','documents','recipes','firstname','lastname','role','createdAt'];
+  public static withelist : Array<string> = ['username','email','services','documents','recipes','firstname','lastname','role','createdAt','updatedAt'];
 
   constructor(request : Request = null,totalCount : number = null) {
     let params = new SerializerParams();

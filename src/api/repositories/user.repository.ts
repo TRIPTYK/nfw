@@ -20,7 +20,7 @@ export class UserRepository extends BaseRepository<User>  {
    *
    * @returns {User}
    */
-  async one(id: number) {
+  async one(id: number): Promise<User> {
 
     try {
 

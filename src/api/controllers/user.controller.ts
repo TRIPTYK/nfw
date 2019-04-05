@@ -1,13 +1,17 @@
 import * as HttpStatus from "http-status";
 
+import * as Boom from "boom"
 import { Request, Response } from "express";
 import { User } from "./../models/user.model";
 import { UserRepository } from "./../repositories/user.repository";
 import { getRepository, getCustomRepository } from "typeorm";
+import * as Pluralize from "pluralize";
 import { BaseController } from "./base.controller";
 import { UserSerializer } from "../serializers/user.serializer";
 import { relations as userRelations } from "../enums/relations/user.relations";
 import { DocumentRepository } from "../repositories/document.repository";
+import { Serializer as JSONAPISerializer } from "jsonapi-serializer";
+import { api, env , port, url } from "../../config/environment.config";
 
 /**
  *
@@ -53,6 +57,47 @@ export class UserController extends BaseController {
     }
     catch (e) { next( User.checkDuplicateEmail(e) ); }
   }
+
+
+  /**
+   * public async - description
+   *
+   * @param  {type} req: Request   description
+   * @param  {type} res : Response description
+   * @param  {type} next: Function description
+   * @return {type}                description
+   */
+   public async relationships (req: Request, res : Response, next: Function) {
+     try {
+       const docRepository = getCustomRepository(UserRepository);
+       const tableName = docRepository.metadata.tableName;
+       let { userId , relation } = req.params;
+       const serializer = new JSONAPISerializer(relation,{
+         topLevelLinks : {
+           self : () =>  `${url}/${tableName}s${req.url}`,
+           related : () => `${url}/${tableName}s/${userId}/${relation}`
+         }
+       });
+
+       const exists = docRepository.metadata.relations.find(e => [Pluralize.plural(relation),Pluralize.singular(relation)].includes(e.propertyName));
+
+       if (!exists) throw Boom.notFound();
+
+       if (['many-to-one','one-to-one'].includes(exists.relationType))
+        relation = Pluralize.singular(relation);
+
+       const user = await docRepository.createQueryBuilder(docRepository.metadata.tableName)
+         .leftJoinAndSelect(`${tableName}.${relation}`,relation)
+         .select([`${relation}.id`,`${tableName}.id`]) // select minimal informations
+         .where({id : userId})
+         .getOne();
+
+       if (!user) throw Boom.notFound();
+
+       res.json( serializer.serialize(user[relation]) );
+     }
+     catch(e) { next(e); }
+   }
 
   /**
    * Update existing user
