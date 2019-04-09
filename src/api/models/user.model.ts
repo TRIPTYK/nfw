@@ -59,10 +59,6 @@ export class User implements IModelize {
   @OneToMany(type => Document, document => document.user)
   documents: Document[];
 
-  @OneToOne(type => Document, document => document.user)
-  @JoinColumn()
-  avatar : Document;
-
   @Column({
     type: "enum",
     enum: roles,
