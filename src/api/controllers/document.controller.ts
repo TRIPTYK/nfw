@@ -12,6 +12,7 @@ import { DocumentSerializer } from "../serializers/document.serializer";
 import { relations as documentRelations } from "../enums/relations/document.relations";
 import { Serializer as JSONAPISerializer } from "jsonapi-serializer";
 import { api, env , port, url } from "../../config/environment.config";
+import { SerializerParams } from "../serializers/serializerParams";
 
 /**
  *
@@ -35,8 +36,8 @@ class DocumentController extends BaseController {
   public async list (req: Request, res : Response, next: Function) {
     try {
       const repository = getCustomRepository(DocumentRepository);
-      const documents = await repository.jsonApiFind(req,documentRelations);
-      res.json( new DocumentSerializer().serialize(documents) );
+      const [documents , total] = await repository.jsonApiFind(req,documentRelations);
+      res.json( new DocumentSerializer( new SerializerParams().enablePagination(req,total) ).serialize(documents) );
     }
     catch (e) { next(e); }
   }

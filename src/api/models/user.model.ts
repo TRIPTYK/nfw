@@ -10,6 +10,7 @@ import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
+import { SerializerParams } from "../serializers/serializerParams";
 
 @Entity()
 export class User implements IModelize {

@@ -26,10 +26,10 @@ export abstract class BaseSerializer implements ISerialize {
    * @param type Entity type
    * @param params Serializer parameters
    */
-  constructor(type: string,params : SerializerParams) {
+  constructor(type: string,params : any) {
     this.type = type;
 
-    this.options = params.getOptions();
+    this.options = params;
     this.options["convertCase"] = "kebab-case";
     this.options["unconvertCase"] = "camelCase";
 
