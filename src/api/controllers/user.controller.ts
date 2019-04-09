@@ -110,36 +110,46 @@ export class UserController extends BaseController {
     * @param res Response object
     * @param next Next middleware function
     *
+    * TODO : allow add json-api includes
+    */
    public async related(req: Request, res : Response, next: Function)
    {
-     let repository : BaseRepository<any> , serializer : BaseSerializer;
-
      try {
+       const docRepository = getCustomRepository(UserRepository);
+       const tableName = docRepository.metadata.tableName;
        let { userId , relation } = req.params;
 
-       if (!userRelations.includes(relation))
-        throw Boom.notFound();
+       if (!userRelations.includes(relation)) throw Boom.notFound();
 
-       let repImport = await import(`../repositories/${Pluralize.singular(relation)}.repository`);
        let serializerImport = await import(`../serializers/${Pluralize.singular(relation)}.serializer`);
 
        serializerImport = serializerImport[Object.keys(serializerImport)[0]];
-       repository = getCustomRepository(repImport[Object.keys(repImport)[0]]);
 
-       serializer = new serializerImport(req);
+       const serializer = new JSONAPISerializer(relation,{
+         attributes : serializerImport.withelist,
+         topLevelLinks : {
+           self : () =>  `${url}/${tableName}s${req.url}`
+         }
+       });
 
-       const user = await repository.jsonApiRequest(req.query,documentRelations)
-         .leftJoin(`${Pluralize.singular(relation)}.specialities`,"specialities")
+       const exists = docRepository.metadata.relations.find(e => [Pluralize.plural(relation),Pluralize.singular(relation)].includes(e.propertyName));
+
+       if (!exists) throw Boom.notFound();
+
+       if (['many-to-one','one-to-one'].includes(exists.relationType))
+        relation = Pluralize.singular(relation);
+
+       const user = await docRepository.createQueryBuilder(tableName)
+         .leftJoinAndSelect(`${tableName}.${relation}`,relation)
          .where({id : userId})
          .getOne();
 
        if (!user) throw Boom.notFound();
 
-       res.json( serializer.serialize(user) );
+       res.json( serializer.serialize(user[relation]) );
      }
      catch(e) { next(e); }
    }
-   **/
 
   /**
    * Update existing user
