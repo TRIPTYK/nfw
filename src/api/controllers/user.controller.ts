@@ -9,10 +9,13 @@ import * as Pluralize from "pluralize";
 import { BaseController } from "./base.controller";
 import { UserSerializer } from "../serializers/user.serializer";
 import { relations as userRelations } from "../enums/relations/user.relations";
+import { relations as documentRelations } from "../enums/relations/document.relations";
 import { DocumentRepository } from "../repositories/document.repository";
 import { Serializer as JSONAPISerializer } from "jsonapi-serializer";
 import { api, env , port, url } from "../../config/environment.config";
 import { fullLog } from "../utils/log.util";
+import { BaseSerializer } from "../serializers/base.serializer";
+import { BaseRepository } from "../repositories/base.repository";
 
 
 /**
@@ -60,14 +63,12 @@ export class UserController extends BaseController {
     catch (e) { next( User.checkDuplicateEmail(e) ); }
   }
 
-
   /**
-   * public async - description
+   * public async - fetch relationships id
    *
-   * @param  {type} req: Request   description
-   * @param  {type} res : Response description
-   * @param  {type} next: Function description
-   * @return {type}                description
+   * @param  req: Request
+   * @param  res : Response
+   * @param  next: Function
    */
    public async relationships (req: Request, res : Response, next: Function) {
      try {
@@ -101,6 +102,45 @@ export class UserController extends BaseController {
      catch(e) { next(e); }
    }
 
+
+   /**
+    * Fetch related resources
+    *
+    * @param req Request object
+    * @param res Response object
+    * @param next Next middleware function
+    *
+   public async related(req: Request, res : Response, next: Function)
+   {
+     let repository : BaseRepository<any> , serializer : BaseSerializer;
+
+     try {
+       let { userId , relation } = req.params;
+
+       if (!userRelations.includes(relation))
+        throw Boom.notFound();
+
+       let repImport = await import(`../repositories/${Pluralize.singular(relation)}.repository`);
+       let serializerImport = await import(`../serializers/${Pluralize.singular(relation)}.serializer`);
+
+       serializerImport = serializerImport[Object.keys(serializerImport)[0]];
+       repository = getCustomRepository(repImport[Object.keys(repImport)[0]]);
+
+       serializer = new serializerImport(req);
+
+       const user = await repository.jsonApiRequest(req.query,documentRelations)
+         .leftJoin(`${Pluralize.singular(relation)}.specialities`,"specialities")
+         .where({id : userId})
+         .getOne();
+
+       if (!user) throw Boom.notFound();
+
+       res.json( serializer.serialize(user) );
+     }
+     catch(e) { next(e); }
+   }
+   **/
+
   /**
    * Update existing user
    *
@@ -119,14 +159,6 @@ export class UserController extends BaseController {
         req.body.password = undefined;
       }
 
-      if(req.body.avatar) {
-        const avatar = await getCustomRepository(DocumentRepository).findOne(req.body.avatar.id);
-        if (avatar.mimetype == "image/png") {
-          user.avatar = avatar;
-        }else{
-          throw Boom.expectationFailed('Wrong document mimetype');
-        }
-      }
       if(req.body.documents) user.documents = await getCustomRepository(DocumentRepository).findByIds(req.body.documents);
 
       repository.merge(user, req.body);

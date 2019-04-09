@@ -72,6 +72,9 @@ router
    */
   .post(authorize([ADMIN, LOGGED_USER]), upload.single('document'), documentMiddleware.resize, documentController.create);
 
+  /**
+   *  Fetch json-api related records links
+   */
 router
   .route('/:documentId/relationships/:relation')
   .get(documentController.relationships);
