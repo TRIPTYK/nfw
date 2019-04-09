@@ -21,13 +21,13 @@ export abstract class BaseMiddleware {
 
     try {
 
-      if(req.method === 'GET') return next();
+      if(['GET','DELETE'].includes(req.method)) return next();
       if(!req.body.data || !req.body.data.attributes) return next();
 
       let fields = await this.serializer.deserialize(req);
 
       req.body = {};
-
+       
       for(let key in fields)
       {
         if(key !== 'id') {

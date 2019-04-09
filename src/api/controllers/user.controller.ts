@@ -16,6 +16,7 @@ import { api, env , port, url } from "../../config/environment.config";
 import { fullLog } from "../utils/log.util";
 import { BaseSerializer } from "../serializers/base.serializer";
 import { BaseRepository } from "../repositories/base.repository";
+import { SerializerParams } from "../serializers/serializerParams";
 
 
 /**
@@ -194,7 +195,7 @@ export class UserController extends BaseController {
       const repository = getCustomRepository(UserRepository);
       const [users,totalUsers] = await repository.jsonApiRequest(req.query,userRelations).getManyAndCount();
 
-      res.json(  new UserSerializer(req,totalUsers).serialize(users) );
+      res.json(  new UserSerializer( new SerializerParams().enablePagination(req,totalUsers) ).serialize(users) );
     }
     catch (e) { next(e); }
   }

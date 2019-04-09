@@ -1,75 +1,54 @@
-import { BaseSerializer } from "./base.serializer";
+import { Request } from "express"
 
-class SerializerParams {
+export class SerializerParams {
 
-    /**
-     * Serializer options
-     */
-    private options : any = {
-        attributes : [],
-        dataLinks : {},
-        topLevelLinks : {}
+  private paginationData : {
+    total : number,
+    request : Request
+  } = {
+    total : null,
+    request : null
+  };
+  private type : string = null;
+
+  public constructor() {
+    this.paginationData = {
+      total : null,
+      request : null
     };
+    this.type = null;
+  }
 
-    constructor(options = null) {
-      if (options)
-        this.options = options;
-    }
-
-
-    /**
-     * Set attributes to serializer , attributes are meant to be properties who will be serialized
-     */
-    public setAttributes(attributes : Array<string>)
-    {
-      this.options.attributes = attributes;
-      return this;
+  public enablePagination(request : Request,total : number) : this
+  {
+    this.paginationData = {
+      total,
+      request
     };
+    return this;
+  }
 
+  public getPaginationData()
+  {
+    return this.paginationData;
+  }
 
-    /**
-     * Set data links for each entity
-     */
-    public setDataLinks(dataLinks: { self: Function; })
-    {
-      this.options.dataLinks = dataLinks;
-      return this;
-    }
+  public hasPaginationEnabled() : boolean
+  {
+    if (this.paginationData && this.paginationData.total && this.paginationData.request)
+      return true;
+    else
+      return false;
+  }
 
+  public setType(serializerType : string) : this
+  {
+    this.type = serializerType;
+    return this;
+  }
 
-    /**
-     * Set top level links for pagination
-     */
-    public setTopLevelLinks(dataLinks: { self: Function|string; next: Function; prev: Function|string; first: Function|string; last: Function|string; })
-    {
-      this.options.topLevelLinks = dataLinks;
-      return this;
-    }
-
-
-    /**
-     * Add a relation , can be nested objects
-     */
-    public addRelation(key : string,relation : any)
-    {
-      this.options[key] = relation;
-      return this;
-    }
-
-
-    /**
-     *
-     */
-    public addProperty(key : string,value : any)
-    {
-      this.options[key] = value;
-      return this;
-    }
-
-    public getOptions()
-    {
-      return this.options;
-    }
-};
-
-export { SerializerParams }
+  public getType() : string
+  {
+    return this.type;
+  }
+}
