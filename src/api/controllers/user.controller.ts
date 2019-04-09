@@ -78,7 +78,7 @@ export class UserController extends BaseController {
        const serializer = new JSONAPISerializer(relation,{
          topLevelLinks : {
            self : () =>  `${url}/${tableName}s${req.url}`,
-           related : () => `${url}/${tableName}s/${userId}/${relation}`
+           related : () => `${url}/${tableName}s/${userId}/${Pluralize.plural(relation)}`
          }
        });
 
