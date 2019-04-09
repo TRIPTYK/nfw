@@ -108,11 +108,13 @@ router
   .route('/:userId/relationships/:relation')
   .get(userController.relationships);
 
-/* W.I.P
+
+  /**
+   * Fetch only related data  
+   */
 router
   .route('/:userId/:relation')
   .get(userController.related);
-*/
 
 router
   .route('/:userId')

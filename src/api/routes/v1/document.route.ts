@@ -79,6 +79,13 @@ router
   .route('/:documentId/relationships/:relation')
   .get(documentController.relationships);
 
+  /**
+   * Fetch only related data
+   */
+router
+  .route('/:documentId/:relation')
+  .get(documentController.related);
+
 router
   .route('/:documentId')
   /**
