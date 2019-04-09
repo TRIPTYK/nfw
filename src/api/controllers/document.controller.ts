@@ -58,7 +58,7 @@ class DocumentController extends BaseController {
        const serializer = new JSONAPISerializer(relation,{
          topLevelLinks : {
            self : () =>  `${url}/${tableName}s${req.url}`,
-           related : () => `${url}/${tableName}s/${documentId}/${relation}`
+           related : () => `${url}/${tableName}s/${documentId}/${Pluralize.plural(relation)}`
          }
        });
 
