@@ -35,7 +35,7 @@ export class SerializerParams {
 
   public hasPaginationEnabled() : boolean
   {
-    if (this.paginationData && this.paginationData.total && this.paginationData.request)
+    if (this.paginationData && this.paginationData.total && this.paginationData.request && this.paginationData.request.query.page && this.paginationData.request.query.number)
       return true;
     else
       return false;
