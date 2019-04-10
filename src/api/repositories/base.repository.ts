@@ -8,8 +8,11 @@ import * as Pluralize from 'pluralize';
  * Base Repository class , inherited for all current repositories
  */
 class BaseRepository<T> extends Repository<T>  {
+
   /**
-   * @description Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/ (VERSION 1.0)
+   * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.
+   * <br> You can filter the features you want to use by using the named parameters.
+   *
    */
   public jsonApiRequest(query : any,allowedIncludes : Array<string> = [],
      { allowIncludes = true , allowSorting = true , allowPagination = true , allowFields = true , allowFilters = false } : { allowIncludes?: boolean , allowSorting? : boolean , allowPagination? : boolean , allowFields? : boolean ,  allowFilters? : boolean } = {}
@@ -154,7 +157,7 @@ class BaseRepository<T> extends Repository<T>  {
   /**
    * Shortcut function to make a JSON-API findOne request on id key
    */
-  public jsonApiFindOne(req : Request,id : any,allowedIncludes : Array<string> = [],options?: { allowIncludes?: boolean; allowSorting: boolean; allowPagination: boolean; allowFields: boolean; allowFilters: boolean; }) : Promise<T>
+  public jsonApiFindOne(req : Request,id : any,allowedIncludes : Array<string> = [],options?: { allowIncludes?: boolean; allowSorting?: boolean; allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }) : Promise<T>
   {
     return this.jsonApiRequest(req.query,allowedIncludes,options)
       .where(`${this.metadata.tableName}.id = :id`,{id})
@@ -164,7 +167,7 @@ class BaseRepository<T> extends Repository<T>  {
   /**
    * Shortcut function to make a JSON-API findMany request with data used for pagination
    */
-  public jsonApiFind(req : Request,allowedIncludes : Array<string> = [],options?: { allowIncludes?: boolean; allowSorting: boolean; allowPagination: boolean; allowFields: boolean; allowFilters: boolean; }) : Promise<[T[],number]>
+  public jsonApiFind(req : Request,allowedIncludes : Array<string> = [],options?: { allowIncludes?: boolean; allowSorting?: boolean; allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }) : Promise<[T[],number]>
   {
     return this.jsonApiRequest(req.query,allowedIncludes,options)
       .getManyAndCount()

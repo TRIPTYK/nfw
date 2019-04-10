@@ -922,7 +922,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_api_repositories_base_repository_.baserepository.html">BaseRepository</a>.<a href="_api_repositories_base_repository_.baserepository.html#jsonapifind">jsonApiFind</a></p>
 								<ul>
-									<li>Defined in api/repositories/base.repository.ts:167</li>
+									<li>Defined in api/repositories/base.repository.ts:170</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -942,19 +942,19 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">object</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Fields<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Filters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Filters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
 											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Includes<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Pagination<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Pagination<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Sorting<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Sorting<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 									</ul>
 								</li>
@@ -974,7 +974,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_api_repositories_base_repository_.baserepository.html">BaseRepository</a>.<a href="_api_repositories_base_repository_.baserepository.html#jsonapifindone">jsonApiFindOne</a></p>
 								<ul>
-									<li>Defined in api/repositories/base.repository.ts:157</li>
+									<li>Defined in api/repositories/base.repository.ts:160</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -997,19 +997,19 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">object</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Fields<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Filters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Filters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
 											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Includes<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Pagination<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Pagination<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>allow<wbr>Sorting<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Sorting<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
 										</li>
 									</ul>
 								</li>
@@ -1029,15 +1029,14 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_api_repositories_base_repository_.baserepository.html">BaseRepository</a>.<a href="_api_repositories_base_repository_.baserepository.html#jsonapirequest">jsonApiRequest</a></p>
 								<ul>
-									<li>Defined in api/repositories/base.repository.ts:14</li>
+									<li>Defined in api/repositories/base.repository.ts:17</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
-								<dl class="tsd-comment-tags">
-									<dt>description</dt>
-									<dd><p>Handle request and transform to SelectQuery , conform to JSON-API specification : <a href="https://jsonapi.org/format/">https://jsonapi.org/format/</a> (VERSION 1.0)</p>
-									</dd>
-								</dl>
+								<div class="lead">
+									<p>Handle request and transform to SelectQuery , conform to JSON-API specification : <a href="https://jsonapi.org/format/">https://jsonapi.org/format/</a>.
+									<br> You can filter the features you want to use by using the named parameters.</p>
+								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
