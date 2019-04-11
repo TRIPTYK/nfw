@@ -27,17 +27,6 @@ exports.user = (role, pwd) => {
   };
 };
 
-exports.admin = () => {
-  return {
-    username: 'amauryD',
-    email:'amaury@triptyk.be',
-    password: 'test123*',
-    lastname: "Amaury",
-    firstname: "Deflorenne",
-    services: '{}',
-    role: 'admin'
-  };
-};
 
 exports.randomint = (lenght) => {
   if (!lenght) lenght = 11;
@@ -56,3 +45,13 @@ exports.randomdate = (lenght) => {
 exports.randomdatetime = (lenght) => {
   return new Date(Date.now() + Math.random() * (999*9999*9999));
 };
+
+exports.randomtext = () => {
+  var randomCharNumber =Math.floor(Math.random() * 1000) + 500 ;
+  let text = "";
+  for (let i = 0; i < randomCharNumber; i++) {
+    var randomIndex  = Math.floor(Math.random() * 52) + 1 ;
+    text+= chars[randomIndex]    
+  }
+  return text;
+}
