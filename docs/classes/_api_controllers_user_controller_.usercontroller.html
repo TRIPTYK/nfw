@@ -105,6 +105,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_api_controllers_user_controller_.usercontroller.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_api_controllers_user_controller_.usercontroller.html#list" class="tsd-kind-icon">list</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_api_controllers_user_controller_.usercontroller.html#loggedin" class="tsd-kind-icon">logged<wbr>In</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_api_controllers_user_controller_.usercontroller.html#related" class="tsd-kind-icon">related</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_api_controllers_user_controller_.usercontroller.html#relationships" class="tsd-kind-icon">relationships</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_api_controllers_user_controller_.usercontroller.html#remove" class="tsd-kind-icon">remove</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_api_controllers_user_controller_.usercontroller.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
@@ -125,7 +127,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_api_controllers_base_controller_.basecontroller.html">BaseController</a>.<a href="_api_controllers_base_controller_.basecontroller.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in api/controllers/user.controller.ts:15</li>
+									<li>Defined in api/controllers/user.controller.ts:25</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_api_controllers_user_controller_.usercontroller.html" class="tsd-signature-type">UserController</a></h4>
@@ -169,7 +171,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api/controllers/user.controller.ts:46</li>
+									<li>Defined in api/controllers/user.controller.ts:56</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -212,7 +214,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api/controllers/user.controller.ts:27</li>
+									<li>Defined in api/controllers/user.controller.ts:37</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -249,7 +251,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api/controllers/user.controller.ts:93</li>
+									<li>Defined in api/controllers/user.controller.ts:192</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -292,7 +294,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api/controllers/user.controller.ts:36</li>
+									<li>Defined in api/controllers/user.controller.ts:46</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -320,6 +322,87 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="related" class="tsd-anchor"></a>
+					<h3>related</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">related<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Request</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in api/controllers/user.controller.ts:116</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fetch related resources</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>req: <span class="tsd-signature-type">Request</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Request object</p>
+									</div>
+								</li>
+								<li>
+									<h5>res: <span class="tsd-signature-type">Response</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Response object</p>
+									</div>
+								</li>
+								<li>
+									<h5>next: <span class="tsd-signature-type">Function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Next middleware function</p>
+										<p>TODO : allow add json-api includes</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="relationships" class="tsd-anchor"></a>
+					<h3>relationships</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">relationships<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Request</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in api/controllers/user.controller.ts:74</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>public async - fetch relationships id</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>req: <span class="tsd-signature-type">Request</span></h5>
+								</li>
+								<li>
+									<h5>res: <span class="tsd-signature-type">Response</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>: Response</p>
+									</div>
+								</li>
+								<li>
+									<h5>next: <span class="tsd-signature-type">Function</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="remove" class="tsd-anchor"></a>
 					<h3>remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -329,7 +412,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api/controllers/user.controller.ts:112</li>
+									<li>Defined in api/controllers/user.controller.ts:211</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -372,7 +455,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api/controllers/user.controller.ts:65</li>
+									<li>Defined in api/controllers/user.controller.ts:163</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -442,6 +525,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_api_controllers_user_controller_.usercontroller.html#loggedin" class="tsd-kind-icon">logged<wbr>In</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_api_controllers_user_controller_.usercontroller.html#related" class="tsd-kind-icon">related</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_api_controllers_user_controller_.usercontroller.html#relationships" class="tsd-kind-icon">relationships</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_api_controllers_user_controller_.usercontroller.html#remove" class="tsd-kind-icon">remove</a>

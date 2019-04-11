@@ -6,10 +6,11 @@ import { getCustomRepository } from "typeorm";
 import { User } from "./../models/user.model";
 import { UserSerializer } from "./../serializers/user.serializer";
 import { BaseMiddleware } from "./base.middleware";
+import { SerializerParams } from "../serializers/serializerParams";
 
 export class UserMiddleware extends BaseMiddleware {
 
-  constructor() { super( new UserSerializer() ); }
+  constructor() { super( new UserSerializer( ) ); }
 
   /**
    * Load user and append to req
