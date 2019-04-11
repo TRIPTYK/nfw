@@ -44,7 +44,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-  .get(authorize([ADMIN]), validate(listUsers), userController.list)
+  .get(/*authorize([ADMIN]),*/validate(listUsers), userController.list)
 
   /**
    * @api {post} v1/users Create User
@@ -76,7 +76,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize([ADMIN]), userMiddleware.deserialize, validate(createUser), SecurityMiddleware.sanitize, userController.create);
+  .post(authorize([ADMIN]) , userMiddleware.deserialize , validate(createUser), SecurityMiddleware.sanitize, userController.create);
 
 router
   .route('/profile')
@@ -101,9 +101,20 @@ router
   .get(authorize([ADMIN, LOGGED_USER]), userController.loggedIn);
 
 
+  /**
+   *  Fetch json-api related records links
+   */
 router
   .route('/:userId/relationships/:relation')
   .get(userController.relationships);
+
+
+  /**
+   * Fetch only related data
+   */
+router
+  .route('/:userId/:relation')
+  .get(userController.related);
 
 router
   .route('/:userId')

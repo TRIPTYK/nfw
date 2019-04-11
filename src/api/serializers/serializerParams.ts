@@ -1,75 +1,88 @@
-import { BaseSerializer } from "./base.serializer";
+import { Request } from "express"
 
-class SerializerParams {
 
-    /**
-     * Serializer options
-     */
-    private options : any = {
-        attributes : [],
-        dataLinks : {},
-        topLevelLinks : {}
+/**
+ *
+ */
+export class SerializerParams {
+
+
+  /**
+   * Pagination data
+   */
+  private paginationData : {
+    total : number,
+    request : Request
+  } = {
+    total : null,
+    request : null
+  };
+
+  /**
+   * Type for serializer  
+   */
+  private type : string = null;
+
+
+  /**
+   *
+   */
+  public constructor() {
+
+  }
+
+
+  /**
+   * Store data needed for pagination
+   * @param request request object , used for links
+   * @param total total records of the table
+   */
+  public enablePagination(request : Request,total : number) : this
+  {
+    this.paginationData = {
+      total,
+      request
     };
-
-    constructor(options = null) {
-      if (options)
-        this.options = options;
-    }
+    return this;
+  }
 
 
-    /**
-     * Set attributes to serializer , attributes are meant to be properties who will be serialized
-     */
-    public setAttributes(attributes : Array<string>)
-    {
-      this.options.attributes = attributes;
-      return this;
-    };
+  /**
+   * Get pagination data
+   */
+  public getPaginationData() : {total : number,request : Request}
+  {
+    return this.paginationData;
+  }
 
 
-    /**
-     * Set data links for each entity
-     */
-    public setDataLinks(dataLinks: { self: Function; })
-    {
-      this.options.dataLinks = dataLinks;
-      return this;
-    }
+  /**
+   * Check if pagination data has been set
+   */
+  public hasPaginationEnabled() : boolean
+  {
+    if (this.paginationData && this.paginationData.total && this.paginationData.request && this.paginationData.request.query.page && this.paginationData.request.query.number)
+      return true;
+    else
+      return false;
+  }
 
 
-    /**
-     * Set top level links for pagination
-     */
-    public setTopLevelLinks(dataLinks: { self: Function|string; next: Function; prev: Function|string; first: Function|string; last: Function|string; })
-    {
-      this.options.topLevelLinks = dataLinks;
-      return this;
-    }
+  /**
+   * Set type for serializer
+   */
+  public setType(serializerType : string) : this
+  {
+    this.type = serializerType;
+    return this;
+  }
 
 
-    /**
-     * Add a relation , can be nested objects
-     */
-    public addRelation(key : string,relation : any)
-    {
-      this.options[key] = relation;
-      return this;
-    }
-
-
-    /**
-     *
-     */
-    public addProperty(key : string,value : any)
-    {
-      this.options[key] = value;
-      return this;
-    }
-
-    public getOptions()
-    {
-      return this.options;
-    }
-};
-
-export { SerializerParams }
+  /**
+   * Get type for serializer
+   */
+  public getType() : string
+  {
+    return this.type;
+  }
+}

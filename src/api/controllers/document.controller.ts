@@ -12,6 +12,7 @@ import { DocumentSerializer } from "../serializers/document.serializer";
 import { relations as documentRelations } from "../enums/relations/document.relations";
 import { Serializer as JSONAPISerializer } from "jsonapi-serializer";
 import { api, env , port, url } from "../../config/environment.config";
+import { SerializerParams } from "../serializers/serializerParams";
 
 /**
  *
@@ -35,20 +36,19 @@ class DocumentController extends BaseController {
   public async list (req: Request, res : Response, next: Function) {
     try {
       const repository = getCustomRepository(DocumentRepository);
-      const documents = await repository.jsonApiFind(req,documentRelations);
-      res.json( new DocumentSerializer().serialize(documents) );
+      const [documents , total] = await repository.jsonApiFind(req,documentRelations);
+      res.json( new DocumentSerializer( new SerializerParams().enablePagination(req,total) ).serialize(documents) );
     }
     catch (e) { next(e); }
   }
 
 
   /**
-   * public async - description
+   * public async - fetch relationships id
    *
-   * @param  {type} req: Request   description
-   * @param  {type} res : Response description
-   * @param  {type} next: Function description
-   * @return {type}                description
+   * @param  req: Request
+   * @param  res : Response
+   * @param  next: Function
    */
    public async relationships (req: Request, res : Response, next: Function) {
      try {
@@ -58,7 +58,7 @@ class DocumentController extends BaseController {
        const serializer = new JSONAPISerializer(relation,{
          topLevelLinks : {
            self : () =>  `${url}/${tableName}s${req.url}`,
-           related : () => `${url}/${tableName}s/${documentId}/${relation}`
+           related : () => `${url}/${tableName}s/${documentId}/${Pluralize.plural(relation)}`
          }
        });
 
@@ -72,6 +72,55 @@ class DocumentController extends BaseController {
        const user = await docRepository.createQueryBuilder(docRepository.metadata.tableName)
          .leftJoinAndSelect(`${tableName}.${relation}`,relation)
          .select([`${relation}.id`,`${tableName}.id`]) // select minimal informations
+         .where({id : documentId})
+         .getOne();
+
+       if (!user) throw Boom.notFound();
+
+       res.json( serializer.serialize(user[relation]) );
+     }
+     catch(e) { next(e); }
+   }
+
+
+   /**
+    * Fetch related resources
+    *
+    * @param req Request object
+    * @param res Response object
+    * @param next Next middleware function
+    *
+    * TODO : allow add json-api includes
+    */
+   public async related(req: Request, res : Response, next: Function)
+   {
+     try {
+       const docRepository = getCustomRepository(DocumentRepository);
+       const tableName = docRepository.metadata.tableName;
+       let { documentId , relation } = req.params;
+
+       if (!documentRelations.includes(relation)) throw Boom.notFound();
+
+       let serializerImport = await import(`../serializers/${Pluralize.singular(relation)}.serializer`);
+
+       serializerImport = serializerImport[Object.keys(serializerImport)[0]];
+
+       const serializer = new JSONAPISerializer(relation,{
+         attributes : serializerImport.withelist,
+         topLevelLinks : {
+           self : () =>  `${url}/${tableName}s${req.url}`
+         }
+       });
+
+       const exists = docRepository.metadata.relations.find(e => [Pluralize.plural(relation),Pluralize.singular(relation)].includes(e.propertyName));
+
+       if (!exists) throw Boom.notFound();
+
+       if (['many-to-one','one-to-one'].includes(exists.relationType))
+        relation = Pluralize.singular(relation);
+
+       const user = await docRepository.createQueryBuilder(tableName)
+         .leftJoinAndSelect(`${tableName}.${relation}`,relation)
          .where({id : documentId})
          .getOne();
 

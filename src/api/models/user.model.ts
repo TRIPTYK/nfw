@@ -10,6 +10,7 @@ import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
+import { SerializerParams } from "../serializers/serializerParams";
 
 @Entity()
 export class User implements IModelize {
@@ -58,10 +59,6 @@ export class User implements IModelize {
 
   @OneToMany(type => Document, document => document.user)
   documents: Document[];
-
-  @OneToOne(type => Document, document => document.user)
-  @JoinColumn()
-  avatar : Document;
 
   @Column({
     type: "enum",
