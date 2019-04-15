@@ -1,0 +1,14 @@
+#!/bin/bash
+cd $1
+mkdir -p ./dist/logs ./dist/migration/dump ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl
+echo "Installing Bcrypt"
+yarn global add bcrypt --dev 
+echo "Installing TypeScript globally"
+yarn global add typescript
+echo "Installing TypeOrm globally"
+yarn global add typeorm  
+echo "Installing Depedencies"
+yarn install
+echo "Compiling TypeScript into JavaScript"
+./node_modules/.bin/tsc
+echo "Done"
