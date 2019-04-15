@@ -46,7 +46,11 @@ exports.randomdatetime = (lenght) => {
   return new Date(Date.now() + Math.random() * (999*9999*9999));
 };
 
-exports.randomtext = () => {
+exports.randomdatetime = (lenght) => {
+  return new Date(Date.now() + Math.random() * (999*9999*9999));
+};
+
+exports.randomtext = exports.randomtinytext = exports.randommediumtext = exports.randomblob = exports.randomtinyblob =exports.randomsmallblob =exports.randommediumblob = exports.randomlargeblob =() => {
   var randomCharNumber =Math.floor(Math.random() * 1000) + 500 ;
   let text = "";
   for (let i = 0; i < randomCharNumber; i++) {
@@ -54,4 +58,39 @@ exports.randomtext = () => {
     text+= chars[randomIndex]    
   }
   return text;
+}
+exports.randomtime = () => {
+  let date = new Date(Date.now() + Math.random() * (999*9999*9999));
+  return date.getHours().toString() + ":" + date.getMinutes().toString() + ":" + date.getSeconds().toString();
+}
+exports.randomtimestamp = () => {
+  return new Date(Date.now() + Math.random() * (999*9999*9999)).getTime();
+}
+exports.randomyear = () => {
+  return new Date(Date.now() + Math.random() * (999*9999*9999)).getFullYear();
+}
+exports.randomtinyint = () => {
+  return Math.floor(Math.random()*255);
+}
+exports.randomsmallint = () => {
+  return Math.floor(Math.random()*65535);
+}
+exports.ramdommediumint = () => {
+  return Math.floor(Math.random()*16777215);
+}
+exports.ramdommediumint = () => {
+  return Math.floor(Math.random()*18446744073709551615);
+}
+exports.ramdomflaot = exports.randomdouble = exports.randomdecimal = () => {
+  return Math.floor(Math.random() * (10000000 - 1000000) + 1000000) / 1000000;
+}
+exports.randombinary = exports.randomvarbinary = (length) => {
+  return Math.floor(Math.random()*length).toString(2);
+}
+exports.randomjson = () => {
+  return {};
+}
+exports. randomenum = (enumArray) => {
+  let randomIndex  = Math.floor(Math.random() * enumArray.lenght);
+  return enumArray[randomIndex];
 }
