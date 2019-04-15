@@ -5,7 +5,16 @@ import * as fs from 'fs';
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in
  * app.js
  */
-const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
+let files = fs.readdirSync('./');
+let environments = {}
+files.forEach(element => {
+  if(element.includes('.env')){
+    let splited = element.split('.')[0].toUpperCase();
+    environments[splited] = splited;  
+  }
+});
+
+//const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
 
 const environment = process.argv[2] && process.argv[2] === '--env' && process.argv[3] && environments.hasOwnProperty(process.argv[3].toUpperCase()) ? process.argv[3] : 'development';
 

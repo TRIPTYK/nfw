@@ -118,7 +118,7 @@ app.get(`/api/${api}/apiroutes/:id`, authorize([ADMIN]), (req : Request,res : Re
  *
  * @inheritdoc https://github.com/expressjs/morgan
  */
-if(env.toUpperCase() !== environments.TEST)
+if(env.toUpperCase() !== environments['TEST'])
 {
   app.use( Morgan(HTTPLogs) );
 }
@@ -126,7 +126,7 @@ if(env.toUpperCase() !== environments.TEST)
 /**
  * Errors handlers
  */
-if(env.toUpperCase() === environments.DEVELOPMENT || env.toUpperCase() === environments.TEST)
+if(env.toUpperCase() === environments['DEVELOPMENT'] || env.toUpperCase() === environments['TEST'])
 {
   app.use( ServiceErrorHandler.exit );
 }

@@ -8,11 +8,11 @@ import { TypeORMConfiguration } from "./config/typeorm.config";
 TypeORMConfiguration
   .connect()
   .then( (connection) => {
-    if(env !== environments.TEST.toLowerCase())
+    if(env !== environments['TEST'].toLowerCase())
       Logger.info(`Connection to ${typeorm.type} server established on port ${typeorm.port} (${env})`);
   })
   .catch( (error) => { 
-    if(env !== environments.TEST.toLowerCase())
+    if(env !== environments['TEST'].toLowerCase())
       Logger.error(`MySQL connection error : ${error.message}`);
   });
 
@@ -31,14 +31,14 @@ if(https.isActive === 1)
   HTTPS
     .createServer(credentials, App)
     .listen(port, function() {
-      if(env !== environments.TEST.toLowerCase())
+      if(env !== environments['TEST'].toLowerCase())
         Logger.info(`HTTP server is now running on port ${port} (${env})`)
     });
 }
 else 
 {
   server = App.listen( port, () => {
-    if(env !== environments.TEST.toLowerCase())
+    if(env !== environments['TEST'].toLowerCase())
       Logger.info(`HTTP server is now running on port ${port} (${env})`)
   });
 }
