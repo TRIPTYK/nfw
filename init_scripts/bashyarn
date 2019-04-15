@@ -2,11 +2,11 @@
 cd $1
 mkdir -p ./dist/logs ./dist/migration/dump ./dist/uploads/documents/xs ./dist/uploads/documents/md ./dist/uploads/documents/xl
 echo "Installing Bcrypt"
-yarn global add bcrypt --dev 
+yarn add bcrypt --dev 
 echo "Installing TypeScript globally"
-yarn global add typescript
+yarn add typescript
 echo "Installing TypeOrm globally"
-yarn global add typeorm  
+yarn add typeorm  
 echo "Installing Depedencies"
 yarn install
 echo "Compiling TypeScript into JavaScript"
