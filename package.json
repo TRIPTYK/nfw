@@ -88,6 +88,7 @@
     "sqlstring": "^2.3.1",
     "supertest": "^3.4.2",
     "systeminformation": "^4.1.4",
+    "ts-node-dev": "^1.0.0-pre.32",
     "typeorm": "^0.2.16",
     "typescript": "^3.4.3",
     "uuid": "^3.3.2",
