@@ -11,7 +11,7 @@
 		"dist/api/models/*.js"
 	],
 	"migrations": [
-		"dist/migration/*.js"
+		"src/migration/*.ts"
 	],
 	"migrationsTableName": "migration_table",
 	"cli": {
