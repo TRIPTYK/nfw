@@ -8,10 +8,10 @@
 	"database": "3rd_party_ts_boilerplate",
 	"logging": false,
 	"entities": [
-		"dist/api/models/*.js"
+		"src/api/models/*.ts"
 	],
 	"migrations": [
-		"dist/migration/*.js"
+		"src/migration/*.ts"
 	],
 	"migrationsTableName": "migration_table",
 	"cli": {
