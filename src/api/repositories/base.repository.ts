@@ -19,7 +19,7 @@ class BaseRepository<T> extends Repository<T>  {
   ) : SelectQueryBuilder<T> {
     const currentTable = this.metadata.tableName;
     const splitAndFilter = (string : string) => string.split(',').map(e => e.trim()).filter(string => string != '');  //split parameters and filter empty strings
-    const splitAndFilterPlus = (string : string) => string.split('+').map(e => e.trim()).filter(string => string != '');  //split parameters and filter empty strings
+    const splitAndFilterPlus = (string : string) => string.split('+').map(e => e.trim()).filter(string => string != '');  //split sub-parameters and filter empty strings
     let queryBuilder = this.createQueryBuilder(currentTable);
     let select : Array<string> = [`${currentTable}.id`];
 
@@ -147,10 +147,10 @@ class BaseRepository<T> extends Repository<T>  {
                qb.orWhere(SqlString.format(`?? = ?`,[key,value]));
              }
              if(strategy == "orin") {
-               qb.orWhere(SqlString.format(`?? IN ?`,[key,splitAndFilterPlus(value)]))
+               qb.orWhere(SqlString.format(`?? IN (?)`,[key,splitAndFilterPlus(value)]))
              }
              if(strategy == "andin") {
-               qb.andWhere(SqlString.format(`?? IN ?`,[key,splitAndFilterPlus(value)]))
+               qb.andWhere(SqlString.format(`?? IN (?)`,[key,splitAndFilterPlus(value)]))
              }
            });
           }
