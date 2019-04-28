@@ -10,5 +10,5 @@ yarn add typeorm
 echo "Installing Depedencies"
 yarn install
 echo "Compiling TypeScript into JavaScript"
-./node_modules/.bin/tsc
+./node_modules/.bin/tsc --noEmit
 echo "Done"
