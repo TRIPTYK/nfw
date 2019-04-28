@@ -10,5 +10,5 @@ npm i typeorm -g
 echo "Installing Depedencies"
 npm i 
 echo "Compiling TypeScript into JavaScript"
-./node_modules/.bin/tsc
+./node_modules/.bin/tsc --noEmit
 echo "Done"
