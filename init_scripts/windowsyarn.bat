@@ -12,5 +12,5 @@ call yarn global add typeorm
 ECHO "Installing Remaining depedencies"
 call yarn install
 ECHO "Compiling TypeScript"
-call node_modules\.bin\tsc
+call node_modules\.bin\tsc --noEmit
 ECHO "Done"
