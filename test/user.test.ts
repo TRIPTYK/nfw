@@ -3,7 +3,7 @@ import * as request from "supertest";
 import * as fixtures from "./fixtures";
 
 chai.config.includeStack = false;
-chai.config.truncateThreshold = 0;
+chai.config.truncateThreshold = 1;
 
 describe("User CRUD", function () {
 
