@@ -1,18 +1,18 @@
-var request = require('supertest');
-var fixtures = require('./fixtures');
-var chai = require("chai");
+import * as chai from "chai";
+import * as request from "supertest";
+import * as fixtures from "./fixtures";
 
 chai.config.includeStack = false;
-chai.config.truncateThreshold = true;
+chai.config.truncateThreshold = 0;
 
 describe("User CRUD", function () {
 
-  var server, agent, password, credentials, token, refreshToken, id;
-  var expect = chai.expect;
+    let server, agent, password, credentials, token, refreshToken, id;
+    const expect = chai.expect;
 
   before(function (done) {
 
-    let express = require('./../dist/app.bootstrap');
+      let express = require('./../src/app.bootstrap');
 
     server      = express.App;
     agent       = request.agent(server);
@@ -36,7 +36,6 @@ describe("User CRUD", function () {
 
   after(function () {
     server = undefined;
-    delete server;
   });
 
   it('POST /api/v1/users succeed with 201', function (done) {

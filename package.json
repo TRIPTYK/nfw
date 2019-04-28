@@ -4,8 +4,8 @@
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
   "main": "./dist/app.bootstrap.js",
   "scripts": {
-    "testWin": "./node_modules/.bin/mocha --reporter spec --timeout 10000 --exit || ECHO",
-    "testUnix": "./node_modules/.bin/mocha --reporter spec --timeout 10000 --exit; exit 0",
+    "testWin": "./node_modules/.bin/mocha --require ts-node/register ./src/app.bootstrap.ts --reporter spec --timeout 10000 --exit || ECHO",
+    "testUnix": "./node_modules/.bin/mocha --require ts-node/register ./src/app.bootstrap.ts --reporter spec --timeout 10000 --exit; exit 0",
     "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/migration/dump ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i highlight.js@9.14.2 -D -g && npm i typescript && npm i typeorm && npm i && ./node_modules/.bin/tsc",
     "kickstart-win": "init_scripts\\windows.bat",
     "generate": "node ./cli/generate/",
@@ -67,7 +67,6 @@
     "leasot": "^7.3.4",
     "lodash": "^4.17.11",
     "mailgun-js": "^0.22.0",
-    "mocha": "^5.2.0",
     "moment-timezone": "^0.5.23",
     "mongoose": "^5.4.20",
     "morgan": "^1.9.1",
@@ -91,11 +90,14 @@
     "ts-node-dev": "^1.0.0-pre.32",
     "typeorm": "^0.2.16",
     "typescript": "^3.4.3",
+    "typescript-require": "^0.2.10",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
     "xss": "^1.0.6"
   },
   "devDependencies": {
+    "@types/mocha": "^5.2.6",
+    "mocha": "^6.1.4",
     "typedoc": "^0.14.2"
   }
 }
