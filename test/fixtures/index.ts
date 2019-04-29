@@ -1,4 +1,5 @@
 import * as uuid from "uuid/v4";
+import * as dateformat from "dateformat";
 
 const chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 const roles = ['admin', 'user', 'ghost'];
@@ -40,8 +41,7 @@ export const randomvarchar = exports.randomchar = (length) => {
 
 export const randomdate = exports.randomdatetime = exports.randomtimestamp = (length) => { //tofix
   let d = new Date(Date.now() + Math.random() * (999*9999*9999));
-  //let date_format_str = d.getFullYear().toString()+"-"+((d.getMonth()+1).toString().length==2?(d.getMonth()+1).toString():"0"+(d.getMonth()+1).toString())+"-"+(d.getDate().toString().length==2?d.getDate().toString():"0"+d.getDate().toString())+" "+(d.getHours().toString().length==2?d.getHours().toString():"0"+d.getHours().toString())+":"+((parseInt(d.getMinutes()/5)*5).toString().length==2?(parseInt(d.getMinutes()/5)*5).toString():"0"+(parseInt(d.getMinutes()/5)*5).toString())+":00";
-  return "date_format_str";
+    return dateformat(d, "dd-mm-yyyy");
 };
 
 export const randomtinytext = exports.randomtinyblob = () => {
