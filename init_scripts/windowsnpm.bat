@@ -12,5 +12,5 @@ call npm i typeorm -g
 ECHO "Installing Remaining depedencies"
 call npm i
 ECHO "Compiling TypeScript"
-call node_modules\.bin\tsc
+call node_modules\.bin\tsc --noEmit
 ECHO "Done"
