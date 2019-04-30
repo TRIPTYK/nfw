@@ -136,7 +136,6 @@ else
 }
 
 app.use( ServiceErrorHandler.notFound );
-
 /**
  * Exports Express
  */
