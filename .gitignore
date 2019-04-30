@@ -76,6 +76,7 @@ dist/
 
 out/
 
+.idea/
 .nfw
 
 credentials.json
