@@ -34,17 +34,27 @@ export const randomint = (length) => {
   return Math.floor(Math.random() * length);
 };
 
-export const randomvarchar = exports.randomchar = (length) => {
+export const randomvarchar = (length) => {
   if (!length) length = 20;
   return Math.random().toString(36).substr(2 , length);
 };
+export const randomchar = (length) => {
+  return this.randomvarchar(length);
+};
 
-export const randomdate = exports.randomdatetime = exports.randomtimestamp = (length) => { //tofix
+export const randomdate = (length) => { //tofix
   let d = new Date(Date.now() + Math.random() * (999*9999*9999));
     return dateformat(d, "dd-mm-yyyy");
 };
+export const randomdatetime = (length) => { //tofix
+  return this.randomdate(length);
+};
+export const randomtimestamp = (length) => { //tofix
+  return this.randomdate(length);
+};
 
-export const randomtinytext = exports.randomtinyblob = () => {
+
+export const randomtinytext = () => {
   var randomCharNumber =Math.floor(Math.random() * 128) + 12 ;
   let text = "";
   for (let i = 0; i < randomCharNumber; i++) {
@@ -53,7 +63,10 @@ export const randomtinytext = exports.randomtinyblob = () => {
   }
   return text;
 };
-export const randommediumtext = exports.randomtext = exports.randomlongtext = exports.randomblob = exports.randommediumblob = exports.randomlongblob = () => {
+export const randomtinyblob = () => {
+  return this.randomtinytext()
+}
+export const randommediumtext = () => {
   var randomCharNumber =Math.floor(Math.random() * 1000) + 128 ;
   let text = "";
   for (let i = 0; i < randomCharNumber; i++) {
@@ -62,7 +75,21 @@ export const randommediumtext = exports.randomtext = exports.randomlongtext = ex
   }
   return text;
 };
-
+export const randomtext = () => {
+  return this.randommediumtext();
+}
+export const randomlongtext = () => {
+  return this.randommediumtext();
+}
+export const randomblob = () => {
+  return this.randommediumtext();
+}
+export const randommediumblob = () => {
+  return this.randommediumtext();
+}
+export const randomlongblob = () => {
+  return this.randommediumtext();
+}
 export const randomtime = () => {
   let date = new Date(Date.now() + Math.random() * (999*9999*9999));
   return date.getHours().toString() + ":" + date.getMinutes().toString() + ":" + date.getSeconds().toString();
@@ -100,8 +127,11 @@ export const randomdecimal = () => {
   return Math.floor(Math.random() * (10000000 - 1000000) + 1000000) / 1000000;
 };
 
-export const randombinary = exports.randomvarbinary = (length) => {
+export const randombinary = (length) => {
   return Math.floor(Math.random()*length).toString(2);
+};
+export const randomvarbinary = (length) => {
+  return this.randombinary(length);
 };
 
 export const randomjson = () => {
