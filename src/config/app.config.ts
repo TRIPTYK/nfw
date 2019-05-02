@@ -128,11 +128,11 @@ if(env.toUpperCase() !== environments['TEST'])
  */
 if(env.toUpperCase() === environments['DEVELOPMENT'] || env.toUpperCase() === environments['TEST'])
 {
-  app.use( ServiceErrorHandler.developmentErrors );
+  app.use( ServiceErrorHandler.exit );
 }
 else
 {
-  app.use( ServiceErrorHandler.log, ServiceErrorHandler.productionErrors );
+  app.use( ServiceErrorHandler.log, ServiceErrorHandler.exit );
 }
 
 app.use( ServiceErrorHandler.notFound );
