@@ -3,6 +3,7 @@ import * as SqlString from "sqlstring";
 import { Request } from "express";
 import * as Boom from "boom";
 import * as Pluralize from 'pluralize';
+import * as dashify from "dashify";
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -43,13 +44,12 @@ class BaseRepository<T> extends Repository<T>  {
           if (include.indexOf(".") !== -1)
           {
             property = include;
-            let test = include.split(".");
-            alias = Pluralize.isPlural(test[test.length-1]) ? `${test[0]}.${Pluralize.singular(test[test.length-1])}` : test[test.length-1];
-             //we need to singularize the table name for some reasons on the alias or deep includes will not work properly
           }else{
             property = `${currentTable}.${include}`;
-            alias = include;
           }
+
+          alias = dashify(include);
+
           queryBuilder.leftJoinAndSelect(property,alias);
         }else{
           throw Boom.expectationFailed(`Relation with ${include} not authorized`); //TODO : XSS ?
