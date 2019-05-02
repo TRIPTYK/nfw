@@ -1,5 +1,6 @@
 import * as uuid from "uuid/v4";
 import * as dateformat from "dateformat";
+import * as faker from "faker";
 
 const chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 const roles = ['admin', 'user', 'ghost'];
@@ -31,49 +32,37 @@ export const user = (role = null, pwd = "test123*") => {
 
 export const randomint = (length) => {
   if (!length) length = 11;
-  return Math.floor(Math.random() * length);
+  return faker.random.number(1000*length)
 };
 
 export const randomvarchar = (length) => {
   if (!length) length = 20;
-  return Math.random().toString(36).substr(2 , length);
+  //return Math.random().toString(36).substr(2 , length);
+  return faker.random.alphaNumeric(length);
 };
 export const randomchar = (length) => {
   return this.randomvarchar(length);
 };
 
-export const randomdate = (length) => { //tofix
-  let d = new Date(Date.now() + Math.random() * (999*9999*9999));
-    return dateformat(d, "dd-mm-yyyy");
+export const randomdate = (length = null) => { //tofix
+ return (faker.date.past(10)).toISOString().split('T')[0];
 };
-export const randomdatetime = (length) => { //tofix
-  return this.randomdate(length);
+export const randomdatetime = (length = null) => { //tofix
+  return faker.date.past(10);
 };
-export const randomtimestamp = (length) => { //tofix
-  return this.randomdate(length);
+export const randomtimestamp = (length = null) => { //tofix
+ return new Date();
 };
 
 
 export const randomtinytext = () => {
-  var randomCharNumber =Math.floor(Math.random() * 128) + 12 ;
-  let text = "";
-  for (let i = 0; i < randomCharNumber; i++) {
-    var randomIndex  = Math.floor(Math.random() * 52) + 1 ;
-    text+= chars[randomIndex]    
-  }
-  return text;
+  return faker.random.alphaNumeric(128);
 };
 export const randomtinyblob = () => {
   return this.randomtinytext()
 }
 export const randommediumtext = () => {
-  var randomCharNumber =Math.floor(Math.random() * 1000) + 128 ;
-  let text = "";
-  for (let i = 0; i < randomCharNumber; i++) {
-    var randomIndex  = Math.floor(Math.random() * 52) + 1 ;
-    text+= chars[randomIndex]    
-  }
-  return text;
+  return faker.random.alphaNumeric(1000);
 };
 export const randomtext = () => {
   return this.randommediumtext();
@@ -123,8 +112,8 @@ export const randomdouble = () => {
   return Math.floor(Math.random() * (10000000 - 1000000) + 1000000) / 1000000;
 };
 
-export const randomdecimal = () => {
-  return Math.floor(Math.random() * (10000000 - 1000000) + 1000000) / 1000000;
+export const randomdecimal = (precision, scale) => {
+  return faker.finance.amount(0, precision-scale, scale);
 };
 
 export const randombinary = (length) => {

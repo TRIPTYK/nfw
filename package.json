@@ -94,6 +94,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^5.2.6",
+    "faker": "^4.1.0",
     "mocha": "^6.1.4",
     "typedoc": "^0.14.2"
   }
