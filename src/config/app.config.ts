@@ -84,6 +84,7 @@ app.use( ExpressValidator() );
  */
 app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
+// @ts-ignore
 const apiLimiter = RateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 1000,
