@@ -84,8 +84,7 @@ app.use( ExpressValidator() );
  */
 app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
-// @ts-ignore
-const apiLimiter = RateLimit({
+const apiLimiter = new RateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 1000,
   message: "Too many requests from this IP, please try again after an hour"
