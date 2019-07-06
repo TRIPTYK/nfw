@@ -1,5 +1,5 @@
 {
-  "name": "3rd-party-ts-boilerplate",
+  "name": "nfw",
   "version": "0.0.1",
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
   "main": "./dist/app.bootstrap.js",
@@ -8,12 +8,11 @@
     "kickstart-win": "init_scripts\\windows.bat",
     "todo": "leasot -x 'src/**/*.ts'",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
-    "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md",
-    "generateFromDB": "node ./cli/generate/generateFromDB"
+    "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TRIPTYK/3rd-party-ts-boilerplate.git"
+    "url": "git+https://github.com/TRIPTYK/nfw.git"
   },
   "keywords": [
     "node",
@@ -30,9 +29,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TRIPTYK/3rd-party-ts-boilerplate/issues"
+    "url": "https://github.com/TRIPTYK/nfw/issues"
   },
-  "homepage": "https://github.com/TRIPTYK/3rd-party-ts-boilerplate#readme",
+  "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "dependencies": {
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.1",
