@@ -6,6 +6,7 @@
   "scripts": {
     "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/migration/dump ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i highlight.js@9.14.2 -D -g && npm i typescript && npm i typeorm && npm i && ./node_modules/.bin/tsc",
     "kickstart-win": "init_scripts\\windows.bat",
+    "dev": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env development.env",
     "todo": "leasot -x 'src/**/*.ts'",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
     "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md"
