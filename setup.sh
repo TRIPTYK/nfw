@@ -3,6 +3,6 @@ echo "What folder name should we set ?"
 read foldername
 git clone https://github.com/TRIPTYK/nfw.git $foldername
 echo "setup folder"
-cd $foldername
+cd . $foldername
 rm -rf .git
 yarn install
