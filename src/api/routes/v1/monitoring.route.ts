@@ -1,13 +1,11 @@
-import * as validate from "express-validation";
-
-import { Router } from "express";
-import { MonitoringController } from "./../../controllers/monitoring.controller";
+import {Router} from "express";
+import {MonitoringController} from "../../controllers/monitoring.controller";
 
 const router = Router();
 const monitoringController = new MonitoringController(); // Todo injecter comme dépendance
 
 
 router
-  .route('/').get( monitoringController.get)
+    .route('/').get(monitoringController.method('get'));
 
-export { router };
+export {router};

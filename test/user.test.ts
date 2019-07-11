@@ -7,32 +7,15 @@ chai.config.truncateThreshold = 1;
 
 describe("User CRUD", function () {
 
-    let server, agent, password, credentials, token, refreshToken, id;
+    let server, agent, token, id;
     const expect = chai.expect;
 
-  before(function (done) {
-
+    before(function (done) {
       let express = require('./../src/app.bootstrap');
-
-    server      = express.App;
-    agent       = request.agent(server);
-    password    = fixtures.password();
-    credentials = { data : { attributes : fixtures.user('admin', password) } };
-
-    agent
-      .post('/api/v1/auth/register')
-      .send(credentials)
-      .set('Accept', 'application/vnd.api+json')
-      .set('Content-Type', 'application/vnd.api+json')
-      .end(function(err, res) {
-        expect(res.statusCode).to.equal(201);
-        token = res.body.token.accessToken;
-        refreshToken = res.body.token.refreshToken;
-        id = res.body.user.data.id;
-        done();
-      });
-
-  });
+        server = express.App;
+        agent = request.agent(server);
+        token = global['login'].token;
+    });
 
   after(function () {
     server = undefined;
@@ -76,7 +59,6 @@ describe("User CRUD", function () {
           'username',
           'email',
           'services',
-          //'documents', not eager loaded anymore
           'firstname',
           'lastname',
           'role',

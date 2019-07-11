@@ -15,7 +15,7 @@ describe("Authentification", function () {
     password    = fixtures.password();
     credentials = {
       data: { attributes: fixtures.user('admin', password) }
-    }
+    };
 
     agent
       .post('/api/v1/auth/register')
@@ -24,8 +24,12 @@ describe("Authentification", function () {
       .set('Content-Type', 'application/vnd.api+json')
       .end(function(err, response){
         expect(response.statusCode).to.equal(201);
-        token = response.body.token.accessToken;
-        refreshToken = response.body.token.refreshToken;
+        token = response.body.data.attributes['access-token'];
+        refreshToken = response.body.data.attributes['refresh-token'];
+        global['login'] = {
+          token: response.body.data.attributes['access-token'],
+          refreshToken: response.body.data.attributes['refresh-token']
+        };
         done();
       });
 
@@ -52,7 +56,7 @@ describe("Authentification", function () {
         .send(credentials)
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
-        .expect(409, done);
+          .expect(400, done);
     });
 
   });
@@ -71,7 +75,7 @@ describe("Authentification", function () {
         })
         .end(function(err, res) {
           expect(res.statusCode).to.equal(200);
-          refreshToken = res.body.token.refreshToken;
+          refreshToken = res.body.data.attributes['refresh-token'];
           done()
         });
     });
@@ -86,7 +90,7 @@ describe("Authentification", function () {
           email: credentials.data.attributes.email,
           password: 'totoIsANoob'
         })
-        .expect(417, done);
+          .expect(401, done);
     });
 
     it('Authentification failed with bad email', function (done) {
@@ -99,7 +103,7 @@ describe("Authentification", function () {
           email: 'fake' + credentials.data.attributes.email,
           password: password
         })
-        .expect(417, done);
+          .expect(404, done);
     });
 
   });

@@ -4,30 +4,14 @@ import * as fixtures from "./fixtures";
 
 describe("Document CRUD", function () {
 
-    let server, agent, token, id, password;
+    let server, agent, token, id;
     const expect = chai.expect;
 
   before(function (done) {
-
       let express = require('../src/app.bootstrap');
-    password    = fixtures.password();
-    let credentials = { data : { attributes : fixtures.user('admin', password) } };
-
-    server = express.App;
-    agent = request.agent(server);
-
-    agent
-      .post('/api/v1/auth/register')
-      .send(credentials)
-      .set('Accept', 'application/vnd.api+json')
-      .set('Content-Type', 'application/vnd.api+json')
-      .end(function(err, res) {
-        expect(res.statusCode).to.equal(201);
-        token = res.body.token.accessToken;
-        id = res.body.user.data.id;
-        done();
-      });
-
+      server = express.App;
+      agent = request.agent(server);
+      token = global['login'].token;
   });
 
   after(function () {

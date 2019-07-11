@@ -1,11 +1,9 @@
-import { Router } from "express";
-
-import { Request, Response } from "express";
-import { router as AuthRouter } from "./auth.route";
-import { router as UserRouter } from "./user.route";
-import { router as DocumentRouter } from "./document.route";
-import { router as MonitoringRouter } from "./monitoring.route";
-
+import {Request, Response, Router} from "express";
+import {router as AuthRouter} from "./auth.route";
+import {router as UserRouter} from "./user.route";
+import {router as DocumentRouter} from "./document.route";
+import {router as MonitoringRouter} from "./monitoring.route";
+import {router as AdminRouter} from "./admin/index";
 
 const router = Router();
 
@@ -20,7 +18,11 @@ const router = Router();
  *
  * @Error (Internal server error)
  */
-router.get('/status', (req : Request, res : Response) => { res.sendStatus(200); });
+
+
+router.get('/status', (req: Request, res: Response) => {
+    res.sendStatus(200);
+});
 
 /**
  * Authentification routes
@@ -42,7 +44,9 @@ router.use('/documents/', DocumentRouter);
  */
 router.use('/monitoring', MonitoringRouter);
 
+/*
+    Admin routes
+ */
+router.use('/admin/', AdminRouter);
 
-
-
-export { router }
+export {router}

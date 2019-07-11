@@ -1,154 +1,154 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, AfterLoad, BeforeInsert, OneToMany , CreateDateColumn , UpdateDateColumn,ManyToMany, JoinTable, OneToOne, JoinColumn } from "typeorm";
-import { env, jwtSecret, jwtExpirationInterval } from "./../../config/environment.config";
-import { DateUtils } from "typeorm/util/DateUtils";
-import { Document } from "./../models/document.model";
-import { roles } from "./../enums/role.enum";
-import { UserSerializer } from "./../serializers/user.serializer";
-import { IModelize } from "../interfaces/IModelize.interface";
+import {
+    AfterLoad,
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    Unique,
+    UpdateDateColumn
+} from "typeorm";
+
+import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
+import {Document} from "./document.model";
+import {roles} from "../enums/role.enum";
+import {UserSerializer} from "../serializers/user.serializer";
 
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
-import { SerializerParams } from "../serializers/serializerParams";
+import {BaseModel} from "./base.model";
+import {imageMimeTypes} from "../enums/mime-type.enum";
 
 @Entity()
-export class User implements IModelize {
+@Unique(['email', 'username'])
+export class User extends BaseModel {
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  /**
-   * @param payload Object data to assign
-   */
-  constructor(payload: Object) { Object.assign(this, payload); }
+    @Column({
+        type: "simple-json"
+    })
+    services: { facebook: string, google: string };
 
-  private temporaryPassword : string;
+    @Column({
+        length: 32,
+        nullable: false
+    })
+    username: string;
 
-  @PrimaryGeneratedColumn()
-  id: number;
+    @Column({
+        length: 128,
+        nullable: false
+    })
+    password: string;
 
-  @Column({
-    length: 32,
-    unique: true
-  })
-  username: string;
+    @Column({
+        length: 128,
+        nullable: false
+    })
+    email: string;
 
-  @Column({
-    length: 128
-  })
-  password: string
+    @Column({
+        length: 32,
+        nullable: false
+    })
+    firstname: string;
 
-  @Column({
-    length: 128,
-    unique: true
-  })
-  email: string;
+    @Column({
+        length: 32,
+        nullable: false
+    })
+    lastname: string;
 
-  @Column({
-    type : "simple-json"
-  })
-  services: { facebook : string, google: string }
+    @Column({
+        type: "enum",
+        enum: roles,
+        default: "ghost"
+    })
+    role: "admin" | "user" | "ghost";
 
-  @Column({
-    length: 32,
-  })
-  firstname: string;
+    @CreateDateColumn()
+    createdAt;
 
-  @Column({
-    length: 32,
-  })
-  lastname: string;
+    @UpdateDateColumn({
+        nullable: true
+    })
+    updatedAt;
 
-  @OneToMany(type => Document, document => document.user)
-  documents: Document[];
-
-  @Column({
-    type: "enum",
-    enum: roles,
-    default: "ghost"
-  })
-  role: "admin" | "user" | "ghost";
+    @Column({
+        type: Date,
+        default: null
+    })
+    deletedAt;
 
 
-  @CreateDateColumn()
-  createdAt;
+    @OneToMany(type => Document, document => document.user)
+    documents: Document[];
 
-  @UpdateDateColumn({
-    nullable: true
-  })
-  updatedAt;
+    @ManyToOne(type => Document, document => document.users_avatars)
+    avatar: Document;
 
-  @Column({
-    type: Date,
-    default: null
-  })
-  deletedAt;
+    private temporaryPassword: string;
 
-  @AfterLoad()
-  storeTemporaryPassword() : void {
-    this.temporaryPassword = this.password;
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() : Promise<boolean> {
-    try {
-
-      if (this.temporaryPassword === this.password) return true;
-
-      const rounds = env === 'test' ? 1 : 10;
-
-      const hash = await Bcrypt.hash(this.password, rounds);
-
-      this.password = hash;
-
-      return true;
+    @AfterLoad()
+    storeTemporaryPassword(): void {
+        this.temporaryPassword = this.password;
     }
-    catch (error) {
-      throw Boom.badImplementation(error.message);
+
+    /**
+     * @return Serialized user object in JSON-API format
+     */
+    public whitelist(): object {
+        return new UserSerializer().serialize(this);
     }
-  }
 
-
-  /**
-   * @return Serialized user object in JSON-API format
-   */
-  public whitelist() : object {
-    return new UserSerializer().serialize(this);
-  }
-
-  /**
-   *
-   */
-  token() {
-    const payload = {
-      exp: Moment().add(jwtExpirationInterval, 'minutes').unix(),
-      iat: Moment().unix(),
-      sub: this.id
-    };
-    return Jwt.encode(payload, jwtSecret);
-  }
-
-  /**
-   * @param password
-   */
-  async passwordMatches(password: string) : Promise<boolean> {
-    return Bcrypt.compare(password, this.password);
-  }
-
-  /**
-   * @param error
-   */
-  static checkDuplicateEmail(error) {
-    if (error.name === 'QueryFailedError' && error.errno === 1062) {
-      return Boom.conflict(
-        'Validation error',
-        {
-          errors: [{
-            field: 'email',
-            location: 'body',
-            messages: ['"Email or Username" already exists'],
-          }]
-        });
+    /**
+     *
+     */
+    token() {
+        const payload = {
+            exp: Moment().add(jwtExpirationInterval, 'minutes').unix(),
+            iat: Moment().unix(),
+            sub: this.id
+        };
+        return Jwt.encode(payload, jwtSecret);
     }
-    return error;
-  }
+
+    /**
+     * @param password
+     */
+    async passwordMatches(password: string): Promise<boolean> {
+        return Bcrypt.compare(password, this.password);
+    }
+
+    @BeforeUpdate()
+    @BeforeInsert()
+    checkAvatar() {
+        if (this.avatar)
+            if (!imageMimeTypes.includes(this.avatar.mimetype))
+                throw Boom.notAcceptable('Wrong document type');
+    }
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashPassword(): Promise<boolean> {
+        try {
+
+            if (this.temporaryPassword === this.password) return true;
+
+            const rounds = env === 'test' ? 1 : 10;
+
+            this.password = await Bcrypt.hash(this.password, rounds);
+
+            return true;
+        } catch (error) {
+            throw Boom.badImplementation(error.message);
+        }
+    }
 }

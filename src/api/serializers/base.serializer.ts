@@ -1,68 +1,90 @@
-import { Request, Response } from "express";
-import { Serializer as JSONAPISerializer } from 'jsonapi-serializer';
-import { Deserializer as JSONAPIDeserializer } from "jsonapi-serializer";
-import { ISerialize } from "./../interfaces/ISerialize.interface";
-import { api, env , port, url } from "../../config/environment.config";
+import {Request} from "express";
+import * as JSONAPISerializer from "json-api-serializer";
+import {ISerialize} from "../interfaces/ISerialize.interface";
+import {api, url} from "../../config/environment.config";
+import {SerializerParams} from "./serializerParams";
 
-import * as Boom from "boom";
-import { SerializerParams } from "./serializerParams";
+abstract class BaseSerializer implements ISerialize {
 
-export abstract class BaseSerializer implements ISerialize {
+    public static whitelist: string[] = [];
+    public type: string;
+    public serializer: JSONAPISerializer;
 
-  public type : string;
-  public options : Object;
-  public static withelist : Array<String> = [];
-  public serializer: JSONAPISerializer;
-  public deserializer: JSONAPIDeserializer;
-
-  /**
-   *  Replace page number parameter value in given URL
-   */
-  protected replacePage : Function = (url : string,newPage : number) : string => {
-    return url.replace(/(.*page(?:\[|%5B)number(?:\]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i,`$1${newPage}$3`);
-  };
-
-  /**
-   * @param type Entity type
-   * @param params Serializer parameters
-   */
-  constructor(type: string,params : any) {
-    this.type = type;
-
-    this.options = params;
-    this.options["convertCase"] = "kebab-case";
-    this.options["unconvertCase"] = "camelCase";
-
-    this.serializer = new JSONAPISerializer(type, this.options);
-
-    let deserializerOptions = { ...this.options, ...{
-      keyForAttribute: "underscore_case"
-    }};
-
-    this.deserializer = new JSONAPIDeserializer(deserializerOptions); //merge objects
-  }
-
-  /**
-   * Serialize a payload to json-api format
-   *
-   * @param payload Payload
-   */
-  public serialize = (payload: any) : any => {
-    try {
-      return this.serializer.serialize(payload);
+    /**
+     * @param type Entity type
+     * @param options
+     */
+    protected constructor(type: string, options = {}) {
+        this.serializer = new JSONAPISerializer({
+            convertCase: "kebab-case",
+            unconvertCase: "snake_case",
+            ...options
+        });
+        this.type = type;
     }
-    catch(e) { throw Boom.expectationFailed(e.message) }
-  }
 
-  /**
-   * Deserialize a payload from json-api format
-   *
-   * @param req
-   */
-  public deserialize = async (req: Request) : Promise<any> => {
-    try {
-      return await this.deserializer.deserialize(req.body);
+    /**
+     * Serialize a payload to json-api format
+     *
+     * @param payload Payload
+     * @param schema
+     * @param params
+     */
+    public serialize = (payload: any, schema = null, params = {}): any => {
+        return this.serializer.serialize(this.type, payload, schema, params);
+    };
+
+    /**
+     *
+     * @param relationshipType
+     * @param payload
+     * @param schema
+     */
+    public serializeRelationships(relationshipType: string, payload: any, schema: string = 'default') {
+        return this.serializer.serializeRelationship(relationshipType, schema, '1', payload);
     }
-    catch (e) { throw Boom.expectationFailed(e.message); }
-  }
+
+    /**
+     * Deserialize a payload from json-api format
+     *
+     * @param req
+     */
+    public deserialize = (req: Request): any => {
+        return this.serializer.deserialize(this.type, req.body);
+    };
+
+    /**
+     *
+     * @param schema
+     */
+    public getSchemaData(schema: string = "default") {
+        return this.serializer.schemas[this.type][schema];
+    }
+
+    /**
+     *  Replace page number parameter value in given URL
+     */
+    protected replacePage: Function = (url: string, newPage: number): string => {
+        return url.replace(/(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i, `$1${newPage}$3`);
+    };
+
+    protected setupPagination: Function = (data: object, serializerParams: SerializerParams): void => {
+        if (serializerParams.hasPaginationEnabled()) {
+            const {total, request} = serializerParams.getPaginationData();
+            const page = parseInt(request.query.page.number);
+            const size = request.query.page.size;
+            const baseUrl = `${url}/api/${api}`;
+            const max = Math.ceil(total / size);
+
+            data["topLevelLinks"] = {
+                self: () => `${baseUrl}/${this.type}${request.url}`,
+                next: () => `${baseUrl}/${this.type}${this.replacePage(request.url, page + 1 > max ? max : page + 1)}`,
+                prev: () => `${baseUrl}/${this.type}${this.replacePage(request.url, page - 1 < 1 ? page : page - 1)}`,
+                last: () => `${baseUrl}/${this.type}${this.replacePage(request.url, max)}`,
+                first: () => `${baseUrl}/${this.type}${this.replacePage(request.url, 1)}`
+            }
+        }
+    };
 }
+
+export {BaseSerializer};

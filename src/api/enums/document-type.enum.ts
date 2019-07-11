@@ -2,9 +2,9 @@
  * Different types of documents in database
  */
 const documentTypes = [
-  "picture",
-  "document",
-  "avatar"
+    "picture",
+    "document",
+    "avatar"
 ];
 
-export { documentTypes };
+export {documentTypes};

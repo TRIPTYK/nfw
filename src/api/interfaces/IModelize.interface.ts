@@ -2,7 +2,7 @@
  * Define required members for Model's
  */
 interface IModelize {
-  whitelist: Function
+    whitelist: Function
 }
 
-export { IModelize };
+export {IModelize};

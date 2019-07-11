@@ -24,7 +24,7 @@ export const user = (role = null, pwd = "test123*") => {
     password: pwd || ( Math.random().toString(36).substring(2, 16) + Math.random().toString(36).substring(2, 16) ).toLowerCase().substr(0,8),
     lastname: shuffle(chars).substr(0,8),
     firstname: shuffle(chars).substr(0,8),
-    services: '{}',
+    services: {},
     role: role || roles[ Math.floor(Math.random() * 3) + 1 ]
   };
 };
@@ -124,7 +124,7 @@ export const randomvarbinary = (length) => {
 };
 
 export const randomjson = () => {
-  return '{}';
+  return {};
 };
 
 export const randomenum = (enumArray) => {

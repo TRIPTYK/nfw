@@ -1,36 +1,84 @@
-import * as Joi from "joi";
+import {Schema} from "express-validator";
+import {getRepository} from "typeorm";
+import {User} from "../models/user.model";
+import * as Joi from "@hapi/joi";
+
+const _isEmailDuplicated = async (email) => {
+    const uRepo = getRepository(User);
+    const user = await uRepo.findOne({email: email});
+    if (user) {
+        return Promise.reject('Email already exists');
+    }
+};
+
+const _isUsernameDuplicated = async (username) => {
+    const uRepo = getRepository(User);
+    const user = await uRepo.findOne({username: username});
+    if (user) {
+        return Promise.reject('Username already exists');
+    }
+};
+
 
 // POST /v1/auth/register
-const register = {
-  body: {
-    email: Joi.string().email().required(),
-    password: Joi.string().required().min(6).max(128)
-  }
+const register: Schema = {
+    email: {
+        isEmail: true,
+        custom: {
+            options: _isEmailDuplicated
+        }
+    },
+    password: {
+        /*
+        matches: {
+            options: /^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$/,
+            errorMessage: "Password must have at least 8 characters,1 uppercase,1 lowercase and 1 special"
+        }*/
+    },
+    username: {
+        isUppercase: {
+            negated: true,
+        },
+        custom: {
+            options: _isUsernameDuplicated
+        }
+    },
+    lastname: {
+        isUppercase: {
+            negated: true,
+        }
+    },
+    firstname: {
+        isUppercase: {
+            negated: true,
+        }
+    }
 };
 
 // POST /v1/auth/login
-const login = {
-  body: {
-    email: Joi.string().email().required(),
-    password: Joi.string().required().max(128),
-  }
-};
-
-// POST /v1/auth/facebook
-// POST /v1/auth/google
-const oAuth = {
-  body: {
-    access_token: Joi.string().required(),
-  }
+const login: Schema = {
+    email: {
+        isEmail: true
+    },
+    password: {
+        exists: true
+    }
 };
 
 // POST /v1/auth/refresh
-const refresh = {
-  body: {
-    token: Joi.object().keys({
-      refreshToken: Joi.string().required(),
-    }).required()
-  }
+const refresh: Schema = {
+    token: {
+        custom: {
+            options: (value: any, {req, path}) => {
+                const res = Joi.object().keys({
+                    refreshToken: Joi.string().required(),
+                }).required().validate(value);
+
+                if (res.error !== null) throw Error(res.error);
+                return true;
+            }
+        }
+    }
 };
 
-export { register, login, oAuth, refresh };
+export {register, login, refresh};

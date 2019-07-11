@@ -1,5 +1,5 @@
-const relations : string[] = [
-  'users'
+const relations: string[] = [
+    'users'
 ];
 
-export { relations };
+export {relations};

@@ -1,35 +1,36 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn , CreateDateColumn , UpdateDateColumn } from "typeorm";
-import { User } from "./../models/user.model";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {User} from "./user.model";
 
 @Entity()
 export class RefreshToken {
 
-  /**
-   *
-   * @param token
-   * @param user
-   * @param expires
-   */
-  constructor(token: string, user: User, expires: Date)
-  {
-    this.token = token;
-    this.expires = expires;
-    this.user = user;
-  }
+    @PrimaryGeneratedColumn()
+    id: Number;
 
-  @PrimaryGeneratedColumn()
-  id: Number;
+    @Column()
+    refreshToken: String;
 
-  @Column()
-  token: String;
+    @OneToOne(type => User, {
+        eager: true,
+        onDelete: "CASCADE" // Remove refresh-token when user is deleted
+    })
+    @JoinColumn()
+    user: User;
 
-  @OneToOne(type => User, {
-    eager : true,
-    onDelete: "CASCADE" // Remove refresh-token when user is deleted
-   })
-  @JoinColumn()
-  user: User;
+    @Column()
+    expires: Date;
 
-  @Column()
-  expires: Date;
+    public accessToken: string;
+
+    /**
+     *
+     * @param refreshToken
+     * @param user
+     * @param expires
+     */
+    constructor(refreshToken: string, user: User, expires: Date) {
+        this.refreshToken = refreshToken;
+        this.expires = expires;
+        this.user = user;
+    }
 }

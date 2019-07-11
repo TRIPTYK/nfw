@@ -1,67 +1,88 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne , CreateDateColumn , UpdateDateColumn, Timestamp } from "typeorm";
-import { User } from "./user.model";
-import { mimeTypes } from "./../enums/mime-type.enum";
-import { documentTypes } from "./../enums/document-type.enum";
-import { DocumentSerializer } from "./../serializers/document.serializer";
-import { IModelize } from "../interfaces/IModelize.interface";
+import {
+    BeforeInsert,
+    BeforeRemove,
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
+
+import {User} from "./user.model";
+import {mimeTypes} from "../enums/mime-type.enum";
+import {documentTypes} from "../enums/document-type.enum";
+import {DocumentSerializer} from "../serializers/document.serializer";
+import * as Fs from "fs";
+import {BaseModel} from "./base.model";
+import * as Path from "path";
 
 @Entity()
-export class Document implements IModelize {
+export class Document extends BaseModel {
+    @PrimaryGeneratedColumn()
+    id: Number;
 
-  /**
-   * @param payload Object data to assign
-   */
-  constructor(payload: Object ) { Object.assign(this, payload); }
+    @Column({
+        type: "enum",
+        enum: documentTypes
+    })
+    fieldname: "avatar" | "document" | "cover";
 
-  @PrimaryGeneratedColumn()
-  id: Number;
+    @Column()
+    filename: String;
 
-  @Column({
-    type: "enum",
-    enum: documentTypes
-  })
-  fieldname: "avatar" | "document" | "cover";
+    @Column()
+    path: String;
 
-  @Column()
-  filename: String;
+    @Column({
+        type: "enum",
+        enum: mimeTypes
+    })
+    mimetype: "application/vnd.ms-excel" | "application/msword" | "application/zip" | "application/pdf" | "image/bmp" | "image/gif" | "image/jpeg" | "image/png" | "image/csv";
 
-  @Column()
-  path: String;
+    @Column({
+        type: String
+    })
+    size;
 
-  @Column({
-    type: "enum",
-    enum: mimeTypes
-  })
-  mimetype: "application/vnd.ms-excel" | "application/msword" | "application/zip" | "application/pdf" | "image/bmp" | "image/gif" | "image/jpeg" | "image/png" | "image/csv";
+    @ManyToOne(type => User, user => user.documents, {
+        onDelete: "CASCADE" // Remove all documents when user is deleted
+    })
+    user: User;
 
-  @Column({
-    type: String
-  })
-  size;
+    @OneToMany(type => User, avatar => avatar.avatar)
+    users_avatars: User[];
 
-  @ManyToOne(type => User, user => user.documents, {
-    onDelete: "CASCADE" // Remove all documents when user is deleted
-  })
-  user: User;
+    @CreateDateColumn()
+    createdAt: Date;
+    @UpdateDateColumn({
+        nullable: true
+    })
+    updatedAt: Date;
+    @Column({
+        default: null
+    })
+    deletedAt: Date;
 
-  @CreateDateColumn()
-  createdAt : Date;
+    @BeforeInsert()
+    updatePath() {
+        this.path = Path.dirname(this.path.toString());
+    }
 
-  @UpdateDateColumn({
-    nullable:true
-  })
-  updatedAt : Date;
+    @BeforeRemove()
+    deleteOnDisk() {
+        Fs.unlink(this.path.toString() + '/' + this.filename, () => {
+            ['xs', 'md', 'xl'].forEach((ext) => {
+                Fs.unlinkSync(this.path.toString() + '/' + ext + '/' + this.filename);
+            });
+        });
+    }
 
-  @Column({
-    default: null
-  })
-  deletedAt : Date;
-
-
-  /**
-   * @return Serialized user object in JSON-API format
-   */
-  public whitelist() {
-    return new DocumentSerializer().serializer.serialize(this);
-  }
+    /**
+     * @return Serialized user object in JSON-API format
+     */
+    public whitelist() {
+        return new DocumentSerializer().serializer.serialize(this);
+    }
 }

@@ -1,6 +1,12 @@
-const relations : string[] = [
-  'documents',
-  'avatar'
+const relations: string[] = [
+    'documents',
+    'avatar',
+    'topics',
+    'posts',
+    'forums',
+    'categories',
+    'group',
+    'questionary'
 ];
 
-export { relations }
+export {relations}

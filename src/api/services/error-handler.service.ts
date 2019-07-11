@@ -1,28 +1,30 @@
-import { logger as Logger } from "./../../config/logger.config";
+import {logger as Logger} from "./../../config/logger.config";
 import * as Notifier from "node-notifier";
 import * as Boom from "boom";
-import { Error } from "jsonapi-serializer";
+import * as JSONAPISerializer from "json-api-serializer";
 
-const _getErrorCode = (error) : number => {
+const serializer = new JSONAPISerializer();
 
-  if(typeof(error.httpStatusCode) !== 'undefined') return error.httpStatusCode;
-  if(typeof(error.status) !== 'undefined') return error.status;
-  if(error.isBoom) return error.output.statusCode;
+const _getErrorCode = (error): number => {
 
-  return 500;
+    if (typeof (error.httpStatusCode) !== 'undefined') return error.httpStatusCode;
+    if (typeof (error.status) !== 'undefined') return error.status;
+    if (error.isBoom) return error.output.statusCode;
+
+    return 500;
 };
 
 /**
  * Write errors in a log file
  *
- * @param {*} err
- * @param {*} str
  * @param {*} req
+ * @param res
+ * @param next
  */
-const log = (req,res,next) => {
-  let message = 'Error in ' + req.method + ' ' + req.url + '\n';
-  Logger.error(message);
-  next();
+const log = (req, res, next) => {
+    let message = 'Error in ' + req.method + ' ' + req.url + '\n';
+    Logger.error(message);
+    next();
 };
 
 /**
@@ -32,23 +34,22 @@ const log = (req,res,next) => {
  * @param {*} str
  * @param {*} req
  *
- * @requires libnotify-bin
  */
 const notify = (err, str, req) => {
-  let title = 'Error in ' + req.method + ' ' + req.url;
-  Notifier.notify({
-    title : title,
-    message : str
-  });
+    let title = 'Error in ' + req.method + ' ' + req.url;
+    Notifier.notify({
+        title: title,
+        message: str
+    });
 };
 
-const _boomToJSONAPI = (err : Boom) => {
-  return new Error({
-    status:  _getErrorCode(err).toString(),
-    title:  err.output ? err.output.payload.error : "Error",
-    meta : { validation :  err.errors ? err.errors : undefined  },
-    detail: err.message
-  });
+const _boomToJSONAPI = (err: Boom) => {
+    return serializer.serializeError({
+        status: _getErrorCode(err).toString(),
+        title: err.output ? err.output.payload.error : "Error",
+        meta: {validation: err.errors ? err.errors : undefined},
+        detail: err.message
+    });
 };
 
 /**
@@ -60,9 +61,9 @@ const _boomToJSONAPI = (err : Boom) => {
  * @param {*} next
  */
 const exit = (err, req, res, next) => {
-  if(!err.httpStatusCode && !err.status && !err.isBoom) err = Boom.expectationFailed(err.message);
-  res.status( _getErrorCode(err) );
-  res.json(_boomToJSONAPI(err));
+    if (!err.httpStatusCode && !err.status && !err.isBoom) err = Boom.expectationFailed(err.message);
+    res.status(_getErrorCode(err));
+    res.json(_boomToJSONAPI(err));
 };
 
 /**
@@ -74,8 +75,8 @@ const exit = (err, req, res, next) => {
  * @param {*} next
  */
 const notFound = (req, res, next) => {
-  res.status( 404 );
-  res.json( _boomToJSONAPI(Boom.notFound('End point not found')) );
+    res.status(404);
+    res.json(_boomToJSONAPI(Boom.notFound('End point not found')));
 };
 
-export { log, notify, exit, notFound };
+export {log, notify, exit, notFound};

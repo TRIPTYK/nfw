@@ -1,10 +1,7 @@
-import { RefreshTokenRepository } from "./../repositories/refresh-token.repository";
-import { jwtExpirationInterval, typeorm as TypeORM } from "./../../config/environment.config";
-import { getCustomRepository, getRepository } from "typeorm";
-import { User } from "./../models/user.model";
-import { RefreshToken } from "./../models/refresh-token.model";
-
-import * as Moment from "moment-timezone";
+import {RefreshTokenRepository} from "./../repositories/refresh-token.repository";
+import {getCustomRepository} from "typeorm";
+import {User} from "./../models/user.model";
+import {RefreshToken} from "../models/refresh-token.model";
 
 /**
  * Build a token response and return it
@@ -16,16 +13,16 @@ import * as Moment from "moment-timezone";
  *
  * @private
  */
-const generateTokenResponse = async (user : User, accessToken : string) => {
-  const tokenType = 'Bearer';
-  const oldToken = await getRepository(RefreshToken).findOne({ where : { user : user } });
-  if(oldToken)
-  {
-    const deleted = await getRepository(RefreshToken).remove(oldToken)
-  }
-  const refreshToken = getCustomRepository(RefreshTokenRepository).generate(user).token;
-  const expiresIn = Moment().add(jwtExpirationInterval, 'minutes');
-  return { tokenType, accessToken, refreshToken, expiresIn };
-}
+const generateTokenResponse = async (user: User, accessToken: string): Promise<RefreshToken> => {
+    const repo = getCustomRepository(RefreshTokenRepository);
 
-export { generateTokenResponse };
+    const oldToken = await repo.findOne({where: {user: user}});
+
+    if (oldToken) await repo.remove(oldToken);
+
+    const token = await repo.generate(user);
+    token.accessToken = accessToken;
+    return token;
+};
+
+export {generateTokenResponse};

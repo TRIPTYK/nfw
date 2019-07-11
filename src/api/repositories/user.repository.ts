@@ -1,99 +1,78 @@
-import { User } from "./../models/user.model";
-import { Repository, EntityRepository, getRepository } from "typeorm";
-import { omitBy, isNil } from "lodash";
-import { uuidv4 } from "uuid/v4";
+import {User} from "../models/user.model";
+import {EntityRepository, getCustomRepository, getRepository} from "typeorm";
+import * as uuid from "uuid/v4";
 
 import * as Moment from "moment-timezone";
 import * as Boom from "boom";
-import { BaseRepository } from "./base.repository";
+import {BaseRepository} from "./base.repository";
+import {DocumentRepository} from "./document.repository";
 
 @EntityRepository(User)
-export class UserRepository extends BaseRepository<User>  {
+export class UserRepository extends BaseRepository<User> {
 
-  /** */
-  constructor() { super(); }
-
-  /**
-   * Get one user
-   *
-   * @param {number} id - The id of user
-   *
-   * @returns {User}
-   */
-  async one(id: number): Promise<User> {
-
-    try {
-
-      let user = await getRepository(User).findOne(id);
-
-      if (!user)
-      {
-        throw Boom.notFound('User not found');
-      }
-
-      return user;
-    }
-    catch (e) { throw Boom.expectationFailed(e.message); }
-  }
-
-  /**
-   * Find user by email and tries to generate a JWT token
-   *
-   * @param options email , password and refreshObject
-   *
-   * @returns
-   */
-  async findAndGenerateToken(options : any): Promise<any> {
-
-    const { email, password, refreshObject } = options;
-
-    if (!email) throw Boom.badRequest('An email is required to generate a token');
-
-    const user = await this.findOne({ email });
-
-    if (!user)
-    {
-      throw Boom.notFound('User not found');
-    }
-    else if (password && await user.passwordMatches(password) === false)
-    {
-      throw Boom.unauthorized('Password must match to authorize a token generating');
-    }
-    else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore())
-    {
-      throw Boom.unauthorized('Invalid refresh token.');
+    /** */
+    constructor() {
+        super();
     }
 
-    return { user, accessToken: user.token() };
-  }
+    /**
+     * Find user by email and tries to generate a JWT token
+     *
+     * @param options email , password and refreshObject
+     *
+     * @returns token
+     */
+    async findAndGenerateToken(options: { email: string, password: string, refreshObject: any }): Promise<object> {
+        const {email, password, refreshObject} = options;
 
-  /**
-   *
-   * @param param
-   */
-  async oAuthLogin({ service, id, email, username, picture }) {
+        if (!email) throw Boom.badRequest('An email is required to generate a token');
 
-    try {
+        const user = await this.findOne({email});
 
-      const userRepository = getRepository(User);
+        if (!user) {
+            throw Boom.notFound('User not found');
+        } else if (password && await user.passwordMatches(password) === false) {
+            throw Boom.unauthorized('Password must match to authorize a token generating');
+        } else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) {
+            throw Boom.unauthorized('Invalid refresh token.');
+        }
 
-      const user = await userRepository.findOne({
-        where: { email : email },
-      });
-
-      if (user) {
-        user.services[service] = id;
-        if (!user.username) user.username = username;
-        //if (!user.documents) user.documents = document; // TODO: manage picture
-        return userRepository.save(user);
-      }
-
-      const password = uuidv4();
-
-      // return userRepository.create({ services: { [service]: id }, email, password, username, picture }); // TODO: manage picture
-      return userRepository.create({ services: { [service]: id }, email, password, username });
+        return {user, accessToken: user.token()};
     }
 
-    catch(e) { throw Boom.expectationFailed(e.message); }
-  }
+    /**
+     *
+     * @param param
+     */
+    async oAuthLogin({service, id, first_name, last_name, email, name, picture}) {
+        try {
+
+            const userRepository = getRepository(User);
+            const documentRepository = getCustomRepository(DocumentRepository);
+
+            const user = await userRepository.findOne({
+                where: {email: email},
+            });
+
+            if (user) {
+                user.services[service] = id;
+                if (!user.username) user.username = name;
+                return userRepository.save(user);
+            }
+
+            const password = uuid();
+
+            return userRepository.save({
+                services: {[service]: id},
+                email,
+                password,
+                username: name,
+                firstname: first_name,
+                lastname: last_name,
+                role: 'user'
+            });
+        } catch (e) {
+            throw Boom.expectationFailed(e.message);
+        }
+    }
 }

@@ -1,36 +1,30 @@
-import * as Joi from "joi";
+// GET /v1/documents/:documentId
+import {Schema} from "express-validator";
 
-// GET /v1/documents
-const listDocuments = {
-  query: {}
+const getDocument: Schema = {
+    documentId: {
+        in: ['params'],
+        errorMessage: 'Please provide a valid id',
+        isInt: true
+    }
 };
 
-// GET /v1/documents/:documentId
-const getDocument = {
-  params: {
-    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
-  }
-}
-
-// PUT /v1/documents/:documentId
-const replaceDocument = {
-  params: {
-    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
-  }
-}
-
 // PATCH /v1/documents/:documentId
-const updateDocument = {
-  params: {
-    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
-  }
-}
+const updateDocument: Schema = {
+    documentId: {
+        in: ['params'],
+        errorMessage: 'Please provide a valid id',
+        isInt: true
+    }
+};
 
 // DELETE /v1/documents/:documentId
-const deleteDocument = {
-  params: {
-    documentId: Joi.string().regex(/^[0-9]{0,4}$/).required()
-  }
-}
+const deleteDocument: Schema = {
+    documentId: {
+        in: ['params'],
+        errorMessage: 'Please provide a valid id',
+        isInt: true
+    }
+};
 
-export { listDocuments, getDocument, replaceDocument, updateDocument, deleteDocument };
+export {getDocument, updateDocument, deleteDocument};
