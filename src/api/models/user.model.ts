@@ -129,7 +129,7 @@ export class User extends BaseModel {
     @BeforeInsert()
     checkServices()
     {
-        if (this.services)
+        if (!this.services)
             this.services = {};
     }
 
