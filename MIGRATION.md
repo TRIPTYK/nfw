@@ -166,6 +166,53 @@ const updateUser: Schema = {
 };
 ```
 
+## Authentication
+
+- Login/Register/Refresh-token response is now in json-api format
+- This part is subject to change
+
+Response type : 
+```
+{
+  "jsonapi": {
+    "version": "1.0"
+  },
+  "data": {
+    "type": "refresh_token",
+    "attributes": {
+      "expires": "2019-08-14T08:34:29.639Z",
+      "access-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjMxODA1NjksImlhdCI6MTU2MzE3OTY2OSwic3ViIjo5OX0.kMoWC1ttrfOsoB4ozUzM465hRrbbbdub70XQX8MhPIE",
+      "refresh-token": "99.f11fd7edd80705cb292ba3c220b663c4f1456b033ad51a296b16f88edaad240178cfdfc6510545f8"
+    },
+    "relationships": {
+      "user": {
+        "data": {
+          "type": "user",
+          "id": "99"
+        }
+      }
+    }
+  },
+  "included": [
+    {
+      "type": "user",
+      "id": "99",
+      "attributes": {
+        "username": "amaury",
+        "email": "amaury@localhost.com",
+        "services": {},
+        "firstname": "amaury",
+        "lastname": "amaury",
+        "role": "admin",
+        "created-at": "2019-07-15T06:34:01.728Z",
+        "updated-at": "2019-07-15T06:34:01.728Z"
+      }
+    }
+  ]
+}
+```
+
+
 ##Configuration files
 
 - .env files now need 5 new fields for oAuth and caching :
