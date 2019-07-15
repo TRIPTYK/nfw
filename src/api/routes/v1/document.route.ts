@@ -18,7 +18,7 @@ router.param('documentId', documentMiddleware.deserialize());
 
 router
     .route('/')
-    .get(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(getDocument), documentController.method('list'))
+    .get(authorize([ADMIN, LOGGED_USER]), documentController.method('list'))
     .post(authorize([ADMIN]), upload.single('document'), documentMiddleware.resize, documentController.method('create'));
 
 router
