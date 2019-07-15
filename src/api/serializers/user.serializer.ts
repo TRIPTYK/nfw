@@ -6,7 +6,7 @@ import {api, url} from "../../config/environment.config";
 
 
 export class UserSerializer extends BaseSerializer {
-    public static whitelist: Array<string> = ['username', 'email', 'services', 'firstname', 'lastname', 'role', 'createdAt', 'updatedAt'];
+    public static whitelist: Array<string> = ['username', 'email', 'firstname', 'lastname', 'role', 'createdAt', 'updatedAt'];
 
     constructor(serializerParams: SerializerParams = new SerializerParams()) {
         super('user');
