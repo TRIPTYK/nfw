@@ -6,7 +6,7 @@
 
 ## Controllers 
 - Controllers now return the value to send.
-- They have a new **BeforeMethod()** member , who is a function that is executed before each method.
+- They have a new **BeforeMethod()** member , which is a function that is executed before each method.
 - A repository member is setup in each controller and instantiated in the BeforeMethod()
 
 Before
@@ -68,7 +68,6 @@ New route
 
 ## Serializers
 
-- With the use of json-api-serializer , all the structure have changed
 - Pagination is now setup by the base class with the method **setupPagination**
 - *withelist* member has been changed to *whitelist* , it was a typo error
 - Please refer to [json-api-serializer](https://github.com/danivek/json-api-serializer) documentation
