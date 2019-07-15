@@ -34,7 +34,7 @@ export class User extends BaseModel {
     @Column({
         type: "simple-json"
     })
-    services: { facebook: string, google: string };
+    services: { facebook? : string, google? : string };
 
     @Column({
         length: 32,
@@ -87,7 +87,6 @@ export class User extends BaseModel {
     })
     deletedAt;
 
-
     @OneToMany(type => Document, document => document.user)
     documents: Document[];
 
@@ -125,6 +124,13 @@ export class User extends BaseModel {
      */
     async passwordMatches(password: string): Promise<boolean> {
         return Bcrypt.compare(password, this.password);
+    }
+
+    @BeforeInsert()
+    checkServices()
+    {
+        if (this.services)
+            this.services = {};
     }
 
     @BeforeUpdate()
