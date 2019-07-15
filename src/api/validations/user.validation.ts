@@ -78,7 +78,7 @@ const createUser: Schema = {
 };
 
 // PATCH /v1/users/:userId
-const updateUser: any = {
+const updateUser: Schema = {
     userId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
@@ -86,31 +86,23 @@ const updateUser: any = {
     },
     email: {
         optional: {
-            options: {
-                nullable: true
-            }
+            nullable: true
         },
         isEmail: true
     },
     password: {
         optional: {
-            options: {
-                nullable: true
-            }
+            nullable: true
         }
     },
     username: {
         optional: {
-            options: {
-                nullable: true
-            }
+            nullable: true
         },
     },
     lastname: {
         optional: {
-            options: {
-                nullable: true
-            }
+            nullable: true
         },
         isUppercase: {
             negated: true,
@@ -118,9 +110,7 @@ const updateUser: any = {
     },
     firstname: {
         optional: {
-            options: {
-                nullable: true
-            }
+            nullable: true
         }
     },
     role: {
