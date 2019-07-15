@@ -72,11 +72,15 @@ export class Document extends BaseModel {
 
     @BeforeRemove()
     deleteOnDisk() {
-        Fs.unlink(this.path.toString() + '/' + this.filename, () => {
-            ['xs', 'md', 'xl'].forEach((ext) => {
-                Fs.unlinkSync(this.path.toString() + '/' + ext + '/' + this.filename);
+        try {   // in some cases , files does not exists , just ignore the remove complain
+            Fs.unlink(this.path.toString() + '/' + this.filename, () => {
+                ['xs', 'md', 'xl'].forEach((ext) => {
+                    Fs.unlinkSync(this.path.toString() + '/' + ext + '/' + this.filename);
+                });
             });
-        });
+        }catch (e) {
+            console.log(e);
+        }
     }
 
     /**

@@ -111,7 +111,6 @@ class DocumentController extends BaseController {
     }
 
     protected beforeMethod(): void {
-
         this.repository = getCustomRepository(DocumentRepository);
     }
 }
