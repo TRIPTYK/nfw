@@ -4,9 +4,10 @@ describe("Route's accessibility", function () {
   
   var server;
   
-  before(function () {
-    let express = require('./../src/app.bootstrap')
+  before(function (done) {
+    let express = require('./../src/app.bootstrap');
     server = express.App;
+    done();
   });
   
   after(function () {

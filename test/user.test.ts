@@ -15,6 +15,7 @@ describe("User CRUD", function () {
         server = express.App;
         agent = request.agent(server);
         token = global['login'].token;
+        done();
     });
 
   after(function () {
@@ -31,7 +32,7 @@ describe("User CRUD", function () {
       .end(function(err, res) {
         let status = res.status | res.statusCode;
         expect(status).to.equal(201);
-        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.type).to.equal('user');
         expect(res.body.data.id).to.be.a('string');
         expect(res.body.data.attributes).to.include.all.keys(
           'username',

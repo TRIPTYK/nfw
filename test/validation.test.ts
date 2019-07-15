@@ -3,15 +3,15 @@ import * as fixtures from "./fixtures";
 import {expect} from "chai";
 
 describe("Route's validation", function () {
-
-    let server, agent, token;
+  let server, agent, token;
 
   before(function (done) {
     let express = require('./../src/app.bootstrap');
 
     server      = express.App;
     agent       = request.agent(server);
-      token = global['login'].token;
+    token = global['login'].token;
+    done();
   });
   
   after(function () {

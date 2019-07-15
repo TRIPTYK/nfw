@@ -12,6 +12,7 @@ describe("Document CRUD", function () {
       server = express.App;
       agent = request.agent(server);
       token = global['login'].token;
+      done();
   });
 
   after(function () {

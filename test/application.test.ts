@@ -35,5 +35,4 @@ describe("Express application", function () {
             .get('/api/v1/status')
             .expect(200, done);
     });
-
 });
