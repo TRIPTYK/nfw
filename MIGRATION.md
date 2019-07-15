@@ -107,8 +107,8 @@ constructor(serializerParams: SerializerParams = new SerializerParams()) {
 
 - You can still use [@hapi/joi](https://github.com/hapijs/joi) for object validation using the custom property from express-validator : 
 ```
-options: {
-    email: {
+email: {
+    custom: {
         options: (email: any, {req, path}) => {
             const res = Joi.string().email().validate(email); // old validation format
             if (res.error !== null) throw Error(res.error);
