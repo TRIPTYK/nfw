@@ -11,6 +11,9 @@ export class UserSerializer extends BaseSerializer {
         super('user');
 
         const data = {
+            links : (data) => {
+
+            },
             whitelist: UserSerializer.whitelist,
             relationships: {
                 avatar: {

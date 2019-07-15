@@ -21,7 +21,7 @@ router.param('userId', userMiddleware.load);
 
 router
     .route('/')
-    .get(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('list'))
+    .get(authorize([ADMIN]), userController.method('list'))
     .post(authorize([ADMIN]), userMiddleware.deserialize(), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('create'));
 
 router
