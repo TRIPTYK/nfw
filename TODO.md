@@ -1,7 +1,3 @@
-### FIXMEs
-| Filename | line # | FIXME
-|:------|:------:|:------
-| src/api/middlewares/security.middleware.ts | 11 | fix embeded objects/arrays
 
 ### TODOs
 | Filename | line # | TODO

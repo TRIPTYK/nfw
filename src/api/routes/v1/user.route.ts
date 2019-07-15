@@ -35,7 +35,7 @@ router
 router
     .route('/:userId')
     .get(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('get'))
-    .patch(authorize([ADMIN]), authorize(), userMiddleware.deserialize(true), userMiddleware.deserializeRelationships([{
+    .patch(authorize([ADMIN]), userMiddleware.deserialize(true), userMiddleware.deserializeRelationships([{
         relation: 'avatar',
         model: 'document'
     }]), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
