@@ -126,6 +126,9 @@ export class User extends BaseModel {
         return Bcrypt.compare(password, this.password);
     }
 
+    /*
+        JSON can't have a default value in Mysql , so we need to set the value manually if value is not set
+     */
     @BeforeInsert()
     checkServices()
     {
