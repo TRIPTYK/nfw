@@ -30,7 +30,7 @@ router
 
 router
     .route('/changePassword')
-    .post(authorize([ADMIN, LOGGED_USER]), userMiddleware.deserialize(), userMiddleware.handleValidation(changePassword), userController.method('changePassword'));
+    .post(authorize([ADMIN, LOGGED_USER]), userMiddleware.deserialize({ withRelationships : false }), userMiddleware.handleValidation(changePassword), userController.method('changePassword'));
 
 router
     .route('/:userId')

@@ -17,6 +17,9 @@ import {DocumentSerializer} from "../serializers/document.serializer";
 import * as Fs from "fs";
 import {BaseModel} from "./base.model";
 import * as Path from "path";
+import {promisify} from "util";
+
+const unlink = promisify(Fs.unlink);
 
 @Entity()
 export class Document extends BaseModel {
@@ -75,7 +78,7 @@ export class Document extends BaseModel {
         try {   // in some cases , files does not exists , just ignore the remove complain
             Fs.unlink(this.path.toString() + '/' + this.filename, () => {
                 ['xs', 'md', 'xl'].forEach((ext) => {
-                    Fs.unlinkSync(this.path.toString() + '/' + ext + '/' + this.filename);
+                    unlink(this.path.toString() + '/' + ext + '/' + this.filename);
                 });
             });
         }catch (e) {

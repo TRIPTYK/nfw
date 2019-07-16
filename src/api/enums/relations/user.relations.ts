@@ -6,7 +6,10 @@ const relations: string[] = [
     'forums',
     'categories',
     'group',
-    'questionary'
+    'questionary',
+    'tests',
+    'tests',
+    'tests'
 ];
 
 export {relations}

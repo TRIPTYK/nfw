@@ -22,14 +22,30 @@ export class UserController extends BaseController {
         super();
     }
 
+    /**
+     *
+     * @param req
+     * @param res
+     */
     public get(req: Request, res: Response) {
         return req['locals'].whitelist()
     }
 
+    /**
+     *
+     * @param req
+     * @param res
+     */
     public loggedIn(req: Request, res: Response) {
         return req['user'].whitelist()
     }
 
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
     public async changePassword(req: Request, res: Response, next) {
         let currentUser: User = req['user'];
 
@@ -42,6 +58,12 @@ export class UserController extends BaseController {
         return new UserSerializer().serialize(currentUser);
     }
 
+    /**
+     * 
+     * @param req
+     * @param res
+     * @param next
+     */
     public async create(req: Request, res: Response, next: Function) {
         const user = new User(req.body);
         const savedUser = await this.repository.save(user);

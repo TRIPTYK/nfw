@@ -37,12 +37,13 @@ describe("User CRUD", function () {
         expect(res.body.data.attributes).to.include.all.keys(
           'username',
           'email',
-          'services',
           'firstname',
           'lastname',
           'role',
-          'created-at'
+          'created-at',
+          'updated-at'
         );
+        id = res.body.data.id;
         done();
       })
   });
@@ -54,16 +55,16 @@ describe("User CRUD", function () {
       .end(function(err, res) {
         let status = res.status | res.statusCode;
         expect(status).to.equal(200);
-        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.type).to.equal('user');
         expect(res.body.data.id).to.be.a('string');
         expect(res.body.data.attributes).to.include.all.keys(
           'username',
           'email',
-          'services',
           'firstname',
           'lastname',
           'role',
-          'created-at'
+          'created-at',
+          'updated-at'
         );
         done();
       })
@@ -75,16 +76,16 @@ describe("User CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .end(function(err, res) {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.type).to.equal('user');
         expect(res.body.data.id).to.be.a('string');
         expect(res.body.data.attributes).to.include.all.keys(
           'username',
-          'email',
-          'services',
-          'firstname',
-          'lastname',
-          'role',
-          'created-at'
+            'email',
+            'updated-at',
+            'firstname',
+            'lastname',
+            'role',
+            'created-at'
         );
         done();
       });
@@ -96,7 +97,7 @@ describe("User CRUD", function () {
       .set('Authorization', 'Bearer ' + token)
       .end(function(err, res) {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.type).to.equal('user');
         expect(res.body.data.id).to.be.a('string');
         expect(res.body.data.attributes).to.include.all.keys(
           'username'
@@ -114,12 +115,12 @@ describe("User CRUD", function () {
       .send( { data : { attributes : fixtures.user('user') } })
       .end(function(err, res) {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.type).to.equal('user');
         expect(res.body.data.id).to.be.a('string');
         expect(res.body.data.attributes).to.include.all.keys(
           'username',
           'email',
-          'services',
+           'updated-at',
           //'documents',
           'firstname',
           'lastname',
@@ -146,17 +147,17 @@ describe("User CRUD", function () {
       })
       .end(function(err, res) {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.data.type).to.equal('users');
+        expect(res.body.data.type).to.equal('user');
         expect(res.body.data.id).to.be.a('string');
         expect(res.body.data.attributes).to.include.all.keys(
           'username',
           'email',
-          'services',
           //'documents',
           'firstname',
           'lastname',
           'role',
-          'created-at'
+          'created-at',
+            'updated-at'
         );
         done()
       });
