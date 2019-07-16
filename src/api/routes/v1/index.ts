@@ -43,13 +43,4 @@ router.use('/documents/', DocumentRouter);
  * Monitoring routes
  */
 router.use('/monitoring', MonitoringRouter);
-
-/*
-    Admin routes
- */
-router.use('/admin/', AdminRouter);
-
-
-
-
 export {router}

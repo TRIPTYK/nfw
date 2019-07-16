@@ -35,14 +35,8 @@ router
 router
     .route('/:userId')
     .get(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('get'))
-    .patch(authorize([ADMIN]), userMiddleware.deserialize(true), userMiddleware.deserializeRelationships([{
-        relation: 'avatar',
-        model: 'document'
-    }]), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
-    .put(authorize([ADMIN]), userMiddleware.deserialize(true), userMiddleware.deserializeRelationships([{
-        relation: 'avatar',
-        model: 'document'
-    }]), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('update'))
+    .patch(authorize([ADMIN]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
+    .put(authorize([ADMIN]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('update'))
     .delete(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('remove'));
 
 export {router};

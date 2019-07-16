@@ -35,41 +35,28 @@ export abstract class BaseMiddleware {
     };
 
     // TODO : Better handle async for each relations
-    public deserializeRelationships = (relations: { relation: string, model: string, additionalIncludes?: string[] }[] | string[] = []) => async (req: Request, _res: Response, next: Function) => {
-        try {
-            for (let i = 0; i < relations.length; i++) {
-                let currentRelation = relations[i];
-                let importModel;
-                let includes = [];
+    public deserializeRelationships = async (recipient : object,payload : object) => {
+        const schemaData = this.serializer.getSchemaData();
+        const relations: object = schemaData['relationships'];
 
-                if (typeof currentRelation === "object") {
-                    let {relation, model, additionalIncludes} = currentRelation;
-                    importModel = await import(`../models/${model}.model`);
-                    currentRelation = relation;
-                    if (additionalIncludes)
-                        includes = additionalIncludes;
-                } else {
-                    importModel = await import(`../models/${Pluralize.singular(currentRelation)}.model`);
-                }
-
+        for (let rel in relations) {
+            rel = relations[rel];
+            if (payload.hasOwnProperty(rel)) { //only load when present
+                const modelName = rel['type'];
+                let importModel = await import(`../models/${modelName}.model`);
                 importModel = Object.keys(importModel)[0];
 
-                if (req.body.hasOwnProperty(currentRelation)) {
-                    let relationData = null;
+                let relationData = null;
 
-                    if (typeof req.body[currentRelation] === "string")
-                        relationData = await getRepository(importModel).findOne(req.body[currentRelation], {relations: includes});
-                    else if (Array.isArray(req.body[currentRelation]))
-                        relationData = await getRepository(importModel).findByIds(req.body[currentRelation], {relations: includes});
+                if (typeof payload[rel] === "string")
+                    relationData = await getRepository(importModel).findOne(payload[rel]);
+                else if (Array.isArray(payload[rel]))
+                    relationData = await getRepository(importModel).findByIds(payload[rel]);
 
-                    if (!relationData) throw Boom.notFound('Related object not found');
+                if (!relationData) throw Boom.notFound('Related object not found');
 
-                    req.body[currentRelation] = relationData;
-                }
+                recipient[rel] = relationData;
             }
-            return next();
-        } catch (e) {
-            return next(e);
         }
     };
 
@@ -77,8 +64,9 @@ export abstract class BaseMiddleware {
      * Deserialize a POST-PUT-PATCH-DELETE request
      *
      * @param nullEqualsUndefined
+     * @param withRelationships
      */
-    public deserialize = (nullEqualsUndefined: boolean = false) => async (req: Request, _res: Response, next: Function) => {
+    public deserialize = ({nullEqualsUndefined = false,withRelationships = true}: { nullEqualsUndefined?: boolean, withRelationships?: boolean} = {}) => async (req: Request, _res: Response, next: Function) => {
         try {
             if (['GET', 'DELETE'].includes(req.method)) return next();
             if (!req.body.data || !req.body.data.attributes) return next();
@@ -95,6 +83,9 @@ export abstract class BaseMiddleware {
                 else
                     delete req.body[key];
             }
+
+            if (withRelationships)
+                await this.deserializeRelationships(req.body,req.body);
 
             return next();
         } catch (e) {

@@ -61,7 +61,8 @@ const authorize = (roles = userRoles) => (req : Request, res : Response, next : 
 
 /**
  * @param service
+ * @param scope
  */
-const oAuth = service => Passport.authenticate(service, { session: false });
+const oAuth = (service, scope: any = []) => Passport.authenticate(service, {session: false, scope});
 
 export { ADMIN, LOGGED_USER, authorize, oAuth };

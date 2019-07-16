@@ -1,5 +1,4 @@
 import "reflect-metadata";
-
 import {Connection, createConnection} from "typeorm";
 import {typeorm as TypeORM} from "./environment.config";
 import {User} from "../api/models/user.model";
@@ -18,6 +17,8 @@ class TypeORMConfiguration {
     }
 
     public static async connect() {
+        const entities = [User, RefreshToken, Document];
+
         this.connection = await createConnection({
             type: "mysql",
             name: TypeORM.name,
@@ -26,7 +27,7 @@ class TypeORMConfiguration {
             username: TypeORM.user,
             password: TypeORM.pwd,
             database: TypeORM.database,
-            entities: [User, RefreshToken, Document]
+            entities
         });
         return await this.connection;
     }

@@ -65,6 +65,8 @@ export class UserController extends BaseController {
 
         const user = await this.repository.findOne(req.params.userId);
 
+        if (!user) throw Boom.notFound();
+
         this.repository.merge(user, req.body);
 
         const saved = await this.repository.save(user);
