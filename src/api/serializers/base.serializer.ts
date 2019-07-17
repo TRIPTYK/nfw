@@ -17,7 +17,7 @@ abstract class BaseSerializer implements ISerialize {
     protected constructor(type: string, options = {}) {
         this.serializer = new JSONAPISerializer({
             convertCase: "kebab-case",
-            unconvertCase: "snake_case",
+            unconvertCase: "camelCase",
             ...options
         });
         this.type = type;
