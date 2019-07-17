@@ -32,7 +32,6 @@ app.use(Compression());
  * Public resources
  */
 app.use('/static', Express.static('dist/uploads/documents'));
-app.use('/.well-known/acme-challenge', Express.static('dist/uploads/cert'));
 
 /**
  * Enable and set Helmet security middleware
@@ -121,5 +120,7 @@ if (env.toUpperCase() === environments['DEVELOPMENT'] || env.toUpperCase() === e
 } else {
     app.use(ServiceErrorHandler.log, ServiceErrorHandler.exit);
 }
+
+app.use( ServiceErrorHandler.notFound );
 
 export {app}
