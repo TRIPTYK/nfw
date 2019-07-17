@@ -3,10 +3,7 @@ import {router as AuthRouter} from "./auth.route";
 import {router as UserRouter} from "./user.route";
 import {router as DocumentRouter} from "./document.route";
 import {router as MonitoringRouter} from "./monitoring.route";
-import {router as AdminRouter} from "./admin/index";
-
-const router = Router();
-
+export const router = Router();
 /**
  * @api {get} v1/status
  * @apiDescription Ping API
@@ -43,4 +40,3 @@ router.use('/documents/', DocumentRouter);
  * Monitoring routes
  */
 router.use('/monitoring', MonitoringRouter);
-export {router}

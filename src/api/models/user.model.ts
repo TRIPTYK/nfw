@@ -5,13 +5,11 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    ManyToMany,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
     Unique,
-    UpdateDateColumn
-} from "typeorm";
+    UpdateDateColumn} from "typeorm";
 
 import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
 import {Document} from "./document.model";
@@ -87,10 +85,10 @@ export class User extends BaseModel {
     })
     deletedAt;
 
-    @OneToMany(type => Document, document => document.user)
+    @OneToMany(() => Document, document => document.user)
     documents: Document[];
 
-    @ManyToOne(type => Document, document => document.users_avatars)
+    @ManyToOne(() => Document, document => document.users_avatars)
     avatar: Document;
 
     private temporaryPassword: string;
