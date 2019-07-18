@@ -5,7 +5,7 @@
  "port": 3306,
  "username": "root",
  "password": "root",
- "database": "nfw",
+ "database": "3rd_party_ts_boilerplate",
  "logging": false,
  "entities": [
   "src/api/models/*.ts"

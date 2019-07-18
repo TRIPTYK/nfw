@@ -17,14 +17,15 @@ const _getErrorCode = (error): number => {
 /**
  * Write errors in a log file
  *
+ * @param err
  * @param {*} req
  * @param res
  * @param next
  */
-const log = (req, res, next) => {
-    let message = 'Error in ' + req.method + ' ' + req.url + '\n';
+const log = (err, req, res, next)  => {
+    let message = `${req.method} ${req.url} : ${err.message}`;
     Logger.error(message);
-    next();
+    next(err);
 };
 
 /**
