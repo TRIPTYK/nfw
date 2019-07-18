@@ -5,7 +5,7 @@ import {UserSerializer} from "./user.serializer";
 
 export class RefreshTokenSerializer extends BaseSerializer {
 
-    public static whitelist: Array<string> = ['expires', 'accessToken', 'refreshToken'];
+    public static whitelist: Array<string> = ['expires', 'accessToken', 'refreshToken','jwtExpirationInterval'];
 
     constructor(serializerParams = new SerializerParams()) {
         super('refresh_token');

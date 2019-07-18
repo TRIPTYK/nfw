@@ -98,20 +98,15 @@ class AuthController extends BaseController {
         const {token} = req.body;
 
         const refreshObject = await refreshTokenRepository.findOne({
-            where: {token: token.refreshToken}
+            where: {refreshToken: token}
         });
 
-        if (typeof (refreshObject) === 'undefined') return next(Boom.expectationFailed('RefreshObject cannot be empty'));
+        if (!refreshObject) return next(Boom.expectationFailed('RefreshObject cannot be empty'));
 
-        refreshTokenRepository.remove(refreshObject);
+        await refreshTokenRepository.remove(refreshObject);
         // Get owner user of the token
-        const {user, accessToken} = await this.repository.findAndGenerateToken({
-            email: refreshObject.user.email,
-            refreshObject
-        });
-
+        const { user, accessToken } = await this.repository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject });
         const refreshedToken = await generateTokenResponse(user, accessToken);
-        refreshedToken.user = user;
 
         return new RefreshTokenSerializer().serialize(refreshedToken);
     }

@@ -68,16 +68,7 @@ const login: Schema = {
 // POST /v1/auth/refresh
 const refresh: Schema = {
     token: {
-        custom: {
-            options: (value: any, {req, path}) => {
-                const res = Joi.object().keys({
-                    refreshToken: Joi.string().required(),
-                }).required().validate(value);
-
-                if (res.error !== null) throw Error(res.error);
-                return true;
-            }
-        }
+        isString : true
     }
 };
 

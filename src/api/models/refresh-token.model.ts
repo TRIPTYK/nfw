@@ -1,5 +1,6 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {AfterInsert, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user.model";
+import {jwtExpirationInterval} from "../../config/environment.config";
 
 @Entity()
 export class RefreshToken {
@@ -19,6 +20,9 @@ export class RefreshToken {
 
     @Column()
     expires: Date;
+
+    jwtExpirationInterval : string = jwtExpirationInterval;
+
 
     public accessToken: string;
 

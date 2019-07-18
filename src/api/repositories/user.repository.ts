@@ -22,7 +22,7 @@ export class UserRepository extends BaseRepository<User> {
      *
      * @returns token
      */
-    async findAndGenerateToken(options: { email: string, password: string, refreshObject: any }): Promise<object> {
+    async findAndGenerateToken(options: { email: string, password?: string, refreshObject: any }): Promise<object> {
         const {email, password, refreshObject} = options;
 
         if (!email) throw Boom.badRequest('An email is required to generate a token');
