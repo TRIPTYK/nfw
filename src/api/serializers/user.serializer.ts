@@ -2,7 +2,7 @@ import {BaseSerializer} from "./base.serializer";
 
 import {SerializerParams} from "./serializerParams";
 import {DocumentSerializer} from "./document.serializer";
-import {api, url} from "../../config/environment.config";
+import {api} from "../../config/environment.config";
 
 
 export class UserSerializer extends BaseSerializer {
@@ -14,7 +14,7 @@ export class UserSerializer extends BaseSerializer {
         const data = {
             links : {
                 self: (data) => {
-                    return `${url}/api/${api}/${this.type}s/${data.id}`;
+                    return `/api/${api}/${this.type}s/${data.id}`;
                 }
             },
             whitelist: UserSerializer.whitelist,

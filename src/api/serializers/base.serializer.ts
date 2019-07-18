@@ -73,7 +73,7 @@ abstract class BaseSerializer implements ISerialize {
             const {total, request} = serializerParams.getPaginationData();
             const page = parseInt(request.query.page.number);
             const size = request.query.page.size;
-            const baseUrl = `${url}/api/${api}`;
+            const baseUrl = `/api/${api}`;
             const max = Math.ceil(total / size);
 
             data["topLevelLinks"] = {
