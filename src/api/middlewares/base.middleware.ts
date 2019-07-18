@@ -39,23 +39,23 @@ export abstract class BaseMiddleware {
         const schemaData = this.serializer.getSchemaData();
         const relations: object = schemaData['relationships'];
 
-        for (let rel in relations) {
-            rel = relations[rel];
-            if (payload.hasOwnProperty(rel)) { //only load when present
+        for (let originalRel in relations) {
+            if (payload.hasOwnProperty(originalRel)) { //only lo
+                let rel = relations[originalRel];// ad when present
                 const modelName = rel['type'];
                 let importModel = await import(`../models/${modelName}.model`);
                 importModel = Object.keys(importModel)[0];
 
                 let relationData = null;
 
-                if (typeof payload[rel] === "string")
-                    relationData = await getRepository(importModel).findOne(payload[rel]);
-                else if (Array.isArray(payload[rel]))
-                    relationData = await getRepository(importModel).findByIds(payload[rel]);
+                if (typeof payload[originalRel] === "string")
+                    relationData = await getRepository(importModel).findOne(payload[originalRel]);
+                else if (Array.isArray(payload[originalRel]))
+                    relationData = await getRepository(importModel).findByIds(payload[originalRel]);
 
                 if (!relationData) throw Boom.notFound('Related object not found');
 
-                recipient[rel] = relationData;
+                recipient[originalRel] = relationData;
             }
         }
     };
@@ -86,6 +86,8 @@ export abstract class BaseMiddleware {
 
             if (withRelationships)
                 await this.deserializeRelationships(req.body,req.body);
+
+            console.log(req.body);
 
             return next();
         } catch (e) {

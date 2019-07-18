@@ -2,7 +2,6 @@ import {BaseSerializer} from "./base.serializer";
 
 import {SerializerParams} from "./serializerParams";
 import {DocumentSerializer} from "./document.serializer";
-import {api} from "../../config/environment.config";
 
 
 export class UserSerializer extends BaseSerializer {
@@ -12,11 +11,6 @@ export class UserSerializer extends BaseSerializer {
         super('user');
 
         const data = {
-            links : {
-                self: (data) => {
-                    return `/api/${api}/${this.type}s/${data.id}`;
-                }
-            },
             whitelist: UserSerializer.whitelist,
             relationships: {
                 avatar: {
@@ -28,7 +22,7 @@ export class UserSerializer extends BaseSerializer {
             },
         };
 
-        this.setupPagination(data, serializerParams);
+        this.setupLinks(data, serializerParams);
 
         this.serializer.register(this.type, data);
 

@@ -11,11 +11,6 @@ export class DocumentSerializer extends BaseSerializer {
 
         const data = {
             whitelist: DocumentSerializer.whitelist,
-            links : {
-                self: (data) => {
-                    return `${url}/api/${api}/${this.type}s/${data.id}`;
-                }
-            },
             relationships: {
                 user: {
                     type: "user"
@@ -23,7 +18,7 @@ export class DocumentSerializer extends BaseSerializer {
             }
         };
 
-        this.setupPagination(data, serializerParams);
+        this.setupLinks(data, serializerParams);
 
         this.serializer.register(this.type, data);
 

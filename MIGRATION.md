@@ -71,6 +71,8 @@ New route
 - Pagination is now setup by the base class with the method **setupPagination**
 - *withelist* member has been changed to *whitelist* , it was a typo error
 - Please refer to [json-api-serializer](https://github.com/danivek/json-api-serializer) documentation
+- Types are now SINGULAR
+- Pagination links are now relative and does not include the full URL (now : /api/v1/users/ , before : http://localhost/api/v1/users)
 
 example file : 
 ```

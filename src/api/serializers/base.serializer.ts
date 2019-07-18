@@ -68,7 +68,7 @@ abstract class BaseSerializer implements ISerialize {
         return url.replace(/(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i, `$1${newPage}$3`);
     };
 
-    protected setupPagination: Function = (data: object, serializerParams: SerializerParams): void => {
+    protected setupLinks: Function = (data: object, serializerParams: SerializerParams): void => {
         if (serializerParams.hasPaginationEnabled()) {
             const {total, request} = serializerParams.getPaginationData();
             const page = parseInt(request.query.page.number);
@@ -82,6 +82,12 @@ abstract class BaseSerializer implements ISerialize {
                 prev: () => `${baseUrl}/${this.type}${this.replacePage(request.url, page - 1 < 1 ? page : page - 1)}`,
                 last: () => `${baseUrl}/${this.type}${this.replacePage(request.url, max)}`,
                 first: () => `${baseUrl}/${this.type}${this.replacePage(request.url, 1)}`
+            }
+        }
+
+        data['links'] = {
+            self: (data) => {
+                return `/api/${api}/${this.type}s/${data.id}`;
             }
         }
     };

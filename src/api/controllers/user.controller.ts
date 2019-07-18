@@ -110,6 +110,28 @@ export class UserController extends BaseController {
     }
 
     /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async fetchRelationships(req: Request, res: Response, next: Function) {
+        const {id, relation} = req.params;
+
+        const questionary = await this.repository.createQueryBuilder('user')
+            .leftJoinAndSelect(`user.${relation}`, 'relation')
+            .where("user.id = :id", {id})
+            .getOne();
+
+        const serializer = new UserSerializer();
+        const relationSchemaData = serializer.getSchemaData().relationships.relation;
+
+        return {
+            data: serializer.serializeRelationships(relationSchemaData.type, questionary)
+        };
+    }
+
+    /**
      * Delete user
      *
      * @param req Request

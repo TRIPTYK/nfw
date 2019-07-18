@@ -19,7 +19,7 @@ export class RefreshTokenSerializer extends BaseSerializer {
             }
         };
 
-        this.setupPagination(data, serializerParams);
+        this.setupLinks(data, serializerParams);
 
         this.serializer.register(this.type, data);
 
