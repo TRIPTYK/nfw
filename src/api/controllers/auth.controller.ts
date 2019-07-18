@@ -56,7 +56,9 @@ class AuthController extends BaseController {
      * @public
      */
     async login(req: Request, res: Response, next: Function) {
-        const {user, accessToken} = await this.repository.findAndGenerateToken(req.body);
+        const { force } = req.query;
+
+        const {user, accessToken} = await this.repository.findAndGenerateToken(req.body,force);
         const token = await generateTokenResponse(user, accessToken);
         token.user = user;
         return new RefreshTokenSerializer().serialize(token);

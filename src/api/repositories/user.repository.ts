@@ -6,6 +6,8 @@ import * as Moment from "moment-timezone";
 import * as Boom from "boom";
 import {BaseRepository} from "./base.repository";
 import {DocumentRepository} from "./document.repository";
+import {RefreshTokenRepository} from "./refresh-token.repository";
+import {RefreshToken} from "../models/refresh-token.model";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -20,21 +22,33 @@ export class UserRepository extends BaseRepository<User> {
      *
      * @param options email , password and refreshObject
      *
+     * @param force
      * @returns token
      */
-    async findAndGenerateToken(options: { email: string, password?: string, refreshObject: any }): Promise<object> {
+    async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any } , force : boolean = false ): Promise<object> {
         const {email, password, refreshObject} = options;
+        const refreshTokenRepository = getRepository(RefreshToken);
 
         if (!email) throw Boom.badRequest('An email is required to generate a token');
 
         const user = await this.findOne({email});
 
+
         if (!user) {
             throw Boom.notFound('User not found');
-        } else if (password && await user.passwordMatches(password) === false) {
-            throw Boom.unauthorized('Password must match to authorize a token generating');
-        } else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) {
-            throw Boom.unauthorized('Invalid refresh token.');
+        } else {
+            const exist = await refreshTokenRepository.createQueryBuilder('refresh')
+                .where('refresh.user = :userId',{userId : user.id})
+                .andWhere('refresh.expires > CURRENT_TIMESTAMP')
+                .getOne();
+
+            if (exist && force === false) throw Boom.forbidden("User already logged");
+
+            if (password && await user.passwordMatches(password) === false) {
+                throw Boom.unauthorized('Password must match to authorize a token generating');
+            } else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) {
+                throw Boom.unauthorized('Invalid refresh token.');
+            }
         }
 
         return {user, accessToken: user.token()};

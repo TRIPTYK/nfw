@@ -29,6 +29,7 @@ const register: Schema = {
         }
     },
     password: {
+        isString : true,
         /*
         matches: {
             options: /^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$/,
@@ -36,6 +37,7 @@ const register: Schema = {
         }*/
     },
     username: {
+        isString : true,
         isUppercase: {
             negated: true,
         },
@@ -44,11 +46,13 @@ const register: Schema = {
         }
     },
     lastname: {
+        isString : true,
         isUppercase: {
             negated: true,
         }
     },
     firstname: {
+        isString : true,
         isUppercase: {
             negated: true,
         }
@@ -62,12 +66,19 @@ const login: Schema = {
     },
     password: {
         exists: true
+    },
+    force : {
+        optional : true,
+        in : ['query'],
+        isBoolean : true,
+        toBoolean : true
     }
 };
 
 // POST /v1/auth/refresh
 const refresh: Schema = {
     token: {
+        exists : true,
         isString : true
     }
 };

@@ -33,7 +33,8 @@ const getUser: Schema = {
     userId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
-        isInt: true
+        isInt: true,
+        toInt : true
     }
 };
 
@@ -46,6 +47,7 @@ const createUser: Schema = {
         }
     },
     password: {
+        isString : true,
         /*
         matches: {
             options: /^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$/,
@@ -53,6 +55,7 @@ const createUser: Schema = {
         }*/
     },
     username: {
+        isString : true,
         isUppercase: {
             negated: true,
         },
@@ -61,11 +64,13 @@ const createUser: Schema = {
         }
     },
     lastname: {
+        isString : true,
         isUppercase: {
             negated: true,
         }
     },
     firstname: {
+        isString : true,
         isUppercase: {
             negated: true,
         }
@@ -82,7 +87,8 @@ const updateUser: Schema = {
     userId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
-        isInt: true
+        isInt: true,
+        toInt : true
     },
     email: {
         optional: {
@@ -91,16 +97,19 @@ const updateUser: Schema = {
         isEmail: true
     },
     password: {
+        isString : true,
         optional: {
             nullable: true
         }
     },
     username: {
+        isString : true,
         optional: {
             nullable: true
         },
     },
     lastname: {
+        isString : true,
         optional: {
             nullable: true
         },
@@ -109,6 +118,7 @@ const updateUser: Schema = {
         }
     },
     firstname: {
+        isString : true,
         optional: {
             nullable: true
         }
