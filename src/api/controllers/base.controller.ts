@@ -50,7 +50,8 @@ abstract class BaseController {
                 }
             }
 
-            res.json(extracted);
+            if (!res.headersSent)
+                res.json(extracted);
         } catch (e) {
             next(e);
         }

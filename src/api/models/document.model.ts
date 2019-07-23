@@ -1,6 +1,6 @@
 import {
     BeforeInsert,
-    BeforeRemove,
+    BeforeRemove, BeforeUpdate,
     Column,
     CreateDateColumn,
     Entity,
@@ -74,6 +74,7 @@ export class Document extends BaseModel {
     }
 
     @BeforeRemove()
+    @BeforeUpdate()
     deleteOnDisk() {
         try {   // in some cases , files does not exists , just ignore the remove complain
             Fs.unlink(this.path.toString() + '/' + this.filename, () => {
