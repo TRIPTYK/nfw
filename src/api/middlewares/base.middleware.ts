@@ -5,6 +5,7 @@ import * as Boom from "boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
 import * as Pluralize from "pluralize";
+import spec = Mocha.reporters.spec;
 
 export abstract class BaseMiddleware {
 
@@ -35,9 +36,13 @@ export abstract class BaseMiddleware {
     };
 
     // TODO : Better handle async for each relations
-    public deserializeRelationships = async (recipient : object,payload : object) => {
+    public deserializeRelationships = async (recipient : object,payload : object,specificRelations : string[] = []) => {
         const schemaData = this.serializer.getSchemaData();
-        const relations: object = schemaData['relationships'];
+        let relations: object = schemaData['relationships'];
+
+        if (specificRelations === []) {
+            relations = specificRelations.map((rel) => relations[rel]);
+        }
 
         for (let originalRel in relations) {
             if (payload.hasOwnProperty(originalRel)) { //only lo
@@ -65,8 +70,9 @@ export abstract class BaseMiddleware {
      *
      * @param nullEqualsUndefined
      * @param withRelationships
+     * @param specificRelationships
      */
-    public deserialize = ({nullEqualsUndefined = false,withRelationships = true}: { nullEqualsUndefined?: boolean, withRelationships?: boolean} = {}) => async (req: Request, _res: Response, next: Function) => {
+    public deserialize = ({nullEqualsUndefined = false,withRelationships = true,specificRelationships = []}: { nullEqualsUndefined?: boolean, withRelationships?: boolean, specificRelationships? : string[]} = {}) => async (req: Request, _res: Response, next: Function) => {
         try {
             if (['GET', 'DELETE'].includes(req.method)) return next();
             if (!req.body.data || !req.body.data.attributes) return next();
@@ -85,9 +91,7 @@ export abstract class BaseMiddleware {
             }
 
             if (withRelationships)
-                await this.deserializeRelationships(req.body,req.body);
-
-            console.log(req.body);
+                await this.deserializeRelationships(req.body,req.body,specificRelationships);
 
             return next();
         } catch (e) {
