@@ -49,7 +49,7 @@ Now :
 ## Routes 
 
 - **deserialize** method now have a *nullEqualsUndefined* argument that can be null , just call the deserialize option without arguments
-- json-api relationships conversion is now handled in route and not in the serializer , you need to specify an array with the model name and the name of the deserialized relation
+- json-api relationships conversion is now handled in route and not in the serializer , default behavior automatically load the relations from the serializer relationships. It can be disabled with the option { withRelationships : false }
 - validation method is now a middleware function , **handleValidation**
 - to call a method from the controller , you now need to use the **method** function from the controller 
 
@@ -60,10 +60,7 @@ Old route
 
 New route
 ```
-.patch(authorize([ADMIN]), userMiddleware.deserialize(true), userMiddleware.deserializeRelationships([{
-        relation: 'avatar',
-        model: 'document'
-}]), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
+.patch(authorize([ADMIN]), userMiddleware.deserialize(true), userMiddleware.deserializeRelationships(), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
 ```
 
 ## Serializers

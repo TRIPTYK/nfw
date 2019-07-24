@@ -3,6 +3,7 @@ import * as SqlString from "sqlstring";
 import {Request} from "express";
 import * as Boom from "boom";
 import * as dashify from "dashify";
+import * as fs from "fs";
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -127,10 +128,10 @@ class BaseRepository<T> extends Repository<T> {
 
                         // TODO : fix params not working with TypeORM where
                         if (strategy == "like") {
-                            qb.where(SqlString.format(`?? LIKE ?`, [key, value]));
+                            qb.andWhere(SqlString.format(`?? LIKE ?`, [key, value]));
                         }
                         if (strategy == "eq") {
-                            qb.where(SqlString.format(`?? = ?`, [key, value]));
+                            qb.andWhere(SqlString.format(`?? = ?`, [key, value]));
                         }
                         if (strategy == "orlike") {
                             qb.orWhere(SqlString.format(`?? LIKE ?`, [key, value]));
@@ -149,6 +150,9 @@ class BaseRepository<T> extends Repository<T> {
             });
             queryBuilder.where(queryBrackets);
         }
+
+        fs.writeFileSync("out.txt",queryBuilder.getSql());
+        console.log(queryBuilder.getSql());
         return queryBuilder;
     }
 
@@ -169,19 +173,6 @@ class BaseRepository<T> extends Repository<T> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .getManyAndCount()
     }
-
-
-    public findOneWithRelations(id: any, body: object, relations: string[]) {
-        const relationsToLoad = [];
-
-        for (const relation of relations) {
-            if (body.hasOwnProperty(relation))
-                relationsToLoad.push(relation);
-        }
-
-        return this.findOne(id, {relations: relationsToLoad});
-    }
-
 }
 
 export {BaseRepository};
