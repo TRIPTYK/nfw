@@ -75,7 +75,6 @@ export abstract class BaseMiddleware {
             if (['GET', 'DELETE'].includes(req.method)) return next();
             if (!req.body.data || !req.body.data.attributes) return next();
             let fields = this.serializer.deserialize(req);
-            console.log(fields)
             req.body = {};
 
             for (let key in fields) {
