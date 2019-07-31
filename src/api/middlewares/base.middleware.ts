@@ -4,8 +4,6 @@ import {BaseSerializer} from "../serializers/base.serializer";
 import * as Boom from "boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
-import * as Pluralize from "pluralize";
-import spec = Mocha.reporters.spec;
 
 export abstract class BaseMiddleware {
 
@@ -77,7 +75,7 @@ export abstract class BaseMiddleware {
             if (['GET', 'DELETE'].includes(req.method)) return next();
             if (!req.body.data || !req.body.data.attributes) return next();
             let fields = this.serializer.deserialize(req);
-
+            console.log(fields)
             req.body = {};
 
             for (let key in fields) {

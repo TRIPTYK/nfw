@@ -8,7 +8,7 @@ export class RefreshTokenSerializer extends BaseSerializer {
     public static whitelist: Array<string> = ['expires', 'accessToken', 'refreshToken','jwtExpirationInterval'];
 
     constructor(serializerParams = new SerializerParams()) {
-        super('refresh_token');
+        super('refresh-token');
 
         const data = {
             whitelist: RefreshTokenSerializer.whitelist,
@@ -18,8 +18,6 @@ export class RefreshTokenSerializer extends BaseSerializer {
                 }
             }
         };
-
-        this.setupLinks(data, serializerParams);
 
         this.serializer.register(this.type, data);
 

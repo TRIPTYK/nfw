@@ -5,7 +5,7 @@ import {
     CreateDateColumn,
     Entity,
     ManyToOne,
-    OneToMany,
+    OneToMany, OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
@@ -54,8 +54,8 @@ export class Document extends BaseModel {
     })
     user: User;
 
-    @OneToMany(type => User, avatar => avatar.avatar)
-    users_avatars: User[];
+    @OneToOne(type => User, avatar => avatar.avatar)
+    user_avatar: User;
 
     @CreateDateColumn()
     createdAt: Date;

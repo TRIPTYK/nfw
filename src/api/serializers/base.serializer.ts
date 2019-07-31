@@ -3,6 +3,7 @@ import * as JSONAPISerializer from "json-api-serializer";
 import {ISerialize} from "../interfaces/ISerialize.interface";
 import {api, url} from "../../config/environment.config";
 import {SerializerParams} from "./serializerParams";
+import { plural } from "pluralize";
 
 abstract class BaseSerializer implements ISerialize {
 
@@ -41,7 +42,7 @@ abstract class BaseSerializer implements ISerialize {
      * @param schema
      */
     public serializeRelationships(relationshipType: string, payload: any, schema: string = 'default') {
-        return this.serializer.serializeRelationship(relationshipType, schema, '1', payload);
+        return this.serializer.serializeRelationship(relationshipType, schema, null, payload);
     }
 
     /**
@@ -85,9 +86,23 @@ abstract class BaseSerializer implements ISerialize {
             }
         }
 
+        // link for entity
         data['links'] = {
             self: (data) => {
                 return `/api/${api}/${this.type}s/${data.id}`;
+            }
+        };
+
+        //link for relationship
+        for (let key in data['relationships'])
+        {
+            data['relationships'][key]['links'] = {
+                self: (data) => {
+                    return `/api/${api}/${plural(this.type)}/${data.id}/relationships/${key}`;
+                },
+                related: (data) => {
+                    return `/api/${api}/${plural(this.type)}/${data.id}/${key}`;
+                }
             }
         }
     };

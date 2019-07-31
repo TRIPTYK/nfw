@@ -4,6 +4,7 @@ import {ADMIN, authorize, LOGGED_USER} from "../../middlewares/auth.middleware";
 import {UserMiddleware} from "../../middlewares/user.middleware";
 import {changePassword, createUser, getUser, updateUser} from "../../validations/user.validation";
 import {SecurityMiddleware} from "../../middlewares/security.middleware";
+import {relationships} from "../../validations/global.validation";
 
 const router = Router();
 const userController = new UserController(); // Todo injecter comme dépendance
@@ -26,7 +27,7 @@ router
 
 router
     .route('/profile')
-    .get(authorize([ADMIN, LOGGED_USER]), authorize(), userController.method('loggedIn'));
+    .get(authorize([ADMIN, LOGGED_USER]), userController.method('loggedIn'));
 
 router
     .route('/changePassword')
@@ -38,5 +39,11 @@ router
     .patch(authorize([ADMIN]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
     .put(authorize([ADMIN]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('update'))
     .delete(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('remove'));
+
+router.route('/:id/relationships/:relation')
+    .get( userMiddleware.handleValidation(relationships), userController.method('fetchRelationships'))
+    .post( userMiddleware.deserialize({ withRelationships : false }),userMiddleware.handleValidation(relationships), userController.method('addRelationships'))
+    .patch( userMiddleware.deserialize({ withRelationships : false }),userMiddleware.handleValidation(relationships), userController.method('updateRelationships'))
+    .delete( userMiddleware.deserialize({ withRelationships : false }),userMiddleware.handleValidation(relationships), userController.method('removeRelationships'));
 
 export {router};

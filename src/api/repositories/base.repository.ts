@@ -1,13 +1,18 @@
-import {Brackets, Repository, SelectQueryBuilder} from "typeorm";
+import {Brackets, EntityRepository, Repository, SelectQueryBuilder} from "typeorm";
 import * as SqlString from "sqlstring";
 import {Request} from "express";
 import * as Boom from "boom";
 import * as dashify from "dashify";
 import * as fs from "fs";
+import {HttpStatus} from "http-status";
+import * as JSONAPISerializer from "json-api-serializer";
+import { isPlural } from "pluralize";
+import {BaseSerializer} from "../serializers/base.serializer";
 
 /**
  * Base Repository class , inherited for all current repositories
  */
+@EntityRepository()
 class BaseRepository<T> extends Repository<T> {
 
     /**
@@ -172,6 +177,134 @@ class BaseRepository<T> extends Repository<T> {
     public jsonApiFind(req: Request, allowedIncludes: Array<string> = [], options?: { allowIncludes?: boolean; allowSorting?: boolean; allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }): Promise<[T[], number]> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .getManyAndCount()
+    }
+
+    /**
+     *
+     * @param req
+     */
+    public async addRelationshipsFromRequest(req: Request)  {
+        const {id, relation} = req.params;
+        let user = await this.findOne(id);
+
+        if (!user) throw Boom.notFound();
+
+        let serializer = new JSONAPISerializer({
+            convertCase: "kebab-case",
+            unconvertCase: "camelCase"
+        });
+        serializer.register(relation,{});
+        req.body = serializer.deserialize(relation,req.body);
+
+        let relations = null;
+
+        if (Array.isArray(req.body)) {
+            relations = [];
+            for (const key in req.body)
+                relations.push(req.body[key].id)
+        }else {
+            relations = req.body.id;
+        }
+
+        const qb =  this.createQueryBuilder()
+            .relation(relation)
+            .of(user);
+
+        if (isPlural(relation))
+            return qb.add(relations);
+        else
+            return qb.set(relations);
+    }
+
+    /**
+     *
+     * @param req
+     */
+    public async updateRelationshipsFromRequest(req: Request) {
+        const {id, relation} = req.params;
+        let user = await this.findOne(id);
+
+        if (!user) throw Boom.notFound();
+
+        let serializer = new JSONAPISerializer({
+            convertCase: "kebab-case",
+            unconvertCase: "camelCase"
+        });
+        serializer.register(relation,{});
+        req.body = serializer.deserialize(relation,req.body);
+
+        let relations = null;
+
+        if (Array.isArray(req.body)) {
+            relations = [];
+            for (const key in req.body)
+                relations.push(req.body[key].id)
+        }else {
+            relations = req.body.id;
+        }
+
+        user[relation] = await (isPlural(relation) ?
+            this.findByIds(relations) :
+            this.findOne(relations));
+
+        return this.save(user);
+    }
+
+    /**
+     *
+     * @param req
+     */
+    public async removeRelationshipsFromRequest(req: Request) {
+        const {id, relation} = req.params;
+        let user = await this.findOne(id);
+
+        if (!user) throw Boom.notFound();
+
+        let serializer = new JSONAPISerializer({
+            convertCase: "kebab-case",
+            unconvertCase: "camelCase"
+        });
+        serializer.register(relation,{});
+        req.body = serializer.deserialize(relation,req.body);
+
+        let relations = null;
+
+        if (Array.isArray(req.body)) {
+            relations = [];
+            for (const key in req.body)
+                relations.push(req.body[key].id)
+        }else {
+            relations = req.body.id;
+        }
+
+        const qb = this.createQueryBuilder()
+            .relation(relation)
+            .of(user);
+
+        if (isPlural(relation))
+            return qb.remove(relations);
+        else
+            return qb.set(null);
+    }
+
+    /**
+     *
+     * @param req
+     * @param serializer
+     */
+    public async fetchRelationshipsFromRequest(req: Request,serializer : BaseSerializer) {
+        const {id, relation} = req.params;
+
+        const user = await this.createQueryBuilder('relationQb')
+            .leftJoin(`relationQb.${relation}`, 'relation')
+            .select(['relationQb.id','relation.id'])
+            .where("relationQb.id = :id", {id})
+            .getOne();
+
+        if (!user) throw Boom.notFound();
+
+        const serialized = serializer.serialize(user);
+        return serialized['data']['relationships'][relation];
     }
 }
 

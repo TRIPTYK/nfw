@@ -9,8 +9,8 @@ import {UserSerializer} from "../serializers/user.serializer";
 import {relations as userRelations} from "../enums/relations/user.relations";
 import {SerializerParams} from "../serializers/serializerParams";
 import {BaseRepository} from "../repositories/base.repository";
-
-
+import { isPlural } from "pluralize";
+import * as JSONAPISerializer from "json-api-serializer";
 /**
  *
  */
@@ -116,20 +116,42 @@ export class UserController extends BaseController {
      * @param next
      */
     public async fetchRelationships(req: Request, res: Response, next: Function) {
-        const {id, relation} = req.params;
-
-        const questionary = await this.repository.createQueryBuilder('user')
-            .leftJoinAndSelect(`user.${relation}`, 'relation')
-            .where("user.id = :id", {id})
-            .getOne();
-
-        const serializer = new UserSerializer();
-        const relationSchemaData = serializer.getSchemaData().relationships.relation;
-
-        return {
-            data: serializer.serializeRelationships(relationSchemaData.type, questionary)
-        };
+        return this.repository.fetchRelationshipsFromRequest(req,new UserSerializer());
     }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async addRelationships(req: Request, res: Response, next: Function) {
+        await this.repository.addRelationshipsFromRequest(req);
+        res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async updateRelationships(req: Request, res: Response, next: Function) {
+        await this.repository.updateRelationshipsFromRequest(req);
+        res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async removeRelationships(req: Request, res: Response, next: Function) {
+        await this.repository.removeRelationshipsFromRequest(req);
+        res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+
 
     /**
      * Delete user

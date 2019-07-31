@@ -4,12 +4,13 @@ import {
     BeforeUpdate,
     Column,
     CreateDateColumn,
-    Entity,
+    Entity, JoinColumn,
     ManyToOne,
-    OneToMany,
+    OneToMany, OneToOne,
     PrimaryGeneratedColumn,
     Unique,
-    UpdateDateColumn} from "typeorm";
+    UpdateDateColumn
+} from "typeorm";
 
 import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
 import {Document} from "./document.model";
@@ -24,7 +25,6 @@ import {BaseModel} from "./base.model";
 import {imageMimeTypes} from "../enums/mime-type.enum";
 
 @Entity()
-@Unique(['email', 'username'])
 export class User extends BaseModel {
     @PrimaryGeneratedColumn()
     id: number;
@@ -36,7 +36,8 @@ export class User extends BaseModel {
 
     @Column({
         length: 32,
-        nullable: false
+        nullable: false,
+        unique : true
     })
     username: string;
 
@@ -48,7 +49,8 @@ export class User extends BaseModel {
 
     @Column({
         length: 128,
-        nullable: false
+        nullable: false,
+        unique : true
     })
     email: string;
 
@@ -88,7 +90,8 @@ export class User extends BaseModel {
     @OneToMany(() => Document, document => document.user)
     documents: Document[];
 
-    @ManyToOne(() => Document, document => document.users_avatars)
+    @OneToOne(() => Document, document => document.user_avatar)
+    @JoinColumn()
     avatar: Document;
 
     private temporaryPassword: string;
