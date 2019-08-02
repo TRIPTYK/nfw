@@ -39,9 +39,11 @@ class AuthController extends BaseController {
         user.role = ['test', 'development'].includes(env.toLowerCase()) ? 'admin' : 'user';
         user = await this.repository.save(user);
         const token = await generateTokenResponse(user, user.token());
-        token.user = user;
         res.status(HttpStatus.CREATED);
-        return new RefreshTokenSerializer().serialize(token);
+
+        return {
+            token
+        }
     }
 
     /**
@@ -58,10 +60,12 @@ class AuthController extends BaseController {
     async login(req: Request, res: Response, next: Function) {
         const { force } = req.query;
 
-        const {user, accessToken} = await this.repository.findAndGenerateToken(req.body,force);
+        const {user, accessToken} = await this.repository.findAndGenerateToken(req.body,false,force);
         const token = await generateTokenResponse(user, accessToken);
-        token.user = user;
-        return new RefreshTokenSerializer().serialize(token);
+
+        return {
+            token
+        }
     }
 
     /**
@@ -80,7 +84,10 @@ class AuthController extends BaseController {
         const accessToken = user.token();
         const token = await generateTokenResponse(user, accessToken);
         token.user = user;
-        return new RefreshTokenSerializer().serialize(token);
+
+        return {
+            token
+        }
     }
 
     /**
@@ -107,14 +114,15 @@ class AuthController extends BaseController {
 
         await refreshTokenRepository.remove(refreshObject);
         // Get owner user of the token
-        const { user, accessToken } = await this.repository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject });
-        const refreshedToken = await generateTokenResponse(user, accessToken);
+        const { user, accessToken } = await this.repository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject},true);
+        const refreshedToken = await generateTokenResponse(user, accessToken );
 
-        return new RefreshTokenSerializer().serialize(refreshedToken);
+        return {
+            token : refreshedToken
+        }
     }
 
     protected beforeMethod(): void {
-
         this.repository = getCustomRepository(UserRepository);
     }
 }

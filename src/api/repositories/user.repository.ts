@@ -22,10 +22,11 @@ export class UserRepository extends BaseRepository<User> {
      *
      * @param options email , password and refreshObject
      *
+     * @param ignoreCheck
      * @param force
      * @returns token
      */
-    async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any } , force : boolean = false ): Promise<object> {
+    async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any }, ignoreCheck = false , force : boolean = false ): Promise<object> {
         const {email, password, refreshObject} = options;
         const refreshTokenRepository = getRepository(RefreshToken);
 
@@ -37,12 +38,14 @@ export class UserRepository extends BaseRepository<User> {
         if (!user) {
             throw Boom.notFound('User not found');
         } else {
-            const exist = await refreshTokenRepository.createQueryBuilder('refresh')
-                .where('refresh.user = :userId',{userId : user.id})
-                .andWhere('refresh.expires > CURRENT_TIMESTAMP')
-                .getOne();
+            if (!ignoreCheck) {
+                const exist = await refreshTokenRepository.createQueryBuilder('refresh')
+                    .where('refresh.user = :userId', {userId: user.id})
+                    .andWhere('refresh.expires > CURRENT_TIMESTAMP')
+                    .getOne();
 
-            if (exist && force === false) throw Boom.forbidden("User already logged");
+                if (exist && force === false) throw Boom.forbidden("User already logged");
+            }
 
             if (password && await user.passwordMatches(password) === false) {
                 throw Boom.unauthorized('Password must match to authorize a token generating');
