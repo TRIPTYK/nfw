@@ -4,6 +4,7 @@ import {Boom} from "boom";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
 import {EntityRepository, Repository} from "typeorm";
+import {jwtExpirationInterval} from "../../config/environment.config";
 
 @EntityRepository(RefreshToken)
 export class RefreshTokenRepository extends Repository<RefreshToken> {
@@ -16,15 +17,16 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
     /**
      *
      * @param user
+     * @param ip
      */
-    generate(user: User): RefreshToken {
+    async generate(user: User,ip : string): Promise<RefreshToken> {
         try {
             const token = `${user.id}.${Crypto.randomBytes(40).toString('hex')}`;
-            const expires = Moment().add(30, 'days').toDate();
+            const expires = Moment().add(jwtExpirationInterval, 'minutes').toDate();
 
-            const tokenObject = new RefreshToken(token, user, expires);
+            const tokenObject = new RefreshToken(token, user, expires , ip);
 
-            this.save(tokenObject);
+            await this.save(tokenObject);
 
             return tokenObject;
         } catch (e) {

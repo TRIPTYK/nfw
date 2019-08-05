@@ -8,6 +8,7 @@ import {BaseRepository} from "./base.repository";
 import {DocumentRepository} from "./document.repository";
 import {RefreshTokenRepository} from "./refresh-token.repository";
 import {RefreshToken} from "../models/refresh-token.model";
+import {jwtAuthMode} from "../../config/environment.config";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -26,25 +27,29 @@ export class UserRepository extends BaseRepository<User> {
      * @param force
      * @returns token
      */
-    async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any }, ignoreCheck = false , force : boolean = false ): Promise<object> {
-        const {email, password, refreshObject} = options;
+    async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any , ip : string }, ignoreCheck = false , force : boolean = false ): Promise<object> {
+        const {email, password, refreshObject , ip} = options;
         const refreshTokenRepository = getRepository(RefreshToken);
 
         if (!email) throw Boom.badRequest('An email is required to generate a token');
 
         const user = await this.findOne({email});
 
-
         if (!user) {
             throw Boom.notFound('User not found');
         } else {
             if (!ignoreCheck) {
-                const exist = await refreshTokenRepository.createQueryBuilder('refresh')
-                    .where('refresh.user = :userId', {userId: user.id})
-                    .andWhere('refresh.expires > CURRENT_TIMESTAMP')
-                    .getOne();
+                const qb = await refreshTokenRepository.createQueryBuilder('refresh')
+                    .where('refresh.user = :userId', {userId: user.id});
 
-                if (exist && force === false) throw Boom.forbidden("User already logged");
+                if (jwtAuthMode === 'multiple')
+                    qb.andWhere('refresh.ip = :ip', {ip});
+
+                qb.andWhere('refresh.expires > CURRENT_TIMESTAMP');
+
+                const refreshFound = await qb.getOne();
+
+                if (refreshFound && force === false) throw Boom.forbidden("User already logged");
             }
 
             if (password && await user.passwordMatches(password) === false) {
@@ -65,7 +70,6 @@ export class UserRepository extends BaseRepository<User> {
         try {
 
             const userRepository = getRepository(User);
-            const documentRepository = getCustomRepository(DocumentRepository);
 
             const user = await userRepository.findOne({
                 where: {email: email},

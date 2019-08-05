@@ -40,6 +40,8 @@ const facebook_secret = process.env.FACEBOOK_APP_SECRET;
 const google_id = process.env.GOOGLE_CONSUMER_KEY;
 const google_secret = process.env.GOOGLE_CONSUMER_SECRET;
 const caching_enabled = parseInt(process.env.REQUEST_CACHING);
+const jwtAuthMode = process.env.JWT_AUTH_MODE;
+
 const typeorm = {
     type: process.env.TYPEORM_TYPE,
     name: process.env.TYPEORM_NAME,
@@ -49,12 +51,14 @@ const typeorm = {
     user: process.env.TYPEORM_USER,
     pwd: process.env.TYPEORM_PWD
 };
+
 const jimp = {
     isActive: parseInt(process.env.JIMP_IS_ACTIVE),
     xs: parseInt(process.env.JIMP_SIZE_XS),
     md: parseInt(process.env.JIMP_SIZE_MD),
     xl: parseInt(process.env.JIMP_SIZE_XL),
 };
+
 const https = {
     isActive: parseInt(process.env.HTTPS_IS_ACTIVE),
     key: process.env.HTTPS_KEY,
@@ -79,5 +83,6 @@ export {
     HTTPLogs,
     typeorm,
     jimp,
-    caching_enabled
+    caching_enabled,
+    jwtAuthMode
 };
