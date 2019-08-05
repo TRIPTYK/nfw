@@ -1,12 +1,10 @@
 import {User} from "../models/user.model";
-import {EntityRepository, getCustomRepository, getRepository} from "typeorm";
+import {EntityRepository, getRepository} from "typeorm";
 import * as uuid from "uuid/v4";
 
 import * as Moment from "moment-timezone";
 import * as Boom from "boom";
 import {BaseRepository} from "./base.repository";
-import {DocumentRepository} from "./document.repository";
-import {RefreshTokenRepository} from "./refresh-token.repository";
 import {RefreshToken} from "../models/refresh-token.model";
 import {jwtAuthMode} from "../../config/environment.config";
 
