@@ -141,16 +141,16 @@ export class UserController extends BaseController {
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-        /**
-         *
-         * @param req
-         * @param res
-         * @param next
-         */
-        public async removeRelationships(req: Request, res: Response, next: Function) {
-            await this.repository.removeRelationshipsFromRequest(req);
-            res.sendStatus(HttpStatus.NO_CONTENT).end();
-        }
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async removeRelationships(req: Request, res: Response, next: Function) {
+        await this.repository.removeRelationshipsFromRequest(req);
+        res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
 
 
     /**

@@ -4,6 +4,7 @@ import {ADMIN, authorize, LOGGED_USER} from "../../middlewares/auth.middleware";
 import {deleteDocument, getDocument, updateDocument} from "../../validations/document.validation";
 import {set as Multer} from "./../../../config/multer.config";
 import {DocumentMiddleware} from "../../middlewares/document.middleware";
+import {relationships} from "../../validations/global.validation";
 
 const router = Router();
 const upload = Multer();
@@ -27,6 +28,12 @@ router
     .patch(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
     .put(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
     .delete(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(deleteDocument), documentController.method('remove'));
+
+router.route('/:id/relationships/:relation')
+    .get( documentMiddleware.handleValidation(relationships), documentController.method('fetchRelationships'))
+    .post( documentMiddleware.deserialize({ withRelationships : false }),documentMiddleware.handleValidation(relationships), documentController.method('addRelationships'))
+    .patch( documentMiddleware.deserialize({ withRelationships : false }),documentMiddleware.handleValidation(relationships), documentController.method('updateRelationships'))
+    .delete( documentMiddleware.deserialize({ withRelationships : false }),documentMiddleware.handleValidation(relationships), documentController.method('removeRelationships'));
 
 
 export {router};
