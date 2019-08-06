@@ -3,7 +3,7 @@ import {Schema} from "express-validator";
 import { mimeTypes as filters } from "../enums/mime-type.enum";
 import * as Boom from "boom";
 
-const getDocument: Schema = {
+export const getDocument: Schema = {
     documentId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
@@ -12,7 +12,7 @@ const getDocument: Schema = {
 };
 
 // PATCH /v1/documents/:documentId
-const updateDocument: Schema = {
+export const updateDocument: Schema = {
     documentId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
@@ -21,7 +21,7 @@ const updateDocument: Schema = {
 };
 
 // DELETE /v1/documents/:documentId
-const deleteDocument: Schema = {
+export const deleteDocument: Schema = {
     documentId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
@@ -40,5 +40,3 @@ export const validateFile = (req,file : {mimetype : string,destination : string,
     }
     return next(Boom.unsupportedMediaType('File mimetype not supported'), false);
 };
-
-export {getDocument, updateDocument, deleteDocument};
