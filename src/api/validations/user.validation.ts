@@ -19,7 +19,7 @@ const _isUsernameDuplicated = async (username) => {
     }
 };
 
-const changePassword: Schema = {
+export const changePassword: Schema = {
     old_password: {
         exists: true
     },
@@ -29,7 +29,7 @@ const changePassword: Schema = {
 };
 
 // GET /v1/users/userId
-const getUser: Schema = {
+export const getUser: Schema = {
     userId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
@@ -39,7 +39,7 @@ const getUser: Schema = {
 };
 
 // POST /v1/users
-const createUser: Schema = {
+export const createUser: Schema = {
     email: {
         isEmail: true,
         custom: {
@@ -83,7 +83,7 @@ const createUser: Schema = {
 };
 
 // PATCH /v1/users/:userId
-const updateUser: Schema = {
+export const updateUser: Schema = {
     userId: {
         in: ['params'],
         errorMessage: 'Please provide a valid id',
@@ -130,5 +130,3 @@ const updateUser: Schema = {
         }
     }
 };
-
-export {getUser, createUser, updateUser, changePassword};
