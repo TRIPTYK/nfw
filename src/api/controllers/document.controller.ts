@@ -10,6 +10,7 @@ import {DocumentSerializer} from "../serializers/document.serializer";
 import {relations as documentRelations} from "../enums/relations/document.relations";
 import {SerializerParams} from "../serializers/serializerParams";
 import {BaseRepository} from "../repositories/base.repository";
+import {UserSerializer} from "../serializers/user.serializer";
 
 /**
  *
@@ -70,6 +71,17 @@ class DocumentController extends BaseController {
 
         return new DocumentSerializer().serialize(document);
     }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async fetchRelated(req: Request, res: Response, next: Function) {
+        return this.repository.fetchRelated(req,new DocumentSerializer());
+    }
+
 
     /**
      * Update one document according to :documentId

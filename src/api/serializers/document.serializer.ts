@@ -12,7 +12,7 @@ export class DocumentSerializer extends BaseSerializer {
         const data = {
             whitelist: DocumentSerializer.whitelist,
             relationships: {
-                user: {
+                user : {
                     type: "user"
                 }
             }

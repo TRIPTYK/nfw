@@ -8,6 +8,7 @@ import {HttpStatus} from "http-status";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import {BaseSerializer} from "../serializers/base.serializer";
+import {UserSerializer} from "../serializers/user.serializer";
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -177,6 +178,27 @@ class BaseRepository<T> extends Repository<T> {
     public jsonApiFind(req: Request, allowedIncludes: Array<string> = [], options?: { allowIncludes?: boolean; allowSorting?: boolean; allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }): Promise<[T[], number]> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .getManyAndCount()
+    }
+
+    /**
+     *
+     * @param req
+     * @param serializer
+     */
+    public async fetchRelated(req : Request,serializer : BaseSerializer) {
+        const { id , relation } = req.params;
+        let type = serializer.getSchemaData()['relationships'];
+
+        if (!type[relation]) throw Boom.notFound('Relation not found');
+        type = type[relation]['type'];
+
+        let serializerImport = await import(`../serializers/${type}.serializer`);
+        serializerImport = serializerImport[Object.keys(serializerImport)[0]];
+
+        const rel = await this.findOne(id,{relations : [relation]});
+        if (!rel) throw Boom.notFound();
+
+        return new serializerImport().serialize(rel[relation]);
     }
 
     /**

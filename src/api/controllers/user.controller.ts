@@ -9,8 +9,9 @@ import {UserSerializer} from "../serializers/user.serializer";
 import {relations as userRelations} from "../enums/relations/user.relations";
 import {SerializerParams} from "../serializers/serializerParams";
 import {BaseRepository} from "../repositories/base.repository";
-import { isPlural } from "pluralize";
-import * as JSONAPISerializer from "json-api-serializer";
+import {relations as documentRelations} from "../enums/relations/document.relations";
+import {DocumentSerializer} from "../serializers/document.serializer";
+
 /**
  *
  */
@@ -107,6 +108,16 @@ export class UserController extends BaseController {
     public async list(req: Request, res: Response, next: Function) {
         const [users, totalUsers] = await this.repository.jsonApiRequest(req.query, userRelations).getManyAndCount();
         return new UserSerializer(new SerializerParams().enablePagination(req, totalUsers)).serialize(users);
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async fetchRelated(req: Request, res: Response, next: Function) {
+        return this.repository.fetchRelated(req,new UserSerializer());
     }
 
     /**

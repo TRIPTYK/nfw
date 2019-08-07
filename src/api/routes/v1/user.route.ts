@@ -40,6 +40,9 @@ router
     .put(authorize([ADMIN]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('update'))
     .delete(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('remove'));
 
+router.route('/:id/:relation')
+    .get(userMiddleware.handleValidation(relationships),userController.method('fetchRelated'));
+
 router.route('/:id/relationships/:relation')
     .get( userMiddleware.handleValidation(relationships), userController.method('fetchRelationships'))
     .post( userMiddleware.deserialize({ withRelationships : false }),userMiddleware.handleValidation(relationships), userController.method('addRelationships'))

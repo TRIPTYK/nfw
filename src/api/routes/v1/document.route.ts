@@ -29,6 +29,9 @@ router
     .put(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
     .delete(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(deleteDocument), documentController.method('remove'));
 
+router.route('/:id/:relation')
+    .get(documentMiddleware.handleValidation(relationships),documentController.method('fetchRelated'));
+
 router.route('/:id/relationships/:relation')
     .get( documentMiddleware.handleValidation(relationships), documentController.method('fetchRelationships'))
     .post( documentMiddleware.deserialize({ withRelationships : false }),documentMiddleware.handleValidation(relationships), documentController.method('addRelationships'))
