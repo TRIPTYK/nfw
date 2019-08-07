@@ -139,17 +139,27 @@ class BaseRepository<T> extends Repository<T> {
                         if (strategy == "eq") {
                             qb.andWhere(SqlString.format(`?? = ?`, [key, value]));
                         }
+                        if (strategy == "noteq") {
+                            qb.andWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
+                        }
+                        if (strategy == "andin") {
+                            qb.andWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
+                        }
+                        if (strategy == "notin") {
+                            qb.andWhere(SqlString.format(`?? NOT IN (?)`, [key, splitAndFilterPlus(value)]))
+                        }
+
                         if (strategy == "orlike") {
                             qb.orWhere(SqlString.format(`?? LIKE ?`, [key, value]));
                         }
                         if (strategy == "oreq") {
                             qb.orWhere(SqlString.format(`?? = ?`, [key, value]));
                         }
+                        if (strategy == "ornoteq") {
+                            qb.orWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
+                        }
                         if (strategy == "orin") {
                             qb.orWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
-                        }
-                        if (strategy == "andin") {
-                            qb.andWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
                         }
                     });
                 }
@@ -157,8 +167,6 @@ class BaseRepository<T> extends Repository<T> {
             queryBuilder.where(queryBrackets);
         }
 
-        fs.writeFileSync("out.txt",queryBuilder.getSql());
-        console.log(queryBuilder.getSql());
         return queryBuilder;
     }
 
