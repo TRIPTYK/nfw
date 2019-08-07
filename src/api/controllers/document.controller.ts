@@ -79,7 +79,50 @@ class DocumentController extends BaseController {
      * @param next
      */
     public async fetchRelated(req: Request, res: Response, next: Function) {
-        return this.repository.fetchRelated(req,new DocumentSerializer());
+        return this.repository.fetchRelated(req,new UserSerializer());
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async fetchRelationships(req: Request, res: Response, next: Function) {
+        return this.repository.fetchRelationshipsFromRequest(req,new UserSerializer());
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async addRelationships(req: Request, res: Response, next: Function) {
+        await this.repository.addRelationshipsFromRequest(req);
+        res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async updateRelationships(req: Request, res: Response, next: Function) {
+        await this.repository.updateRelationshipsFromRequest(req);
+        res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+
+    /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    public async removeRelationships(req: Request, res: Response, next: Function) {
+        await this.repository.removeRelationshipsFromRequest(req);
+        res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
 
