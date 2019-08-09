@@ -201,7 +201,7 @@ class BaseRepository<T> extends Repository<T> {
         type = type[relation]['type'];
 
         let serializerImport = await import(`../serializers/${type}.serializer`);
-        serializerImport = serializerImport[Object.keys(serializerImport)[0]];
+        serializerImport = Object.values(serializerImport)[0];
 
         const rel = await this.findOne(id,{relations : [relation]});
         if (!rel) throw Boom.notFound();

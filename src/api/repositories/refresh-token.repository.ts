@@ -13,14 +13,6 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
     constructor() {
         super();
     }
-
-    deleteOldTokens() : Promise<DeleteResult> {
-        return this.createQueryBuilder("refresh")
-            .where("expires < CURRENT_TIMESTAMP")
-            .delete()
-            .execute();
-    }
-
     /**
      *
      * @param user
@@ -32,7 +24,6 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
 
         const tokenObject = new RefreshToken(token, user, expires , ip);
 
-        this.deleteOldTokens();
         await this.save(tokenObject);
 
         return tokenObject;
