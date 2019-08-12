@@ -2,12 +2,13 @@ import {Connection, getConnection} from "typeorm";
 import {caching_enabled, typeorm as TypeORM} from "./../../config/environment.config";
 import {BaseRepository} from "../repositories/base.repository";
 import {cache, cleanupRouteCache} from "../../config/cache.config";
+import {IController} from "../interfaces/IController.interface";
 
 /**
  * Main controller contains properties/methods
  * @abstract
  */
-abstract class BaseController {
+abstract class BaseController implements IController {
 
     /**
      * Store the TypeORM current connection to database

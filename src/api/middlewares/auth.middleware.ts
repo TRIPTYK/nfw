@@ -6,9 +6,6 @@ import { promisify } from "es6-promisify";
 import { roles as userRoles } from "./../enums/role.enum";
 import { Request , Response } from "express"
 
-const ADMIN = 'admin';
-const LOGGED_USER = 'user';
-
 /**
  * Check if request has valid token and privileges
  *
@@ -32,9 +29,9 @@ const _handleJWT = (req: any, res: Response, next: Function, roles: any) => asyn
         return next(Boom.forbidden(e.message));
     }
 
-    if (roles === LOGGED_USER)
+    if (roles === userRoles.user)
     {
-        if (user.role !== 'admin' && req.params.userId !== user.id.toString())
+        if (user.role !== userRoles.admin && req.params.userId !== user.id.toString())
         {
             return next(Boom.forbidden('Forbidden area'));
         }
@@ -57,7 +54,7 @@ const _handleJWT = (req: any, res: Response, next: Function, roles: any) => asyn
 /**
  * @param roles
  */
-const authorize = (roles = userRoles) => (req : Request, res : Response, next : Function) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles) ) (req, res, next);
+const authorize = (roles : userRoles[] = []) => (req : Request, res : Response, next : Function) => Passport.authenticate( 'jwt', { session: false }, _handleJWT(req, res, next, roles) ) (req, res, next);
 
 /**
  * @param service
@@ -65,4 +62,4 @@ const authorize = (roles = userRoles) => (req : Request, res : Response, next : 
  */
 const oAuth = (service, scope: any = []) => Passport.authenticate(service, {session: false, scope});
 
-export { ADMIN, LOGGED_USER, authorize, oAuth };
+export { authorize, oAuth };

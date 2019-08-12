@@ -9,6 +9,7 @@ import {UserRepository} from "../repositories/user.repository";
 import {generateTokenResponse} from "../utils/auth.util";
 import {BaseController} from "./base.controller";
 import {env, jwtAuthMode} from "../../config/environment.config";
+import {roles} from "../enums/role.enum";
 
 /**
  * Authentification Controller!
@@ -35,7 +36,7 @@ class AuthController extends BaseController {
      */
     async register(req: Request, res: Response, next: Function) {
         let user = new User(req.body);
-        user.role = ['test', 'development'].includes(env.toLowerCase()) ? 'admin' : 'user';
+        user.role = ['test', 'development'].includes(env.toLowerCase()) ? roles.admin : roles.user;
         user = await this.repository.save(user);
         const token = await generateTokenResponse(user, user.token(), req.ip);
         res.status(HttpStatus.CREATED);

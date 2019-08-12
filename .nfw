@@ -1,5 +1,4 @@
 {
-    "name": "",
-    "path": "./",
-    "env": "development"
+    "env": "development",
+    "dockerContainer": "nfw-cli-55"
 }

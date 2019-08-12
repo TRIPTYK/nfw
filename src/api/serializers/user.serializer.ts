@@ -1,17 +1,16 @@
 import {BaseSerializer} from "./base.serializer";
-
 import {SerializerParams} from "./serializerParams";
-import {DocumentSerializer} from "./document.serializer";
+import {documentSerialize} from "../enums/json-api/document.enums";
+import {userDeserialize, userSerialize} from "../enums/json-api/user.enums";
 
 
 export class UserSerializer extends BaseSerializer {
-    public static whitelist: Array<string> = ['username', 'email', 'firstname', 'lastname', 'role', 'createdAt', 'updatedAt'];
-
     constructor(serializerParams: SerializerParams = new SerializerParams()) {
         super('user');
 
         const data = {
-            whitelist: UserSerializer.whitelist,
+            whitelist: userSerialize,
+            whitelistOnDeserialize : userDeserialize,
             relationships: {
                 avatar: {
                     type: "document"
@@ -27,7 +26,7 @@ export class UserSerializer extends BaseSerializer {
         this.serializer.register(this.type, data);
 
         this.serializer.register("document", {
-            whitelist: DocumentSerializer.whitelist
+            whitelist: documentSerialize
         });
     }
 }

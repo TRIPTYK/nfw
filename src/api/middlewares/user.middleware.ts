@@ -1,12 +1,10 @@
-import * as Boom from "boom";
-
 import {Request, Response} from "express";
 import {UserRepository} from "../repositories/user.repository";
 import {getCustomRepository} from "typeorm";
 import {User} from "../models/user.model";
 import {UserSerializer} from "../serializers/user.serializer";
 import {BaseMiddleware} from "./base.middleware";
-import {relations as userRelations} from "../enums/relations/user.relations";
+import {userRelations} from "../enums/json-api/user.enums";
 
 export class UserMiddleware extends BaseMiddleware {
 
@@ -26,27 +24,10 @@ export class UserMiddleware extends BaseMiddleware {
     public load = async (req: Request, res: Response, next: Function, id: number): Promise<Function> => {
         try {
             const repository = getCustomRepository(UserRepository);
-            req['locals'] = new User(await repository.jsonApiFindOne(req, id, userRelations));
+            req['locals'] = await repository.jsonApiFindOne(req, id, userRelations);
             return next();
         } catch (e) {
             return next(e);
         }
     };
-
-    public async authorizeOwner(req, res, next) {
-        try {
-            const userRepository = getCustomRepository(UserRepository);
-            const user = await userRepository.findOne(req.params.userId);
-
-            if (!user) throw Boom.notFound();
-
-            if (user.id !== req.user.id) {
-                throw Boom.unauthorized();
-            }
-
-            return next();
-        } catch (e) {
-            return next(e);
-        }
-    }
 }

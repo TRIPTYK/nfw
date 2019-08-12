@@ -1,10 +1,8 @@
 /**
  * Api roles for users and authentification , ghost is not used at the moment
  */
-const roles = [
-    "admin",
-    "user",
-    "ghost"
-];
-
-export {roles};
+export enum roles {
+    admin = "admin",
+    user = "user",
+    ghost = "ghost"
+}

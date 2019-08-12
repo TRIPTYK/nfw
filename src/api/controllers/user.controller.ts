@@ -6,11 +6,10 @@ import {UserRepository} from "../repositories/user.repository";
 import {getCustomRepository} from "typeorm";
 import {BaseController} from "./base.controller";
 import {UserSerializer} from "../serializers/user.serializer";
-import {relations as userRelations} from "../enums/relations/user.relations";
 import {SerializerParams} from "../serializers/serializerParams";
 import {BaseRepository} from "../repositories/base.repository";
-import {relations as documentRelations} from "../enums/relations/document.relations";
 import {DocumentSerializer} from "../serializers/document.serializer";
+import {userRelations} from "../enums/json-api/user.enums";
 
 /**
  *

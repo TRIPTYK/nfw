@@ -1,8 +1,9 @@
 import {Router} from "express";
-import {ADMIN, authorize} from "../../../middlewares/auth.middleware";
+import {authorize} from "../../../middlewares/auth.middleware";
+import {roles} from "../../../enums/role.enum";
 
 const router = Router();
 
-router.use(authorize([ADMIN]));
+router.use(authorize([roles.admin]));
 
 export {router};

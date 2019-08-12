@@ -1,10 +1,11 @@
 import {Router} from "express";
 import {DocumentController} from "../../controllers/document.controller";
-import {ADMIN, authorize, LOGGED_USER} from "../../middlewares/auth.middleware";
+import {authorize} from "../../middlewares/auth.middleware";
 import {deleteDocument, getDocument, updateDocument} from "../../validations/document.validation";
 import {set as Multer} from "./../../../config/multer.config";
 import {DocumentMiddleware} from "../../middlewares/document.middleware";
 import {relationships} from "../../validations/global.validation";
+import {roles} from "../../enums/role.enum";
 
 const router = Router();
 const upload = Multer();
@@ -19,15 +20,15 @@ router.param('documentId', documentMiddleware.deserialize());
 
 router
     .route('/')
-    .get(authorize([ADMIN, LOGGED_USER]), documentController.method('list'))
-    .post(authorize([ADMIN]), upload.single('document'), documentMiddleware.resize, documentController.method('create'));
+    .get(authorize([roles.admin, roles.user]), documentController.method('list'))
+    .post(authorize([roles.admin]), upload.single('document'), documentMiddleware.resize, documentController.method('create'));
 
 router
     .route('/:documentId')
     .get(authorize(), documentMiddleware.handleValidation(getDocument), documentController.method('get'))
-    .patch(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
-    .put(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
-    .delete(authorize([ADMIN, LOGGED_USER]), documentMiddleware.handleValidation(deleteDocument), documentController.method('remove'));
+    .patch(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
+    .put(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
+    .delete(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(deleteDocument), documentController.method('remove'));
 
 router.route('/:id/:relation')
     .get(documentMiddleware.handleValidation(relationships),documentController.method('fetchRelated'));

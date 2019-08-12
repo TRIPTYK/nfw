@@ -3,18 +3,16 @@ import * as SqlString from "sqlstring";
 import {Request} from "express";
 import * as Boom from "boom";
 import * as dashify from "dashify";
-import * as fs from "fs";
-import {HttpStatus} from "http-status";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import {BaseSerializer} from "../serializers/base.serializer";
-import {UserSerializer} from "../serializers/user.serializer";
+import {JsonApiRepositoryInterface} from "../interfaces/JsonApiRepository.interface";
 
 /**
  * Base Repository class , inherited for all current repositories
  */
 @EntityRepository()
-class BaseRepository<T> extends Repository<T> {
+class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterface<T> {
 
     /**
      * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.

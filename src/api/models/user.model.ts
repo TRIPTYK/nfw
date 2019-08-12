@@ -69,9 +69,9 @@ export class User extends BaseModel {
     @Column({
         type: "enum",
         enum: roles,
-        default: "ghost"
+        default: roles.ghost
     })
-    role: "admin" | "user" | "ghost";
+    role: roles;
 
     @CreateDateColumn()
     createdAt;

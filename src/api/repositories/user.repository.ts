@@ -7,6 +7,7 @@ import * as Boom from "boom";
 import {BaseRepository} from "./base.repository";
 import {RefreshToken} from "../models/refresh-token.model";
 import {jwtAuthMode} from "../../config/environment.config";
+import {roles} from "../enums/role.enum";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -88,7 +89,7 @@ export class UserRepository extends BaseRepository<User> {
                 username: name,
                 firstname: first_name,
                 lastname: last_name,
-                role: 'user'
+                role: roles.user
             });
         } catch (e) {
             throw Boom.expectationFailed(e.message);

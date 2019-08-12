@@ -1,10 +1,11 @@
 import {Router} from "express";
 import {UserController} from "../../controllers/user.controller";
-import {ADMIN, authorize, LOGGED_USER} from "../../middlewares/auth.middleware";
+import {authorize} from "../../middlewares/auth.middleware";
 import {UserMiddleware} from "../../middlewares/user.middleware";
 import {changePassword, createUser, getUser, updateUser} from "../../validations/user.validation";
 import {SecurityMiddleware} from "../../middlewares/security.middleware";
 import {relationships} from "../../validations/global.validation";
+import {roles} from "../../enums/role.enum";
 
 const router = Router();
 const userController = new UserController(); // Todo injecter comme dépendance
@@ -22,23 +23,23 @@ router.param('userId', userMiddleware.load);
 
 router
     .route('/')
-    .get(authorize([ADMIN]), userController.method('list'))
-    .post(authorize([ADMIN]), userMiddleware.deserialize(), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('create'));
+    .get(authorize([roles.admin]), userController.method('list'))
+    .post(authorize([roles.admin]), userMiddleware.deserialize(), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('create'));
 
 router
     .route('/profile')
-    .get(authorize([ADMIN, LOGGED_USER]), userController.method('loggedIn'));
+    .get(authorize([roles.admin, roles.user]), userController.method('loggedIn'));
 
 router
     .route('/changePassword')
-    .post(authorize([ADMIN, LOGGED_USER]), userMiddleware.deserialize({ withRelationships : false }), userMiddleware.handleValidation(changePassword), userController.method('changePassword'));
+    .post(authorize([roles.admin, roles.user]), userMiddleware.deserialize({ withRelationships : false }), userMiddleware.handleValidation(changePassword), userController.method('changePassword'));
 
 router
     .route('/:userId')
-    .get(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('get'))
-    .patch(authorize([ADMIN]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
-    .put(authorize([ADMIN]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('update'))
-    .delete(authorize([ADMIN]), userMiddleware.handleValidation(getUser), userController.method('remove'));
+    .get(authorize([roles.admin]), userMiddleware.handleValidation(getUser), userController.method('get'))
+    .patch(authorize([roles.admin]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method('update'))
+    .put(authorize([roles.admin]), userMiddleware.deserialize({nullEqualsUndefined : true}), userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method('update'))
+    .delete(authorize([roles.admin]), userMiddleware.handleValidation(getUser), userController.method('remove'));
 
 router.route('/:id/:relation')
     .get(userMiddleware.handleValidation(relationships),userController.method('fetchRelated'));

@@ -4,8 +4,9 @@ import {BaseSerializer} from "../serializers/base.serializer";
 import * as Boom from "boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
+import {IMiddleware} from "../interfaces/IMiddleware.interface";
 
-export abstract class BaseMiddleware {
+export abstract class BaseMiddleware implements IMiddleware {
 
     protected serializer: BaseSerializer;
 
@@ -43,8 +44,8 @@ export abstract class BaseMiddleware {
         }
 
         for (let originalRel in relations) {
-            if (payload.hasOwnProperty(originalRel)) { //only lo
-                let rel = relations[originalRel];// ad when present
+            if (payload.hasOwnProperty(originalRel)) { //only load when present
+                let rel = relations[originalRel];
                 const modelName = rel['type'];
                 let importModel = await import(`../models/${modelName}.model`);
                 importModel = Object.keys(importModel)[0];

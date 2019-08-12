@@ -1,0 +1,5 @@
+interface IController {
+
+}
+
+export {IController};
