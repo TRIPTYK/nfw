@@ -7,9 +7,8 @@ describe("Document CRUD", function () {
     let server, agent, token, id;
     const expect = chai.expect;
 
-  before(function (done) {
-      let express = require('../src/app.bootstrap');
-      server = express.App;
+  before(async function (done) {
+      server = await import('../src/app.bootstrap');
       agent = request.agent(server);
       token = global['login'].token;
       done();

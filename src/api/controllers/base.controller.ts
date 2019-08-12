@@ -1,8 +1,10 @@
-import {Connection, getConnection} from "typeorm";
+import {Connection, getConnection, getCustomRepository} from "typeorm";
 import {caching_enabled, typeorm as TypeORM} from "./../../config/environment.config";
 import {BaseRepository} from "../repositories/base.repository";
 import {cache, cleanupRouteCache} from "../../config/cache.config";
 import {IController} from "../interfaces/IController.interface";
+import {UserRepository} from "../repositories/user.repository";
+import {BaseSerializer} from "../serializers/base.serializer";
 
 /**
  * Main controller contains properties/methods
@@ -58,7 +60,9 @@ abstract class BaseController implements IController {
         }
     };
 
-    protected abstract beforeMethod();
+    protected beforeMethod() {
+
+    }
 }
 
 export {BaseController};

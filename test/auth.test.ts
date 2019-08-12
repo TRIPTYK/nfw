@@ -6,11 +6,9 @@ describe("Authentification", function () {
   var server, agent, password, credentials, token, refreshToken;
   var expect = require('chai').expect;
 
-  before(function (done) {
+  before(async function (done) {
 
-    let express = require('../src/app.bootstrap');
-
-    server      = express.App;
+    server      = await import('../src/app.bootstrap');
     agent       = request.agent(server);
     password    = fixtures.password();
     credentials = {

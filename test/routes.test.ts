@@ -4,9 +4,8 @@ describe("Route's accessibility", function () {
   
   var server;
   
-  before(function (done) {
-    let express = require('./../src/app.bootstrap');
-    server = express.App;
+  before(async function (done) {
+    server = await import('../src/app.bootstrap');
     done();
   });
   
