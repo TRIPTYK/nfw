@@ -6,6 +6,7 @@ import {getCustomRepository, getRepository} from "typeorm";
 import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
+import {userRelations} from "../api/enums/json-api/user.enums";
 
 const jwtOptions = {
     secretOrKey: jwtSecret,
@@ -21,7 +22,7 @@ const jwtOptions = {
 const jwt = async (payload, next: Function) => {
     try {
         const userRepository = getRepository(User);
-        const user = await userRepository.findOne(payload.sub, {relations: ['avatar']});
+        const user = await userRepository.findOne(payload.sub, {relations: userRelations});
         if (user) return next(null, user);
         return next(null, false);
     } catch (error) {

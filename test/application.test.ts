@@ -13,9 +13,8 @@ describe("Express application", function () {
 
     let server;
 
-    before(function () {
-        let express = require('./../src/app.bootstrap')
-        server = express.App;
+    before(async function () {
+        server = await import('./../src/app.bootstrap');
     });
 
     after(function () {
