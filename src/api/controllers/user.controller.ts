@@ -9,7 +9,7 @@ import {UserSerializer} from "../serializers/user.serializer";
 import {SerializerParams} from "../serializers/serializerParams";
 import {BaseRepository} from "../repositories/base.repository";
 import {DocumentSerializer} from "../serializers/document.serializer";
-import {userRelations} from "../enums/json-api/user.enums";
+import {userRelations} from "../enums/json-api/user.enum";
 
 /**
  *

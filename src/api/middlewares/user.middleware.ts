@@ -4,7 +4,7 @@ import {getCustomRepository} from "typeorm";
 import {User} from "../models/user.model";
 import {UserSerializer} from "../serializers/user.serializer";
 import {BaseMiddleware} from "./base.middleware";
-import {userRelations} from "../enums/json-api/user.enums";
+import {userRelations} from "../enums/json-api/user.enum";
 
 export class UserMiddleware extends BaseMiddleware {
 

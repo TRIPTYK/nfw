@@ -1,7 +1,7 @@
 import {BaseSerializer} from "./base.serializer";
 import {SerializerParams} from "./serializerParams";
-import {documentSerialize} from "../enums/json-api/document.enums";
-import {userDeserialize, userSerialize} from "../enums/json-api/user.enums";
+import {documentSerialize} from "../enums/json-api/document.enum";
+import {userDeserialize, userSerialize} from "../enums/json-api/user.enum";
 
 
 export class UserSerializer extends BaseSerializer {

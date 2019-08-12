@@ -6,7 +6,7 @@ import {getCustomRepository, getRepository} from "typeorm";
 import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
-import {userRelations} from "../api/enums/json-api/user.enums";
+import {userRelations} from "../api/enums/json-api/user.enum";
 
 const jwtOptions = {
     secretOrKey: jwtSecret,

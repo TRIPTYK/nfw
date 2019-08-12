@@ -10,7 +10,7 @@ import {DocumentSerializer} from "../serializers/document.serializer";
 import {SerializerParams} from "../serializers/serializerParams";
 import {BaseRepository} from "../repositories/base.repository";
 import {UserSerializer} from "../serializers/user.serializer";
-import {documentRelations} from "../enums/json-api/document.enums";
+import {documentRelations} from "../enums/json-api/document.enum";
 
 /**
  *
