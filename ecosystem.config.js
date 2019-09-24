@@ -1,7 +1,7 @@
 // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
 module.exports = {
   apps : [{
-    name: 'API',
+    name: 'NFW_API',
     script: './dist/app.bootstrap.js',
     args: 'one two',
     instances: 1,
@@ -19,21 +19,14 @@ module.exports = {
     }
   }],
   deploy : {
-    staging : {
-      user : 'node',
-      host : '212.83.163.1',
-      ref  : 'origin/master',
-      repo : 'git@github.com:repo.git',
-      path : '/var/www/production',
-      'post-deploy' : 'npm install && npm run distify && tsc && pm2 reload ecosystem.config.js --env staging'
-    },
     production : {
-      user : 'node',
-      host : '212.83.163.1',
-      ref  : 'origin/master',
-      repo : 'git@github.com:repo.git',
-      path : '/var/www/production',
-      'post-deploy' : 'npm install && npm run distify && tsc && pm2 reload ecosystem.config.js --env staging'
+      user : 'amaury',
+      host : '172.16.20.193',
+      ref  : 'origin/develop',
+      repo : 'https://github.com/TRIPTYK/nfw.git',
+      path : '/var/www/prod-nfw',
+      'post-setup': 'npm ',
+      'post-deploy' : 'npm install && tsc && pm2 reload ecosystem.config.js --env production'
     }
   }
 };
