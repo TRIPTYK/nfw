@@ -56,7 +56,6 @@
     "date-and-time": "^0.7.0",
     "dateformat": "^3.0.3",
     "dotenv": "^6.2.0",
-    "es6-promisify": "^6.0.1",
     "expr-eval": "^1.2.2",
     "express": "^4.16.4",
     "express-list-endpoints": "^4.0.0",

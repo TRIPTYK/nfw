@@ -1,4 +1,3 @@
-const {promisify} = require("es6-promisify");
 const mkdirp = require('mkdirp');
 const spawn = require('cross-spawn');
 
