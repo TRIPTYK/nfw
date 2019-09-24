@@ -19,20 +19,12 @@ module.exports = {
     }
   }],
   deploy : {
-    staging : {
-      user : 'node',
-      host : '212.83.163.1',
-      ref  : 'origin/master',
-      repo : 'git@github.com:repo.git',
-      path : '/var/www/production',
-      'post-deploy' : 'npm install && npm run distify && tsc && pm2 reload ecosystem.config.js --env staging'
-    },
     production : {
       user : 'node',
-      host : '212.83.163.1',
+      host : '172.16.20.193',
       ref  : 'origin/master',
-      repo : 'git@github.com:repo.git',
-      path : '/var/www/production',
+      repo : 'git@github.com:TRIPTYK/nfw.git',
+      path : '/var/www/prod-nfw',
       'post-deploy' : 'npm install && npm run distify && tsc && pm2 reload ecosystem.config.js --env staging'
     }
   }
