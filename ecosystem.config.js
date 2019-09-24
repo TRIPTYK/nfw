@@ -2,7 +2,7 @@
 module.exports = {
   apps : [{
     name: 'NFW_API',
-    script: './dist/app.bootstrap.js',
+    script: './dist/src/app.bootstrap.js',
     args: 'one two',
     instances: 1,
     autorestart: true,
