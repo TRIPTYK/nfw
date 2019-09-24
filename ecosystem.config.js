@@ -22,7 +22,7 @@ module.exports = {
     production : {
       user : 'amaury',
       host : '172.16.20.193',
-      ref  : 'origin/master',
+      ref  : 'origin/develop',
       repo : 'git@github.com:TRIPTYK/nfw.git',
       path : '/var/www/prod-nfw',
       'post-deploy' : 'npm install && npm run distify && tsc && pm2 reload ecosystem.config.js --env staging'
