@@ -20,7 +20,7 @@ module.exports = {
   }],
   deploy : {
     production : {
-      user : 'node',
+      user : 'amaury',
       host : '172.16.20.193',
       ref  : 'origin/master',
       repo : 'git@github.com:TRIPTYK/nfw.git',
