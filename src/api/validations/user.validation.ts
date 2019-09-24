@@ -91,37 +91,27 @@ export const updateUser: Schema = {
         toInt : true
     },
     email: {
-        optional: {
-            nullable: true
-        },
-        isEmail: true
+        optional: true ,
+        isEmail : true
     },
     password: {
         isString : true,
-        optional: {
-            nullable: true
-        }
+        optional : true
     },
     username: {
         isString : true,
-        optional: {
-            nullable: true
-        },
+        optional : true
     },
     lastname: {
         isString : true,
-        optional: {
-            nullable: true
-        },
+        optional : true,
         isUppercase: {
             negated: true,
         }
     },
     firstname: {
         isString : true,
-        optional: {
-            nullable: true
-        }
+        optional : true
     },
     role: {
         optional: true,

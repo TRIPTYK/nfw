@@ -59,31 +59,30 @@ export class DocumentMiddleware extends BaseMiddleware {
                 let destination = req['file'].destination;
 
                 // Read original file
-                const image = await Jimp.read(req['file'].path);
+                    const image = await Jimp.read(req['file'].path);
 
-                // Clone in 3 files according to 3 sizes
-                let xsImage = image.clone(), mdImage = image.clone(), xlImage = image.clone();
+                    // Clone in 3 files according to 3 sizes
+                    let xsImage = image.clone(), mdImage = image.clone(), xlImage = image.clone();
 
-                // Resize and write file in server
-                xsImage
-                    .resize(JimpConfiguration.xs, Jimp.AUTO)
-                    .write(destination + '/xs/' + req['file'].filename, function (err, doc) {
-                        if (err) throw Boom.expectationFailed(err.message);
-                    });
+                    // Resize and write file in server
+                    xsImage
+                        .resize(JimpConfiguration.xs, Jimp.AUTO)
+                        .write(destination + '/xs/' + req['file'].filename, function (err, doc) {
+                            if (err) throw Boom.expectationFailed(err.message);
+                        });
 
-                mdImage
-                    .resize(JimpConfiguration.md, Jimp.AUTO)
-                    .write(destination + '/md/' + req['file'].filename, function (err, doc) {
-                        if (err) throw Boom.expectationFailed(err.message);
-                    });
+                    mdImage
+                        .resize(JimpConfiguration.md, Jimp.AUTO)
+                        .write(destination + '/md/' + req['file'].filename, function (err, doc) {
+                            if (err) throw Boom.expectationFailed(err.message);
+                        });
 
-                xlImage
-                    .resize(JimpConfiguration.xl, Jimp.AUTO)
-                    .write(destination + '/xl/' + req['file'].filename, function (err, doc) {
-                        if (err) throw Boom.expectationFailed(err.message);
-                    });
+                    xlImage
+                        .resize(JimpConfiguration.xl, Jimp.AUTO)
+                        .write(destination + '/xl/' + req['file'].filename, function (err, doc) {
+                            if (err) throw Boom.expectationFailed(err.message);
+                        });
             }
-
             return next();
         } catch (e) {
             return next(e);
