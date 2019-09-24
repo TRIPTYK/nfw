@@ -25,8 +25,8 @@ module.exports = {
       ref  : 'origin/develop',
       repo : 'https://github.com/TRIPTYK/nfw.git',
       path : '/var/www/prod-nfw',
-      'post-setup': 'npm ',
-      'post-deploy' : 'npm install && tsc && pm2 reload ecosystem.config.js --env production'
+      'post-setup': 'npm run setup',
+      'post-deploy' : 'npm run setup && pm2 reload ecosystem.config.js --env production'
     }
   }
 };

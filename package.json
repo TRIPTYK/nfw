@@ -7,7 +7,7 @@
     "kickstart-win": "init_scripts\\windows.bat",
     "todo": "leasot -x 'src/**/*.ts'",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
-    "start": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env developement",
+    "setup": "node ./init_scripts/setup.js",
     "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md"
   },
   "engines": {
