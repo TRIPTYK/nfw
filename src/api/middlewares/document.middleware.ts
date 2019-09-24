@@ -3,10 +3,10 @@ import Jimp from "jimp";
 
 import {Request, Response} from "express";
 import {getRepository} from "typeorm";
-import {Document} from "./../models/document.model";
+import {Document} from "../models/document.model";
 import {jimp as JimpConfiguration} from "./../../config/environment.config";
-import {imageMimeTypes} from "./../enums/mime-type.enum";
-import {DocumentSerializer} from "./../serializers/document.serializer";
+import {imageMimeTypes} from "../enums/mime-type.enum";
+import {DocumentSerializer} from "../serializers/document.serializer";
 import {BaseMiddleware} from "./base.middleware";
 
 
