@@ -1,5 +1,5 @@
 import * as Boom from "boom";
-import * as Jimp from "jimp";
+import Jimp from "jimp";
 
 import {Request, Response} from "express";
 import {getRepository} from "typeorm";
