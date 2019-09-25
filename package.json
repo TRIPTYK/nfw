@@ -55,9 +55,8 @@
     "dashify": "^2.0.0",
     "date-and-time": "^0.10.0",
     "dateformat": "^3.0.3",
-    "dotenv": "^8.1.0",
-    "es6-promisify": "^6.0.1",
-    "expr-eval": "^2.0.1",
+    "dotenv": "^6.2.0",
+    "expr-eval": "^1.2.2",
     "express": "^4.16.4",
     "express-list-endpoints": "^4.0.0",
     "express-rate-limit": "^5.0.0",
@@ -102,7 +101,9 @@
     "typescript": "^3.4.3",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
-    "xss": "^1.0.6"
+    "xss": "^1.0.6",
+    "mkdirp": "latest",
+    "cross-spawn": "latest"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.6",

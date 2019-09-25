@@ -2,7 +2,7 @@
 module.exports = {
   apps : [{
     name: 'NFW_API',
-    script: './dist/app.bootstrap.js',
+    script: './dist/src/app.bootstrap.js',
     args: 'one two',
     instances: 1,
     autorestart: true,
@@ -25,8 +25,8 @@ module.exports = {
       ref  : 'origin/develop',
       repo : 'https://github.com/TRIPTYK/nfw.git',
       path : '/var/www/prod-nfw',
-      'post-setup': 'npm ',
-      'post-deploy' : 'npm install && tsc && pm2 reload ecosystem.config.js --env production'
+      'post-setup': 'npm i && npm run setup',
+      'post-deploy' : 'npm i && pm2 reload ecosystem.config.js --env production'
     }
   }
 };
