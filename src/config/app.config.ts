@@ -4,12 +4,16 @@ import * as Morgan from "morgan";
 import * as Cors from "cors";
 import * as Compression from "compression";
 import * as Passport from "passport";
-import * as ServiceErrorHandler from "../api/services/error-handler.service";
+
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 import {strategies as Strategies} from "./passport.config";
-import {api, authorized, env, environments, HTTPLogs} from "./environment.config";
+
 import {router as ProxyRouter} from "./../api/routes/v1";
+import * as ServiceErrorHandler from "nfw-core";
+import {api, authorized, env, environments, HTTPLogs} from "nfw-core";
+/*import * as ServiceErrorHandler from "../api/services/error-handler.service";
+import {api, authorized, env, environments, HTTPLogs} from "./environment.config";*/
 
 let app = Express();
 

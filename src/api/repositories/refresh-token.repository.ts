@@ -4,7 +4,8 @@ import * as Boom from "boom";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
 import {DeleteResult, EntityRepository, Repository} from "typeorm";
-import {jwtExpirationInterval} from "../../config/environment.config";
+import {jwtExpirationInterval} from "nfw-core";
+//import {jwtExpirationInterval} from "../../config/environment.config";
 
 @EntityRepository(RefreshToken)
 export class RefreshTokenRepository extends Repository<RefreshToken> {

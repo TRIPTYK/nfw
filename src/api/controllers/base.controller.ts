@@ -1,10 +1,13 @@
 import {Connection, getConnection, getCustomRepository} from "typeorm";
-import {caching_enabled, typeorm as TypeORM} from "./../../config/environment.config";
-import {BaseRepository} from "../repositories/base.repository";
 import {cache, cleanupRouteCache} from "../../config/cache.config";
+import {caching_enabled, typeorm as TypeORM} from "nfw-core";
+import {BaseRepository} from "nfw-core";
+import {IController} from "nfw-core";
+/*import {caching_enabled, typeorm as TypeORM} from "./../../config/environment.config";
+import {BaseRepository} from "../repositories/base.repository";
 import {IController} from "../interfaces/IController.interface";
 import {UserRepository} from "../repositories/user.repository";
-import {BaseSerializer} from "../serializers/base.serializer";
+import {BaseSerializer} from "../serializers/base.serializer";*/
 
 /**
  * Main controller contains properties/methods

@@ -12,7 +12,7 @@ import {
     UpdateDateColumn
 } from "typeorm";
 
-import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
+
 import {Document} from "./document.model";
 import {roles} from "../enums/role.enum";
 import {UserSerializer} from "../serializers/user.serializer";
@@ -22,7 +22,10 @@ import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "boom";
 import {BaseModel} from "./base.model";
-import {imageMimeTypes} from "../enums/mime-type.enum";
+import {imageMimeTypes} from "nfw-core";
+import {env, jwtExpirationInterval, jwtSecret} from "nfw-core";
+/*import {imageMimeTypes} from "../enums/mime-type.enum";
+import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";*/
 
 @Entity()
 export class User extends BaseModel {

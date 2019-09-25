@@ -1,8 +1,10 @@
 import * as Multer from "multer";
 import * as Boom from "boom";
-import {mimeTypes} from "../api/enums/mime-type.enum";
 import Func = Mocha.Func;
-import {validateFile} from "../api/validations/document.validation";
+import {validateFile} from "nfw-core";
+import {mimeTypes} from "nfw-core";
+/*import {validateFile} from "../api/validations/document.validation";
+import {mimeTypes} from "../api/enums/mime-type.enum";*/
 
 const uploadPath = './dist/uploads/documents';
 

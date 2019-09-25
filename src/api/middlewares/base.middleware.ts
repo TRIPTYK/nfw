@@ -1,10 +1,13 @@
 import {Request, Response} from "express";
-import {BaseSerializer} from "../serializers/base.serializer";
+
 
 import * as Boom from "boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
-import {IMiddleware} from "../interfaces/IMiddleware.interface";
+import {IMiddleware} from "nfw-core";
+import {BaseSerializer} from "nfw-core";
+/*import {IMiddleware} from "../interfaces/IMiddleware.interface";
+import {BaseSerializer} from "../serializers/base.serializer";*/
 
 export abstract class BaseMiddleware implements IMiddleware {
 

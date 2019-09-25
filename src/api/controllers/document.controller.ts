@@ -7,10 +7,12 @@ import {getCustomRepository} from "typeorm";
 import {DocumentRepository} from "../repositories/document.repository";
 import {BaseController} from "./base.controller";
 import {DocumentSerializer} from "../serializers/document.serializer";
-import {SerializerParams} from "../serializers/serializerParams";
-import {BaseRepository} from "../repositories/base.repository";
 import {UserSerializer} from "../serializers/user.serializer";
 import {documentRelations} from "../enums/json-api/document.enum";
+import {SerializerParams} from "nfw-core";
+import {BaseRepository} from "nfw-core";
+/*import {SerializerParams} from "../serializers/serializerParams";
+import {BaseRepository} from "../repositories/base.repository";*/
 
 /**
  *

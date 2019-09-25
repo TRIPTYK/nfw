@@ -1,6 +1,7 @@
 import {AfterInsert, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, Unique} from "typeorm";
 import {User} from "./user.model";
-import {jwtExpirationInterval} from "../../config/environment.config";
+//import {jwtExpirationInterval} from "../../config/environment.config";
+import {jwtExpirationInterval} from "nfw-core";
 import {IPVersion} from "express-validator/src/options";
 
 @Entity()

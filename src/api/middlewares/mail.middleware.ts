@@ -1,4 +1,5 @@
-import {sendmail} from "./../services/mail-sender.service";
+import {sendmail} from "nfw-core";
+//import {sendmail} from "./../services/mail-sender.service";
 import {Request, Response} from "express";
 
 import * as Boom from "boom";

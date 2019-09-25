@@ -1,9 +1,11 @@
 import "reflect-metadata";
 import {Connection, createConnection} from "typeorm";
-import {typeorm as TypeORM} from "./environment.config";
 import {User} from "../api/models/user.model";
 import {RefreshToken} from "../api/models/refresh-token.model";
 import {Document} from "../api/models/document.model";
+
+import {typeorm as TypeORM} from "nfw-core";
+//import {typeorm as TypeORM} from "./environment.config";
 
 /**
  * Define TypeORM default configuration

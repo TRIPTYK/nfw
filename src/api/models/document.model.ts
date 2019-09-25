@@ -11,13 +11,15 @@ import {
 } from "typeorm";
 
 import {User} from "./user.model";
-import {mimeTypes} from "../enums/mime-type.enum";
-import {documentTypes} from "../enums/document-type.enum";
 import {DocumentSerializer} from "../serializers/document.serializer";
 import * as Fs from "fs";
 import {BaseModel} from "./base.model";
 import * as Path from "path";
 import {promisify} from "util";
+import {mimeTypes} from "nfw-core";
+import {documentTypes} from "nfw-core";
+/*import {mimeTypes} from "../enums/mime-type.enum";
+import {documentTypes} from "../enums/document-type.enum";*/
 
 const unlink = promisify(Fs.unlink);
 
