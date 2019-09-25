@@ -87,11 +87,4 @@ export class Document extends BaseModel {
             console.log(e);
         }
     }
-
-    /**
-     * @return Serialized user object in JSON-API format
-     */
-    public whitelist() {
-        return new DocumentSerializer().serializer.serialize(this);
-    }
 }

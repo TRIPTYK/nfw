@@ -1,6 +1,6 @@
 {
   "name": "nfw",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
   "scripts": {
     "todo": "leasot -x 'src/**/*.ts'",

@@ -59,7 +59,7 @@ export abstract class BaseMiddleware implements IMiddleware {
                 else if (Array.isArray(payload[originalRel]))
                     relationData = await getRepository(importModel).findByIds(payload[originalRel]);
 
-                if (!relationData) throw Boom.notFound('Related object not found');
+                if (!relationData && payload[originalRel] !== null) throw Boom.notFound('Related object not found');
 
                 recipient[originalRel] = relationData;
             }
