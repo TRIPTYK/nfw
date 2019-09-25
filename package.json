@@ -51,6 +51,7 @@
     "chai-http": "^4.2.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "cross-spawn": "latest",
     "csvtojson": "^2.0.8",
     "dashify": "^2.0.0",
     "date-and-time": "^0.7.0",
@@ -72,6 +73,7 @@
     "leasot": "^7.3.4",
     "lodash": "^4.17.11",
     "mailgun-js": "^0.22.0",
+    "mkdirp": "latest",
     "moment-timezone": "^0.5.23",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
@@ -87,6 +89,7 @@
     "pdfmake": "^0.1.57",
     "pem": "^1.14.2",
     "pluralize": "^8.0.0",
+    "pm2": "^3.5.1",
     "qrcode": "^1.3.3",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
@@ -101,9 +104,7 @@
     "typescript": "^3.4.3",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
-    "xss": "^1.0.6",
-    "mkdirp": "latest",
-    "cross-spawn": "latest"
+    "xss": "^1.0.6"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.6",

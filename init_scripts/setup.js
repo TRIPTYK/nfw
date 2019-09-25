@@ -10,7 +10,12 @@ const dirs = [
 
 for (const dir of dirs) {
     console.log(`Creating ${dir} ...`);
-    mkdirp.sync(dir);
+    if (!fs.existsSync(dir)) {
+        mkdirp.sync(dir);
+        console.log(`${dir} created`);
+    }else{
+        console.log(`${dir} already exists , skipping ...`);
+    }
 }
 
 spawn.sync(`npm install`, [], { stdio: 'inherit' });
