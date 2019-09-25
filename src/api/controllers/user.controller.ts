@@ -10,8 +10,7 @@ import {userRelations} from "../enums/json-api/user.enum";
 
 import {SerializerParams} from "nfw-core";
 import {BaseRepository} from "nfw-core";
-/*import {SerializerParams} from "../serializers/serializerParams";
-import {BaseRepository} from "../repositories/base.repository";*/
+
 
 /**
  *

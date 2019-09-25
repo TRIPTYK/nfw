@@ -8,8 +8,6 @@ import {RefreshToken} from "../models/refresh-token.model";
 import {roles} from "../enums/role.enum";
 import {jwtAuthMode} from "nfw-core";
 import {BaseRepository} from "nfw-core";
-/*import {jwtAuthMode} from "../../config/environment.config";
-import {BaseRepository} from "./base.repository";*/
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {

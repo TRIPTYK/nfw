@@ -8,8 +8,7 @@ import {DocumentSerializer} from "../serializers/document.serializer";
 import {BaseMiddleware} from "./base.middleware";
 import {jimp as JimpConfiguration} from "nfw-core";
 import {imageMimeTypes} from "nfw-core";
-/*import {jimp as JimpConfiguration} from "./../../config/environment.config";
-import {imageMimeTypes} from "../enums/mime-type.enum";*/
+
 
 
 export class DocumentMiddleware extends BaseMiddleware {

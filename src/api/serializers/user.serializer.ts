@@ -2,8 +2,7 @@ import {documentSerialize} from "../enums/json-api/document.enum";
 import {userDeserialize, userSerialize} from "../enums/json-api/user.enum";
 import {BaseSerializer} from "nfw-core";
 import {SerializerParams} from "nfw-core";
-/*import {BaseSerializer} from "./base.serializer";
-import {SerializerParams} from "./serializerParams";*/
+
 
 
 export class UserSerializer extends BaseSerializer {

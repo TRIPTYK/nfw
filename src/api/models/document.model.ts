@@ -18,8 +18,7 @@ import * as Path from "path";
 import {promisify} from "util";
 import {mimeTypes} from "nfw-core";
 import {documentTypes} from "nfw-core";
-/*import {mimeTypes} from "../enums/mime-type.enum";
-import {documentTypes} from "../enums/document-type.enum";*/
+
 
 const unlink = promisify(Fs.unlink);
 

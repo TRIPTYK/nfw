@@ -5,7 +5,7 @@ import {RefreshToken} from "../api/models/refresh-token.model";
 import {Document} from "../api/models/document.model";
 
 import {typeorm as TypeORM} from "nfw-core";
-//import {typeorm as TypeORM} from "./environment.config";
+
 
 /**
  * Define TypeORM default configuration

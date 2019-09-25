@@ -6,8 +6,7 @@ import {DocumentMiddleware} from "../../middlewares/document.middleware";
 import {roles} from "../../enums/role.enum";
 import {relationships} from "nfw-core";
 import {deleteDocument, getDocument, updateDocument} from "nfw-core";
-/*import {relationships} from "../../validations/global.validation";
-import {deleteDocument, getDocument, updateDocument} from "../../validations/document.validation";*/
+
 
 const router = Router();
 const upload = Multer();
