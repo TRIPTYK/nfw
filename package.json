@@ -5,6 +5,7 @@
   "scripts": {
     "todo": "leasot -x 'src/**/*.ts'",
     "setup": "npm i && node ./init_scripts/setup",
+    "deploy": "npm i && node ./init_scripts/deploy",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
     "start": "node ./dist/src/app.bootstrap",
     "start-dev": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env developement",

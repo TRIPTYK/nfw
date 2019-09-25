@@ -18,9 +18,8 @@ for (const dir of dirs) {
     }
 }
 
-spawn.sync(`npm install`, [], { stdio: 'inherit' });
-
 console.log("Compiling...");
 spawn.sync(`./node_modules/.bin/tsc`, [], { stdio: 'inherit' });
 console.log("Compiling done");
 
+// pm2 reload ecosystem.config.js --env production
