@@ -74,7 +74,7 @@ const sendmail = async (req: Request) => {
 /**
  * Sparkpost API
  */
-const sendmailSparkpost = async (emailData : Object) => {
+/*const sendmailSparkpost = async (emailData : Object) => {
 
     const data = JSON.stringify(emailData);
     //2. Send email to user with request_token, with a link to the "new password page [FRONT]"
@@ -165,4 +165,4 @@ const sendmailGun = async (req : Request, gunData, type) => {
     });
 };
 
-export { sendmail, sendmailSparkpost, sendmailGun };
+export { sendmail, /*sendmailSparkpost,*/ sendmailGun };
