@@ -2,7 +2,7 @@ import * as Passport from "passport";
 import * as Boom from "boom";
 
 import { User } from "../models/user.model";
-import { promisify } from "es6-promisify";
+import { promisify } from "util";
 import { roles as userRoles } from "./../enums/role.enum";
 import { Request , Response } from "express"
 
