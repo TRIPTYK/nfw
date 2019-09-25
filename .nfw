@@ -1,4 +1,4 @@
 {
-    "env": "development",
-    "dockerContainer": "nfw-cli-55"
+  "env": "development",
+  "dockerContainer": "nfw_server_docker"
 }
