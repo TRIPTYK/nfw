@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
   "scripts": {
-    "kickstart": "mkdir -p ./dist/logs ./dist/uploads/documents/xs ./dist/migration/dump ./dist/uploads/documents/md ./dist/uploads/documents/xl && npm i highlight.js@9.14.2 -D -g && npm i typescript && npm i typeorm && npm i && ./node_modules/.bin/tsc",
-    "kickstart-win": "init_scripts\\windows.bat",
     "todo": "leasot -x 'src/**/*.ts'",
+    "setup": "npm i && node ./init_scripts/setup",
+    "deploy": "npm i && node ./init_scripts/deploy",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
-    "start": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env developement",
+    "start": "node ./dist/src/app.bootstrap",
+    "start-dev": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env developement",
     "todo-ci": "leasot -x --reporter markdown 'src/**/*.ts' > TODO.md"
   },
   "engines": {
@@ -89,6 +90,7 @@
     "pdfmake": "^0.1.57",
     "pem": "^1.14.2",
     "pluralize": "^8.0.0",
+    "pm2": "Unitech/pm2#development",
     "qrcode": "^1.3.3",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
