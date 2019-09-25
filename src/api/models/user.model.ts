@@ -20,7 +20,7 @@ import {UserSerializer} from "../serializers/user.serializer";
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import {BaseModel} from "./base.model";
 import {imageMimeTypes} from "nfw-core";
 import {env, jwtExpirationInterval, jwtSecret} from "nfw-core";

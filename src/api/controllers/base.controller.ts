@@ -28,6 +28,10 @@ abstract class BaseController implements IController {
 
     public method = (method,{enableCache = true} : {enableCache : boolean}) => async (req, res, next) => {
         try {
+            if (!this[method]) {
+                next(new Error(`Controller does not have a method ${method}`));
+            }
+
             const cacheEnabled = caching_enabled && enableCache;
             this.beforeMethod();
 
@@ -38,7 +42,6 @@ abstract class BaseController implements IController {
                     return;
                 }
             }
-
             const extracted = await this[method](req, res, next);
 
             if (cacheEnabled) {

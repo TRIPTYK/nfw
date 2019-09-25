@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 
 
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
 import {IMiddleware} from "nfw-core";

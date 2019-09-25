@@ -1,5 +1,5 @@
 import * as Multer from "multer";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import Func = Mocha.Func;
 import {validateFile} from "nfw-core";
 import {mimeTypes} from "nfw-core";

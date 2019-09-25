@@ -18,6 +18,7 @@ export class MonitoringController extends BaseController {
      * @param req Request
      * @param res Response
      *
+     * @param next
      * @public
      */
     public async get(req: Request, res: Response, next: Function) {

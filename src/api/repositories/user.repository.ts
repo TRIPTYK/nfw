@@ -3,7 +3,7 @@ import {EntityRepository, getRepository} from "typeorm";
 import * as uuid from "uuid/v4";
 
 import * as Moment from "moment-timezone";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import {RefreshToken} from "../models/refresh-token.model";
 import {roles} from "../enums/role.enum";
 import {jwtAuthMode} from "nfw-core";
