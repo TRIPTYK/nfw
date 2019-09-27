@@ -32,7 +32,7 @@ export class UserRepository extends BaseRepository<User> {
         if (!email) throw Boom.badRequest('An email is required to generate a token');
 
         const user = await this.findOne({email});
-
+        
         if (!user) {
             throw Boom.notFound('User not found');
         } else {
