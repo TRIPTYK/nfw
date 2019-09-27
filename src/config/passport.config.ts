@@ -1,6 +1,6 @@
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
 import {UserRepository} from "../api/repositories/user.repository";
-import {api, facebook_id, facebook_secret, google_id, google_secret, jwtSecret, url} from "nfw-core";
+import {api, facebook_id, facebook_secret, google_id, google_secret, jwtSecret, url} from "./environment.config";
 import {getCustomRepository, getRepository} from "typeorm";
 import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";

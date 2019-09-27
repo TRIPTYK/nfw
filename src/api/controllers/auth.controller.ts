@@ -1,9 +1,3 @@
-/**
- * 
- *
- * @package C:\Users\dje19\Desktop\nfw-core\nfw-core
- */
-/// <reference path="file:../nfw-core/nfw-core">
 import * as HttpStatus from "http-status";
 import Boom from "@hapi/boom";
 
@@ -15,7 +9,7 @@ import {UserRepository} from "../repositories/user.repository";
 import {generateTokenResponse} from "../utils/auth.util";
 import {BaseController} from "./base.controller";
 import {roles} from "../enums/role.enum";
-import {env, jwtAuthMode} from "nfw-core";
+import {env, jwtAuthMode} from "../../config/environment.config";
 
 /**
  * Authentification Controller!

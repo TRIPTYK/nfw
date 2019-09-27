@@ -1,4 +1,4 @@
-import {documentSerialize} from "../enums/json-api/document.enum";
+import {documentSerialize} from "../enums/document.enum";
 import {userDeserialize, userSerialize} from "../enums/json-api/user.enum";
 import {BaseSerializer} from "nfw-core";
 import {SerializerParams} from "nfw-core";

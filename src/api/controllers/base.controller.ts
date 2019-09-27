@@ -1,6 +1,6 @@
 import {Connection, getConnection} from "typeorm";
-import {cache, cleanupRouteCache} from "../../config/cache.config";
-import {caching_enabled, typeorm as TypeORM} from "nfw-core";
+import {cache, cleanupRouteCache} from "nfw-core";
+import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
 import {BaseRepository} from "nfw-core";
 import {IController} from "nfw-core";
 
@@ -26,7 +26,7 @@ abstract class BaseController implements IController {
         this.connection = getConnection(TypeORM.name);
     }
 
-    public method = (method,{enableCache = true} : {enableCache : boolean}) => async (req, res, next) => {
+    public method = (method,{enableCache = true} : {enableCache? : boolean} = {}) => async (req, res, next) => {
         try {
             if (!this[method]) {
                 next(new Error(`Controller does not have a method ${method}`));

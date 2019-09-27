@@ -10,8 +10,8 @@ import * as RateLimit from "express-rate-limit";
 import {strategies as Strategies} from "./passport.config";
 
 import {router as ProxyRouter} from "./../api/routes/v1";
-import * as ServiceErrorHandler from "nfw-core";
-import {api, authorized, env, environments, HTTPLogs} from "nfw-core";
+import * as ServiceErrorHandler from "../api/services/error-handler.service"
+import {api, authorized, env, environments, HTTPLogs} from "../config/environment.config";
 
 
 let app = Express();

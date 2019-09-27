@@ -45,7 +45,8 @@ const notify = (err, str, req) => {
 };
 
 const _boomToJSONAPI = (err: any) => {
-    return serializer.serializeError({
+    console.log(err);
+        return serializer.serializeError({
         status: _getErrorCode(err).toString(),
         title: err.output ? err.output.payload.error : "Error",
         meta: {validation: err.errors ? err.errors : undefined},

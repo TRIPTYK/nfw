@@ -11,7 +11,6 @@ import {
 } from "typeorm";
 
 import {User} from "./user.model";
-import {DocumentSerializer} from "../serializers/document.serializer";
 import * as Fs from "fs";
 import {BaseModel} from "./base.model";
 import * as Path from "path";

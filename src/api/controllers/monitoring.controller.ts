@@ -1,5 +1,3 @@
-//import * as HttpStatus from "http-status";
-
 import {Request, Response} from "express";
 import {BaseController} from "./base.controller";
 import * as Osu from "node-os-utils";

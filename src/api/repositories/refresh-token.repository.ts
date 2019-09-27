@@ -1,10 +1,9 @@
 import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
-import Boom from "@hapi/boom";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
-import {DeleteResult, EntityRepository, Repository} from "typeorm";
-import {jwtExpirationInterval} from "nfw-core";
+import { EntityRepository, Repository} from "typeorm";
+import {jwtExpirationInterval} from "../../config/environment.config";
 
 @EntityRepository(RefreshToken)
 export class RefreshTokenRepository extends Repository<RefreshToken> {

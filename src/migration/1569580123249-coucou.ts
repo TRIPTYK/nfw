@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class createDbNfw171569423343984 implements MigrationInterface {
+export class coucou1569580123249 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query("CREATE TABLE `user` (`id` int NOT NULL AUTO_INCREMENT, `services` text NOT NULL, `username` varchar(32) NOT NULL, `password` varchar(128) NOT NULL, `email` varchar(128) NOT NULL, `firstname` varchar(32) NOT NULL, `lastname` varchar(32) NOT NULL, `role` enum ('admin', 'user', 'ghost') NOT NULL DEFAULT 'ghost', `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` datetime(6) NULL DEFAULT CURRENT_TIMESTAMP(6), `deletedAt` datetime NULL DEFAULT null, `avatarId` int NULL, UNIQUE INDEX `IDX_78a916df40e02a9deb1c4b75ed` (`username`), UNIQUE INDEX `IDX_e12875dfb3b1d92d7d7c5377e2` (`email`), UNIQUE INDEX `REL_58f5c71eaab331645112cf8cfa` (`avatarId`), PRIMARY KEY (`id`)) ENGINE=InnoDB", undefined);

@@ -1,6 +1,5 @@
 import {sendmail} from "nfw-core";
 import {Request, Response} from "express";
-
 import Boom from "@hapi/boom";
 
 /**

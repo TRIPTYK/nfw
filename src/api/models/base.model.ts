@@ -1,4 +1,3 @@
-
 import {IModelize} from "nfw-core";
 
 export abstract class BaseModel implements IModelize {
