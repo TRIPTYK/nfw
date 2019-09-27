@@ -1,7 +1,7 @@
 // GET /v1/documents/:documentId
 import {Schema} from "express-validator";
 import { mimeTypes as filters } from "../enums/mime-type.enum";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 
 export const getDocument: Schema = {
     documentId: {
