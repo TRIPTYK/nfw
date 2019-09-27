@@ -20,8 +20,8 @@ import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import Boom from "@hapi/boom";
 import {BaseModel} from "./base.model";
-import {imageMimeTypes} from "nfw-core";
 import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
+import {imageMimeTypes} from "../enums/mime-type.enum";
 
 
 @Entity()

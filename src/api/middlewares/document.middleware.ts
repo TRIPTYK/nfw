@@ -6,7 +6,7 @@ import {Document} from "../models/document.model";
 import {DocumentSerializer} from "../serializers/document.serializer";
 import {BaseMiddleware} from "./base.middleware";
 import {jimp as JimpConfiguration} from "../../config/environment.config";
-import {imageMimeTypes} from "nfw-core";
+import {imageMimeTypes} from "../enums/mime-type.enum";
 
 
 
