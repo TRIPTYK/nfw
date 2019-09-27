@@ -1,6 +1,6 @@
 import {Document} from "../models/document.model";
 import {EntityRepository} from "typeorm";
-import {BaseRepository} from "nfw-core";
+import {BaseRepository} from "./base.repository";
 
 
 @EntityRepository(Document)
