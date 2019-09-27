@@ -31,7 +31,7 @@ class TypeORMConfiguration {
             database: TypeORM.database,
             entities
         });
-        return await this.connection;
+        return this.connection;
     }
 }
 
