@@ -1,5 +1,5 @@
 import * as Multer from "multer";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import {mimeTypes} from "../api/enums/mime-type.enum";
 import Func = Mocha.Func;
 import {validateFile} from "../api/validations/document.validation";

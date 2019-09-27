@@ -1,7 +1,7 @@
 import {Brackets, EntityRepository, Repository, SelectQueryBuilder} from "typeorm";
 import * as SqlString from "sqlstring";
 import {Request} from "express";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";

@@ -1,4 +1,4 @@
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import { default as Axios } from "axios";
 import { Request, Response } from "express";
 import * as Mailgun from "mailgun-js";

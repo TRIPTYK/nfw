@@ -1,6 +1,6 @@
 import {logger as Logger} from "./../../config/logger.config";
 import * as Notifier from "node-notifier";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
 
 const serializer = new JSONAPISerializer();
@@ -44,7 +44,7 @@ const notify = (err, str, req) => {
     });
 };
 
-const _boomToJSONAPI = (err: Boom) => {
+const _boomToJSONAPI = (err: any) => {
     return serializer.serializeError({
         status: _getErrorCode(err).toString(),
         title: err.output ? err.output.payload.error : "Error",

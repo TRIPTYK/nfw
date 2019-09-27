@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import * as XSS from "xss";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 
 export class SecurityMiddleware {
 

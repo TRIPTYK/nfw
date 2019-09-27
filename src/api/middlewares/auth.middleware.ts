@@ -1,5 +1,5 @@
 import * as Passport from "passport";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 
 import { User } from "../models/user.model";
 import { promisify } from "util";

@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status";
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";

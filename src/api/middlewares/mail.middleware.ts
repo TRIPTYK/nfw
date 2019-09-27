@@ -1,7 +1,7 @@
 import {sendmail} from "./../services/mail-sender.service";
 import {Request, Response} from "express";
 
-import * as Boom from "boom";
+import Boom from "@hapi/boom";
 
 /**
  *
@@ -22,7 +22,7 @@ export class MailMiddleware {
      */
     public mail = async (req: Request, res: Response, next: Function) => {
         try {
-            let response = await sendmail(req);
+            let response : any = await sendmail(req);
             if (response.status !== 200) next(Boom.expectationFailed(response), false);
             else next(null, response);
         } catch (e) {
