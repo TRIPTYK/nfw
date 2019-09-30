@@ -131,7 +131,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                         let [strategy, value] = e.split(":");
 
                         // TODO : fix params not working with TypeORM where
-                        switch (strategy){
+                        switch (strategy) {
                             case "like" : 
                                 qb.andWhere(SqlString.format(`?? LIKE ?`, [key, value]));
                                 break ; 
@@ -158,8 +158,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                                 break ; 
                             case "orin" : 
                                 qb.orWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
-                                break ; 
-
+                                break ;
                         }
                     });
                 }

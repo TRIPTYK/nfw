@@ -13,7 +13,6 @@ import {router as ProxyRouter} from "./../api/routes/v1";
 import * as ServiceErrorHandler from "../api/services/error-handler.service"
 import {api, authorized, env, environments, HTTPLogs} from "./environment.config";
 
-
 let app = Express();
 
 /**
