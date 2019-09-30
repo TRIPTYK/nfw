@@ -131,34 +131,6 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                         let [strategy, value] = e.split(":");
 
                         // TODO : fix params not working with TypeORM where
-                        /*if (strategy == "like") {
-                            qb.andWhere(SqlString.format(`?? LIKE ?`, [key, value]));
-                        }
-                        if (strategy == "eq") {
-                            qb.andWhere(SqlString.format(`?? = ?`, [key, value]));
-                        }
-                        if (strategy == "noteq") {
-                            qb.andWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
-                        }
-                        if (strategy == "andin") {
-                            qb.andWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
-                        }
-                        if (strategy == "notin") {
-                            qb.andWhere(SqlString.format(`?? NOT IN (?)`, [key, splitAndFilterPlus(value)]))
-                        }
-
-                        if (strategy == "orlike") {
-                            qb.orWhere(SqlString.format(`?? LIKE ?`, [key, value]));
-                        }
-                        if (strategy == "oreq") {
-                            qb.orWhere(SqlString.format(`?? = ?`, [key, value]));
-                        }
-                        if (strategy == "ornoteq") {
-                            qb.orWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
-                        }
-                        if (strategy == "orin") {
-                            qb.orWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
-                        }*/
                         switch (strategy){
                             case "like" : 
                                 qb.andWhere(SqlString.format(`?? LIKE ?`, [key, value]));
