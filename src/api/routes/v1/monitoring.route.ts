@@ -6,6 +6,7 @@ const monitoringController = new MonitoringController(); // Todo injecter comme 
 
 
 router
-    .route('/').get(monitoringController.method('get'));
+    .route('/')
+    .get(monitoringController.method('get'))
 
 export {router};

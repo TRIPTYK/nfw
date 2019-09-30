@@ -6,7 +6,7 @@ import Boom from "@hapi/boom";
 import {RefreshToken} from "../models/refresh-token.model";
 import {roles} from "../enums/role.enum";
 import {jwtAuthMode} from "../../config/environment.config";
-import {BaseRepository} from "./base.repository";
+import {BaseRepository} from "nfw-core";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -30,6 +30,8 @@ export class UserRepository extends BaseRepository<User> {
         const refreshTokenRepository = getRepository(RefreshToken);
 
         if (!email) throw Boom.badRequest('An email is required to generate a token');
+
+
 
         const user = await this.findOne({email});
         

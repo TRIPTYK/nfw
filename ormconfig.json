@@ -2,9 +2,9 @@
   "type": "mysql",
   "name": "default",
   "host": "localhost",
-  "port": "3308",
+  "port": "3306",
   "username": "root",
-  "password": "test123*",
+  "password": "root",
   "database": "nfw_17",
   "logging": false,
   "entities": [

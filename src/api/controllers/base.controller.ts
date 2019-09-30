@@ -3,7 +3,6 @@ import {cache, cleanupRouteCache} from "nfw-core";
 import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
 import {BaseRepository} from "nfw-core";
 import {IController} from "nfw-core";
-import {User} from "../models/user.model";
 
 /**
  * Main controller contains properties/methods
