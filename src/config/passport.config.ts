@@ -1,4 +1,3 @@
-import * as AuthProviders from "./../api/services/auth-providers.service";
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
 import {UserRepository} from "../api/repositories/user.repository";
 import {api, facebook_id, facebook_secret, google_id, google_secret, jwtSecret, url} from "./environment.config";
@@ -7,6 +6,8 @@ import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
 import {userRelations} from "../api/enums/json-api/user.enum";
+
+import * as AuthProviders from "nfw-core";
 
 const jwtOptions = {
     secretOrKey: jwtSecret,

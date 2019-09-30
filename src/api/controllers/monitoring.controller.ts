@@ -1,5 +1,3 @@
-//import * as HttpStatus from "http-status";
-
 import {Request, Response} from "express";
 import {BaseController} from "./base.controller";
 import * as Osu from "node-os-utils";
@@ -18,6 +16,7 @@ export class MonitoringController extends BaseController {
      * @param req Request
      * @param res Response
      *
+     * @param next
      * @public
      */
     public async get(req: Request, res: Response, next: Function) {

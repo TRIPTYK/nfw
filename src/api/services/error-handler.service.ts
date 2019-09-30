@@ -1,4 +1,4 @@
-import {logger as Logger} from "./../../config/logger.config";
+import {logger as Logger} from "../../config/logger.config";
 import * as Notifier from "node-notifier";
 import Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
@@ -45,7 +45,8 @@ const notify = (err, str, req) => {
 };
 
 const _boomToJSONAPI = (err: any) => {
-    return serializer.serializeError({
+    console.log(err);
+        return serializer.serializeError({
         status: _getErrorCode(err).toString(),
         title: err.output ? err.output.payload.error : "Error",
         meta: {validation: err.errors ? err.errors : undefined},

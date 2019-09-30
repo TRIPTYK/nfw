@@ -1,5 +1,0 @@
-interface IController {
-
-}
-
-export {IController};

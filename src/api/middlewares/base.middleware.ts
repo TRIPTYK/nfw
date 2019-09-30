@@ -1,10 +1,10 @@
 import {Request, Response} from "express";
-import {BaseSerializer} from "../serializers/base.serializer";
-
 import Boom from "@hapi/boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
-import {IMiddleware} from "../interfaces/IMiddleware.interface";
+import {IMiddleware} from "nfw-core";
+import {BaseSerializer} from "nfw-core";
+
 
 export abstract class BaseMiddleware implements IMiddleware {
 
@@ -57,7 +57,7 @@ export abstract class BaseMiddleware implements IMiddleware {
                 else if (Array.isArray(payload[originalRel]))
                     relationData = await getRepository(importModel).findByIds(payload[originalRel]);
 
-                if (!relationData) throw Boom.notFound('Related object not found');
+                if (!relationData && payload[originalRel] !== null) throw Boom.notFound('Related object not found');
 
                 recipient[originalRel] = relationData;
             }

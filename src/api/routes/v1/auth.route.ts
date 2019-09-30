@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {AuthController} from "../../controllers/auth.controller";
 import {login, refresh, register} from "../../validations/auth.validation";
-import {authorize, oAuth as oAuthLogin} from "./../../middlewares/auth.middleware";
+import { oAuth as oAuthLogin} from "./../../middlewares/auth.middleware";
 import {SecurityMiddleware} from "../../middlewares/security.middleware";
 import {UserMiddleware} from "../../middlewares/user.middleware";
 

@@ -1,10 +1,8 @@
-import {Connection, getConnection, getCustomRepository} from "typeorm";
-import {caching_enabled, typeorm as TypeORM} from "./../../config/environment.config";
+import {Connection, getConnection, getRepository} from "typeorm";
+import {cache, cleanupRouteCache} from "nfw-core";
+import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
 import {BaseRepository} from "../repositories/base.repository";
-import {cache, cleanupRouteCache} from "../../config/cache.config";
-import {IController} from "../interfaces/IController.interface";
-import {UserRepository} from "../repositories/user.repository";
-import {BaseSerializer} from "../serializers/base.serializer";
+import {IController} from "nfw-core";
 
 /**
  * Main controller contains properties/methods
@@ -24,25 +22,29 @@ abstract class BaseController implements IController {
      * Retrieve database connection, and store it into connection
      * @constructor
      */
-    constructor() {
+    protected constructor() {
         this.connection = getConnection(TypeORM.name);
     }
 
-    public method = (method) => async (req, res, next) => {
+    public method = (method,{enableCache = true} : {enableCache? : boolean} = {}) => async (req, res, next) => {
         try {
+            if (!this[method]) {
+                next(new Error(`Controller does not have a method ${method}`));
+            }
+
+            const cacheEnabled = caching_enabled && enableCache;
             this.beforeMethod();
 
-            if (caching_enabled && req.method === "GET") {
-                const cached = cache.get(req.originalUrl);
+            if (cacheEnabled && req.method === "GET") {
+                const cached : any = cache.get(req.originalUrl);
                 if (cached !== undefined) {
                     res.json(cached);
                     return;
                 }
             }
-
             const extracted = await this[method](req, res, next);
 
-            if (caching_enabled) {
+            if (cacheEnabled) {
                 if (['PATCH', 'DELETE', 'PUT', 'POST'].includes(req.method)) {
                     let routeType = req.originalUrl.split('?')[0]
                         .replace(/\/api\/v1\/(?:admin\/)?/, '');
@@ -61,7 +63,6 @@ abstract class BaseController implements IController {
     };
 
     protected beforeMethod() {
-
     }
 }
 

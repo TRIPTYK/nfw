@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 import {UserRepository} from "../repositories/user.repository";
 import {getCustomRepository} from "typeorm";
-import {User} from "../models/user.model";
 import {UserSerializer} from "../serializers/user.serializer";
 import {BaseMiddleware} from "./base.middleware";
 import {userRelations} from "../enums/json-api/user.enum";

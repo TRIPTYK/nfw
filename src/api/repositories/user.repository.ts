@@ -1,13 +1,12 @@
 import {User} from "../models/user.model";
 import {EntityRepository, getRepository} from "typeorm";
 import * as uuid from "uuid/v4";
-
 import * as Moment from "moment-timezone";
 import Boom from "@hapi/boom";
-import {BaseRepository} from "./base.repository";
 import {RefreshToken} from "../models/refresh-token.model";
-import {jwtAuthMode} from "../../config/environment.config";
 import {roles} from "../enums/role.enum";
+import {jwtAuthMode} from "../../config/environment.config";
+import {BaseRepository} from "./base.repository";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -32,8 +31,10 @@ export class UserRepository extends BaseRepository<User> {
 
         if (!email) throw Boom.badRequest('An email is required to generate a token');
 
-        const user = await this.findOne({email});
 
+
+        const user = await this.findOne({email});
+        
         if (!user) {
             throw Boom.notFound('User not found');
         } else {

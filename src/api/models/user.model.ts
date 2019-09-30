@@ -5,14 +5,12 @@ import {
     Column,
     CreateDateColumn,
     Entity, JoinColumn,
-    ManyToOne,
     OneToMany, OneToOne,
     PrimaryGeneratedColumn,
-    Unique,
     UpdateDateColumn
 } from "typeorm";
 
-import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
+
 import {Document} from "./document.model";
 import {roles} from "../enums/role.enum";
 import {UserSerializer} from "../serializers/user.serializer";
@@ -22,7 +20,9 @@ import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import Boom from "@hapi/boom";
 import {BaseModel} from "./base.model";
+import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
 import {imageMimeTypes} from "../enums/mime-type.enum";
+
 
 @Entity()
 export class User extends BaseModel {

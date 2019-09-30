@@ -1,7 +1,6 @@
 import {Schema} from "express-validator";
 import {getRepository} from "typeorm";
 import {User} from "../models/user.model";
-import * as Joi from "@hapi/joi";
 
 const _isEmailDuplicated = async (email) => {
     const uRepo = getRepository(User);

@@ -1,8 +1,9 @@
 import * as Fs from "fs";
 import * as HTTPS from "https";
-import {logger as Logger} from "./config/logger.config";
-import {env, environments, https, port, typeorm} from "./config/environment.config";
 import {TypeORMConfiguration} from "./config/typeorm.config";
+
+import {logger as Logger} from "../src/config/logger.config" ; 
+import {env, environments, https, port, typeorm} from "../src/config/environment.config";
 
 module.exports = (async () => {
     /** Connection to Database server before app configuration */

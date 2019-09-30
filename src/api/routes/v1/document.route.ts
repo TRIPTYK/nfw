@@ -1,11 +1,12 @@
 import {Router} from "express";
 import {DocumentController} from "../../controllers/document.controller";
 import {authorize} from "../../middlewares/auth.middleware";
-import {deleteDocument, getDocument, updateDocument} from "../../validations/document.validation";
 import {set as Multer} from "./../../../config/multer.config";
 import {DocumentMiddleware} from "../../middlewares/document.middleware";
-import {relationships} from "../../validations/global.validation";
 import {roles} from "../../enums/role.enum";
+import {relationships} from "nfw-core";
+import {deleteDocument, getDocument, updateDocument} from "../../validations/document.validation";
+
 
 const router = Router();
 const upload = Multer();
