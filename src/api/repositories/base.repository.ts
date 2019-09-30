@@ -131,7 +131,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                         let [strategy, value] = e.split(":");
 
                         // TODO : fix params not working with TypeORM where
-                        if (strategy == "like") {
+                        /*if (strategy == "like") {
                             qb.andWhere(SqlString.format(`?? LIKE ?`, [key, value]));
                         }
                         if (strategy == "eq") {
@@ -158,6 +158,36 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                         }
                         if (strategy == "orin") {
                             qb.orWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
+                        }*/
+                        switch (strategy){
+                            case "like" : 
+                                qb.andWhere(SqlString.format(`?? LIKE ?`, [key, value]));
+                                break ; 
+                            case "eq" :
+                                qb.andWhere(SqlString.format(`?? = ?`, [key, value]));
+                                break ;
+                            case "noteq" :
+                                qb.andWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
+                                break ; 
+                            case "andin":
+                                qb.andWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
+                                break ;
+                            case "notin" : 
+                                qb.andWhere(SqlString.format(`?? NOT IN (?)`, [key, splitAndFilterPlus(value)]))
+                                break ;
+                            case "orlike" : 
+                                qb.orWhere(SqlString.format(`?? LIKE ?`, [key, value]));
+                                break ; 
+                            case "oreq" :
+                                qb.orWhere(SqlString.format(`?? = ?`, [key, value]));
+                                break ;
+                            case "ornoteq" :
+                                qb.orWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
+                                break ; 
+                            case "orin" : 
+                                qb.orWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilterPlus(value)]))
+                                break ; 
+
                         }
                     });
                 }
