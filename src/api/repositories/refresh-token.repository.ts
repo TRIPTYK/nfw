@@ -2,7 +2,7 @@ import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
-import { EntityRepository, Repository} from "typeorm";
+import {EntityRepository, getCustomRepository, Repository} from "typeorm";
 import {jwtExpirationInterval} from "../../config/environment.config";
 
 @EntityRepository(RefreshToken)
@@ -26,5 +26,22 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
         await this.save(tokenObject);
 
         return tokenObject;
+    }
+
+    /**
+     *
+     * @param user
+     * @param accessToken
+     * @param ip
+     */
+    async generateTokenResponse (user: User, accessToken: string,ip : string): Promise<RefreshToken>  {
+        const oldToken = await this.findOne({where: {user: user,ip}});
+
+        if (oldToken)
+            await this.remove(oldToken);
+
+        const token = await this.generate(user,ip);
+        token.accessToken = accessToken;
+        return token;
     }
 }

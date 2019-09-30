@@ -8,7 +8,7 @@ import {DocumentRepository} from "../repositories/document.repository";
 import {BaseController} from "./base.controller";
 import {DocumentSerializer} from "../serializers/document.serializer";
 import {UserSerializer} from "../serializers/user.serializer";
-import {documentRelations} from "../enums/document.enum";
+import {documentRelations} from "../enums/json-api/document.enum";
 import {SerializerParams} from "nfw-core";
 import {BaseRepository} from "../repositories/base.repository";
 
@@ -24,6 +24,7 @@ class DocumentController extends BaseController {
      */
     constructor() {
         super();
+        this.repository = getCustomRepository(DocumentRepository);
     }
 
     /**
@@ -163,10 +164,6 @@ class DocumentController extends BaseController {
         await this.repository.remove(document);
 
         res.sendStatus(HttpStatus.NO_CONTENT).end();
-    }
-
-    protected beforeMethod(): void {
-        this.repository = getCustomRepository(DocumentRepository);
     }
 }
 

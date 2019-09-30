@@ -6,10 +6,10 @@ import {RefreshToken} from "../models/refresh-token.model";
 import {Request, Response} from "express";
 import {getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
-import {generateTokenResponse} from "../utils/auth.util";
 import {BaseController} from "./base.controller";
 import {roles} from "../enums/role.enum";
 import {env, jwtAuthMode} from "../../config/environment.config";
+import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 
 /**
  * Authentification Controller!
@@ -18,9 +18,12 @@ import {env, jwtAuthMode} from "../../config/environment.config";
 class AuthController extends BaseController {
 
     protected repository;
+    protected refreshRepository;
 
     constructor() {
         super();
+        this.refreshRepository = getCustomRepository(RefreshTokenRepository);
+        this.repository = getCustomRepository(UserRepository);
     }
 
     /**
@@ -38,7 +41,7 @@ class AuthController extends BaseController {
         let user = new User(req.body);
         user.role = ['test', 'development'].includes(env.toLowerCase()) ? roles.admin : roles.user;
         user = await this.repository.save(user);
-        const token = await generateTokenResponse(user, user.token(), req.ip);
+        const token = await this.refreshRepository.generateTokenResponse(user, user.token(), req.ip);
         res.status(HttpStatus.CREATED);
 
         return {
@@ -64,7 +67,7 @@ class AuthController extends BaseController {
         const {user, accessToken} = await this.repository.findAndGenerateToken({
             email,ip : req.ip,refreshObject
         },jwtAuthMode === 'normal',force);
-        const token = await generateTokenResponse(user, accessToken, req.ip);
+        const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
 
         return {
             token
@@ -85,7 +88,7 @@ class AuthController extends BaseController {
     async oAuth(req: Request, res: Response, next: Function) {
         const user: User = req['user'];
         const accessToken = user.token();
-        const token = await generateTokenResponse(user, accessToken, req.ip);
+        const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
         token.user = user;
 
         return {
@@ -118,15 +121,11 @@ class AuthController extends BaseController {
         await refreshTokenRepository.remove(refreshObject);
         // Get owner user of the token
         const { user, accessToken } = await this.repository.findAndGenerateToken({ email: refreshObject.user.email , refreshObject , ip : req.ip},true);
-        const refreshedToken = await generateTokenResponse(user, accessToken , req.ip);
+        const refreshedToken = await this.refreshRepository.generateTokenResponse(user, accessToken , req.ip);
 
         return {
             token : refreshedToken
         }
-    }
-
-    protected beforeMethod(): void {
-        this.repository = getCustomRepository(UserRepository);
     }
 }
 

@@ -21,6 +21,7 @@ export class UserController extends BaseController {
 
     constructor() {
         super();
+        this.repository = getCustomRepository(UserRepository);
     }
 
     /**
@@ -179,9 +180,5 @@ export class UserController extends BaseController {
 
         await this.repository.remove(user);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
-    }
-
-    protected beforeMethod(): void {
-        this.repository = getCustomRepository(UserRepository);
     }
 }
