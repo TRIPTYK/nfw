@@ -1,5 +1,5 @@
 import Boom from "@hapi/boom";
-import Jimp from "jimp";
+import * as Jimp from "jimp";
 import {Request, Response} from "express";
 import {getRepository} from "typeorm";
 import {Document} from "../models/document.model";
@@ -59,6 +59,7 @@ export class DocumentMiddleware extends BaseMiddleware {
                 let destination = req['file'].destination;
 
                 // Read original file
+                    //@ts-ignore
                     const image = await Jimp.read(req['file'].path);
 
                     // Clone in 3 files according to 3 sizes
@@ -66,18 +67,21 @@ export class DocumentMiddleware extends BaseMiddleware {
 
                     // Resize and write file in server
                     xsImage
+                        //@ts-ignore
                         .resize(JimpConfiguration.xs, Jimp.AUTO)
                         .write(destination + '/xs/' + req['file'].filename, function (err, doc) {
                             if (err) throw Boom.expectationFailed(err.message);
                         });
 
                     mdImage
+                        //@ts-ignore
                         .resize(JimpConfiguration.md, Jimp.AUTO)
                         .write(destination + '/md/' + req['file'].filename, function (err, doc) {
                             if (err) throw Boom.expectationFailed(err.message);
                         });
 
                     xlImage
+                        //@ts-ignore
                         .resize(JimpConfiguration.xl, Jimp.AUTO)
                         .write(destination + '/xl/' + req['file'].filename, function (err, doc) {
                             if (err) throw Boom.expectationFailed(err.message);

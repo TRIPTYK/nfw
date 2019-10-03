@@ -1,5 +1,6 @@
 const mkdirp = require('mkdirp');
 const spawn = require('cross-spawn');
+const fs = require('fs');
 
 const dirs = [
     './dist/logs',

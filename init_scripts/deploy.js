@@ -11,4 +11,4 @@ console.log("Compiling...");
 spawn.sync(`./node_modules/.bin/tsc`, [], { stdio: 'inherit' });
 console.log("Compiling done");
 
-spawn.sync(`./node_modules/.bin/pm2 reload ecosystem.config.js --env ${env}`, [], { stdio: 'inherit' });
+spawn.sync(`./node_modules/.bin/pm2 restart ecosystem.config.js --env ${env}`, [], { stdio: 'inherit' });

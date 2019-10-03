@@ -1,4 +1,4 @@
-import {Connection, getConnection, getCustomRepository, getRepository} from "typeorm";
+import {Connection, getConnection, getCustomRepository, getRepository, Repository} from "typeorm";
 import {cache, cleanupRouteCache} from "nfw-core";
 import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
 import {BaseRepository} from "../repositories/base.repository";
@@ -18,7 +18,7 @@ abstract class BaseController implements IController {
      * @property Connection
      */
     protected connection: Connection;
-    protected repository: BaseRepository<any>;
+    protected repositories: any[];
 
     /**
      * Super constructor
@@ -64,11 +64,6 @@ abstract class BaseController implements IController {
             next(e);
         }
     };
-
-    loadRepository<T>(repo: ObjectType<T>): T {
-        const loaded = getCustomRepository(repo);
-        return loaded;
-    }
 
     protected beforeMethod() {};
 }

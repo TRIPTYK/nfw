@@ -17,7 +17,8 @@ module.exports = (async () => {
     if(env !== environments['TEST'].toLowerCase())
         Logger.info(`Connection to ${typeorm.type} server established on port ${typeorm.port} (${env})`);
 
-    const {app} = await import("./config/app.config");
+    const { Application } = await import("./config/app.config");
+    const SetupApp = new Application();
 
     /**
      * HTTPS configuration
@@ -31,7 +32,7 @@ module.exports = (async () => {
         };
 
         HTTPS
-            .createServer(credentials, app)
+            .createServer(credentials, SetupApp.App)
             .listen(port, function () {
                 if (env !== environments['TEST'].toLowerCase())
                     Logger.info(`HTTPS server is now running on port ${port} (${env})`)
@@ -39,12 +40,12 @@ module.exports = (async () => {
     }
     else
     {
-        app.listen( port, () => {
+        SetupApp.App.listen( port, () => {
             if(env !== environments['TEST'].toLowerCase())
                 Logger.info(`HTTP server is now running on port ${port} (${env})`)
         });
     }
 
-    return app;
+    return SetupApp.App;
 })();
 
