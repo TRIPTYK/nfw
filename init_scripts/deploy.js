@@ -13,5 +13,5 @@ spawn.sync(`./node_modules/.bin/tsc`, [], { stdio: 'inherit' });
 console.log("Compiling done");
 
 console.log("Starting server...");
-spawnSync(`./node_modules/.bin/pm2 startOrRestart ecosystem.config.js --env ${env}`, []);
+spawnSync(`./node_modules/.bin/pm2`, []);
 console.log("Started");
