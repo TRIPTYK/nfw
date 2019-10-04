@@ -23,7 +23,7 @@ module.exports = {
       user : 'amaury',
       host : '172.16.20.193',
       ref  : 'origin/develop',
-      repo : 'https://github.com/TRIPTYK/nfw.git',
+      repo : 'git@github.com:TRIPTYK/nfw.git',
       path : '/var/www/prod-nfw',
       'post-setup': 'npm run setup',
       'post-deploy' : 'npm run deploy production'
