@@ -1,4 +1,4 @@
-import {IModelize} from "nfw-core";
+import {IModelize} from "@triptyk/nfw-core";
 
 export abstract class BaseModel implements IModelize {
     public constructor(payload: Object = {}) {

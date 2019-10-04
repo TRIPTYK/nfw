@@ -1,8 +1,8 @@
 import {Connection, getConnection, getCustomRepository, getRepository, Repository} from "typeorm";
-import {cache, cleanupRouteCache} from "nfw-core";
+import {cache, cleanupRouteCache} from "@triptyk/nfw-core";
 import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
 import {BaseRepository} from "../repositories/base.repository";
-import {IController} from "nfw-core";
+import {IController} from "@triptyk/nfw-core";
 import {UserRepository} from "../repositories/user.repository";
 import {ObjectType} from "typeorm";
 

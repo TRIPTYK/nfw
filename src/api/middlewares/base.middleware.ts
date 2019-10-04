@@ -2,8 +2,8 @@ import {Request, Response} from "express";
 import Boom from "@hapi/boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
-import {IMiddleware} from "nfw-core";
-import {BaseSerializer} from "nfw-core";
+import {IMiddleware} from "@triptyk/nfw-core";
+import {BaseSerializer} from "@triptyk/nfw-core";
 
 
 export abstract class BaseMiddleware implements IMiddleware {

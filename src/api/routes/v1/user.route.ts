@@ -5,7 +5,7 @@ import {UserMiddleware} from "../../middlewares/user.middleware";
 import {changePassword, createUser, getUser, updateUser} from "../../validations/user.validation";
 import {SecurityMiddleware} from "../../middlewares/security.middleware";
 import {roles} from "../../enums/role.enum";
-import {relationships} from "nfw-core";
+import {relationships} from "@triptyk/nfw-core";
 
 const router = Router();
 const userController = new UserController(); // Todo injecter comme dépendance

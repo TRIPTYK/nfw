@@ -9,7 +9,7 @@ import {BaseController} from "./base.controller";
 import {DocumentSerializer} from "../serializers/document.serializer";
 import {UserSerializer} from "../serializers/user.serializer";
 import {documentRelations} from "../enums/json-api/document.enum";
-import {SerializerParams} from "nfw-core";
+import {SerializerParams} from "@triptyk/nfw-core";
 import {BaseRepository} from "../repositories/base.repository";
 
 /**

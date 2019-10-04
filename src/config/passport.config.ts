@@ -7,7 +7,7 @@ import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
 import {userRelations} from "../api/enums/json-api/user.enum";
 
-import * as AuthProviders from "nfw-core";
+import * as AuthProviders from "@triptyk/nfw-core";
 
 const jwtOptions = {
     secretOrKey: jwtSecret,

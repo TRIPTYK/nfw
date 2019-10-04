@@ -20,8 +20,9 @@ module.exports = {
   }],
   deploy : {
     production : {
-      user : 'amaury',
+      user : 'nodejs',
       host : '172.16.20.193',
+      ssh_options : "PasswordAuthentication=no",
       ref  : 'origin/develop',
       repo : 'git@github.com:TRIPTYK/nfw.git',
       path : '/var/www/prod-nfw',

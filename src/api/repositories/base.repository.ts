@@ -5,8 +5,8 @@ import Boom from "@hapi/boom";
 import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
-import {BaseSerializer} from "nfw-core";
-import {JsonApiRepositoryInterface} from "nfw-core";
+import {BaseSerializer} from "@triptyk/nfw-core";
+import {JsonApiRepositoryInterface} from "@triptyk/nfw-core";
 
 /**
  * Base Repository class , inherited for all current repositories

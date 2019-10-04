@@ -4,7 +4,7 @@ import {authorize} from "../../middlewares/auth.middleware";
 import {set as Multer} from "./../../../config/multer.config";
 import {DocumentMiddleware} from "../../middlewares/document.middleware";
 import {roles} from "../../enums/role.enum";
-import {relationships} from "nfw-core";
+import {relationships} from "@triptyk/nfw-core";
 import {deleteDocument, getDocument, updateDocument} from "../../validations/document.validation";
 
 
