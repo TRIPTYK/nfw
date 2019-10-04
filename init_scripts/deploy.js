@@ -1,4 +1,5 @@
 const spawn = require('cross-spawn');
+const spawnSync = require('child_process').spawnSync;
 
 const [,,env] = process.argv;
 
@@ -12,5 +13,5 @@ spawn.sync(`./node_modules/.bin/tsc`, [], { stdio: 'inherit' });
 console.log("Compiling done");
 
 console.log("Starting server...");
-spawn(`./node_modules/.bin/pm2 startOrRestart ecosystem.config.js --env ${env}`, []);
+spawnSync(`./node_modules/.bin/pm2 startOrRestart ecosystem.config.js --env ${env}`, []);
 console.log("Started");
