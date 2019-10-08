@@ -1,5 +1,6 @@
 import * as Dotenv from "dotenv";
 import * as fs from 'fs';
+import {argv} from "yargs";
 
 /**
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in
@@ -16,7 +17,7 @@ files.forEach(element => {
 
 //const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
 
-const environment = process.argv[2] && process.argv[2] === '--env' && process.argv[3] && environments.hasOwnProperty(process.argv[3].toUpperCase()) ? process.argv[3] : 'development';
+const environment = argv.env && environments.hasOwnProperty(argv.env.toUpperCase()) ? argv.env : 'development';
 
 const envConfig = Dotenv.parse(fs.readFileSync(`${process.cwd()}/${environment}.env`));
 for (let k in envConfig) {

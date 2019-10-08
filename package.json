@@ -103,7 +103,8 @@
     "typescript": "^3.4.3",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
-    "xss": "^1.0.6"
+    "xss": "^1.0.6",
+    "yargs": "^14.2.0"
   },
   "devDependencies": {
     "supertest": "^4.0.2",
