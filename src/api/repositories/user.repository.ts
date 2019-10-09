@@ -31,8 +31,6 @@ export class UserRepository extends BaseRepository<User> {
 
         if (!email) throw Boom.badRequest('An email is required to generate a token');
 
-
-
         const user = await this.findOne({email});
         
         if (!user) {
@@ -52,11 +50,13 @@ export class UserRepository extends BaseRepository<User> {
                 if (refreshFound && force === false) throw Boom.forbidden("User already logged");
             }
 
-            if (password && await user.passwordMatches(password) === false) {
+            if (await user.passwordMatches(password) === false) 
                 throw Boom.unauthorized('Password must match to authorize a token generating');
-            } else if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) {
+            
+            
+            if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) 
                 throw Boom.unauthorized('Invalid refresh token.');
-            }
+            
         }
 
         return {user, accessToken: user.token()};

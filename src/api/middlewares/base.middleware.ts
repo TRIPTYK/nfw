@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import Boom from "@hapi/boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
-import {IMiddleware} from "@triptyk/nfw-core";
+import {IMiddleware, fullLog} from "@triptyk/nfw-core";
 import {BaseSerializer} from "@triptyk/nfw-core";
 
 
@@ -20,7 +20,7 @@ export abstract class BaseMiddleware implements IMiddleware {
         const res = await Promise.all(validationChain.map(validation => validation.run(req)));
 
         const errors = [];
-
+        
         res.forEach((r) => {
             if (r.errors.length !== 0)
                 errors.push(r.errors)
@@ -29,6 +29,7 @@ export abstract class BaseMiddleware implements IMiddleware {
         if (errors.length !== 0) {
             const error = Boom.badRequest('Validation error');
             error['errors'] = errors;
+            fullLog(errors);
             return next(error);
         }
         return next();
@@ -39,29 +40,35 @@ export abstract class BaseMiddleware implements IMiddleware {
         const schemaData = this.serializer.getSchemaData();
         let relations: object = schemaData['relationships'];
 
-        if (specificRelations === []) {
+        if (specificRelations !== []) {
             relations = specificRelations.map((rel) => relations[rel]);
         }
 
+        let promises : Promise<void>[] = [];
+
         for (let originalRel in relations) {
             if (payload.hasOwnProperty(originalRel)) { //only load when present
-                let rel = relations[originalRel];
-                const modelName = rel['type'];
-                let importModel = await import(`../models/${modelName}.model`);
-                importModel = Object.keys(importModel)[0];
+                promises.push((async () => {
+                    let rel = relations[originalRel];
+                    const modelName = rel['type'];
+                    let importModel = await import(`../models/${modelName}.model`);
+                    importModel = Object.keys(importModel)[0];
 
-                let relationData = null;
+                    let relationData = null;
 
-                if (typeof payload[originalRel] === "string")
-                    relationData = await getRepository(importModel).findOne(payload[originalRel]);
-                else if (Array.isArray(payload[originalRel]))
-                    relationData = await getRepository(importModel).findByIds(payload[originalRel]);
+                    if (typeof payload[originalRel] === "string")
+                        relationData = await getRepository(importModel).findOne(payload[originalRel]);
+                    else if (Array.isArray(payload[originalRel]))
+                        relationData = await getRepository(importModel).findByIds(payload[originalRel]);
 
-                if (!relationData && payload[originalRel] !== null) throw Boom.notFound('Related object not found');
+                    if (!relationData && payload[originalRel] !== null) throw Boom.notFound('Related object not found');
 
-                recipient[originalRel] = relationData;
+                    recipient[originalRel] = relationData;
+                })());
             }
         }
+
+        return Promise.all(promises);
     };
 
     /**

@@ -5,11 +5,13 @@ import {expect} from "chai";
 describe("Route's validation", function () {
   let server, agent, token;
 
-  before(async function (done) {
-    server      = await import('../src/app.bootstrap');
-    agent       = request.agent(server);
-    token = global['login'].token;
-    done();
+  before(function (done) {
+    import('../src/app.bootstrap').then((srv) => {
+        server = srv;
+        agent = request.agent(server);
+        token = global['login'].token;
+        done();
+    });
   });
   
   after(function () {

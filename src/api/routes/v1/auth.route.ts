@@ -15,7 +15,7 @@ router
 
 router
     .route('/login')
-    .post(userMiddleware.deserialize(), userMiddleware.handleValidation(login), SecurityMiddleware.sanitize, authController.method('login'));
+    .post(userMiddleware.handleValidation(login), SecurityMiddleware.sanitize, authController.method('login'));
 
 router
     .route('/refresh-token')

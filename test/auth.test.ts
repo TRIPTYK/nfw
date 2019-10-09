@@ -2,35 +2,32 @@ import * as request from "supertest";
 import * as fixtures from "./fixtures/index";
 
 describe("Authentification", function () {
+  let server, agent, password, credentials, token, refreshToken;
+  const {expect} = require('chai');
 
-  var server, agent, password, credentials, token, refreshToken;
-  var expect = require('chai').expect;
+  before(function (done) {
+    import('../src/app.bootstrap').then((srv) =>{
+        server = srv;
+        agent       = request.agent(server);
+        password    = fixtures.password();
+        credentials = fixtures.user('admin', password);
 
-  before(async function (done) {
-
-    server      = await import('../src/app.bootstrap');
-    agent       = request.agent(server);
-    password    = fixtures.password();
-    credentials = {
-      data: { attributes: fixtures.user('admin', password) }
-    };
-
-    agent
-      .post('/api/v1/auth/register')
-      .send(credentials)
-      .set('Accept', 'application/vnd.api+json')
-      .set('Content-Type', 'application/vnd.api+json')
-      .end(function(err, response){
-        expect(response.statusCode).to.equal(201);
-        token = response.body.data.attributes['access-token'];
-        refreshToken = response.body.data.attributes['refresh-token'];
-        global['login'] = {
-          token: response.body.data.attributes['access-token'],
-          refreshToken: response.body.data.attributes['refresh-token']
-        };
-        done();
-      });
-
+        agent
+        .post('/api/v1/auth/register')
+        .send(credentials)
+        .set('Accept', 'application/vnd.api+json')
+        .set('Content-Type', 'application/vnd.api+json')
+        .end(function(err, response){
+          expect(response.statusCode).to.equal(201);
+          token = response.body['access-token'];
+          refreshToken = response.body['refresh-token'];
+          global['login'] = {
+            token: response.body['access-token'],
+            refreshToken: response.body['refresh-token']
+          };
+          done();
+        });
+    });
   });
 
   after(function () {
@@ -56,7 +53,6 @@ describe("Authentification", function () {
         .set('Content-Type', 'application/vnd.api+json')
           .expect(400, done);
     });
-
   });
 
   describe("Login", function() {
@@ -67,14 +63,13 @@ describe("Authentification", function () {
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
         .send({
-          username: credentials.data.attributes.username,
-          email: credentials.data.attributes.email,
+          email: credentials.email,
           password: password
         })
         .end(function(err, res) {
           expect(res.statusCode).to.equal(200);
-          refreshToken = res.body.data.attributes['refresh-token'];
-          done()
+          refreshToken = res.body.token['refresh-token'];
+          done();
         });
     });
 
@@ -84,11 +79,10 @@ describe("Authentification", function () {
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
         .send({
-          username: credentials.data.attributes.username,
-          email: credentials.data.attributes.email,
+          email: credentials.email,
           password: 'totoIsANoob'
         })
-          .expect(401, done);
+        .expect(401, done);
     });
 
     it('Authentification failed with bad email', function (done) {
@@ -97,8 +91,7 @@ describe("Authentification", function () {
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
         .send({
-          username: credentials.data.attributes.username,
-          email: 'fake' + credentials.data.attributes.email,
+          email: 'fake' + credentials.email,
           password: password
         })
           .expect(404, done);

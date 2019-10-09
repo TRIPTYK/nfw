@@ -4,7 +4,7 @@
   "host": "localhost",
   "port": "3306",
   "username": "root",
-  "password": "root",
+  "password": "test123*",
   "database": "nfw_17",
   "logging": false,
   "entities": [

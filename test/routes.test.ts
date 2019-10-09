@@ -1,12 +1,13 @@
 import * as request from "supertest";
 
 describe("Route's accessibility", function () {
+  let server;
   
-  var server;
-  
-  before(async function (done) {
-    server = await import('../src/app.bootstrap');
-    done();
+  before(function (done) {
+    import('../src/app.bootstrap').then((srv) => {
+        server = srv;
+        done();
+    });
   });
   
   after(function () {

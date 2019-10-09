@@ -1,17 +1,17 @@
 import * as request from "supertest";
-import * as chai from "chai";
-import * as fixtures from "./fixtures";
 
 describe("Document CRUD", function () {
-
-    let server, agent, token, id;
-    const expect = chai.expect;
-
-  before(async function (done) {
-      server = await import('../src/app.bootstrap');
-      agent = request.agent(server);
-      token = global['login'].token;
-      done();
+  let server, agent, token, id;
+  const {expect} = require('chai');
+  
+  before(function (done) {
+      import('../src/app.bootstrap').then((srv) => {
+          server = srv;
+          agent = request.agent(server);
+          token = global['login'].token;
+          console.log(global);
+          done();
+      });
   });
 
   after(function () {

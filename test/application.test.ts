@@ -2,15 +2,13 @@
 process.env.NODE_ENV = 'test';
 
 // Require modules to test
-var pkgInfo = require('./../package.json');
+const pkgInfo = require('./../package.json');
 
 // Require the dev-dependencies
-
-import {expect} from "chai";
 import * as request from "supertest";
 
 describe("Express application", function () {
-
+    const {expect} = require('chai');
     let server;
 
     before(async function () {

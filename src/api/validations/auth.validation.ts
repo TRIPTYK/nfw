@@ -29,11 +29,9 @@ const register: Schema = {
     },
     password: {
         isString : true,
-        /*
-        matches: {
-            options: /^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$/,
-            errorMessage: "Password must have at least 8 characters,1 uppercase,1 lowercase and 1 special"
-        }*/
+        isEmpty : {
+            negated : true
+        }
     },
     username: {
         isString : true,
@@ -64,7 +62,11 @@ const login: Schema = {
         isEmail: true
     },
     password: {
-        exists: true
+        isString : true,
+        isEmpty : {
+            negated : true,
+            errorMessage : "Password must not be empty"
+        }
     },
     force : {
         optional : true,

@@ -6,16 +6,17 @@ chai.config.includeStack = false;
 chai.config.truncateThreshold = 1;
 
 describe("User CRUD", function () {
+  let server, agent, token, id;
+  const {expect} = require('chai');
 
-    let server, agent, token, id;
-    const expect = chai.expect;
-
-    before(async function (done) {
-        server      = await import('../src/app.bootstrap');
+  before(function (done) {
+    import('../src/app.bootstrap').then((srv) => {
+        server = srv;
         agent = request.agent(server);
         token = global['login'].token;
         done();
     });
+  });
 
   after(function () {
     server = undefined;

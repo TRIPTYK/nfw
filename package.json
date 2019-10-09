@@ -107,11 +107,11 @@
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "supertest": "^4.0.2",
     "@types/mocha": "^5.2.6",
     "@types/node": "^12.7.7",
     "faker": "^4.1.0",
     "mocha": "^6.1.4",
+    "supertest": "^4.0.2",
     "typedoc": "^0.15.0"
   }
 }
