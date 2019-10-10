@@ -1,5 +1,4 @@
 import * as request from "supertest";
-import * as fixtures from "./fixtures";
 import {expect} from "chai";
 
 describe("Route's validation", function () {

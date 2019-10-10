@@ -1,9 +1,9 @@
 import * as request from "supertest";
 import * as fixtures from "./fixtures/index";
+import {expect} from "chai";
 
 describe("Authentification", function () {
   let agent, password, credentials, token, refreshToken;
-  const {expect} = require('chai');
 
   before(function (done) {
     agent       = request.agent(global['server']);

@@ -1,13 +1,13 @@
 import * as chai from "chai";
 import * as request from "supertest";
 import * as fixtures from "./fixtures";
+import {expect} from "chai";
 
 chai.config.includeStack = false;
 chai.config.truncateThreshold = 1;
 
 describe("User CRUD", function () {
   let agent, token, id;
-  const {expect} = require('chai');
 
   before(function (done) {
     agent = request.agent(global['server']);
@@ -145,12 +145,11 @@ describe("User CRUD", function () {
         expect(res.body.data.attributes).to.include.all.keys(
           'username',
           'email',
-          //'documents',
           'firstname',
           'lastname',
           'role',
           'created-at',
-            'updated-at'
+          'updated-at'
         );
         done()
       });

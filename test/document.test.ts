@@ -1,8 +1,8 @@
 import * as request from "supertest";
+import {expect} from "chai";
 
 describe("Document CRUD", function () {
   let agent, token, id;
-  const {expect} = require('chai');
   
   before(function (done) {
     agent = request.agent(global['server']);

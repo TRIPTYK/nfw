@@ -6,8 +6,7 @@ const pkgInfo = require('./../package.json');
 
 // Require the dev-dependencies
 import * as request from "supertest";
-
-const {expect} = require('chai');
+import {expect} from "chai";
 
 before(function (done) {
     import('./../src/app.bootstrap').then((srv) => {
