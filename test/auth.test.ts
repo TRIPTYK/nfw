@@ -62,7 +62,13 @@ describe("Authentification", function () {
         })
         .end(function(err, res) {
           expect(res.statusCode).to.equal(200);
+          token = res.body.token['accessToken'];
           refreshToken = res.body.token['refreshToken'];
+          global['login'] = {
+            token,
+            refreshToken,
+            id : res.body.token.user['id']
+          };
           done();
         });
     });
