@@ -29,7 +29,6 @@ export abstract class BaseMiddleware implements IMiddleware {
         if (errors.length !== 0) {
             const error = Boom.badRequest('Validation error');
             error['errors'] = errors;
-            fullLog(errors);
             return next(error);
         }
         return next();

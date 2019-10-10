@@ -19,11 +19,11 @@ describe("Authentification", function () {
         .set('Content-Type', 'application/vnd.api+json')
         .end(function(err, response){
           expect(response.statusCode).to.equal(201);
-          token = response.body['access-token'];
-          refreshToken = response.body['refresh-token'];
+          token = response.body.token['accessToken'];
+          refreshToken = response.body.token['refreshToken'];
           global['login'] = {
-            token: response.body['access-token'],
-            refreshToken: response.body['refresh-token']
+            token,
+            refreshToken
           };
           done();
         });
@@ -68,7 +68,7 @@ describe("Authentification", function () {
         })
         .end(function(err, res) {
           expect(res.statusCode).to.equal(200);
-          refreshToken = res.body.token['refresh-token'];
+          refreshToken = res.body.token['refreshToken'];
           done();
         });
     });
@@ -108,9 +108,18 @@ describe("Authentification", function () {
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
         .send({
-          token: { refreshToken: refreshToken }
+          token: refreshToken
         })
-        .expect(200, done);
+        .end(function(err, res) {
+          expect(res.statusCode).to.equal(200);
+          token = res.body.token['accessToken'];
+          refreshToken = res.body.token['refreshToken'];
+          global['login'] = {
+            token,
+            refreshToken
+          };
+          done();
+        });
     });
 
   });

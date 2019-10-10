@@ -22,11 +22,11 @@ router.param('documentId', documentMiddleware.deserialize());
 router
     .route('/')
     .get(authorize([roles.admin, roles.user]), documentController.method('list'))
-    .post(authorize([roles.admin]), upload.single('document'), documentMiddleware.resize, documentController.method('create'));
+    .post(authorize([roles.admin, roles.user]), upload.single('document'), documentMiddleware.resize, documentController.method('create'));
 
 router
     .route('/:documentId')
-    .get(authorize(), documentMiddleware.handleValidation(getDocument), documentController.method('get'))
+    .get(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(getDocument), documentController.method('get'))
     .patch(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
     .put(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
     .delete(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(deleteDocument), documentController.method('remove'));

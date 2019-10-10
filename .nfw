@@ -1,3 +1,4 @@
 {
-  "env": "development"
+  "env": "development",
+  "dockerContainer": "nfw_server_docker"
 }

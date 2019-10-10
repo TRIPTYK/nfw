@@ -62,10 +62,10 @@ class AuthController extends BaseController {
      */
     async login(req: Request, res: Response, next: Function) {
         const { force } = req.query;
-        const { email , refreshObject } = req.body;
+        const { email , password } = req.body;
 
         const {user, accessToken} = await this.repository.findAndGenerateToken({
-            email,ip : req.ip,refreshObject
+            email,ip : req.ip,password
         },jwtAuthMode === 'normal',force);
         const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
 

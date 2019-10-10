@@ -2,6 +2,7 @@ import {logger as Logger} from "../../config/logger.config";
 import * as Notifier from "node-notifier";
 import Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
+import { fullLog } from "@triptyk/nfw-core";
 
 const serializer = new JSONAPISerializer();
 

@@ -50,7 +50,7 @@ export class UserRepository extends BaseRepository<User> {
                 if (refreshFound && force === false) throw Boom.forbidden("User already logged");
             }
 
-            if (await user.passwordMatches(password) === false) 
+            if (password && await user.passwordMatches(password) === false) 
                 throw Boom.unauthorized('Password must match to authorize a token generating');
             
             
