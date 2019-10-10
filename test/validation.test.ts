@@ -3,19 +3,12 @@ import * as fixtures from "./fixtures";
 import {expect} from "chai";
 
 describe("Route's validation", function () {
-  let server, agent, token;
+  let agent, token;
 
   before(function (done) {
-    import('../src/app.bootstrap').then((srv) => {
-        server = srv;
-        agent = request.agent(server);
-        token = global['login'].token;
-        done();
-    });
-  });
-  
-  after(function () {
-    server = undefined;
+      agent = request.agent(global['server']);
+      token = global['login'].token;
+      done();
   });
 
   describe("Bad formed id parameter", function() {
@@ -99,21 +92,21 @@ describe("Route's validation", function () {
     describe("Authentification", function() {
 
       it('POST /api/v1/auth/register rejected as 400', function (done) {
-        request(server)
+        agent
           .post('/api/v1/auth/register')
           .send({})
           .expect(400, done);
       });
   
       it('POST /api/v1/auth/login rejected as 400', function (done) {
-        request(server)
+        agent
           .post('/api/v1/auth/login')
           .send({})
           .expect(400, done);
       });
   
       it('POST /api/v1/auth/refresh-token rejected as 400', function (done) {
-        request(server)
+        agent
           .post('/api/v1/auth/refresh-token')
           .set('Accept', 'application/vnd.api+json')
           .set('Content-Type', 'application/vnd.api+json')

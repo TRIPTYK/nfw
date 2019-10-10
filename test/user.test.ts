@@ -6,20 +6,13 @@ chai.config.includeStack = false;
 chai.config.truncateThreshold = 1;
 
 describe("User CRUD", function () {
-  let server, agent, token, id;
+  let agent, token, id;
   const {expect} = require('chai');
 
   before(function (done) {
-    import('../src/app.bootstrap').then((srv) => {
-        server = srv;
-        agent = request.agent(server);
-        token = global['login'].token;
-        done();
-    });
-  });
-
-  after(function () {
-    server = undefined;
+    agent = request.agent(global['server']);
+    token = global['login'].token;
+    done();
   });
 
   it('POST /api/v1/users succeed with 201', function (done) {

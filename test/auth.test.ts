@@ -2,42 +2,36 @@ import * as request from "supertest";
 import * as fixtures from "./fixtures/index";
 
 describe("Authentification", function () {
-  let server, agent, password, credentials, token, refreshToken;
+  let agent, password, credentials, token, refreshToken;
   const {expect} = require('chai');
 
   before(function (done) {
-    import('../src/app.bootstrap').then((srv) =>{
-        server = srv;
-        agent       = request.agent(server);
-        password    = fixtures.password();
-        credentials = fixtures.user('admin', password);
+    agent       = request.agent(global['server']);
+    password    = fixtures.password();
+    credentials = fixtures.user('admin', password);
 
-        agent
-        .post('/api/v1/auth/register')
-        .send(credentials)
-        .set('Accept', 'application/vnd.api+json')
-        .set('Content-Type', 'application/vnd.api+json')
-        .end(function(err, response){
-          expect(response.statusCode).to.equal(201);
-          token = response.body.token['accessToken'];
-          refreshToken = response.body.token['refreshToken'];
-          global['login'] = {
-            token,
-            refreshToken
-          };
-          done();
-        });
+    agent
+    .post('/api/v1/auth/register')
+    .send(credentials)
+    .set('Accept', 'application/vnd.api+json')
+    .set('Content-Type', 'application/vnd.api+json')
+    .end(function(err, response){
+      expect(response.statusCode).to.equal(201);
+      token = response.body.token['accessToken'];
+      refreshToken = response.body.token['refreshToken'];
+      global['login'] = {
+        id : response.body.token.user['id'],
+        token,
+        refreshToken
+      };
+      done();
     });
-  });
-
-  after(function () {
-    server = undefined;
   });
 
   describe("Register", function() {
 
     it('POST api/v1/auth/register succeed with 201', function (done) {
-      request(server)
+      agent
         .post('/api/v1/auth/register')
         .send({ data :  { attributes : fixtures.user('admin') } })
         .set('Accept', 'application/vnd.api+json')
@@ -46,7 +40,7 @@ describe("Authentification", function () {
     });
 
     it('POST api/v1/auth/register failed with 409 (email or username already taken)', function (done) {
-      request(server)
+      agent
         .post('/api/v1/auth/register')
         .send(credentials)
         .set('Accept', 'application/vnd.api+json')
@@ -58,7 +52,7 @@ describe("Authentification", function () {
   describe("Login", function() {
 
     it('Authentification succeed with good credentials', function (done) {
-      request(server)
+      agent
         .post('/api/v1/auth/login')
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
@@ -74,7 +68,7 @@ describe("Authentification", function () {
     });
 
     it('Authentification failed with bad password', function (done) {
-      request(server)
+      agent
         .post('/api/v1/auth/login')
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
@@ -86,7 +80,7 @@ describe("Authentification", function () {
     });
 
     it('Authentification failed with bad email', function (done) {
-      request(server)
+      agent
         .post('/api/v1/auth/login')
         .set('Accept', 'application/vnd.api+json')
         .set('Content-Type', 'application/vnd.api+json')
@@ -102,7 +96,7 @@ describe("Authentification", function () {
   describe("Refresh token", function() {
 
     it('POST api/v1/auth/refresh-token succeed with 200', function (done) {
-      request(server)
+      agent
         .post('/api/v1/auth/refresh-token')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/vnd.api+json')
@@ -116,7 +110,8 @@ describe("Authentification", function () {
           refreshToken = res.body.token['refreshToken'];
           global['login'] = {
             token,
-            refreshToken
+            refreshToken,
+            id : res.body.token.user['id']
           };
           done();
         });
@@ -129,43 +124,43 @@ describe("Authentification", function () {
     describe("Users", function() {
 
       it('GET /api/v1/users rejected with 403', function (done) {
-        request(server)
+        agent
           .get('/api/v1/users')
           .expect(403, done);
       });
 
       it('GET /api/v1/users/1 rejected with 403', function (done) {
-        request(server)
+        agent
           .get('/api/v1/users/1')
           .expect(403, done);
       });
 
       it('GET /api/v1/users/profile rejected with 403', function (done) {
-        request(server)
+        agent
           .get('/api/v1/users/profile')
           .expect(403, done);
       });
 
       it('POST /api/v1/users rejected with 403', function (done) {
-        request(server)
+        agent
           .post('/api/v1/users')
           .expect(403, done);
       });
 
       it('PUT /api/v1/users/1 rejected with 403', function (done) {
-        request(server)
+        agent
           .put('/api/v1/users/1')
           .expect(403, done);
       });
 
       it('PATCH /api/v1/users/1 rejected with 403', function (done) {
-        request(server)
+        agent
           .patch('/api/v1/users/1')
           .expect(403, done);
       });
 
       it('DELETE /api/v1/users/1 rejected as 403', function (done) {
-        request(server)
+        agent
           .delete('/api/v1/users/1')
           .expect(403, done);
       });
@@ -175,31 +170,31 @@ describe("Authentification", function () {
     describe("Documents", function() {
 
       it('GET /api/v1/documents rejected with 403', function (done) {
-        request(server)
+        agent
           .get('/api/v1/documents')
           .expect(403, done);
       });
 
       it('POST /api/v1/documents rejected with 403', function (done) {
-        request(server)
+        agent
           .post('/api/v1/documents')
           .expect(403, done);
       });
 
       it('PUT /api/v1/documents rejected with 403', function (done) {
-        request(server)
+        agent
           .put('/api/v1/documents/1')
           .expect(403, done);
       });
 
       it('PATCH /api/v1/documents rejected with 403', function (done) {
-        request(server)
+        agent
           .patch('/api/v1/documents/1')
           .expect(403, done);
       });
 
       it('DELETE /api/v1/documents rejected with 403', function (done) {
-        request(server)
+        agent
           .delete('/api/v1/documents/1')
           .expect(403, done);
       });

@@ -1,20 +1,13 @@
 import * as request from "supertest";
 
 describe("Document CRUD", function () {
-  let server, agent, token, id;
+  let agent, token, id;
   const {expect} = require('chai');
   
   before(function (done) {
-      import('../src/app.bootstrap').then((srv) => {
-          server = srv;
-          agent = request.agent(server);
-          token = global['login'].token;
-          done();
-      });
-  });
-
-  after(function () {
-    server = undefined;
+    agent = request.agent(global['server']);
+    token = global['login'].token;
+    done();
   });
 
   it('POST succeed as 201 on /api/v1/documents (file upload)', function (done) {
