@@ -36,7 +36,7 @@ class DocumentController extends BaseController {
      *
      * @public
      */
-    public async list(req: Request, res: Response, next: Function) {
+    public async list(req: Request, res: Response, next) {
         const [documents, total] = await this.repository.jsonApiFind(req, documentRelations);
         return new DocumentSerializer(new SerializerParams().enablePagination(req, total)).serialize(documents);
     }
@@ -50,8 +50,8 @@ class DocumentController extends BaseController {
      *
      * @public
      */
-    public async create(req: Request, res: Response, next: Function) {
-        let document = new Document(req['file']);
+    public async create(req: Request, res: Response, next) {
+        const document = new Document(req["file"]);
         const saved = await this.repository.save(document);
         return new DocumentSerializer().serialize(saved);
     }
@@ -65,10 +65,12 @@ class DocumentController extends BaseController {
      *
      * @public
      */
-    public async get(req: Request, res: Response, next: Function) {
+    public async get(req: Request, res: Response, next) {
         const document = await this.repository.jsonApiFindOne(req, req.params.documentId, documentRelations);
 
-        if (!document) throw Boom.notFound('Document not found');
+        if (!document) {
+            throw Boom.notFound("Document not found");
+        }
 
         return new DocumentSerializer().serialize(document);
     }
@@ -79,7 +81,7 @@ class DocumentController extends BaseController {
      * @param res
      * @param next
      */
-    public async fetchRelated(req: Request, res: Response, next: Function) {
+    public async fetchRelated(req: Request, res: Response, next) {
         return this.repository.fetchRelated(req,new UserSerializer());
     }
 
@@ -89,7 +91,7 @@ class DocumentController extends BaseController {
      * @param res
      * @param next
      */
-    public async fetchRelationships(req: Request, res: Response, next: Function) {
+    public async fetchRelationships(req: Request, res: Response, next) {
         return this.repository.fetchRelationshipsFromRequest(req,new UserSerializer());
     }
 
@@ -99,7 +101,7 @@ class DocumentController extends BaseController {
      * @param res
      * @param next
      */
-    public async addRelationships(req: Request, res: Response, next: Function) {
+    public async addRelationships(req: Request, res: Response, next) {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
@@ -110,7 +112,7 @@ class DocumentController extends BaseController {
      * @param res
      * @param next
      */
-    public async updateRelationships(req: Request, res: Response, next: Function) {
+    public async updateRelationships(req: Request, res: Response, next) {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
@@ -121,7 +123,7 @@ class DocumentController extends BaseController {
      * @param res
      * @param next
      */
-    public async removeRelationships(req: Request, res: Response, next: Function) {
+    public async removeRelationships(req: Request, res: Response, next) {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
@@ -136,12 +138,14 @@ class DocumentController extends BaseController {
      *
      * @public
      */
-    async update(req: Request, res: Response, next: Function) {
+    protected async update(req: Request, res: Response, next) {
         const document = await this.repository.findOne(req.params.documentId);
 
-        if (!document) throw Boom.notFound('Document not found');
+        if (!document) {
+            throw Boom.notFound("Document not found");
+        }
 
-        this.repository.merge(document, req['file']);
+        this.repository.merge(document, req["file"]);
         const saved = await this.repository.save(document);
 
         return new DocumentSerializer().serialize(saved);
@@ -156,10 +160,12 @@ class DocumentController extends BaseController {
      *
      * @public
      */
-    public async remove(req: Request, res: Response, next: Function) {
+    protected async remove(req: Request, res: Response, next) {
         const document = await this.repository.findOne(req.params.documentId);
 
-        if (!document) throw Boom.notFound('Document not found');
+        if (!document) {
+            throw Boom.notFound("Document not found");
+        }
 
         await this.repository.remove(document);
 

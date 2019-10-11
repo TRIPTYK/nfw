@@ -1,17 +1,12 @@
 import {documentSerialize} from "../enums/json-api/document.enum";
 import {userDeserialize, userSerialize} from "../enums/json-api/user.enum";
-import {BaseSerializer} from "@triptyk/nfw-core";
-import {SerializerParams} from "@triptyk/nfw-core";
-
-
+import {BaseSerializer, SerializerParams} from "@triptyk/nfw-core";
 
 export class UserSerializer extends BaseSerializer {
     constructor(serializerParams: SerializerParams = new SerializerParams()) {
-        super('user');
+        super("user");
 
         const data = {
-            whitelist: userSerialize,
-            whitelistOnDeserialize : userDeserialize,
             relationships: {
                 avatar: {
                     type: "document"
@@ -20,6 +15,8 @@ export class UserSerializer extends BaseSerializer {
                     type: "document"
                 }
             },
+            whitelist: userSerialize,
+            whitelistOnDeserialize : userDeserialize
         };
 
         this.setupLinks(data, serializerParams);

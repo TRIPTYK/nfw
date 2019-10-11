@@ -1,45 +1,24 @@
 import {Schema} from "express-validator";
-import {getRepository} from "typeorm";
+import {getRepository, getCustomRepository} from "typeorm";
 import {User} from "../models/user.model";
-
-const _isEmailDuplicated = async (email) => {
-    const uRepo = getRepository(User);
-    const user = await uRepo.findOne({email: email});
-    if (user) {
-        return Promise.reject('Email already exists');
-    }
-};
-
-const _isUsernameDuplicated = async (username) => {
-    const uRepo = getRepository(User);
-    const user = await uRepo.findOne({username: username});
-    if (user) {
-        return Promise.reject('Username already exists');
-    }
-};
-
+import { UserRepository } from "../repositories/user.repository";
 
 // POST /v1/auth/register
 const register: Schema = {
     email: {
-        isEmail: true,
         custom: {
-            options: _isEmailDuplicated
-        }
+            options: async (value) => {
+                if (await (getCustomRepository(UserRepository).exists("email", value))) {
+                    return Promise.reject("email already exists");
+                }
+            }
+        },
+        isEmail: true
     },
-    password: {
-        isString : true,
-        isEmpty : {
-            negated : true
-        }
-    },
-    username: {
+    firstname: {
         isString : true,
         isUppercase: {
             negated: true,
-        },
-        custom: {
-            options: _isUsernameDuplicated
         }
     },
     lastname: {
@@ -48,7 +27,20 @@ const register: Schema = {
             negated: true,
         }
     },
-    firstname: {
+    password: {
+        isEmpty : {
+            negated : true
+        },
+        isString : true,
+    },
+    username: {
+        custom: {
+            options: async (value) => {
+                if (await (getCustomRepository(UserRepository).exists("username", value))) {
+                    return Promise.reject("username already exists");
+                }
+            }
+        },
         isString : true,
         isUppercase: {
             negated: true,
@@ -61,18 +53,18 @@ const login: Schema = {
     email: {
         isEmail: true
     },
-    password: {
-        isString : true,
-        isEmpty : {
-            negated : true,
-            errorMessage : "Password must not be empty"
-        }
-    },
     force : {
-        optional : true,
-        in : ['query'],
+        in : ["query"],
         isBoolean : true,
+        optional : true,
         toBoolean : true
+    },
+    password: {
+        isEmpty : {
+            errorMessage : "Password must not be empty",
+            negated : true
+        },
+        isString : true
     }
 };
 

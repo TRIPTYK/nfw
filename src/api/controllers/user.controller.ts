@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status";
-import Boom from "@hapi/boom"
+import Boom from "@hapi/boom";
 import {Request, Response} from "express";
 import {User} from "../models/user.model";
 import {UserRepository} from "../repositories/user.repository";
@@ -30,7 +30,7 @@ export class UserController extends BaseController {
      * @param res
      */
     public get(req: Request, res: Response) {
-        return req['locals'].whitelist()
+        return req["locals"].whitelist();
     }
 
     /**
@@ -39,7 +39,7 @@ export class UserController extends BaseController {
      * @param res
      */
     public loggedIn(req: Request, res: Response) {
-        return req['user'].whitelist()
+        return req["user"].whitelist();
     }
 
     /**
@@ -49,9 +49,9 @@ export class UserController extends BaseController {
      * @param next
      */
     public async changePassword(req: Request, res: Response, next) {
-        let currentUser: User = req['user'];
+        let currentUser: User = req["user"];
 
-        if (currentUser.passwordMatches(req.body.old_password)) {
+        if (await currentUser.passwordMatches(req.body.old_password)) {
             currentUser.password = req.body.new_password;
         }
 
@@ -61,12 +61,12 @@ export class UserController extends BaseController {
     }
 
     /**
-     * 
+     *
      * @param req
      * @param res
      * @param next
      */
-    public async create(req: Request, res: Response, next: Function) {
+    public async create(req: Request, res: Response, next) {
         const user = new User(req.body);
         const savedUser = await this.repository.save(user);
 
@@ -82,21 +82,23 @@ export class UserController extends BaseController {
      * @param next Next middleware function
      *
      */
-    public async update(req: Request, res: Response, next: Function) {
+    public async update(req: Request, res: Response, next) {
         if (!req.body.password) {
             req.body.password = undefined;
         }
 
         const user = await this.repository.findOne(req.params.userId);
 
-        if (!user) throw Boom.notFound();
+        if (!user) {
+            throw Boom.notFound();
+        }
 
         this.repository.merge(user, req.body);
 
         const saved = await this.repository.save(user);
 
         return new UserSerializer().serialize(saved);
-    };
+    }
 
     /**
      * Get user list
@@ -106,7 +108,7 @@ export class UserController extends BaseController {
      * @param next Next middleware function
      *
      */
-    public async list(req: Request, res: Response, next: Function) {
+    public async list(req: Request, res: Response, next) {
         const [users, totalUsers] = await this.repository.jsonApiRequest(req.query, userRelations).getManyAndCount();
         return new UserSerializer(new SerializerParams().enablePagination(req, totalUsers)).serialize(users);
     }
@@ -117,8 +119,8 @@ export class UserController extends BaseController {
      * @param res
      * @param next
      */
-    public async fetchRelated(req: Request, res: Response, next: Function) {
-        return this.repository.fetchRelated(req,new UserSerializer());
+    public async fetchRelated(req: Request, res: Response, next) {
+        return this.repository.fetchRelated(req, new UserSerializer());
     }
 
     /**
@@ -127,8 +129,8 @@ export class UserController extends BaseController {
      * @param res
      * @param next
      */
-    public async fetchRelationships(req: Request, res: Response, next: Function) {
-        return this.repository.fetchRelationshipsFromRequest(req,new UserSerializer());
+    public async fetchRelationships(req: Request, res: Response, next) {
+        return this.repository.fetchRelationshipsFromRequest(req, new UserSerializer());
     }
 
     /**
@@ -137,7 +139,7 @@ export class UserController extends BaseController {
      * @param res
      * @param next
      */
-    public async addRelationships(req: Request, res: Response, next: Function) {
+    public async addRelationships(req: Request, res: Response, next) {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
@@ -148,7 +150,7 @@ export class UserController extends BaseController {
      * @param res
      * @param next
      */
-    public async updateRelationships(req: Request, res: Response, next: Function) {
+    public async updateRelationships(req: Request, res: Response, next) {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
@@ -159,7 +161,7 @@ export class UserController extends BaseController {
      * @param res
      * @param next
      */
-    public async removeRelationships(req: Request, res: Response, next: Function) {
+    public async removeRelationships(req: Request, res: Response, next) {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
@@ -173,10 +175,12 @@ export class UserController extends BaseController {
      * @param next Next middleware function
      *
      */
-    public async remove(req: Request, res: Response, next: Function) {
+    public async remove(req: Request, res: Response, next) {
         const user = await this.repository.findOne(req.params.userId);
 
-        if (!user) throw Boom.notFound();
+        if (!user) {
+            throw Boom.notFound();
+        }
 
         await this.repository.remove(user);
         res.sendStatus(HttpStatus.NO_CONTENT).end();

@@ -5,8 +5,8 @@ import Boom from "@hapi/boom";
 
 export const getDocument: Schema = {
     documentId: {
-        in: ['params'],
-        errorMessage: 'Please provide a valid id',
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
         isInt: true
     }
 };
@@ -14,8 +14,8 @@ export const getDocument: Schema = {
 // PATCH /v1/documents/:documentId
 export const updateDocument: Schema = {
     documentId: {
-        in: ['params'],
-        errorMessage: 'Please provide a valid id',
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
         isInt: true
     }
 };
@@ -23,8 +23,8 @@ export const updateDocument: Schema = {
 // DELETE /v1/documents/:documentId
 export const deleteDocument: Schema = {
     documentId: {
-        in: ['params'],
-        errorMessage: 'Please provide a valid id',
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
         isInt: true
     }
 };
@@ -34,9 +34,11 @@ export const deleteDocument: Schema = {
  * @param file
  * @param cb
  */
-export const validateFile = (req,file : {mimetype : string,destination : string,filename : string,fieldname : string,path : string,size : string},next) => {
-    if (filters.filter(mime => file.mimetype === mime).length > 0) {
+export const validateFile = (req,
+    file: {mimetype: string, destination: string, filename: string, fieldname: string, path: string, size: string},
+    next) => {
+    if (filters.filter((mime) => file.mimetype === mime).length > 0) {
         return next(null, true);
     }
-    return next(Boom.unsupportedMediaType('File mimetype not supported'), false);
-};
+    return next(Boom.unsupportedMediaType("File mimetype not supported"), false);
+}

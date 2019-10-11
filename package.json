@@ -112,6 +112,8 @@
     "faker": "^4.1.0",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2",
-    "typedoc": "^0.15.0"
+    "tslint": "^5.20.0",
+    "typedoc": "^0.15.0",
+    "typestrict": "^1.0.2"
   }
 }

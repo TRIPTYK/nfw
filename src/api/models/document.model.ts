@@ -24,65 +24,65 @@ const unlink = promisify(Fs.unlink);
 @Entity()
 export class Document extends BaseModel {
     @PrimaryGeneratedColumn()
-    id: Number;
+    public id: number;
 
     @Column({
-        type: "enum",
-        enum: documentTypes
+        enum: documentTypes,
+        type: "enum"
     })
-    fieldname: "avatar" | "document" | "cover";
+    public fieldname: "avatar" | "document" | "cover";
 
     @Column()
-    filename: String;
+    public filename: string;
 
     @Column()
-    path: String;
+    public path: string;
 
     @Column({
-        type: "enum",
-        enum: mimeTypes
+        enum: mimeTypes,
+        type: "enum"
     })
-    mimetype: "application/vnd.ms-excel" | "application/msword" | "application/zip" | "application/pdf" | "image/bmp" | "image/gif" | "image/jpeg" | "image/png" | "image/csv";
+    public mimetype: "application/vnd.ms-excel" | "application/msword" | "application/zip" | "application/pdf" | "image/bmp" | "image/gif" | "image/jpeg" | "image/png" | "image/csv";
 
     @Column({
         type: String
     })
-    size;
+    public size;
 
-    @ManyToOne(type => User, user => user.documents, {
+    @ManyToOne((type) => User, (user) => user.documents, {
         onDelete: "CASCADE" // Remove all documents when user is deleted
     })
-    user: User;
+    public user: User;
 
-    @OneToOne(type => User, avatar => avatar.avatar)
-    user_avatar: User;
+    @OneToOne((type) => User, (avatar) => avatar.avatar)
+    public userAvatar: User;
 
     @CreateDateColumn()
-    createdAt: Date;
+    public createdAt: Date;
     @UpdateDateColumn({
         nullable: true
     })
-    updatedAt: Date;
+    public updatedAt: Date;
     @Column({
         default: null
     })
-    deletedAt: Date;
+    public deletedAt: Date;
 
     @BeforeInsert()
-    updatePath() {
+    public updatePath() {
         this.path = Path.dirname(this.path.toString());
     }
 
     @BeforeRemove()
     @BeforeUpdate()
-    deleteOnDisk() {
+    public deleteOnDisk() {
         try {   // in some cases , files does not exists , just ignore the remove complain
-            Fs.unlink(this.path.toString() + '/' + this.filename, () => {
-                ['xs', 'md', 'xl'].forEach((ext) => {
-                    unlink(this.path.toString() + '/' + ext + '/' + this.filename);
+            Fs.unlink(`${this.path}/${this.filename}`, () => {
+                ["xs", "md", "xl"].forEach((ext) => {
+                    unlink(`${this.path}/${ext}/${this.filename}`);
                 });
             });
-        }catch (e) {
+        } catch (e) {
             console.log(e);
         }
     }

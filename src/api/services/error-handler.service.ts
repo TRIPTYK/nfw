@@ -8,9 +8,9 @@ const serializer = new JSONAPISerializer();
 
 const _getErrorCode = (error): number => {
 
-    if (typeof (error.httpStatusCode) !== 'undefined') return error.httpStatusCode;
-    if (typeof (error.status) !== 'undefined') return error.status;
-    if (error.isBoom) return error.output.statusCode;
+    if (typeof (error.httpStatusCode) !== "undefined") { return error.httpStatusCode; }
+    if (typeof (error.status) !== "undefined") { return error.status; }
+    if (error.isBoom) { return error.output.statusCode; }
 
     return 500;
 };
@@ -24,7 +24,7 @@ const _getErrorCode = (error): number => {
  * @param next
  */
 const log = (err, req, res, next)  => {
-    let message = `${req.method} ${req.url} : ${err.message}`;
+    const message = `${req.method} ${req.url} : ${err.message}`;
     Logger.error(message);
     next(err);
 };
@@ -38,9 +38,9 @@ const log = (err, req, res, next)  => {
  *
  */
 const notify = (err, str, req) => {
-    let title = 'Error in ' + req.method + ' ' + req.url;
+    const title = `Error in ${req.method} ${req.url}`;
     Notifier.notify({
-        title: title,
+        title,
         message: str
     });
 };
@@ -63,7 +63,7 @@ const _boomToJSONAPI = (err: any) => {
  * @param {*} next
  */
 const exit = (err, req, res, next) => {
-    if (!err.httpStatusCode && !err.status && !err.isBoom) err = Boom.expectationFailed(err.message);
+    if (!err.httpStatusCode && !err.status && !err.isBoom) { err = Boom.expectationFailed(err.message); }
     res.status(_getErrorCode(err));
     res.json(_boomToJSONAPI(err));
 };
@@ -78,7 +78,7 @@ const exit = (err, req, res, next) => {
  */
 const notFound = (req, res, next) => {
     res.status(404);
-    res.json(_boomToJSONAPI(Boom.notFound('End point not found')));
+    res.json(_boomToJSONAPI(Boom.notFound("End point not found")));
 };
 
 export {log, notify, exit, notFound};

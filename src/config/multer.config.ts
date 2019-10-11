@@ -3,7 +3,7 @@ import {validateFile} from "../api/validations/document.validation";
 import {mimeTypes} from "../api/enums/mime-type.enum";
 
 
-const uploadPath = './dist/uploads/documents';
+const uploadPath = "./dist/uploads/documents";
 
 /**
  * Set Multer default configuration and file validation
@@ -15,40 +15,40 @@ const uploadPath = './dist/uploads/documents';
  * @param filters Array of accepted mime types
  * @param validate
  */
-const set = (destination: string = uploadPath, filesize: number = 1000000,validate : Function = validateFile) => {
+const set = (destination: string = uploadPath, filesize: number = 1000000, validate = validateFile) => {
 
     // Define storage destination and filename strategy
-    let storage = Multer.diskStorage({
-        destination: function (req: Request, file, next: Function) {
+    const storage = Multer.diskStorage({
+        destination(req: Request, file, next) {
             next(null, destination);
         },
-        filename: function (req: Request, file, next: Function) {
-            next(null, file.originalname + '-' + Date.now());
+        filename(req: Request, file, next) {
+            next(null, `${file.originalname}-${Date.now()}`);
         }
     });
 
     // Return configured multer instance, with size and file type rejection
     return Multer({
-        storage: storage,
+        fileFilter: validate,
         limits: {
             fileSize: filesize // In bytes = 0,95367 Mo
         },
-        fileFilter: validate
+        storage
     });
 };
 
-const setMemory = (filesize: number = 1000000, filters: Array<string> = mimeTypes,validate : Function = validateFile) => {
-
+const setMemory =
+(   filesize: number = 1000000, filters: string[] = mimeTypes, validate = validateFile) => {
     // Define storage destination and filename strategy
-    let storage = Multer.memoryStorage();
+    const storage = Multer.memoryStorage();
 
     // Return configured multer instance, with size and file type rejection
     return Multer({
-        storage: storage,
+        fileFilter: validate,
         limits: {
             fileSize: filesize // In bytes = 0,95367 Mo
         },
-        fileFilter: validate
+        storage
     });
 
 };

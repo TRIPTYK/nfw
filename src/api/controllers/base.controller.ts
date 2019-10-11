@@ -1,10 +1,6 @@
 import {Connection, getConnection, getCustomRepository, getRepository, Repository} from "typeorm";
-import {cache, cleanupRouteCache} from "@triptyk/nfw-core";
+import {cache, cleanupRouteCache, IController} from "@triptyk/nfw-core";
 import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
-import {BaseRepository} from "../repositories/base.repository";
-import {IController} from "@triptyk/nfw-core";
-import {UserRepository} from "../repositories/user.repository";
-import {ObjectType} from "typeorm";
 
 /**
  * Main controller contains properties/methods
@@ -48,9 +44,9 @@ abstract class BaseController implements IController {
             const extracted = await this[method](req, res, next);
 
             if (cacheEnabled) {
-                if (['PATCH', 'DELETE', 'PUT', 'POST'].includes(req.method)) {
-                    let routeType = req.originalUrl.split('?')[0]
-                        .replace(/\/api\/v1\/(?:admin\/)?/, '');
+                if (["PATCH", "DELETE", "PUT", "POST"].includes(req.method)) {
+                    const routeType = req.originalUrl.split("?")[0]
+                        .replace(/\/api\/v1\/(?:admin\/)?/, "");
 
                     cleanupRouteCache(routeType);
                 } else {
@@ -58,14 +54,17 @@ abstract class BaseController implements IController {
                 }
             }
 
-            if (!res.headersSent)
+            if (!res.headersSent) {
                 res.json(extracted);
+            }
         } catch (e) {
             next(e);
         }
-    };
+    }
 
-    protected beforeMethod() {};
+    protected beforeMethod() {
+        return;
+    }
 }
 
 export {BaseController};

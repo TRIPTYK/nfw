@@ -27,77 +27,77 @@ import {imageMimeTypes} from "../enums/mime-type.enum";
 @Entity()
 export class User extends BaseModel {
     @PrimaryGeneratedColumn()
-    id: number;
+    public id: number;
 
     @Column({
         type: "simple-json"
     })
-    services: { facebook? : string, google? : string };
+    public services: { facebook?: string, google?: string };
 
     @Column({
         length: 32,
         nullable: false,
         unique : true
     })
-    username: string;
+    public username: string;
 
     @Column({
         length: 128,
         nullable: false
     })
-    password: string;
+    public password: string;
 
     @Column({
         length: 128,
         nullable: false,
         unique : true
     })
-    email: string;
+    public email: string;
 
     @Column({
         length: 32,
         nullable: false
     })
-    firstname: string;
+    public firstname: string;
 
     @Column({
         length: 32,
         nullable: false
     })
-    lastname: string;
+    public lastname: string;
 
     @Column({
-        type: "enum",
+        default: roles.ghost,
         enum: roles,
-        default: roles.ghost
+        type: "enum"
     })
-    role: roles;
+    public role: roles;
 
     @CreateDateColumn()
-    createdAt;
+    public createdAt;
 
     @UpdateDateColumn({
         nullable: true
     })
-    updatedAt;
+    public updatedAt;
 
     @Column({
-        type: Date,
-        default: null
+        default: null,
+        type: Date
     })
-    deletedAt;
+    public deletedAt;
 
-    @OneToMany(() => Document, document => document.user)
-    documents: Document[];
+    @OneToMany(() => Document, (document) => document.user)
+    public documents: Document[];
 
-    @OneToOne(() => Document, document => document.user_avatar)
+    @OneToOne(() => Document, (document) => document.userAvatar)
     @JoinColumn()
-    avatar: Document;
+    public avatar: Document;
 
     private temporaryPassword: string;
 
     @AfterLoad()
-    storeTemporaryPassword(): void {
+    public storeTemporaryPassword(): void {
         this.temporaryPassword = this.password;
     }
 
@@ -111,9 +111,9 @@ export class User extends BaseModel {
     /**
      *
      */
-    token() {
+    public token() {
         const payload = {
-            exp: Moment().add(jwtExpirationInterval, 'minutes').unix(),
+            exp: Moment().add(jwtExpirationInterval, "minutes").unix(),
             iat: Moment().unix(),
             sub: this.id
         };
@@ -123,7 +123,7 @@ export class User extends BaseModel {
     /**
      * @param password
      */
-    async passwordMatches(password: string): Promise<boolean> {
+    public async passwordMatches(password: string): Promise<boolean> {
         return Bcrypt.compare(password, this.password);
     }
 
@@ -131,28 +131,32 @@ export class User extends BaseModel {
         JSON can't have a default value in Mysql , so we need to set the value manually if value is not set
      */
     @BeforeInsert()
-    checkServices()
-    {
-        if (!this.services)
+    public checkServices() {
+        if (!this.services) {
             this.services = {};
+        }
     }
 
     @BeforeUpdate()
     @BeforeInsert()
-    checkAvatar() {
-        if (this.avatar)
-            if (!imageMimeTypes.includes(this.avatar.mimetype))
-                throw Boom.notAcceptable('Wrong document type');
+    public checkAvatar() {
+        if (this.avatar) {
+            if (!imageMimeTypes.includes(this.avatar.mimetype)) {
+                throw Boom.notAcceptable("Wrong document type");
+            }
+        }
     }
 
     @BeforeInsert()
     @BeforeUpdate()
-    async hashPassword(): Promise<boolean> {
+    public async hashPassword(): Promise<boolean> {
         try {
 
-            if (this.temporaryPassword === this.password) return true;
+            if (this.temporaryPassword === this.password) {
+                return true;
+            }
 
-            const rounds = env === 'test' ? 1 : 10;
+            const rounds = env === "test" ? 1 : 10;
 
             this.password = await Bcrypt.hash(this.password, rounds);
 

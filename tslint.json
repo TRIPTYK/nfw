@@ -1,0 +1,65 @@
+{
+    "extends": "tslint:recommended",
+    "rules": {
+        "max-line-length": {
+            "options": [120]
+        },
+        "new-parens": true,
+        "no-arg": true,
+        "no-bitwise": true,
+        "no-empty-interface" : true,
+        "no-for-in-array" : true,
+        "no-conditional-assignment": true,
+        "no-var-requires":true,
+        "only-arrow-functions":true,
+        "prefer-for-of":true,
+        "await-promise":true,
+        "no-return-await":true,
+        "no-duplicate-variable":true,
+        "variable-name":false,
+        "no-empty":true,
+        "no-eval":true,
+        "no-implicit-dependencies":true,
+        "no-invalid-template-strings":true,
+        "no-promise-as-boolean":true,
+        "no-shadowed-variable":true,
+        "no-string-throw":true,
+        "no-this-assignment":true,
+        "forin":false,
+        "no-unsafe-finally":true,
+        "no-string-literal":false,
+        "no-var-keyword":{
+            "severity": "error"
+        },
+        "no-async-without-await": true,
+        "no-duplicate-super" : true,
+        "no-duplicate-imports": [true, {"allow-namespace-imports": true}],
+        "no-consecutive-blank-lines": false,
+        "restrict-plus-operands":true,
+        "static-this":true,
+        "strict-comparisons":true,
+        "unnecessary-constructor": [true, {"check-super-calls": true}],
+        "no-console": {
+            "severity": "warning",
+            "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+        },
+        "cyclomatic-complexity": [true, 20],
+        "max-classes-per-file": [true, 1],
+        "max-file-line-count":[true,500],
+        "prefer-const":true,
+        "array-type":[true, "array"],
+        "arrow-return-shorthand": true,
+        "class-name":true,
+        "file-name-casing": [true, "kebab-case"],
+        "no-unnecessary-callback-wrapper":true,
+        "align":true,
+        "indent": [true, "spaces", 4],
+        "no-irregular-whitespace":true,
+        "semicolon":true,
+        "trailing-comma":false,
+        "ordered-imports":false
+    },
+    "jsRules": {
+        
+    }
+}

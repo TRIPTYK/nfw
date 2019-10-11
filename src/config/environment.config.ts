@@ -1,23 +1,23 @@
 import * as Dotenv from "dotenv";
-import * as fs from 'fs';
+import * as fs from "fs";
 import {argv} from "yargs";
 
 /**
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in
  * app.js
  */
-let files = fs.readdirSync('./');
+let files = fs.readdirSync("./");
 let environments = {};
 files.forEach(element => {
-    if (element.includes('.env')) {
-        let splited = element.split('.')[0].toUpperCase();
+    if (element.includes(".env")) {
+        let splited = element.split(".")[0].toUpperCase();
         environments[splited] = splited;
     }
 });
 
 //const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
 
-const environment = argv.env && environments.hasOwnProperty(argv.env.toUpperCase()) ? argv.env : 'development';
+const environment = argv.env && environments.hasOwnProperty(argv.env.toUpperCase()) ? argv.env : "development";
 
 const envConfig = Dotenv.parse(fs.readFileSync(`${process.cwd()}/${environment}.env`));
 for (let k in envConfig) {
@@ -30,41 +30,41 @@ let authorized: any = process.env.AUTHORIZED.trim();
 const env = process.env.NODE_ENV;
 const port = process.env.PORT;
 const url = process.env.URL;
-authorized = authorized === "*" ? true : authorized.split(',');
+authorized = authorized === "*" ? true : authorized.split(",");
 const jwtSecret = process.env.JWT_SECRET;
 const jwtExpirationInterval = process.env.JWT_EXPIRATION_MINUTES;
 const api = process.env.API_VERSION;
-const logs = process.env.NODE_ENV === 'production' ? 'combined' : 'development';
-const HTTPLogs = process.env.NODE_ENV === 'production' ? 'production' : 'dev';
+const logs = process.env.NODE_ENV === "production" ? "combined" : "development";
+const HTTPLogs = process.env.NODE_ENV === "production" ? "production" : "dev";
 const facebook_id = process.env.FACEBOOK_APP_ID;
 const facebook_secret = process.env.FACEBOOK_APP_SECRET;
 const google_id = process.env.GOOGLE_CONSUMER_KEY;
 const google_secret = process.env.GOOGLE_CONSUMER_SECRET;
-const caching_enabled = parseInt(process.env.REQUEST_CACHING);
+const caching_enabled = parseInt(process.env.REQUEST_CACHING, 10);
 const jwtAuthMode = process.env.JWT_AUTH_MODE;
 
 const typeorm = {
-    type: process.env.TYPEORM_TYPE,
+    database: process.env.TYPEORM_DB,
+    host: process.env.TYPEORM_HOST,
     name: process.env.TYPEORM_NAME,
     port: process.env.TYPEORM_PORT,
-    host: process.env.TYPEORM_HOST,
-    database: process.env.TYPEORM_DB,
-    user: process.env.TYPEORM_USER,
-    pwd: process.env.TYPEORM_PWD
+    pwd: process.env.TYPEORM_PWD,
+    type: process.env.TYPEORM_TYPE,
+    user: process.env.TYPEORM_USER
 };
 
 const jimp = {
-    isActive: parseInt(process.env.JIMP_IS_ACTIVE),
-    xs: parseInt(process.env.JIMP_SIZE_XS),
-    md: parseInt(process.env.JIMP_SIZE_MD),
-    xl: parseInt(process.env.JIMP_SIZE_XL),
+    isActive: parseInt(process.env.JIMP_IS_ACTIVE, 10),
+    md: parseInt(process.env.JIMP_SIZE_MD, 10),
+    xl: parseInt(process.env.JIMP_SIZE_XL, 10),
+    xs: parseInt(process.env.JIMP_SIZE_XS, 10)
 };
 
 const https = {
-    isActive: parseInt(process.env.HTTPS_IS_ACTIVE),
-    key: process.env.HTTPS_KEY,
+    ca: process.env.HTTPS_CHAIN,
     cert: process.env.HTTPS_KEY,
-    ca: process.env.HTTPS_CHAIN
+    isActive: parseInt(process.env.HTTPS_IS_ACTIVE, 10),
+    key: process.env.HTTPS_KEY
 };
 
 

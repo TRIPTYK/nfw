@@ -5,11 +5,6 @@ import * as Os from "os";
 import * as JSONAPISerializer from "json-api-serializer"
 
 export class MonitoringController extends BaseController {
-    /** */
-    constructor() {
-        super();
-    }
-
     /**
      * Get the server ressources infos
      *
@@ -19,27 +14,27 @@ export class MonitoringController extends BaseController {
      * @param next
      * @public
      */
-    public async get(req: Request, res: Response, next: Function) {
-        let ramInfo = {
-            total: Os.totalmem(),
+    public async get(req: Request, res: Response, next) {
+        const ramInfo = {
             free: Os.freemem(),
+            total: Os.totalmem(),
             used: (100 - ((Os.freemem() / Os.totalmem()) * 100)).toFixed(1)
         };
 
-        let [os, cpuUsage, cpuFree, driveInfo] = await Promise.all([
+        const [os, cpuUsage, cpuFree, driveInfo] = await Promise.all([
             Osu.os.oos(),
             Osu.cpu.usage(),
             Osu.cpu.free(),
             Osu.drive.info(),
         ]);
 
-        let resources = {
+        const resources = {
+            cpuCount: Osu.cpu.count(),
+            cpuFree,
+            cpuUsage,
+            driveInfo,
             id: "1",
             os,
-            cpuCount: Osu.cpu.count(),
-            cpuUsage,
-            cpuFree,
-            driveInfo,
             ramInfo
         };
 
@@ -50,9 +45,5 @@ export class MonitoringController extends BaseController {
         });
 
         return serializer.serialize(resources);
-    }
-
-    protected beforeMethod() {
-
     }
 }

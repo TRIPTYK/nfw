@@ -3,31 +3,31 @@ import {User} from "./user.model";
 import {jwtExpirationInterval} from "../../config/environment.config";
 
 @Entity()
-@Unique(["user","ip"])
+@Unique(["user", "ip"])
 export class RefreshToken {
 
     @PrimaryGeneratedColumn()
-    id: Number;
+    public id: number;
 
     @Column()
-    refreshToken: String;
+    public refreshToken: string;
 
-    @ManyToOne(type => User, {
+    @ManyToOne((type) => User, {
         eager: true,
         onDelete: "CASCADE" // Remove refresh-token when user is deleted
     })
     @JoinColumn()
-    user: User;
+    public user: User;
 
     @Column({
         length : 45
     })
-    ip : string;
+    public ip: string;
 
     @Column()
-    expires: Date;
+    public expires: Date;
 
-    jwtExpirationInterval : string = jwtExpirationInterval;
+    public jwtExpirationInterval: string = jwtExpirationInterval;
 
 
     public accessToken: string;
@@ -39,7 +39,7 @@ export class RefreshToken {
      * @param expires
      * @param ip
      */
-    constructor(refreshToken: string, user: User, expires: Date,ip :string) {
+    constructor(refreshToken: string, user: User, expires: Date, ip: string) {
         this.refreshToken = refreshToken;
         this.expires = expires;
         this.user = user;

@@ -10,8 +10,8 @@ import {userRelations} from "../api/enums/json-api/user.enum";
 import * as AuthProviders from "@triptyk/nfw-core";
 
 const jwtOptions = {
-    secretOrKey: jwtSecret,
-    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer')
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
+    secretOrKey: jwtSecret
 };
 
 /**
@@ -20,11 +20,11 @@ const jwtOptions = {
  *
  * @public
  */
-const jwt = async (payload, next: Function) => {
+const jwt = async (payload, next) => {
     try {
         const userRepository = getRepository(User);
         const user = await userRepository.findOne(payload.sub, {relations: userRelations});
-        if (user) return next(null, user);
+        if (user) { return next(null, user); }
         return next(null, false);
     } catch (error) {
         return next(error, false);
@@ -36,7 +36,7 @@ const jwt = async (payload, next: Function) => {
  *
  * @public
  */
-const oAuth = service => async (req, accessToken, refreshToken, profile, cb) => {
+const oAuth = (service) => async (req, accessToken, refreshToken, profile, cb) => {
     try {
         const userRepository = getCustomRepository(UserRepository);
         const userData = await AuthProviders[service](accessToken, refreshToken, profile, cb);
@@ -52,19 +52,19 @@ const oAuth = service => async (req, accessToken, refreshToken, profile, cb) => 
  *
  */
 const strategies = {
-    jwt: new JwtStrategy(jwtOptions, jwt),
-    google: new GoogleStrategy({
-        clientID: google_id,
-        clientSecret: google_secret,
-        callbackURL: `${url}/api/${api}/auth/google/callback`,
-        passReqToCallback: true
-    }, oAuth('google')),
     facebook: new FacebookStrategy({
+        callbackURL: `${url}/api/${api}/auth/facebook/callback`,
         clientID: facebook_id,
         clientSecret: facebook_secret,
-        callbackURL: `${url}/api/${api}/auth/facebook/callback`,
         passReqToCallback: true
-    }, oAuth('facebook'))
+    }, oAuth("facebook")),
+    google: new GoogleStrategy({
+        callbackURL: `${url}/api/${api}/auth/google/callback`,
+        clientID: google_id,
+        clientSecret: google_secret,
+        passReqToCallback: true
+    }, oAuth("google")),
+    jwt: new JwtStrategy(jwtOptions, jwt),
 };
 
 

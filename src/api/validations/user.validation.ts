@@ -1,30 +1,14 @@
 // modifier le 24/09/19
 import {roles} from "../enums/role.enum";
-import {getRepository} from "typeorm";
-import {User} from "../models/user.model";
 import {Schema} from "express-validator";
-
-const _isEmailDuplicated = async (email) => {
-    const uRepo = getRepository(User);
-    const user = await uRepo.findOne({email: email});
-    if (user) {
-        return Promise.reject('Email already exists');
-    }
-};
-
-const _isUsernameDuplicated = async (username) => {
-    const uRepo = getRepository(User);
-    const user = await uRepo.findOne({username: username});
-    if (user) {
-        return Promise.reject('Username already exists');
-    }
-};
+import { UserRepository } from "../repositories/user.repository";
+import { getCustomRepository } from "typeorm";
 
 export const changePassword: Schema = {
-    old_password: {
+    new_password: {
         exists: true
     },
-    new_password: {
+    old_password: {
         exists: true
     }
 };
@@ -32,8 +16,8 @@ export const changePassword: Schema = {
 // GET /v1/users/userId
 export const getUser: Schema = {
     userId: {
-        in: ['params'],
-        errorMessage: 'Please provide a valid id',
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
         isInt: true,
         toInt : true
     }
@@ -42,9 +26,25 @@ export const getUser: Schema = {
 // POST /v1/users
 export const createUser: Schema = {
     email: {
-        isEmail: true,
         custom: {
-            options: _isEmailDuplicated
+            options: async (value) => {
+                if (await (getCustomRepository(UserRepository).exists("email", value))) {
+                    return Promise.reject("email already exists");
+                }
+            }
+        },
+        isEmail: true
+    },
+    firstname: {
+        isString : true,
+        isUppercase: {
+            negated: true,
+        }
+    },
+    lastname: {
+        isString : true,
+        isUppercase: {
+            negated: true,
         }
     },
     password: {
@@ -55,69 +55,61 @@ export const createUser: Schema = {
             errorMessage: "Password must have at least 8 characters,1 uppercase,1 lowercase and 1 special"
         }*/
     },
-    username: {
-        isString : true,
-        isUppercase: {
-            negated: true,
-        },
-        custom: {
-            options: _isUsernameDuplicated
-        }
-    },
-    lastname: {
-        isString : true,
-        isUppercase: {
-            negated: true,
-        }
-    },
-    firstname: {
-        isString : true,
-        isUppercase: {
-            negated: true,
-        }
-    },
     role: {
         isIn: {
             options: [roles]
+        }
+    },
+    username: {
+        custom: {
+            options: async (value) => {
+                if (await (getCustomRepository(UserRepository).exists("username", value))) {
+                    return Promise.reject("Username already exists");
+                }
+            }
+        },
+        isString : true,
+        isUppercase: {
+            negated: true,
         }
     }
 };
 
 // PATCH /v1/users/:userId
 export const updateUser: Schema = {
-    userId: {
-        in: ['params'],
-        errorMessage: 'Please provide a valid id',
-        isInt: true,
-        toInt : true
-    },
     email: {
-        optional: true,
-        isEmail: true
-    },
-    password: {
-        isString : true,
+        isEmail: true,
         optional: true
-    },
-    username: {
-        isString : true,
-        optional: true,
-    },
-    lastname: {
-        isString : true,
-        optional: true,
-        isUppercase: {
-            negated: true,
-        }
     },
     firstname: {
         isString : true,
         optional: true
     },
+    lastname: {
+        isString : true,
+        isUppercase: {
+            negated: true,
+        },
+        optional: true
+    },
+    password: {
+        isString : true,
+        optional: true
+    },
     role: {
-        optional: true,
         isIn: {
             options: [roles]
-        }
+        },
+        optional: true
+    },
+    userId: {
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
+        isInt: true,
+        toInt : true
+    },
+    username: {
+        isString : true,
+        optional: true,
     }
 };

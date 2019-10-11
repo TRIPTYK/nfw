@@ -28,17 +28,17 @@ export class DocumentMiddleware extends BaseMiddleware {
      * @public
      *
      */
-    public create = (req: Request, res: Response, next: Function) => {
+    public create = (req: Request, res: Response, next) => {
         try {
             const documentRepository = getRepository(Document);
-            let document = new Document(req['file']);
+            const document = new Document(req["file"]);
             documentRepository.save(document);
-            req['doc'] = document;
+            req["doc"] = document;
             return next();
         } catch (e) {
             return next(Boom.expectationFailed(e.message));
         }
-    };
+    }
 
     /**
      * Resize image according to .env file directives
@@ -52,45 +52,40 @@ export class DocumentMiddleware extends BaseMiddleware {
      * @public
      *
      */
-    public resize = async (req: Request, res: Response, next: Function) => {
+    public resize = async (req: Request, res: Response, next) => {
         try {
             // If image optimization is activated and is image mime type
-            if (JimpConfiguration.isActive === 1 && imageMimeTypes.lastIndexOf(req['file'].mimetype) !== -1) {
-                let destination = req['file'].destination;
+            if (JimpConfiguration.isActive === 1 && imageMimeTypes.lastIndexOf(req["file"].mimetype) !== -1) {
+                const {destination, path , filename} = req["file"];
 
                 // Read original file
-                    //@ts-ignore
-                    const image = await Jimp.read(req['file'].path);
+                    // @ts-ignore
+                    const image = await Jimp.read(path);
 
                     // Clone in 3 files according to 3 sizes
-                    let xsImage = image.clone(), mdImage = image.clone(), xlImage = image.clone();
+                    const xsImage = image.clone();
+                    const mdImage = image.clone();
+                    const xlImage = image.clone();
 
                     // Resize and write file in server
                     xsImage
-                        //@ts-ignore
+                        // @ts-ignore
                         .resize(JimpConfiguration.xs, Jimp.AUTO)
-                        .write(destination + '/xs/' + req['file'].filename, function (err, doc) {
-                            if (err) throw Boom.expectationFailed(err.message);
-                        });
+                        .writeAsync(`${destination}/xs/${filename}`);
 
                     mdImage
-                        //@ts-ignore
+                        // @ts-ignore
                         .resize(JimpConfiguration.md, Jimp.AUTO)
-                        .write(destination + '/md/' + req['file'].filename, function (err, doc) {
-                            if (err) throw Boom.expectationFailed(err.message);
-                        });
+                        .writeAsync(`${destination}/md/${filename}`);
 
                     xlImage
-                        //@ts-ignore
+                        // @ts-ignore
                         .resize(JimpConfiguration.xl, Jimp.AUTO)
-                        .write(destination + '/xl/' + req['file'].filename, function (err, doc) {
-                            if (err) throw Boom.expectationFailed(err.message);
-                        });
+                        .writeAsync(`${destination}/xl/${filename}`);
             }
             return next();
         } catch (e) {
             return next(e);
         }
-    };
-
+    }
 }

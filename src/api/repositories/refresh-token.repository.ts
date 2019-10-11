@@ -7,19 +7,14 @@ import {jwtExpirationInterval} from "../../config/environment.config";
 
 @EntityRepository(RefreshToken)
 export class RefreshTokenRepository extends Repository<RefreshToken> {
-
-    /** */
-    constructor() {
-        super();
-    }
     /**
      *
      * @param user
      * @param ip
      */
-    async generate(user: User,ip : string): Promise<RefreshToken> {
-        const token = `${user.id}.${Crypto.randomBytes(40).toString('hex')}`;
-        const expires = Moment().add(jwtExpirationInterval, 'minutes').toDate();
+    public async generate(user: User, ip: string): Promise<RefreshToken> {
+        const token = `${user.id}.${Crypto.randomBytes(40).toString("hex")}`;
+        const expires = Moment().add(jwtExpirationInterval, "minutes").toDate();
 
         const tokenObject = new RefreshToken(token, user, expires , ip);
 
@@ -34,13 +29,14 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
      * @param accessToken
      * @param ip
      */
-    async generateTokenResponse (user: User, accessToken: string,ip : string): Promise<RefreshToken>  {
-        const oldToken = await this.findOne({where: {user: user,ip}});
+    public async generateTokenResponse(user: User, accessToken: string, ip: string): Promise<RefreshToken>  {
+        const oldToken = await this.findOne({where: {user, ip}});
 
-        if (oldToken)
+        if (oldToken) {
             await this.remove(oldToken);
+        }
 
-        const token = await this.generate(user,ip);
+        const token = await this.generate(user, ip);
         token.accessToken = accessToken;
         return token;
     }

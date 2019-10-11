@@ -10,12 +10,6 @@ import {BaseRepository} from "./base.repository";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
-
-    /** */
-    constructor() {
-        super();
-    }
-
     /**
      * Find user by email and tries to generate a JWT token
      *
@@ -25,72 +19,89 @@ export class UserRepository extends BaseRepository<User> {
      * @param force
      * @returns token
      */
-    async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any , ip : string }, ignoreCheck = false , force : boolean = false ): Promise<object> {
+    public async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any , ip: string },
+    ignoreCheck = false , force: boolean = false ): Promise<object> {
         const {email, password, refreshObject , ip} = options;
         const refreshTokenRepository = getRepository(RefreshToken);
 
-        if (!email) throw Boom.badRequest('An email is required to generate a token');
+        if (!email) {
+            throw Boom.badRequest("An email is required to generate a token");
+        }
 
         const user = await this.findOne({email});
-        
+
         if (!user) {
-            throw Boom.notFound('User not found');
+            throw Boom.notFound("User not found");
         } else {
             if (!ignoreCheck) {
-                const qb = await refreshTokenRepository.createQueryBuilder('refresh')
-                    .where('refresh.user = :userId', {userId: user.id});
+                const qb = refreshTokenRepository.createQueryBuilder("refresh")
+                    .where("refresh.user = :userId", {userId: user.id});
 
-                if (jwtAuthMode === 'multiple')
-                    qb.andWhere('refresh.ip = :ip', {ip});
+                if (jwtAuthMode === "multiple") {
+                    qb.andWhere("refresh.ip = :ip", {ip});
+                }
 
-                qb.andWhere('refresh.expires > CURRENT_TIMESTAMP');
+                qb.andWhere("refresh.expires > CURRENT_TIMESTAMP");
 
                 const refreshFound = await qb.getOne();
 
-                if (refreshFound && force === false) throw Boom.forbidden("User already logged");
+                if (refreshFound && force === false) {
+                    throw Boom.forbidden("User already logged");
+                }
             }
 
-            if (password && await user.passwordMatches(password) === false) 
-                throw Boom.unauthorized('Password must match to authorize a token generating');
-            
-            
-            if (refreshObject && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) 
-                throw Boom.unauthorized('Invalid refresh token.');
-            
+            if (password !== undefined && await user.passwordMatches(password) === false) {
+                throw Boom.unauthorized("Password must match to authorize a token generating");
+            }
+
+            if (refreshObject !== undefined && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) {
+                throw Boom.unauthorized("Invalid refresh token.");
+            }
         }
 
         return {user, accessToken: user.token()};
     }
 
     /**
+     * 
+     * @param keyname
+     * @param value
+     */
+    public async exists(keyname, value) {
+        return (await this.findOne({[keyname] : value})) !== undefined;
+    }
+
+    /**
      *
      * @param param
      */
-    async oAuthLogin({service, id, first_name, last_name, email, name, picture}) {
+    public async oAuthLogin({service, id, first_name, last_name, email, name, picture}) {
         try {
 
             const userRepository = getRepository(User);
 
             const user = await userRepository.findOne({
-                where: {email: email},
+                where: {email},
             });
 
             if (user) {
                 user.services[service] = id;
-                if (!user.username) user.username = name;
+                if (!user.username) {
+                    user.username = name;
+                }
                 return userRepository.save(user);
             }
 
             const password = uuid();
 
             return userRepository.save({
-                services: {[service]: id},
                 email,
-                password,
-                username: name,
                 firstname: first_name,
                 lastname: last_name,
-                role: roles.user
+                password,
+                role: roles.user,
+                services: {[service]: id},
+                username: name,
             });
         } catch (e) {
             throw Boom.expectationFailed(e.message);

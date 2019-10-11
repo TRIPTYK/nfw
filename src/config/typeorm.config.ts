@@ -13,26 +13,24 @@ import {typeorm as TypeORM} from "./environment.config";
  * @inheritdoc https://http://typeorm.io
  */
 class TypeORMConfiguration {
-    private static connection: Connection;
-
-    constructor() {
-    }
 
     public static async connect() {
         const entities = [User, RefreshToken, Document];
 
-        this.connection = await createConnection({
-            type: "mysql",
-            name: TypeORM.name,
-            host: TypeORM.host,
-            port: parseInt(TypeORM.port),
-            username: TypeORM.user,
-            password: TypeORM.pwd,
+        TypeORMConfiguration.connection = await createConnection({
             database: TypeORM.database,
-            entities
+            entities,
+            host: TypeORM.host,
+            name: TypeORM.name,
+            password: TypeORM.pwd,
+            port: parseInt(TypeORM.port, 10),
+            type: "mysql",
+            username: TypeORM.user
         });
-        return this.connection;
+        return TypeORMConfiguration.connection;
     }
+
+    private static connection: Connection;
 }
 
 export {TypeORMConfiguration};

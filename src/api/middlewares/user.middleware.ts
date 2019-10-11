@@ -20,13 +20,13 @@ export class UserMiddleware extends BaseMiddleware {
      * @param id User id
      *
      */
-    public load = async (req: Request, res: Response, next: Function, id: number): Promise<Function> => {
+    public load = async (req: Request, res: Response, next, id: number) => {
         try {
             const repository = getCustomRepository(UserRepository);
-            req['locals'] = await repository.jsonApiFindOne(req, id, userRelations);
+            req["locals"] = await repository.jsonApiFindOne(req, id, userRelations);
             return next();
         } catch (e) {
             return next(e);
         }
-    };
+    }
 }
