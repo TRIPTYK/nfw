@@ -19,7 +19,9 @@ class TypeORMConfiguration {
 
         TypeORMConfiguration.connection = await createConnection({
             database: TypeORM.database,
-            entities,
+            entities : [
+                __dirname + "/../api/models/*.ts"
+            ],
             host: TypeORM.host,
             name: TypeORM.name,
             password: TypeORM.pwd,
