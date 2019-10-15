@@ -78,8 +78,8 @@ export abstract class BaseMiddleware implements IMiddleware {
      * @param specificRelationships
      */
     public deserialize = (
-        {nullEqualsUndefined = false,withRelationships = true,specificRelationships = []}: 
-        { nullEqualsUndefined?: boolean, withRelationships?: boolean, specificRelationships? : string[]} = {}) => 
+        {nullEqualsUndefined = false, withRelationships = true, specificRelationships = []}:
+        { nullEqualsUndefined?: boolean, withRelationships?: boolean, specificRelationships?: string[]} = {}) =>
         async (req: Request, res: Response, next) => {
         try {
             if (["GET", "DELETE"].includes(req.method)) {

@@ -40,17 +40,18 @@ const log = (err, req, res, next)  => {
 const notify = (err, str, req) => {
     const title = `Error in ${req.method} ${req.url}`;
     Notifier.notify({
-        title,
-        message: str
+        message: str,
+        title
     });
 };
 
 const _boomToJSONAPI = (err: any) => {
     return serializer.serializeError({
+        detail: err.message,
+        meta: {validation: err.errors ? err.errors : undefined},
         status: _getErrorCode(err).toString(),
         title: err.output ? err.output.payload.error : "Error",
-        meta: {validation: err.errors ? err.errors : undefined},
-        detail: err.message
+
     });
 };
 

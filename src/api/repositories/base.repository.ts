@@ -5,8 +5,7 @@ import Boom from "@hapi/boom";
 import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
-import {BaseSerializer} from "@triptyk/nfw-core";
-import {JsonApiRepositoryInterface} from "@triptyk/nfw-core";
+import {JsonApiRepositoryInterface, BaseSerializer} from "@triptyk/nfw-core";
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -20,8 +19,9 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
      *
      */
     public jsonApiRequest(query: any, allowedIncludes: string[] = [],
-        {allowIncludes = true, allowSorting = true, allowPagination = true, allowFields = true, allowFilters = false}: 
-        {allowIncludes?: boolean, allowSorting?: boolean, allowPagination?: boolean, allowFields?: boolean, allowFilters?: boolean } = {}
+        {allowIncludes = true, allowSorting = true, allowPagination = true, allowFields = true, allowFilters = false}:
+        {allowIncludes?: boolean, allowSorting?: boolean, allowPagination?: boolean, allowFields?: boolean,
+            allowFilters?: boolean } = {}
     ): SelectQueryBuilder<T> {
         const currentTable = this.metadata.tableName;
         const splitAndFilter = (string: string, symbol: string) => string
@@ -34,7 +34,8 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
 
         /**
          * Check if include parameter exists
-         * An endpoint MAY also support an include request parameter to allow the client to customize which related resources should be returned.
+         * An endpoint MAY also support an include request parameter
+         * to allow the client to customize which related resources should be returned.
          * @ref https://jsonapi.org/format/#fetching-includes
          */
         if (allowIncludes && query.include) {
@@ -66,7 +67,8 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
 
         /**
          * Check if fields parameter exists
-         * A client MAY request that an endpoint return only specific fields in the response on a per-type basis by including a fields[TYPE] parameter.
+         * A client MAY request that an endpoint return only specific fields
+         * in the response on a per-type basis by including a fields[TYPE] parameter.
          * @ref https://jsonapi.org/format/#fetching-sparse-fieldsets
          */
         if (allowFields && query.fields) {
@@ -99,7 +101,8 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
 
         /**
          * Check if sort parameter exists
-         * A server MAY choose to support requests to sort resource collections according to one or more criteria (“sort fields”).
+         * A server MAY choose to support requests to sort
+         * resource collections according to one or more criteria (“sort fields”).
          * @ref https://jsonapi.org/format/#fetching-sorting
          */
         if (allowSorting && query.sort) {
@@ -108,7 +111,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
             // need to use SqlString.escapeId in order to prevent SQL injection on orderBy()
             sortFields.forEach((field: string) => {
                 if (field[0] === "-") {  // JSON-API convention , when sort field starts with '-' order is DESC
-                    queryBuilder.orderBy(SqlString.escapeId(field.substr(1)), "DESC"); 
+                    queryBuilder.orderBy(SqlString.escapeId(field.substr(1)), "DESC");
                 } else {
                     queryBuilder.orderBy(SqlString.escapeId(field), "ASC");
                 }
@@ -118,7 +121,8 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
 
         /**
          * Check if pagination is enabled
-         * A server MAY choose to limit the number of resources returned in a response to a subset (“page”) of the whole set available.
+         * A server MAY choose to limit the number of resources
+         * returned in a response to a subset (“page”) of the whole set available.
          * @ref https://jsonapi.org/format/#fetching-pagination
          */
         if (allowPagination && query.page && query.page.number && query.page.size) {
@@ -133,7 +137,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
             // put everything into sub brackets to not interfere with more important search params
             const queryBrackets = new Brackets((qb) => {
                 for (const key in query.filter) {
-                    const filtered: string[] = splitAndFilter(query.filter[key],",");
+                    const filtered: string[] = splitAndFilter(query.filter[key], ",");
                     filtered.forEach((e: string) => {
                         const [strategy, value] = e.split(":");
 
@@ -181,7 +185,8 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
      * Shortcut function to make a JSON-API findOne request on id key
      */
     public jsonApiFindOne(req: Request, id: any, allowedIncludes: string[] = [], options?:
-        { allowIncludes?: boolean; allowSorting?: boolean; allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }
+        { allowIncludes?: boolean; allowSorting?: boolean;
+            allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }
     ): Promise<T> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .where(`${this.metadata.tableName}.id = :id`, {id})
@@ -192,7 +197,8 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
      * Shortcut function to make a JSON-API findMany request with data used for pagination
      */
     public jsonApiFind(req: Request, allowedIncludes: string[] = [], options?:
-        { allowIncludes?: boolean; allowSorting?: boolean; allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }
+        { allowIncludes?: boolean; allowSorting?: boolean;
+            allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }
     ): Promise<[T[], number]> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .getManyAndCount();

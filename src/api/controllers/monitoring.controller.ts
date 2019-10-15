@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {BaseController} from "./base.controller";
 import * as Osu from "node-os-utils";
 import * as Os from "os";
-import * as JSONAPISerializer from "json-api-serializer"
+import * as JSONAPISerializer from "json-api-serializer";
 
 export class MonitoringController extends BaseController {
     /**

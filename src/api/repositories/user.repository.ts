@@ -54,7 +54,8 @@ export class UserRepository extends BaseRepository<User> {
                 throw Boom.unauthorized("Password must match to authorize a token generating");
             }
 
-            if (refreshObject !== undefined && refreshObject.user.email === email && Moment(refreshObject.expires).isBefore()) {
+            if (refreshObject !== undefined && refreshObject.user.email === email
+                && Moment(refreshObject.expires).isBefore()) {
                 throw Boom.unauthorized("Invalid refresh token.");
             }
         }
@@ -63,7 +64,6 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     /**
-     * 
      * @param keyname
      * @param value
      */

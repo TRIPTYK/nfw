@@ -17,28 +17,36 @@ const documentMiddleware = new DocumentMiddleware();
 /**
  * Deserialize document when API with userId route parameter is hit
  */
-router.param('documentId', documentMiddleware.deserialize());
+router.param("documentId", documentMiddleware.deserialize());
 
 router
-    .route('/')
-    .get(authorize([roles.admin, roles.user]), documentController.method('list'))
-    .post(authorize([roles.admin, roles.user]), upload.single('document'), documentMiddleware.resize, documentController.method('create'));
+    .route("/")
+    .get(authorize([roles.admin, roles.user]), documentController.method("list"))
+    .post(authorize([roles.admin, roles.user]), upload.single("document"),
+    documentMiddleware.resize, documentController.method("create"));
 
 router
-    .route('/:documentId')
-    .get(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(getDocument), documentController.method('get'))
-    .patch(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
-    .put(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument), upload.single('document'), documentMiddleware.resize, documentController.method('update'))
-    .delete(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(deleteDocument), documentController.method('remove'));
+    .route("/:documentId")
+    .get(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(getDocument),
+    documentController.method("get"))
+    .patch(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument),
+    upload.single("document"), documentMiddleware.resize, documentController.method("update"))
+    .put(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument),
+    upload.single("document"), documentMiddleware.resize, documentController.method("update"))
+    .delete(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(deleteDocument),
+    documentController.method("remove"));
 
-router.route('/:id/:relation')
-    .get(documentMiddleware.handleValidation(relationships),documentController.method('fetchRelated'));
+router.route("/:id/:relation")
+    .get(documentMiddleware.handleValidation(relationships), documentController.method("fetchRelated"));
 
-router.route('/:id/relationships/:relation')
-    .get( documentMiddleware.handleValidation(relationships), documentController.method('fetchRelationships'))
-    .post( documentMiddleware.deserialize({ withRelationships : false }),documentMiddleware.handleValidation(relationships), documentController.method('addRelationships'))
-    .patch( documentMiddleware.deserialize({ withRelationships : false }),documentMiddleware.handleValidation(relationships), documentController.method('updateRelationships'))
-    .delete( documentMiddleware.deserialize({ withRelationships : false }),documentMiddleware.handleValidation(relationships), documentController.method('removeRelationships'));
+router.route("/:id/relationships/:relation")
+    .get( documentMiddleware.handleValidation(relationships), documentController.method("fetchRelationships"))
+    .post( documentMiddleware.deserialize({ withRelationships : false }),
+    documentMiddleware.handleValidation(relationships), documentController.method("addRelationships"))
+    .patch( documentMiddleware.deserialize({ withRelationships : false }),
+    documentMiddleware.handleValidation(relationships), documentController.method("updateRelationships"))
+    .delete( documentMiddleware.deserialize({ withRelationships : false }),
+    documentMiddleware.handleValidation(relationships), documentController.method("removeRelationships"));
 
 
 export {router};

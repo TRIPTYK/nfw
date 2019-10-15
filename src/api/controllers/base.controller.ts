@@ -25,7 +25,7 @@ abstract class BaseController implements IController {
         this.connection = getConnection(TypeORM.name);
     }
 
-    public method = (method,{enableCache = true} : {enableCache? : boolean} = {}) => async (req, res, next) => {
+    public method = (method, {enableCache = true}: {enableCache?: boolean} = {}) => async (req, res, next) => {
         try {
             if (!this[method]) {
                 next(new Error(`Controller does not have a method ${method}`));
@@ -35,7 +35,7 @@ abstract class BaseController implements IController {
             this.beforeMethod();
 
             if (cacheEnabled && req.method === "GET") {
-                const cached : any = cache.get(req.originalUrl);
+                const cached: any = cache.get(req.originalUrl);
                 if (cached !== undefined) {
                     res.json(cached);
                     return;

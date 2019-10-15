@@ -82,7 +82,7 @@ class DocumentController extends BaseController {
      * @param next
      */
     public async fetchRelated(req: Request, res: Response, next) {
-        return this.repository.fetchRelated(req,new UserSerializer());
+        return this.repository.fetchRelated(req, new UserSerializer());
     }
 
     /**
@@ -92,7 +92,7 @@ class DocumentController extends BaseController {
      * @param next
      */
     public async fetchRelationships(req: Request, res: Response, next) {
-        return this.repository.fetchRelationshipsFromRequest(req,new UserSerializer());
+        return this.repository.fetchRelationshipsFromRequest(req, new UserSerializer());
     }
 
     /**

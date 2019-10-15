@@ -39,6 +39,7 @@ export const validateFile = (req,
     next) => {
     if (filters.filter((mime) => file.mimetype === mime).length > 0) {
         return next(null, true);
-    }
+        }
     return next(Boom.unsupportedMediaType("File mimetype not supported"), false);
-}
+    };
+

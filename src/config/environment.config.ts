@@ -6,22 +6,22 @@ import {argv} from "yargs";
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in
  * app.js
  */
-let files = fs.readdirSync("./");
-let environments = {};
-files.forEach(element => {
+const files = fs.readdirSync("./");
+const environments = {};
+files.forEach((element) => {
     if (element.includes(".env")) {
-        let splited = element.split(".")[0].toUpperCase();
+        const splited = element.split(".")[0].toUpperCase();
         environments[splited] = splited;
     }
 });
 
-//const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
+// const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
 
 const environment = argv.env && environments.hasOwnProperty(argv.env.toUpperCase()) ? argv.env : "development";
 
 const envConfig = Dotenv.parse(fs.readFileSync(`${process.cwd()}/${environment}.env`));
-for (let k in envConfig) {
-    process.env[k] = envConfig[k]
+for (const k in envConfig) {
+    process.env[k] = envConfig[k] ;
 }
 Dotenv.config({path: `${process.cwd()}/${environment}.env`});
 
