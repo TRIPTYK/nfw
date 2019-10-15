@@ -45,7 +45,7 @@ class AuthController extends BaseController {
 
         return {
             token
-        }
+        };
     }
 
     /**

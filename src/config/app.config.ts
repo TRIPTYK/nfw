@@ -58,9 +58,9 @@ export class Application {
          * @inheritdoc https://www.npmjs.com/package/cors
          */
         const CORSOptions = {
-            origin: authorized,
+            allowedHeaders: ["Content-Type", "Authorization"],
             methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-            allowedHeaders: ["Content-Type", "Authorization"]
+            origin: authorized
         };
         this.app.use(Cors(CORSOptions));
 
@@ -78,9 +78,9 @@ export class Application {
         this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
         const apiLimiter = new RateLimit({
-            windowMs: 60 * 60 * 1000,
             max: 1000,
-            message: "Too many requests from this IP, please try again after an hour"
+            message: "Too many requests from this IP, please try again after an hour",
+            windowMs: 60 * 60 * 1000
         });
 
         /**

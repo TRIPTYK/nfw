@@ -7,7 +7,9 @@ chai.config.includeStack = false;
 chai.config.truncateThreshold = 1;
 
 describe("User CRUD", function() {
-  let agent, token, id;
+  let agent: request.SuperTest<request.Test>;
+  let token: string;
+  let id: string;
 
   before(function(done) {
     agent = request.agent(global["server"]);
@@ -23,7 +25,7 @@ describe("User CRUD", function() {
       .set("Content-Type", "application/vnd.api+json")
       .send({ data : { attributes : fixtures.user("admin") } })
       .end(function(err, res) {
-        const status = res.status | res.statusCode;
+        const status = res.status;
         expect(status).to.equal(201);
         expect(res.body.data.type).to.equal("user");
         expect(res.body.data.id).to.be.a("string");
@@ -46,7 +48,7 @@ describe("User CRUD", function() {
       .get("/api/v1/users/profile")
       .set("Authorization", "Bearer " + token)
       .end(function(err, res) {
-        const status = res.status | res.statusCode;
+        const status = res.status;
         expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
         expect(res.body.data.id).to.be.a("string");
@@ -68,7 +70,8 @@ describe("User CRUD", function() {
       .get("/api/v1/users/" + id)
       .set("Authorization", "Bearer " + token)
       .end(function(err, res) {
-        expect(res.statusCode).to.equal(200);
+        const status = res.status;
+        expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
         expect(res.body.data.id).to.be.a("string");
         expect(res.body.data.attributes).to.include.all.keys(
@@ -89,7 +92,8 @@ describe("User CRUD", function() {
       .get(`/api/v1/users/${id}?fields=username`)
       .set("Authorization", "Bearer " + token)
       .end(function(err, res) {
-        expect(res.statusCode).to.equal(200);
+        const status = res.status;
+        expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
         expect(res.body.data.id).to.be.a("string");
         expect(res.body.data.attributes).to.include.all.keys(
@@ -107,7 +111,8 @@ describe("User CRUD", function() {
       .set("Content-Type", "application/vnd.api+json")
       .send( { data : { attributes : fixtures.user("user") } })
       .end(function(err, res) {
-        expect(res.statusCode).to.equal(200);
+        const status = res.status;
+        expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
         expect(res.body.data.id).to.be.a("string");
         expect(res.body.data.attributes).to.include.all.keys(
@@ -133,13 +138,14 @@ describe("User CRUD", function() {
       .send({
         data: {
           attributes : {
-            username: fixtures.user().username,
-            lastname: fixtures.user().lastname
+            lastname: fixtures.user().lastname,
+            username: fixtures.user().username
           }
         }
       })
       .end(function(err, res) {
-        expect(res.statusCode).to.equal(200);
+        const status = res.status;
+        expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
         expect(res.body.data.id).to.be.a("string");
         expect(res.body.data.attributes).to.include.all.keys(
