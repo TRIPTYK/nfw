@@ -2,7 +2,8 @@ import * as request from "supertest";
 import {expect} from "chai";
 
 describe("Route's validation", function() {
-  let agent, token;
+  let agent: any;
+  let token: string;
 
   before(function(done) {
       agent = request.agent(global["server"]);

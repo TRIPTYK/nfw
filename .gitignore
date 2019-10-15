@@ -76,12 +76,19 @@ dist/
 
 out/
 
+# IDE
 .idea/
+.vscode/
+
+# NFW FILES
 .nfw
+
+# Credentials generated for super admin
 credentials.json
 
-
-credentials.json
+# Production and staging env not public , because can contain sensitive informations 
+production.env
+staging.env
 
 package-lock.json
 *.lock

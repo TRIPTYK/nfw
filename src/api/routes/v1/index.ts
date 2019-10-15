@@ -2,7 +2,6 @@ import {Request, Response, Router} from "express";
 import {router as AuthRouter} from "./auth.route";
 import {router as UserRouter} from "./user.route";
 import {router as DocumentRouter} from "./document.route";
-
 export const router = Router();
 
 router.get("/status", (req: Request, res: Response) => {

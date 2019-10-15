@@ -109,6 +109,7 @@
   "devDependencies": {
     "@types/mocha": "^5.2.6",
     "@types/node": "^12.7.7",
+    "@types/supertest": "^2.0.8",
     "faker": "^4.1.0",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2",
