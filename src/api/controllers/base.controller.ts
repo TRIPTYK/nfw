@@ -14,7 +14,7 @@ abstract class BaseController implements IController {
      * @property Connection
      */
     protected connection: Connection;
-    protected repositories: any[];
+    protected repositories: any;
 
     /**
      * Super constructor

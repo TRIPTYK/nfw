@@ -9,9 +9,9 @@ export const userRelations: string[] = [
 /**
  * Allowed serialized elements
  */
-export const userSerialize: string[] = ["username", "email", "firstname", "lastname", "role", "createdAt", "updatedAt"];
+export const userSerialize: string[] = ["username", "email", "firstname", "lastname", "role", "createdAt", "updatedAt", 'user'];
 
 /**
  * Allowed deserialize elements
  */
-export const userDeserialize: string[] = ["username", "email", "firstname", "password", "lastname", "role"];
+export const userDeserialize: string[] = ["username", "email", "firstname", "password", "lastname", "role", 'user'];

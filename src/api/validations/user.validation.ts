@@ -72,7 +72,25 @@ export const createUser: Schema = {
         isUppercase: {
             negated: true,
         }
-    }
+    },
+    user: {
+        	optional: {
+        		options: {
+        			nullable: true,
+        			checkFalsy: true
+        		}
+        	},
+        	isLength: {
+        		errorMessage: 'Maximum length is 55',
+        		options: {
+        			min: 0,
+        			max: 55
+        		}
+        	},
+        	isString: {
+        		errorMessage: 'This field must be a string'
+        	}
+        }
 };
 
 // PATCH /v1/users/:userId
@@ -111,5 +129,23 @@ export const updateUser: Schema = {
     username: {
         isString : true,
         optional: true,
-    }
+    },
+    user: {
+        	optional: {
+        		options: {
+        			nullable: true,
+        			checkFalsy: true
+        		}
+        	},
+        	isLength: {
+        		errorMessage: 'Maximum length is 55',
+        		options: {
+        			min: 0,
+        			max: 55
+        		}
+        	},
+        	isString: {
+        		errorMessage: 'This field must be a string'
+        	}
+        }
 };

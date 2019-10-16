@@ -6,25 +6,25 @@ import {expect} from "chai";
 chai.config.includeStack = false;
 chai.config.truncateThreshold = 1;
 
-describe("User CRUD", function() {
+describe("User CRUD", () => {
   let agent: request.SuperTest<request.Test>;
   let token: string;
   let id: string;
 
-  before(function(done) {
+  before((done) => {
     agent = request.agent(global["server"]);
     token = global["login"].token;
     done();
   });
 
-  it("POST /api/v1/users succeed with 201", function(done) {
+  it("POST /api/v1/users succeed with 201", (done) => {
     agent
       .post("/api/v1/users")
       .set("Authorization", "Bearer " + token)
       .set("Accept", "application/vnd.api+json")
       .set("Content-Type", "application/vnd.api+json")
       .send({ data : { attributes : fixtures.user("admin") } })
-      .end(function(err, res) {
+      .end((err, res) => {
         const status = res.status;
         expect(status).to.equal(201);
         expect(res.body.data.type).to.equal("user");
@@ -43,11 +43,11 @@ describe("User CRUD", function() {
       });
   });
 
-  it("GET /api/v1/users/profile succeed with 200", function(done) {
+  it("GET /api/v1/users/profile succeed with 200", (done) => {
     agent
       .get("/api/v1/users/profile")
       .set("Authorization", "Bearer " + token)
-      .end(function(err, res) {
+      .end((err, res) => {
         const status = res.status;
         expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
@@ -65,11 +65,11 @@ describe("User CRUD", function() {
       });
   });
 
-  it("GET /api/v1/users/n succeed with 200", function(done) {
+  it("GET /api/v1/users/n succeed with 200", (done) => {
     agent
       .get("/api/v1/users/" + id)
       .set("Authorization", "Bearer " + token)
-      .end(function(err, res) {
+      .end((err, res) => {
         const status = res.status;
         expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
@@ -87,11 +87,11 @@ describe("User CRUD", function() {
       });
   });
 
-  it("GET Json-api fields" , function(done) {
+  it("GET Json-api fields" , (done) => {
     agent
       .get(`/api/v1/users/${id}?fields=username`)
       .set("Authorization", "Bearer " + token)
-      .end(function(err, res) {
+      .end((err, res) => {
         const status = res.status;
         expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
@@ -103,14 +103,14 @@ describe("User CRUD", function() {
       });
   });
 
-  it("PUT /api/v1/users/n succeed with 200", function(done) {
+  it("PUT /api/v1/users/n succeed with 200", (done) => {
     agent
       .put("/api/v1/users/" + id)
       .set("Authorization", "Bearer " + token)
       .set("Accept", "application/vnd.api+json")
       .set("Content-Type", "application/vnd.api+json")
       .send( { data : { attributes : fixtures.user("user") } })
-      .end(function(err, res) {
+      .end((err, res) => {
         const status = res.status;
         expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
@@ -129,7 +129,7 @@ describe("User CRUD", function() {
       });
   });
 
-  it("PATCH /api/v1/users/n succeed with 200", function(done) {
+  it("PATCH /api/v1/users/n succeed with 200", (done) => {
     agent
       .patch("/api/v1/users/" + id)
       .set("Authorization", "Bearer " + token)
@@ -143,7 +143,7 @@ describe("User CRUD", function() {
           }
         }
       })
-      .end(function(err, res) {
+      .end((err, res) => {
         const status = res.status;
         expect(status).to.equal(200);
         expect(res.body.data.type).to.equal("user");
@@ -161,7 +161,7 @@ describe("User CRUD", function() {
       });
   });
 
-  it("DELETE /api/v1/users/n succeed with 204", function(done) {
+  it("DELETE /api/v1/users/n succeed with 204", (done) => {
     agent
       .delete("/api/v1/users/" + id)
       .set("Authorization", "Bearer " + token)
