@@ -42,6 +42,8 @@ const google_id = process.env.GOOGLE_CONSUMER_KEY;
 const google_secret = process.env.GOOGLE_CONSUMER_SECRET;
 const caching_enabled = parseInt(process.env.REQUEST_CACHING, 10);
 const jwtAuthMode = process.env.JWT_AUTH_MODE;
+const elastic_enable = parseInt(process.env.ELASTIC_ENABLE, 10);
+const elastic_url = process.env.ELASTIC_URL;
 
 const typeorm = {
     database: process.env.TYPEORM_DB,
@@ -84,6 +86,8 @@ export {
     google_secret,
     HTTPLogs,
     typeorm,
+    elastic_enable,
+    elastic_url,
     jimp,
     caching_enabled,
     jwtAuthMode

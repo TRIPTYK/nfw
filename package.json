@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "dependencies": {
+    "@elastic/elasticsearch": "^7.4.0",
     "@hapi/boom": "^7.4.10",
     "@hapi/joi": "^16.1.4",
     "@triptyk/nfw-core": "^0.0.2",

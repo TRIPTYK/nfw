@@ -1,9 +1,10 @@
 import * as Fs from "fs";
 import * as HTTPS from "https";
 import {TypeORMConfiguration} from "./config/typeorm.config";
+import {ElasticSearchConfiguration} from "./config/elastic.config";
 
 import {logger as Logger} from "../src/config/logger.config" ;
-import {env, environments, https, port, typeorm} from "./config/environment.config";
+import {env, environments, https, port, typeorm , elastic_enable , elastic_url} from "./config/environment.config";
 
 module.exports = (async () => {
     /** Connection to Database server before app configuration */
@@ -18,6 +19,18 @@ module.exports = (async () => {
     if (env !== environments["TEST"].toLowerCase()) {
         Logger.info(`Connection to ${typeorm.type} server established on port ${typeorm.port} (${env})`);
     }
+
+    if (elastic_enable) {
+        try {
+            const connection = await ElasticSearchConfiguration.connect();
+            await connection.ping();
+            Logger.info(`Connection to ElasticSearch server established on url ${elastic_url} (${env})`);
+        } catch (e) {
+            Logger.error(`Failed to establish connection to ElasticSearch server on url ${elastic_url} (${env})`);
+        }
+    }
+
+
 
     const { Application } = await import("./config/app.config");
     const SetupApp = new Application();
