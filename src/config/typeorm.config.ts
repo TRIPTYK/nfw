@@ -15,7 +15,10 @@ import {typeorm as TypeORM} from "./environment.config";
 class TypeORMConfiguration {
 
     public static async connect() {
-        const entities = [User, RefreshToken, Document];
+        /** Singleton pattern */
+        if (TypeORMConfiguration.connection) {
+            return TypeORMConfiguration.connection;
+        }
 
         TypeORMConfiguration.connection = await createConnection({
             database: TypeORM.database,
@@ -26,9 +29,10 @@ class TypeORMConfiguration {
             name: TypeORM.name,
             password: TypeORM.pwd,
             port: parseInt(TypeORM.port, 10),
-            type: "mysql",
+            type: TypeORM.type as any,
             username: TypeORM.user
         });
+
         return TypeORMConfiguration.connection;
     }
 

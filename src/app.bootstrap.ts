@@ -4,14 +4,14 @@ import {TypeORMConfiguration} from "./config/typeorm.config";
 import {ElasticSearchConfiguration} from "./config/elastic.config";
 
 import {logger as Logger} from "../src/config/logger.config" ;
-import {env, environments, https, port, typeorm , elastic_enable , elastic_url} from "./config/environment.config";
+import {env, environments , https, port, typeorm , elastic_enable , elastic_url} from "./config/environment.config";
 
 module.exports = (async () => {
     /** Connection to Database server before app configuration */
     await TypeORMConfiguration.connect()
         .catch( (error) => {
             if (env !== environments["TEST"].toLowerCase()) {
-                Logger.error(`MySQL connection error : ${error.message}`);
+                Logger.error(`${typeorm.type} connection error : ${error.message}`);
             }
             process.exit(1);
         });
