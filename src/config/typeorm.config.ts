@@ -3,8 +3,7 @@ import {Connection, createConnection} from "typeorm";
 import {User} from "../api/models/user.model";
 import {RefreshToken} from "../api/models/refresh-token.model";
 import {Document} from "../api/models/document.model";
-
-import {typeorm as TypeORM} from "./environment.config";
+import {typeorm as TypeORM, env} from "./environment.config";
 
 
 /**
@@ -23,7 +22,7 @@ class TypeORMConfiguration {
         TypeORMConfiguration.connection = await createConnection({
             database: TypeORM.database,
             entities : [
-                __dirname + "/../api/models/*.ts"
+                env === "production" ? __dirname + "/../api/models/*.js" : __dirname + "/../api/models/*.ts"
             ],
             host: TypeORM.host,
             name: TypeORM.name,
