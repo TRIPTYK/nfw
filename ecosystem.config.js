@@ -1,7 +1,7 @@
 // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
 module.exports = {
   apps : [{
-    name: 'NFW_API',
+    name: 'SCALDIS-API',
     script: './dist/src/app.bootstrap.js',
     args: 'one two',
     instances: 1,
