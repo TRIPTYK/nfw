@@ -20,6 +20,9 @@ module.exports = (async () => {
         Logger.info(`Connection to ${typeorm.type} server established on port ${typeorm.port} (${env})`);
     }
 
+    /**
+     * ELASTIC support , might change in future releases
+     */
     if (elastic_enable) {
         try {
             const connection = await ElasticSearchConfiguration.connect();
@@ -27,9 +30,9 @@ module.exports = (async () => {
             Logger.info(`Connection to ElasticSearch server established on url ${elastic_url} (${env})`);
         } catch (e) {
             Logger.error(`Failed to establish connection to ElasticSearch server on url ${elastic_url} (${env})`);
+            process.exit(1);
         }
     }
-
 
 
     const { Application } = await import("./config/app.config");

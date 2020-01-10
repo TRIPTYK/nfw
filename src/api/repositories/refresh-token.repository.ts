@@ -16,7 +16,7 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
         const token = `${user.id}.${Crypto.randomBytes(40).toString("hex")}`;
         const expires = Moment().add(jwtExpirationInterval, "minutes").toDate();
 
-        const tokenObject = new RefreshToken(token, user, expires , ip);
+        const tokenObject = this.create({refreshToken : token, user, expires , ip});
 
         await this.save(tokenObject);
 

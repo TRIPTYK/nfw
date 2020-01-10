@@ -2,7 +2,8 @@ import {Request, Response} from "express";
 import Boom from "@hapi/boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
-import {IMiddleware, BaseSerializer} from "@triptyk/nfw-core";
+import {IMiddleware} from "@triptyk/nfw-core";
+import { BaseSerializer } from "../serializers/base.serializer";
 
 export abstract class BaseMiddleware implements IMiddleware {
     protected serializer: BaseSerializer;
@@ -17,17 +18,19 @@ export abstract class BaseMiddleware implements IMiddleware {
         const res = await Promise.all(validationChain.map((validation) => validation.run(req)));
 
         const errors = [];
-        res.forEach((r) => {
+
+        for (const r of res) {
             if (r.errors.length !== 0) {
                 errors.push(r.errors);
             }
-        });
+        }
 
         if (errors.length !== 0) {
             const error = Boom.badRequest("Validation error");
             error["errors"] = errors;
             return next(error);
         }
+
         return next();
     }
 

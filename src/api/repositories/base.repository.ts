@@ -5,7 +5,9 @@ import Boom from "@hapi/boom";
 import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
-import {JsonApiRepositoryInterface, BaseSerializer} from "@triptyk/nfw-core";
+import {JsonApiRepositoryInterface} from "@triptyk/nfw-core";
+import { BaseSerializer } from "../serializers/base.serializer";
+
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -32,6 +34,8 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
         const select: string[] = [`${currentTable}.id`];
 
 
+        console.log(query);
+
         /**
          * Check if include parameter exists
          * An endpoint MAY also support an include request parameter
@@ -40,11 +44,16 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
          */
         if (allowIncludes && query.include) {
             const includes = splitAndFilter(query.include, ",");
+            const noDashDotIncludes = allowedIncludes.map((i) => i.replace(/-|\./g,""));
 
-            includes.forEach((include: string) => {
+            for (const include of includes) {
                 select.push(`${include}.id`); // push to select include , because id is always included
 
-                if (allowedIncludes.indexOf(include) > -1) {
+                const noDashDotInclude = include.replace(/-|\./g,"");
+
+                // insensitive check of dash-dot includes for aliases
+                if (noDashDotIncludes.indexOf(noDashDotInclude) !== -1) {
+
                     let property: string;
                     let alias: string;
 
@@ -60,8 +69,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                 } else {
                     throw Boom.expectationFailed(`Relation with ${include} not authorized`);
                 }
-            });
-
+            }
         }
 
 
@@ -80,8 +88,11 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                     if (!parents.length) {
                         parents = [currentTable];
                     }
-                    splitAndFilter(props, ",")
-                        .forEach((elem) => select.push(`${parents.join(".")}.${elem}`));
+
+                    for (const elem of splitAndFilter(props, ","))
+                    {
+                        select.push(`${parents.join(".")}.${elem}`);
+                    }
                 } else {
                     for (const index in props) {
                         const property = props[index];
@@ -109,13 +120,14 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
             const sortFields = splitAndFilter(query.sort, ","); // split parameters and filter empty strings
 
             // need to use SqlString.escapeId in order to prevent SQL injection on orderBy()
-            sortFields.forEach((field: string) => {
+            for (const field of sortFields)
+            {
                 if (field[0] === "-") {  // JSON-API convention , when sort field starts with '-' order is DESC
                     queryBuilder.orderBy(SqlString.escapeId(field.substr(1)), "DESC");
                 } else {
                     queryBuilder.orderBy(SqlString.escapeId(field), "ASC");
                 }
-            });
+            }
         }
 
 
@@ -138,7 +150,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
             const queryBrackets = new Brackets((qb) => {
                 for (const key in query.filter) {
                     const filtered: string[] = splitAndFilter(query.filter[key], ",");
-                    filtered.forEach((e: string) => {
+                    for (const e of filtered) {
                         const [strategy, value] = e.split(":");
 
                         // TODO : fix params not working with TypeORM where
@@ -170,12 +182,24 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                             case "orin" :
                                 qb.orWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilter(value, "+")]));
                                 break ;
+                            case "orbtw":
+                                const orvalues = splitAndFilter(value, "+");
+                                if (orvalues.length !== 2) throw Boom.badRequest("Must have 2 values in between filter");
+                                qb.orWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, orvalues[0],orvalues[1]]))
+                                break ; 
+                            case "andbtw": 
+                                const andvalues = splitAndFilter(value, "+");
+                                if (andvalues.length !== 2) throw Boom.badRequest("Must have 2 values in between filter");
+                                qb.andWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0],andvalues[1]]))
+                                break ; 
                         }
-                    });
+                    }
                 }
             });
             queryBuilder.where(queryBrackets);
         }
+
+        console.log(queryBuilder.getSql());
 
         return queryBuilder;
     }

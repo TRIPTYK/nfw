@@ -1,4 +1,3 @@
 {
-  "env": "development",
-  "dockerContainer": "potato6"
+  "env": "development"
 }

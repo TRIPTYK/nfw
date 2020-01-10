@@ -1,6 +1,7 @@
 import {Connection, getConnection, getCustomRepository, getRepository, Repository} from "typeorm";
 import {cache, cleanupRouteCache, IController} from "@triptyk/nfw-core";
 import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
+import { BaseRepository } from "../repositories/base.repository";
 
 /**
  * Main controller contains properties/methods
@@ -14,14 +15,14 @@ abstract class BaseController implements IController {
      * @property Connection
      */
     protected connection: Connection;
-    protected repositories: any;
+    protected repository: any;
 
     /**
      * Super constructor
      * Retrieve database connection, and store it into connection
      * @constructor
      */
-    protected constructor() {
+    public constructor() {
         this.connection = getConnection(TypeORM.name);
     }
 

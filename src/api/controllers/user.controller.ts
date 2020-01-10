@@ -3,34 +3,25 @@ import Boom from "@hapi/boom";
 import {Request, Response} from "express";
 import {User} from "../models/user.model";
 import {UserRepository} from "../repositories/user.repository";
-import {getCustomRepository} from "typeorm";
 import {BaseController} from "./base.controller";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
-
-import {SerializerParams} from "@triptyk/nfw-core";
-import {BaseRepository} from "../repositories/base.repository";
-
+import {SerializerParams , Controller} from "@triptyk/nfw-core";
 
 /**
  *
  */
+@Controller({
+    repository : UserRepository
+})
 export class UserController extends BaseController {
-
-    protected repository: BaseRepository<User>;
-
-    constructor() {
-        super();
-        this.repository = getCustomRepository(UserRepository);
-    }
-
     /**
      *
      * @param req
      * @param res
      */
     public get(req: Request, res: Response) {
-        return req["locals"].whitelist();
+        return new UserSerializer(req["locals"]);
     }
 
     /**
@@ -39,7 +30,7 @@ export class UserController extends BaseController {
      * @param res
      */
     public loggedIn(req: Request, res: Response) {
-        return req["user"].whitelist();
+        return new UserSerializer(req["user"]);
     }
 
     /**
@@ -67,7 +58,7 @@ export class UserController extends BaseController {
      * @param next
      */
     public async create(req: Request, res: Response, next) {
-        const user = new User(req.body);
+        const user = this.repository.create(req.body);
         const savedUser = await this.repository.save(user);
 
         res.status(HttpStatus.CREATED);

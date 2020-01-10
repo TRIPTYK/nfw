@@ -3,9 +3,8 @@ import {User} from "./user.model";
 import {jwtExpirationInterval} from "../../config/environment.config";
 
 @Entity()
-@Unique(["user", "ip"])
+@Unique(["user", "ip", "pid"])
 export class RefreshToken {
-
     @PrimaryGeneratedColumn()
     public id: number;
 
@@ -20,29 +19,23 @@ export class RefreshToken {
     public user: User;
 
     @Column({
-        length : 45
+        length : 45,
+        nullable : false
     })
     public ip: string;
+
+    @Column({
+        default : 0
+    })
+    public pid: number;
 
     @Column()
     public expires: Date;
 
     public jwtExpirationInterval: string = jwtExpirationInterval;
-
-
     public accessToken: string;
 
-    /**
-     *
-     * @param refreshToken
-     * @param user
-     * @param expires
-     * @param ip
-     */
-    constructor(refreshToken: string, user: User, expires: Date, ip: string) {
-        this.refreshToken = refreshToken;
-        this.expires = expires;
-        this.user = user;
-        this.ip = ip;
+    public constructor(payload: object = {}) {
+        Object.assign(this, payload);
     }
 }

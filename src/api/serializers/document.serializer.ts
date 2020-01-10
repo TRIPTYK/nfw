@@ -1,6 +1,7 @@
 import {documentDeserialize, documentSerialize} from "../enums/json-api/document.enum";
 import {userSerialize} from "../enums/json-api/user.enum";
-import { BaseSerializer , SerializerParams } from "@triptyk/nfw-core";
+import { SerializerParams } from "@triptyk/nfw-core";
+import { BaseSerializer } from "./base.serializer";
 
 export class DocumentSerializer extends BaseSerializer {
     constructor(serializerParams = new SerializerParams()) {
