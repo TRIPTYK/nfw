@@ -1,5 +1,6 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, OneToMany } from "typeorm";
 import { BaseModel } from "./base.model";
+import { Comment } from "./comment.model";
 
 @Entity()
 export class Post extends BaseModel {
@@ -33,4 +34,7 @@ export class Post extends BaseModel {
     	length: 512
     })
     code;
+
+    @OneToMany(type => Comment, comment => comment.post)
+    comments: Comment[];
 }

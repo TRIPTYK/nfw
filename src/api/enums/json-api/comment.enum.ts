@@ -2,7 +2,7 @@
  * @description allowed JSON-API includes relations
  *
  */
-export const commentRelations: string[] = [];
+export const commentRelations: string[] = ['post'];
 /**
  * @description
  *
