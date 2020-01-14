@@ -192,7 +192,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                                 break;
                             case "orsuporeq":
                                 qb.orWhere(SqlString.format(`?? >= ?`, [key, value]));
-                                break; 
+                                break;
                             case "andlessoreq":
                                 qb.andWhere(SqlString.format(`?? <= ?`, [key, value]));
                                 break;

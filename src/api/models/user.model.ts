@@ -32,7 +32,20 @@ export class User extends BaseModel {
     @Column({
         type: "simple-json"
     })
-    public services: { facebook?: string, google?: string };
+    public services: {
+        facebook?: {
+            refreshToken: string,
+            accessToken: string
+        },
+        google?: {
+            refreshToken: string,
+            accessToken: string
+        },
+        outlook?: {
+            refreshToken: string,
+            accessToken: string
+        }
+    };
 
     @Column({
         length: 32,

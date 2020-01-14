@@ -11,6 +11,7 @@ import {roles} from "../enums/role.enum";
 import {env, jwtAuthMode} from "../../config/environment.config";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import { Controller } from "@triptyk/nfw-core";
+import Refresh from "passport-oauth2-refresh";
 
 /**
  * Authentification Controller!
@@ -75,6 +76,39 @@ class AuthController extends BaseController {
         return {
             token
         };
+    }
+
+    /**
+     *
+     *
+     * @protected
+     * @param {Request} req
+     * @param {Response} res
+     * @param {Function} next
+     * @memberof AuthController
+     */
+    protected async refreshOAuth(req: Request, res: Response, next: Function) {
+        const user: User = req["user"] as User;
+        const{ service } = req.params;
+
+        const {refreshToken, accessToken} = await new Promise((res, rej) => {
+            Refresh.requestNewAccessToken(service, user.services[service].refreshToken,
+                (err, accessToken, refreshToken) => {
+                    if (err) { rej(err); }
+                    res({
+                        accessToken,
+                        refreshToken
+                    });
+                }
+            );
+        });
+
+        user.services[service].accessToken = accessToken;
+        user.services[service].refreshToken = refreshToken;
+
+        await this.repository.save(user);
+
+        res.sendStatus(HttpStatus.OK);
     }
 
     /**
