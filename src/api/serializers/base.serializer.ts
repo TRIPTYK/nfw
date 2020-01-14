@@ -31,7 +31,7 @@ abstract class BaseSerializer implements ISerialize {
      */
     public serialize = (payload: any, schema = null, params = {}): any => {
         return this.serializer.serialize(this.type, payload, schema, params);
-    };
+    }
 
     /**
      *
@@ -76,11 +76,11 @@ abstract class BaseSerializer implements ISerialize {
             const max = Math.ceil(total / size);
 
             data["topLevelLinks"] = {
-                self: () => `${baseUrl}/${this.type}${request.url}`,
+                first: () => `${baseUrl}/${this.type}${this.replacePage(request.url, 1)}`,
+                last: () => `${baseUrl}/${this.type}${this.replacePage(request.url, max)}`,
                 next: () => `${baseUrl}/${this.type}${this.replacePage(request.url, page + 1 > max ? max : page + 1)}`,
                 prev: () => `${baseUrl}/${this.type}${this.replacePage(request.url, page - 1 < 1 ? page : page - 1)}`,
-                last: () => `${baseUrl}/${this.type}${this.replacePage(request.url, max)}`,
-                first: () => `${baseUrl}/${this.type}${this.replacePage(request.url, 1)}`
+                self: () => `${baseUrl}/${this.type}${request.url}`
             };
         }
 
