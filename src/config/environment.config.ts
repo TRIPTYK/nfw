@@ -1,23 +1,24 @@
 import * as Dotenv from "dotenv";
 import * as fs from "fs";
+import path from "path";
 import {argv} from "yargs";
 
 /**
  * Configure dotenv with variables.env file before app, to allow process.env accessibility in
  * app.js
  */
-const files = fs.readdirSync("./");
+const files = fs.readdirSync(".");
 const environments = {};
-files.forEach((element) => {
-    if (element.includes(".env")) {
-        const splited = element.split(".")[0].toUpperCase();
+
+
+for (const file of files) {
+    if (file.includes(".env")) {
+        const splited = file.split(".")[0].toUpperCase();
         environments[splited] = splited;
     }
-});
+}
 
-// const environments = { DEVELOPMENT : 'DEVELOPMENT' , STAGING : 'STAGING', PRODUCTION : 'PRODUCTION', TEST : 'TEST' };
-
-const environment = argv.env && environments.hasOwnProperty(argv.env.toUpperCase()) ? argv.env : "development";
+const environment = argv.env && environments.hasOwnProperty((argv.env as string).toUpperCase()) ? argv.env : "development";
 
 const envConfig = Dotenv.parse(fs.readFileSync(`${process.cwd()}/${environment}.env`));
 for (const k in envConfig) {
@@ -26,7 +27,6 @@ for (const k in envConfig) {
 Dotenv.config({path: `${process.cwd()}/${environment}.env`});
 
 let authorized: any = process.env.AUTHORIZED.trim();
-
 const env = process.env.NODE_ENV;
 const port = process.env.PORT;
 const url = process.env.URL;

@@ -21,43 +21,39 @@ export class UserRepository extends BaseRepository<User> {
      */
     public async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any , ip: string },
     ignoreCheck = false , force: boolean = false ): Promise<object> {
-        const {email, password, refreshObject , ip} = options;
-        const refreshTokenRepository = getRepository(RefreshToken);
-
-        if (!email) {
-            throw Boom.badRequest("An email is required to generate a token");
-        }
+        const {password, refreshObject , ip , email} = options;
 
         const user = await this.findOne({email});
 
         if (!user) {
             throw Boom.notFound("User not found");
-        } else {
-            if (!ignoreCheck) {
-                const qb = refreshTokenRepository.createQueryBuilder("refresh")
-                    .where("refresh.user = :userId", {userId: user.id});
+        }
 
-                if (jwtAuthMode === "multiple") {
-                    qb.andWhere("refresh.ip = :ip", {ip});
-                }
+        if (!ignoreCheck) {
+            const refreshTokenRepository = getRepository(RefreshToken);
+            const qb = refreshTokenRepository.createQueryBuilder("refresh")
+                .where("refresh.user = :userId", {userId: user.id});
 
-                qb.andWhere("refresh.expires > CURRENT_TIMESTAMP");
-
-                const refreshFound = await qb.getOne();
-
-                if (refreshFound && force === false) {
-                    throw Boom.forbidden("User already logged");
-                }
+            if (jwtAuthMode === "multiple") {
+                qb.andWhere("refresh.ip = :ip", {ip});
             }
 
-            if (password !== undefined && await user.passwordMatches(password) === false) {
-                throw Boom.unauthorized("Password must match to authorize a token generating");
-            }
+            qb.andWhere("refresh.expires > CURRENT_TIMESTAMP");
 
-            if (refreshObject !== undefined && refreshObject.user.email === email
-                && Moment(refreshObject.expires).isBefore()) {
-                throw Boom.unauthorized("Invalid refresh token.");
+            const refreshFound = await qb.getOne();
+
+            if (refreshFound && force === false) {
+                throw Boom.forbidden("User already logged");
             }
+        }
+
+        if (password !== undefined && await user.passwordMatches(password) === false) {
+            throw Boom.unauthorized("Password must match to authorize a token generating");
+        }
+
+        if (refreshObject !== undefined && refreshObject.user.email === email
+            && Moment(refreshObject.expires).isBefore()) {
+            throw Boom.unauthorized("Invalid refresh token.");
         }
 
         return {user, accessToken: user.token()};

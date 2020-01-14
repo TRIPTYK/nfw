@@ -5,7 +5,7 @@ import {getCustomRepository, getRepository} from "typeorm";
 import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
-import {userRelations} from "../api/enums/json-api/user.enum";
+import {userLoginRelations} from "../api/enums/json-api/user.enum";
 
 import * as AuthProviders from "@triptyk/nfw-core";
 
@@ -23,7 +23,7 @@ const jwtOptions = {
 const jwt = async (payload, next) => {
     try {
         const userRepository = getRepository(User);
-        const user = await userRepository.findOne(payload.sub, {relations: userRelations});
+        const user = await userRepository.findOne(payload.sub, {relations: userLoginRelations});
         if (user) { return next(null, user); }
         return next(null, false);
     } catch (error) {

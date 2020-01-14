@@ -3,30 +3,20 @@ import Boom from "@hapi/boom";
 
 import {Document} from "../models/document.model";
 import {Request, Response} from "express";
-import {getCustomRepository} from "typeorm";
 import {DocumentRepository} from "../repositories/document.repository";
 import {BaseController} from "./base.controller";
 import {DocumentSerializer} from "../serializers/document.serializer";
 import {UserSerializer} from "../serializers/user.serializer";
 import {documentRelations} from "../enums/json-api/document.enum";
-import {SerializerParams} from "@triptyk/nfw-core";
-import {BaseRepository} from "../repositories/base.repository";
+import {SerializerParams , Controller} from "@triptyk/nfw-core";
 
 /**
  *
  */
+@Controller({
+    repository : DocumentRepository
+})
 class DocumentController extends BaseController {
-
-    protected repository: BaseRepository<Document>;
-
-    /**
-     * @constructor
-     */
-    constructor() {
-        super();
-        this.repository = getCustomRepository(DocumentRepository);
-    }
-
     /**
      * Retrieve a list of documents, according to some parameters
      *
@@ -51,7 +41,7 @@ class DocumentController extends BaseController {
      * @public
      */
     public async create(req: Request, res: Response, next) {
-        const document = new Document(req["file"]);
+        const document = this.repository.create(req["file"]);
         const saved = await this.repository.save(document);
         return new DocumentSerializer().serialize(saved);
     }

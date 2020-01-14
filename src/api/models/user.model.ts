@@ -94,20 +94,6 @@ export class User extends BaseModel {
     @JoinColumn()
     public avatar: Document;
 
-    private temporaryPassword: string;
-
-    @AfterLoad()
-    public storeTemporaryPassword(): void {
-        this.temporaryPassword = this.password;
-    }
-
-    /**
-     * @return Serialized user object in JSON-API format
-     */
-    public whitelist(): object {
-        return new UserSerializer().serialize(this);
-    }
-
     /**
      *
      */
@@ -151,15 +137,8 @@ export class User extends BaseModel {
     @BeforeUpdate()
     public async hashPassword(): Promise<boolean> {
         try {
-
-            if (this.temporaryPassword === this.password) {
-                return true;
-            }
-
             const rounds = env === "test" ? 1 : 10;
-
             this.password = await Bcrypt.hash(this.password, rounds);
-
             return true;
         } catch (error) {
             throw Boom.badImplementation(error.message);

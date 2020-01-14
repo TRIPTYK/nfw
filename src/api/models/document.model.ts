@@ -2,33 +2,22 @@ import {
     BeforeInsert,
     BeforeRemove, BeforeUpdate,
     Column,
-    CreateDateColumn,
     Entity,
     ManyToOne,
-    OneToMany, OneToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
+    OneToOne,
 } from "typeorm";
 
 import {User} from "./user.model";
 import * as Fs from "fs";
 import {BaseModel} from "./base.model";
 import * as Path from "path";
-import {promisify} from "util";
-import {mimeTypes} from "../enums/mime-type.enum";
+import {mimeTypes, imageMimeTypes} from "../enums/mime-type.enum";
 import {documentTypes} from "../enums/document-type.enum";
-
-
-const unlink = promisify(Fs.unlink);
 
 @Entity()
 export class Document extends BaseModel {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
     @Column({
-        enum: documentTypes,
-        type: "enum"
+        enum: documentTypes
     })
     public fieldname: "avatar" | "document" | "cover";
 
@@ -39,15 +28,12 @@ export class Document extends BaseModel {
     public path: string;
 
     @Column({
-        enum: mimeTypes,
-        type: "enum"
+        enum: mimeTypes
     })
-    public mimetype: "application/vnd.ms-excel" | "application/msword" | "application/zip" | "application/pdf" | "image/bmp" | "image/gif" | "image/jpeg" | "image/png" | "image/csv";
+    public mimetype: string;
 
-    @Column({
-        type: String
-    })
-    public size;
+    @Column()
+    public size: number;
 
     @ManyToOne((type) => User, (user) => user.documents, {
         onDelete: "CASCADE" // Remove all documents when user is deleted
@@ -57,12 +43,6 @@ export class Document extends BaseModel {
     @OneToOne((type) => User, (avatar) => avatar.avatar)
     public userAvatar: User;
 
-    @CreateDateColumn()
-    public createdAt: Date;
-    @UpdateDateColumn({
-        nullable: true
-    })
-    public updatedAt: Date;
     @Column({
         default: null
     })
@@ -76,14 +56,10 @@ export class Document extends BaseModel {
     @BeforeRemove()
     @BeforeUpdate()
     public deleteOnDisk() {
-        try {   // in some cases , files does not exists , just ignore the remove complain
-            Fs.unlink(`${this.path}/${this.filename}`, () => {
-                ["xs", "md", "xl"].forEach((ext) => {
-                    unlink(`${this.path}/${ext}/${this.filename}`);
-                });
-            });
-        } catch (e) {
-            console.log(e);
+        Fs.unlinkSync(`${this.path}/${this.filename}`);
+
+        for (const size of ["xs", "md", "xl"]) {
+            Fs.unlinkSync(`${this.path}/${size}/${this.filename}`);
         }
     }
 }

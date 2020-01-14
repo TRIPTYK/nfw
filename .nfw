@@ -1,4 +1,4 @@
 {
   "env": "development",
-  "dockerContainer": "potato6"
+  "dockerContainer": "nfw_server_docker"
 }

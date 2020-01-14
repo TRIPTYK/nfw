@@ -5,7 +5,7 @@
   "port": "3306",
   "username": "root",
   "password": "test123*",
-  "database": "nfw_17",
+  "sid": "ORCLCDB.localdomain",
   "logging": false,
   "entities": [
     "src/api/models/*.ts"
@@ -15,6 +15,7 @@
   ],
   "migrationsTableName": "migration_table",
   "cli": {
-    "migrationsDir": "src/migration"
-  }
+    "migrationsDir": "src/migration/development/development"
+  },
+  "database": "nfw_17"
 }

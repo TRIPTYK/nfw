@@ -10,19 +10,21 @@ import {BaseController} from "./base.controller";
 import {roles} from "../enums/role.enum";
 import {env, jwtAuthMode} from "../../config/environment.config";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
+import { Controller } from "@triptyk/nfw-core";
 
 /**
  * Authentification Controller!
  * @module controllers/auth.controller.ts
  */
+@Controller({
+    repository : UserRepository
+})
 class AuthController extends BaseController {
-    protected repository;
     protected refreshRepository;
 
     constructor() {
         super();
         this.refreshRepository = getCustomRepository(RefreshTokenRepository);
-        this.repository = getCustomRepository(UserRepository);
     }
 
     /**
@@ -37,7 +39,7 @@ class AuthController extends BaseController {
      * @public
      */
     protected async register(req: Request, res: Response, next) {
-        let user = new User(req.body);
+        let user: User = this.repository.create(req.body);
         user.role = ["test", "development"].includes(env.toLowerCase()) ? roles.admin : roles.user;
         user = await this.repository.save(user);
         const token = await this.refreshRepository.generateTokenResponse(user, user.token(), req.ip);
