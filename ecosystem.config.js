@@ -1,7 +1,7 @@
 // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
 module.exports = {
   apps : [{
-    name: 'NFW_API',
+    name: 'SCALDIS-API',
     script: './dist/src/app.bootstrap.js',
     args: 'one two',
     instances: 1,
@@ -24,8 +24,8 @@ module.exports = {
       host : '172.16.20.193',
       ssh_options : ["PasswordAuthentication=no","IdentityFile=/home/amaurydeflorenne/.ssh/amaury"],
       ref  : 'origin/develop',
-      repo : 'git@github.com:TRIPTYK/nfw.git',
-      path : '/var/www/prod-nfw',
+      repo : 'git@github-scaldis:TRIPTYK/nfw.git',
+      path : '/var/www/scaldis',
       'post-setup': 'npm run setup',
       'post-deploy' : 'npm run deploy production'
     }
