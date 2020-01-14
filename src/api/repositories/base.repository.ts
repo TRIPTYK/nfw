@@ -33,9 +33,6 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
         const queryBuilder = this.createQueryBuilder(currentTable);
         const select: string[] = [`${currentTable}.id`];
 
-
-        console.log(query);
-
         /**
          * Check if include parameter exists
          * An endpoint MAY also support an include request parameter
@@ -44,12 +41,12 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
          */
         if (allowIncludes && query.include) {
             const includes = splitAndFilter(query.include, ",");
-            const noDashDotIncludes = allowedIncludes.map((i) => i.replace(/-|\./g,""));
+            const noDashDotIncludes = allowedIncludes.map((i) => i.replace(/-|\./g, ""));
 
             for (const include of includes) {
                 select.push(`${include}.id`); // push to select include , because id is always included
 
-                const noDashDotInclude = include.replace(/-|\./g,"");
+                const noDashDotInclude = include.replace(/-|\./g, "");
 
                 // insensitive check of dash-dot includes for aliases
                 if (noDashDotIncludes.indexOf(noDashDotInclude) !== -1) {
@@ -89,8 +86,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                         parents = [currentTable];
                     }
 
-                    for (const elem of splitAndFilter(props, ","))
-                    {
+                    for (const elem of splitAndFilter(props, ",")) {
                         select.push(`${parents.join(".")}.${elem}`);
                     }
                 } else {
@@ -120,8 +116,7 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
             const sortFields = splitAndFilter(query.sort, ","); // split parameters and filter empty strings
 
             // need to use SqlString.escapeId in order to prevent SQL injection on orderBy()
-            for (const field of sortFields)
-            {
+            for (const field of sortFields) {
                 if (field[0] === "-") {  // JSON-API convention , when sort field starts with '-' order is DESC
                     queryBuilder.orderBy(SqlString.escapeId(field.substr(1)), "DESC");
                 } else {
@@ -184,22 +179,20 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                                 break ;
                             case "orbtw":
                                 const orvalues = splitAndFilter(value, "+");
-                                if (orvalues.length !== 2) throw Boom.badRequest("Must have 2 values in between filter");
-                                qb.orWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, orvalues[0],orvalues[1]]))
-                                break ; 
-                            case "andbtw": 
+                                if (orvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
+                                qb.orWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, orvalues[0], orvalues[1]]));
+                                break ;
+                            case "andbtw":
                                 const andvalues = splitAndFilter(value, "+");
-                                if (andvalues.length !== 2) throw Boom.badRequest("Must have 2 values in between filter");
-                                qb.andWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0],andvalues[1]]))
-                                break ; 
+                                if (andvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
+                                qb.andWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0], andvalues[1]]));
+                                break ;
                         }
                     }
                 }
             });
             queryBuilder.where(queryBrackets);
         }
-
-        console.log(queryBuilder.getSql());
 
         return queryBuilder;
     }

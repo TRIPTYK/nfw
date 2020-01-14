@@ -5,9 +5,4 @@ import {BaseRepository} from "./base.repository";
 
 @EntityRepository(Document)
 export class DocumentRepository extends BaseRepository<Document> {
-
-    /** */
-    constructor() {
-        super();
-    }
 }
