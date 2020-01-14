@@ -187,6 +187,18 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                                 if (andvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
                                 qb.andWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0], andvalues[1]]));
                                 break ;
+                            case "andsuporeq":
+                                qb.andWhere(SqlString.format(`?? >= ?`, [key, value]));
+                                break;
+                            case "orsuporeq":
+                                qb.orWhere(SqlString.format(`?? >= ?`, [key, value]));
+                                break; 
+                            case "andlessoreq":
+                                qb.andWhere(SqlString.format(`?? <= ?`, [key, value]));
+                                break;
+                            case "orlessoreq":
+                                qb.orWhere(SqlString.format(`?? <= ?`, [key, value]));
+                                break;
                         }
                     }
                 }

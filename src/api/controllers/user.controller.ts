@@ -30,7 +30,7 @@ export class UserController extends BaseController {
      * @param res
      */
     public loggedIn(req: Request, res: Response) {
-        return new UserSerializer(req["user"]);
+        return new UserSerializer().serialize(req["user"]);
     }
 
     /**
@@ -40,7 +40,7 @@ export class UserController extends BaseController {
      * @param next
      */
     public async changePassword(req: Request, res: Response, next) {
-        let currentUser: User = req["user"];
+        let currentUser: User = req["user"] as User;
 
         if (await currentUser.passwordMatches(req.body.old_password)) {
             currentUser.password = req.body.new_password;

@@ -7,10 +7,10 @@ import * as Passport from "passport";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 
-import {strategies as Strategies} from "./passport.config";
 import {router as ProxyRouter} from "./../api/routes/v1";
 import * as ErrorHandler from "../api/services/error-handler.service";
 import {api, authorized, env, environments, HTTPLogs} from "./environment.config";
+import { PassportConfig } from "./passport.config";
 
 export class Application {
     private readonly app: Express.Application;
@@ -71,10 +71,6 @@ export class Application {
          */
         this.app.use(Passport.initialize());
 
-        Passport.use("jwt", Strategies.jwt);
-        Passport.use("facebook", Strategies.facebook);
-        Passport.use("google", Strategies.google);
-
         this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
         const apiLimiter = new RateLimit({
@@ -87,6 +83,9 @@ export class Application {
          * Set RateLimit and Router(s) on paths
          */
         this.app.use(`/api/${api}`, apiLimiter, ProxyRouter);
+
+        const passportConfig = new PassportConfig();
+        passportConfig.init(this.app);
 
         /**
          * Request logging with Morgan

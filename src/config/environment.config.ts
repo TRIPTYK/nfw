@@ -36,14 +36,28 @@ const jwtExpirationInterval = process.env.JWT_EXPIRATION_MINUTES;
 const api = process.env.API_VERSION;
 const logs = process.env.NODE_ENV === "production" ? "combined" : "development";
 const HTTPLogs = process.env.NODE_ENV === "production" ? "production" : "dev";
-const facebook_id = process.env.FACEBOOK_APP_ID;
-const facebook_secret = process.env.FACEBOOK_APP_SECRET;
-const google_id = process.env.GOOGLE_CONSUMER_KEY;
-const google_secret = process.env.GOOGLE_CONSUMER_SECRET;
 const caching_enabled = parseInt(process.env.REQUEST_CACHING, 10);
 const jwtAuthMode = process.env.JWT_AUTH_MODE;
 const elastic_enable = parseInt(process.env.ELASTIC_ENABLE, 10);
 const elastic_url = process.env.ELASTIC_URL;
+
+const facebook = {
+    id : process.env.FACEBOOK_KEY,
+    redirect : process.env.FACEBOOK_REDIRECT_URL,
+    secret : process.env.FACEBOOK_SECRET
+};
+
+const google = {
+    id : process.env.GOOGLE_KEY,
+    redirect : process.env.GOOGLE_REDIRECT_URL,
+    secret : process.env.GOOGLE_SECRET,
+};
+
+const outlook = {
+    id : process.env.OUTLOOK_KEY,
+    redirect : process.env.OUTLOOK_REDIRECT_URL,
+    secret : process.env.OUTLOOK_SECRET
+};
 
 const typeorm = {
     database: process.env.TYPEORM_DB,
@@ -80,10 +94,9 @@ export {
     jwtSecret,
     jwtExpirationInterval,
     api,
-    facebook_id,
-    facebook_secret,
-    google_id,
-    google_secret,
+    facebook,
+    outlook,
+    google,
     HTTPLogs,
     typeorm,
     elastic_enable,

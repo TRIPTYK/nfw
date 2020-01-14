@@ -71,36 +71,12 @@ export class UserRepository extends BaseRepository<User> {
      *
      * @param param
      */
-    public async oAuthLogin({service, id, first_name, last_name, email, name, picture}) {
-        try {
+    public async oAuthLogin(user, {service, accessToken, refreshToken}) {
+        user.services[service] = {
+            accessToken,
+            refreshToken
+        };
 
-            const userRepository = getRepository(User);
-
-            const user = await userRepository.findOne({
-                where: {email},
-            });
-
-            if (user) {
-                user.services[service] = id;
-                if (!user.username) {
-                    user.username = name;
-                }
-                return userRepository.save(user);
-            }
-
-            const password = uuid();
-
-            return userRepository.save({
-                email,
-                firstname: first_name,
-                lastname: last_name,
-                password,
-                role: roles.user,
-                services: {[service]: id},
-                username: name,
-            });
-        } catch (e) {
-            throw Boom.expectationFailed(e.message);
-        }
+        return this.save(user);
     }
 }

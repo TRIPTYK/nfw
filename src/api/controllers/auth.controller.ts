@@ -89,7 +89,7 @@ class AuthController extends BaseController {
      * @public
      */
     protected async oAuth(req: Request, res: Response, next) {
-        const user: User = req["user"];
+        const user: User = req["user"] as User;
         const accessToken = user.token();
         const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
         token.user = user;

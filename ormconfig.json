@@ -17,5 +17,5 @@
   "cli": {
     "migrationsDir": "src/migration/development/development"
   },
-  "database": "scaldis"
+  "database": "nfw_17"
 }
