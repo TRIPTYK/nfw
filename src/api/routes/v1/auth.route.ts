@@ -34,5 +34,8 @@ router.route("/google")
 router.route("/google/callback")
     .get(oAuthLogin("google"), authController.method("oAuth"));
 
+router.route("/refresh-oauth/:service")
+    .get(userMiddleware.handleValidation(refresh), oAuthLogin("google"), authController.method("refreshOAuth"));
+
 
 export {router};
