@@ -1,52 +1,106 @@
 import {Router} from "express";
 import {DocumentController} from "../../controllers/document.controller";
-import {authorize} from "../../middlewares/auth.middleware";
 import {DocumentMiddleware} from "../../middlewares/document.middleware";
 import {roles} from "../../enums/role.enum";
 import {relationships} from "@triptyk/nfw-core";
 import {deleteDocument, getDocument, updateDocument, validateFile} from "../../validations/document.validation";
 import { MulterService, StorageType } from "../../services/multer.service";
+import {ServiceContainer} from "../../services/service-container.service";
+import { IRouter } from ".";
+import * as Multer from "multer";
+import AuthMiddleware from "../../middlewares/auth.middleware";
 
+export default class DocumentRouter implements IRouter {
+    private router: Router;
 
-const router = Router();
-const multer = MulterService.makeMulter(StorageType.DISK, "./dist/uploads/documents", validateFile, 10480);
+    private multerService: MulterService;
+    private multer: Multer.Instance;
 
-const documentController = new DocumentController();
-const documentMiddleware = new DocumentMiddleware();
+    private controller: DocumentController;
+    private middleware: DocumentMiddleware;
 
-/**
- * Deserialize document when API with userId route parameter is hit
- */
-router.param("documentId", documentMiddleware.deserialize());
+    constructor() {
+        this.router = Router();
 
-router
-    .route("/")
-    .get(authorize([roles.admin, roles.user]), documentController.method("list"))
-    .post(authorize([roles.admin, roles.user]), multer.single("document"),
-    documentMiddleware.resize, documentController.method("create"));
+        this.multerService = ServiceContainer.getService("upload") as MulterService;
+        this.multer = this.multerService.makeMulter(
+            StorageType.DISK, "./dist/uploads/documents",
+            validateFile,
+            10480
+        );
 
-router
-    .route("/:documentId")
-    .get(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(getDocument),
-    documentController.method("get"))
-    .patch(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument),
-    multer.single("document"), documentMiddleware.resize, documentController.method("update"))
-    .put(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(updateDocument),
-    multer.single("document"), documentMiddleware.resize, documentController.method("update"))
-    .delete(authorize([roles.admin, roles.user]), documentMiddleware.handleValidation(deleteDocument),
-    documentController.method("remove"));
+        this.controller = new DocumentController();
+        this.middleware = new DocumentMiddleware();
+    }
 
-router.route("/:id/:relation")
-    .get(documentMiddleware.handleValidation(relationships), documentController.method("fetchRelated"));
+    public setup() {
+        this.router.param("documentId", this.middleware.deserialize());
 
-router.route("/:id/relationships/:relation")
-    .get( documentMiddleware.handleValidation(relationships), documentController.method("fetchRelationships"))
-    .post( documentMiddleware.deserialize({ withRelationships : false }),
-    documentMiddleware.handleValidation(relationships), documentController.method("addRelationships"))
-    .patch( documentMiddleware.deserialize({ withRelationships : false }),
-    documentMiddleware.handleValidation(relationships), documentController.method("updateRelationships"))
-    .delete( documentMiddleware.deserialize({ withRelationships : false }),
-    documentMiddleware.handleValidation(relationships), documentController.method("removeRelationships"));
+        this.router.route("/")
+            .get(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.controller.method("list")
+            )
+            .post(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.multer.single("document"),
+                this.middleware.resize,
+                this.controller.method("create")
+            );
 
+        this.router.route("/:documentId")
+            .get(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.middleware.handleValidation(getDocument),
+                this.controller.method("get")
+            )
+            .patch(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.middleware.handleValidation(updateDocument),
+                this.multer.single("document"),
+                this.middleware.resize,
+                this.controller.method("update")
+            )
+            .put(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.middleware.handleValidation(updateDocument),
+                this.multer.single("document"),
+                this.middleware.resize,
+                this.controller.method("update")
+            )
+            .delete(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.middleware.handleValidation(deleteDocument),
+                this.controller.method("remove")
+            );
 
-export {router};
+        this.router.route("/:id/:relation")
+            .get(
+                this.middleware.handleValidation(relationships),
+                this.controller.method("fetchRelated")
+            );
+
+        this.router.route("/:id/relationships/:relation")
+            .get(
+                this.middleware.handleValidation(relationships),
+                this.controller.method("fetchRelationships")
+            )
+            .post(
+                this.middleware.deserialize({ withRelationships : false }),
+                this.middleware.handleValidation(relationships),
+                this.controller.method("addRelationships")
+            )
+            .patch(
+                this.middleware.deserialize({ withRelationships : false }),
+                this.middleware.handleValidation(relationships),
+                this.controller.method("updateRelationships")
+            )
+            .delete(
+                this.middleware.deserialize({ withRelationships : false }),
+                this.middleware.handleValidation(relationships),
+                this.controller.method("removeRelationships")
+            );
+
+        return this.router;
+    }
+}

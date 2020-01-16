@@ -1,41 +1,75 @@
 import {Router} from "express";
-import {AuthController} from "../../controllers/auth.controller";
-import {login, refresh, register} from "../../validations/auth.validation";
-import { oAuth as oAuthLogin} from "./../../middlewares/auth.middleware";
-import {SecurityMiddleware} from "../../middlewares/security.middleware";
-import {UserMiddleware} from "../../middlewares/user.middleware";
+import { IRouter } from ".";
+import { UserMiddleware } from "../../middlewares/user.middleware";
+import { SecurityMiddleware } from "../../middlewares/security.middleware";
+import { AuthController } from "../../controllers/auth.controller";
+import { refresh, login, register } from "../../validations/auth.validation";
+import AuthMiddleware from "../../middlewares/auth.middleware";
 
-const router = Router();
-const authController = new AuthController();
-const userMiddleware = new UserMiddleware();  /* Todo injecter comme dépendance */
+export default class AuthRouter implements IRouter {
+    private router: Router;
 
-router
-    .route("/register")
-    .post(userMiddleware.deserialize(), userMiddleware.handleValidation(register),
-    SecurityMiddleware.sanitize, authController.method("register"));
+    private controller: AuthController;
+    private middleware: UserMiddleware;
 
-router
-    .route("/login")
-    .post(userMiddleware.handleValidation(login), SecurityMiddleware.sanitize, authController.method("login"));
+    constructor() {
+        this.router = Router();
 
-router
-    .route("/refresh-token")
-    .post(userMiddleware.handleValidation(refresh), authController.method("refresh"));
+        this.controller = new AuthController();
+        this.middleware = new UserMiddleware();
+    }
 
-router.route("/facebook")
-    .get(oAuthLogin("facebook", ["public_profile", "email"]));
+    public setup() {
+        this.router.route("/register")
+            .post(
+                this.middleware.deserialize(),
+                this.middleware.handleValidation(register),
+                SecurityMiddleware.sanitize,
+                this.controller.method("register")
+            );
 
-router.route("/facebook/callback")
-    .get(oAuthLogin("facebook"), authController.method("oAuth"));
+        this.router.route("/login")
+            .post(
+                this.middleware.handleValidation(login),
+                SecurityMiddleware.sanitize,
+                this.controller.method("login")
+            );
 
-router.route("/google")
-    .get(oAuthLogin("google", ["profile", "email"]));
+        this.router.route("/refresh-token")
+            .post(
+                this.middleware.handleValidation(refresh),
+                this.controller.method("refresh")
+            );
 
-router.route("/google/callback")
-    .get(oAuthLogin("google"), authController.method("oAuth"));
+        this.router.route("/facebook")
+            .get(
+                AuthMiddleware.oAuth("facebook", ["public_profile", "email"])
+            );
 
-router.route("/refresh-oauth/:service")
-    .get(userMiddleware.handleValidation(refresh), oAuthLogin("google"), authController.method("refreshOAuth"));
+        this.router.route("/facebook/callback")
+            .get(
+                AuthMiddleware.oAuth("facebook"),
+                this.controller.method("oAuth")
+            );
 
+        this.router.route("/google")
+            .get(
+                AuthMiddleware.oAuth("google", ["profile", "email"])
+            );
 
-export {router};
+        this.router.route("/google/callback")
+            .get(
+                AuthMiddleware.oAuth("google"),
+                this.controller.method("oAuth")
+            );
+
+        this.router.route("/refresh-oauth/:service")
+            .get(
+                this.middleware.handleValidation(refresh),
+                AuthMiddleware.oAuth("google"),
+                this.controller.method("refreshOAuth")
+            );
+
+        return this.router;
+    }
+}

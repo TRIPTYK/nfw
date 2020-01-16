@@ -1,4 +1,4 @@
-import Boom from "@hapi/boom";
+import * as Boom from "@hapi/boom";
 import * as Jimp from "jimp";
 import {Request, Response} from "express";
 import {getRepository} from "typeorm";

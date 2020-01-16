@@ -14,17 +14,7 @@ abstract class BaseController implements IController {
      * @property Connection
      * @property Connection
      */
-    protected connection: Connection;
     protected repository: any;
-
-    /**
-     * Super constructor
-     * Retrieve database connection, and store it into connection
-     * @constructor
-     */
-    public constructor() {
-        this.connection = getConnection(TypeORM.name);
-    }
 
     public method = (method, {enableCache = true}: {enableCache?: boolean} = {}) => async (req, res, next) => {
         try {
@@ -47,7 +37,7 @@ abstract class BaseController implements IController {
             if (cacheEnabled) {
                 if (["PATCH", "DELETE", "PUT", "POST"].includes(req.method)) {
                     const routeType = req.originalUrl.split("?")[0]
-                        .replace(/\/api\/v1\/(?:admin\/)?/, "");
+                        .replace(/\/api\/v1\/?/, "");
 
                     cleanupRouteCache(routeType);
                 } else {
@@ -59,6 +49,7 @@ abstract class BaseController implements IController {
                 res.json(extracted);
             }
         } catch (e) {
+            console.log(e);
             next(e);
         }
     }

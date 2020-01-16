@@ -7,10 +7,13 @@ import * as Passport from "passport";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 
-import {router as ProxyRouter} from "./../api/routes/v1";
-import * as ErrorHandler from "../api/services/error-handler.service";
+import IndexRouter from "./../api/routes/v1";
 import {api, authorized, env, environments, HTTPLogs} from "./environment.config";
 import { PassportConfig } from "./passport.config";
+import {ServiceContainer} from "../api/services/service-container.service";
+import { MulterService } from "../api/services/multer.service";
+import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
+
 
 export class Application {
     private readonly app: Express.Application;
@@ -25,6 +28,9 @@ export class Application {
     }
 
     private setup(): Express.Application {
+        ServiceContainer.registerService("upload", new MulterService());
+
+
         /**
          * Expose body on req.body
          *
@@ -79,10 +85,8 @@ export class Application {
             windowMs: 60 * 60 * 1000
         });
 
-        /**
-         * Set RateLimit and Router(s) on paths
-         */
-        this.app.use(`/api/${api}`, apiLimiter, ProxyRouter);
+        const router = new IndexRouter();
+        this.app.use(`/api/${api}`, apiLimiter , router.setup());
 
         const passportConfig = new PassportConfig();
         passportConfig.init(this.app);
@@ -100,13 +104,22 @@ export class Application {
         /**
          * Errors handlers
          */
+        const errorHandler = new ErrorHandlerMiddleware();
+
         if (env.toUpperCase() === environments["DEVELOPMENT"] || env.toUpperCase() === environments["TEST"]) {
-            this.app.use(ErrorHandler.exit);
+            this.app.use(
+                (err, req, res, next) => errorHandler.exit(err, req, res, next) // need to call like this do not loose references
+            );
         } else {
-            this.app.use(ErrorHandler.log, ErrorHandler.exit);
+            this.app.use(
+                (err, req, res, next) => errorHandler.log(err, req, res, next),
+                (err, req, res, next) => errorHandler.exit(err, req, res, next)
+            );
         }
 
-        this.app.use( ErrorHandler.notFound );
+        this.app.use(
+            (req, res, next) => errorHandler.notFound(req, res, next)
+        );
 
         return this.app;
     }

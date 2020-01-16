@@ -17,7 +17,9 @@ import {documentTypes} from "../enums/document-type.enum";
 @Entity()
 export class Document extends BaseModel {
     @Column({
-        enum: documentTypes
+        enum: documentTypes,
+        nullable: false,
+        type: "simple-enum"
     })
     public fieldname: "avatar" | "document" | "cover";
 
@@ -28,7 +30,9 @@ export class Document extends BaseModel {
     public path: string;
 
     @Column({
-        enum: mimeTypes
+        enum: mimeTypes,
+        nullable : false,
+        type: "simple-enum"
     })
     public mimetype: string;
 

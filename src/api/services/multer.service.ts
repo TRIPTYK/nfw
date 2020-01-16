@@ -1,4 +1,4 @@
-import Multer from "multer";
+import * as Multer from "multer";
 import { Request } from "express";
 
 enum StorageType {
@@ -7,10 +7,15 @@ enum StorageType {
 }
 
 class MulterService {
-    public static makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number)
+    private multers: object = {
+        [StorageType.MEMORY] : {},
+        [StorageType.DISK] : {}
+    };
+
+    public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number)
     : Multer.Instance {
-        if (MulterService.multers[type][destinationOrName]) {
-            return MulterService.multers[type][destinationOrName];
+        if (this.multers[type][destinationOrName]) {
+            return this.multers[type][destinationOrName];
         }
 
         const storage = type === StorageType.MEMORY ? Multer.diskStorage({
@@ -31,12 +36,8 @@ class MulterService {
             storage
         });
 
-        MulterService.multers[type][destinationOrName] = built;
-
-        return built;
+        return this.multers[type][destinationOrName] = built;
     }
-
-    private static multers: object;
 }
 
 export {

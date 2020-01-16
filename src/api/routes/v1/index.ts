@@ -1,24 +1,35 @@
-import {Request, Response, Router} from "express";
-import {router as AuthRouter} from "./auth.route";
-import {router as UserRouter} from "./user.route";
-import {router as DocumentRouter} from "./document.route";
-export const router = Router();
+import {Request, Response, Application , Router} from "express";
+import DocumentRouter from "./document.route";
+import UserRouter from "./user.route";
+import AuthRouter from "./auth.route";
 
-router.get("/status", (req: Request, res: Response) => {
-    res.sendStatus(200);
-});
+export interface IRouter {
+    setup(): Router;
+}
 
-/**
- * Authentification routes
- */
-router.use("/auth/", AuthRouter);
+export default class IndexRouter {
+    private registeredRouters: IRouter[] = [];
+    private router: Router;
 
-/**
- * Users routes
- */
-router.use("/users/", UserRouter);
+    constructor() {
+        this.router = Router();
+    }
 
-/**
- * Files routes
- */
-router.use("/documents/", DocumentRouter);
+    public setup() {
+        this.router.get("/status", (req: Request, res: Response) => {
+            res.sendStatus(200);
+        });
+
+        this.register("/documents/", DocumentRouter);
+        this.register("/users/", UserRouter);
+        this.register("/auth/", AuthRouter);
+
+        return this.router;
+    }
+
+    private register(route: string,type, ...args) {
+        const newRouter: IRouter = new type(args);
+        this.registeredRouters.push(newRouter);
+        this.router.use(route, newRouter.setup());
+    }
+}

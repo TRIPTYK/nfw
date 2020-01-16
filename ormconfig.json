@@ -11,11 +11,11 @@
     "src/api/models/*.ts"
   ],
   "migrations": [
-    "src/migration/*.ts"
+    "src/migration/development/*.ts"
   ],
   "migrationsTableName": "migration_table",
   "cli": {
-    "migrationsDir": "src/migration/development/development"
+    "migrationsDir": "src/migration/development"
   },
-  "database": "nfw_17"
+  "database": "scaldis"
 }

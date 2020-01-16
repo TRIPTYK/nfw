@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status";
-import Boom from "@hapi/boom";
+import * as Boom from "@hapi/boom";
 import {Request, Response} from "express";
 import {User} from "../models/user.model";
 import {UserRepository} from "../repositories/user.repository";

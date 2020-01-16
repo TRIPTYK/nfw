@@ -18,7 +18,7 @@ import {UserSerializer} from "../serializers/user.serializer";
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
-import Boom from "@hapi/boom";
+import * as Boom from "@hapi/boom";
 import {BaseModel} from "./base.model";
 import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
 import {imageMimeTypes} from "../enums/mime-type.enum";
@@ -48,9 +48,10 @@ export class User extends BaseModel {
     };
 
     @Column({
+        default: "User",
         length: 32,
         nullable: false,
-        unique : true
+        unique : false
     })
     public username: string;
 
@@ -82,7 +83,7 @@ export class User extends BaseModel {
     @Column({
         default: roles.ghost,
         enum: roles,
-        type: "enum"
+        type: "simple-enum"
     })
     public role: roles;
 

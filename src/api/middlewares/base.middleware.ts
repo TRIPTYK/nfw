@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import Boom from "@hapi/boom";
+import * as Boom from "@hapi/boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
 import {IMiddleware} from "@triptyk/nfw-core";

@@ -1,5 +1,5 @@
 
-import Boom from "@hapi/boom";
+import * as Boom from "@hapi/boom";
 import * as HttpStatus from "http-status";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
@@ -12,6 +12,7 @@ import {env, jwtAuthMode} from "../../config/environment.config";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import { Controller } from "@triptyk/nfw-core";
 import Refresh from "passport-oauth2-refresh";
+import { RefreshTokenSerializer } from "../serializers/refresh-token.serializer";
 
 /**
  * Authentification Controller!
@@ -73,9 +74,7 @@ class AuthController extends BaseController {
         }, jwtAuthMode === "normal", force);
         const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
 
-        return {
-            token
-        };
+        return new RefreshTokenSerializer().serialize(token);
     }
 
     /**
@@ -128,9 +127,7 @@ class AuthController extends BaseController {
         const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
         token.user = user;
 
-        return {
-            token
-        };
+        return new RefreshTokenSerializer().serialize(token);
     }
 
     /**
@@ -166,9 +163,7 @@ class AuthController extends BaseController {
         }, true);
         const refreshedToken = await this.refreshRepository.generateTokenResponse(user, accessToken , req.ip);
 
-        return {
-            token : refreshedToken
-        };
+        return new RefreshTokenSerializer().serialize(refreshedToken);
     }
 }
 

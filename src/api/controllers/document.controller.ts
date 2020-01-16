@@ -1,5 +1,5 @@
 import * as HttpStatus from "http-status";
-import Boom from "@hapi/boom";
+import * as Boom from "@hapi/boom";
 
 import {Document} from "../models/document.model";
 import {Request, Response} from "express";

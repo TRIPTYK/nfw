@@ -1,60 +1,107 @@
 import {Router} from "express";
-import {UserController} from "../../controllers/user.controller";
-import {authorize} from "../../middlewares/auth.middleware";
-import {UserMiddleware} from "../../middlewares/user.middleware";
-import {changePassword, createUser, getUser, updateUser} from "../../validations/user.validation";
-import {SecurityMiddleware} from "../../middlewares/security.middleware";
 import {roles} from "../../enums/role.enum";
 import {relationships} from "@triptyk/nfw-core";
+import { IRouter } from ".";
+import { UserController } from "../../controllers/user.controller";
+import { UserMiddleware } from "../../middlewares/user.middleware";
+import { createUser, changePassword, getUser, updateUser } from "../../validations/user.validation";
+import { SecurityMiddleware } from "../../middlewares/security.middleware";
+import AuthMiddleware from "../../middlewares/auth.middleware";
 
-const router = Router();
-const userController = new UserController(); // Todo injecter comme dépendance
-const userMiddleware = new UserMiddleware(); // Todo injecter comme dépendance
+export default class UserRouter implements IRouter {
+    private router: Router;
 
-/**
- * Deserialize user when API with userId route parameter is hit
- */
-router.param("userId", userMiddleware.deserialize());
+    private controller: UserController;
+    private middleware: UserMiddleware;
 
-/**
- * Load user when API with userId route parameter is hit
- */
-router.param("userId", userMiddleware.load);
+    constructor() {
+        this.router = Router();
 
-router
-    .route("/")
-    .get(authorize([roles.admin]), userController.method("list"))
-    .post(authorize([roles.admin]), userMiddleware.deserialize(),
-    userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method("create"));
+        this.controller = new UserController();
+        this.middleware = new UserMiddleware();
+    }
 
-router
-    .route("/profile")
-    .get(authorize([roles.admin, roles.user]), userController.method("loggedIn"));
+    public setup() {
+        this.router.route("/")
+            .get(
+                AuthMiddleware.authorize([roles.admin]),
+                this.controller.method("list")
+            )
+            .post(
+                AuthMiddleware.authorize([roles.admin]),
+                this.middleware.deserialize(),
+                this.middleware.handleValidation(createUser),
+                SecurityMiddleware.sanitize,
+                this.controller.method("create")
+            );
 
-router
-    .route("/changePassword")
-    .post(authorize([roles.admin, roles.user]), userMiddleware.deserialize({ withRelationships : false }),
-    userMiddleware.handleValidation(changePassword), userController.method("changePassword"));
+        this.router.route("/profile")
+            .get(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.controller.method("loggedIn")
+            );
 
-router
-    .route("/:userId")
-    .get(authorize([roles.admin]), userMiddleware.handleValidation(getUser), userController.method("get"))
-    .patch(authorize([roles.admin]), userMiddleware.deserialize({nullEqualsUndefined : true}),
-    userMiddleware.handleValidation(updateUser), SecurityMiddleware.sanitize, userController.method("update"))
-    .put(authorize([roles.admin]), userMiddleware.deserialize({nullEqualsUndefined : true}),
-    userMiddleware.handleValidation(createUser), SecurityMiddleware.sanitize, userController.method("update"))
-    .delete(authorize([roles.admin]), userMiddleware.handleValidation(getUser), userController.method("remove"));
+        this.router.route("/changePassword")
+            .post(
+                AuthMiddleware.authorize([roles.admin, roles.user]),
+                this.middleware.deserialize({ withRelationships : false }),
+                this.middleware.handleValidation(changePassword),
+                this.controller.method("changePassword")
+            );
 
-router.route("/:id/:relation")
-    .get(userMiddleware.handleValidation(relationships), userController.method("fetchRelated"));
+        this.router.route("/:userId")
+            .get(
+                AuthMiddleware.authorize([roles.admin]),
+                this.middleware.handleValidation(getUser),
+                this.controller.method("get")
+            )
+            .patch(
+                AuthMiddleware.authorize([roles.admin]),
+                this.middleware.deserialize({nullEqualsUndefined : true}),
+                this.middleware.handleValidation(updateUser),
+                SecurityMiddleware.sanitize,
+                this.controller.method("update")
+            )
+            .put(
+                AuthMiddleware.authorize([roles.admin]),
+                this.middleware.deserialize({nullEqualsUndefined : true}),
+                this.middleware.handleValidation(createUser),
+                SecurityMiddleware.sanitize,
+                this.controller.method("update")
+            )
+            .delete(
+                AuthMiddleware.authorize([roles.admin]),
+                this.middleware.handleValidation(getUser),
+                this.controller.method("remove")
+            );
 
-router.route("/:id/relationships/:relation")
-    .get( userMiddleware.handleValidation(relationships), userController.method("fetchRelationships"))
-    .post( userMiddleware.deserialize({ withRelationships : false }), userMiddleware.handleValidation(relationships),
-    userController.method("addRelationships"))
-    .patch( userMiddleware.deserialize({ withRelationships : false }), userMiddleware.handleValidation(relationships),
-    userController.method("updateRelationships"))
-    .delete( userMiddleware.deserialize({ withRelationships : false }), userMiddleware.handleValidation(relationships),
-    userController.method("removeRelationships"));
+        this.router.route("/:id/:relation")
+            .get(
+                this.middleware.handleValidation(relationships),
+                this.controller.method("fetchRelated")
+            );
 
-export {router};
+        this.router.route("/:id/relationships/:relation")
+            .get(
+                this.middleware.handleValidation(relationships),
+                this.controller.method("fetchRelationships")
+            )
+            .post(
+                this.middleware.deserialize({ withRelationships : false }),
+                this.middleware.handleValidation(relationships),
+                this.controller.method("addRelationships")
+            )
+            .patch(
+                this.middleware.deserialize({ withRelationships : false }),
+                this.middleware.handleValidation(relationships),
+                this.controller.method("updateRelationships")
+            )
+            .delete(
+                this.middleware.deserialize({ withRelationships : false }),
+                this.middleware.handleValidation(relationships),
+                this.controller.method("removeRelationships")
+            );
+
+        return this.router;
+    }
+}
