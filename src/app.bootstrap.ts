@@ -5,25 +5,32 @@ import {ElasticSearchConfiguration} from "./config/elastic.config";
 import yargs = require("yargs");
 import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";
+import { Environments } from "./api/enums/environments.enum";
 
 export default (async () => {
-    const {argv : { env }} = yargs.options({
-        env: { type: "string", default: "development" }
+    let {argv : { env }} = yargs.options({
+        env: { type: "string" }
     });
+
+    if (env === undefined) {
+        env = process.env.NODE_ENV;
+    }
 
     const configuration = EnvironmentConfiguration.loadEnvironment(env);
     LoggerConfiguration.setup();
 
+    LoggerConfiguration.logger.info(`Starting in ${env} environment`);
+
     /** Connection to Database server before app configuration */
     await TypeORMConfiguration.connect()
         .catch( (error) => {
-            if (env !== "test") {
+            if (env !== Environments.Test) {
                 LoggerConfiguration.logger.error(`${configuration.typeorm.type} connection error : ${error.message}`);
             }
             process.exit(1);
         });
 
-    if (env !== "test") {
+    if (env !== Environments.Test) {
         LoggerConfiguration.logger.info(`Connection to ${configuration.typeorm.type} server established on port ${configuration.typeorm.port} (${env})`);
     }
 
@@ -58,13 +65,13 @@ export default (async () => {
         HTTPS
             .createServer(credentials, SetupApp.App)
             .listen(configuration.port, () => {
-                if (env !== "test") {
+                if (env !== Environments.Test) {
                     LoggerConfiguration.logger.info(`HTTPS server is now running on port ${configuration.port} (${env})`);
                 }
             });
     } else {
         SetupApp.App.listen( configuration.port, () => {
-            if (env !== "test") {
+            if (env !== Environments.Test) {
                 LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port} (${env})`);
             }
         });

@@ -8,5 +8,5 @@ export const booleanMap = {
 };
 
 export function parseBool(string: string): boolean {
-    return booleanMap["string"] === undefined ? false : booleanMap["string"];
+    return booleanMap[string] === undefined ? false : booleanMap["string"];
 }

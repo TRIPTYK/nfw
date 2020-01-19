@@ -5,6 +5,7 @@ import {RefreshToken} from "../api/models/refresh-token.model";
 import {Document} from "../api/models/document.model";
 import { container } from "tsyringe";
 import EnvironmentConfiguration from "./environment.config";
+import { Environments } from "../api/enums/environments.enum";
 
 /**
  * Define TypeORM default configuration
@@ -24,7 +25,9 @@ class TypeORMConfiguration {
         TypeORMConfiguration.connection = await createConnection({
             database: typeorm.database,
             entities : [
-                env === "production" ? __dirname + "/../api/models/*.js" : __dirname + "/../api/models/*.ts"
+                env === Environments.Production ?
+                    __dirname + "/../api/models/*.js" :
+                    __dirname + "/../api/models/*.ts"
             ],
             host: typeorm.host,
             name: typeorm.name,

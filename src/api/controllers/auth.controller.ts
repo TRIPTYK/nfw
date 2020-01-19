@@ -14,6 +14,7 @@ import Refresh from "passport-oauth2-refresh";
 import { RefreshTokenSerializer } from "../serializers/refresh-token.serializer";
 import { container } from "tsyringe";
 import EnvironmentConfiguration from "../../config/environment.config";
+import { Environments } from "../enums/environments.enum";
 
 /**
  * Authentification Controller!
@@ -46,7 +47,7 @@ class AuthController extends BaseController {
 
         const {config : {env}} = EnvironmentConfiguration; // load env
 
-        user.role = ["test", "development"].includes(env.toLowerCase()) ? Roles.Admin : Roles.User;
+        user.role = [Environments.Test, Environments.Development].includes(env) ? Roles.Admin : Roles.User;
         user = await this.repository.save(user);
         const token = await this.refreshRepository.generateTokenResponse(user, user.token(), req.ip);
         res.status(HttpStatus.CREATED);

@@ -5,17 +5,16 @@
   "port": "3306",
   "username": "root",
   "password": "test123*",
-  "sid": "ORCLCDB.localdomain",
+  "database": "nfw",
   "logging": false,
   "entities": [
     "src/api/models/*.ts"
   ],
   "migrations": [
-    "src/migration/development/*.ts"
+    "src/migration/*.ts"
   ],
   "migrationsTableName": "migration_table",
   "cli": {
-    "migrationsDir": "src/migration/development"
-  },
-  "database": "scaldis"
+    "migrationsDir": "src/migration"
+  }
 }

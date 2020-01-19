@@ -90,5 +90,10 @@ credentials.json
 production.env
 staging.env
 
+src/migration/development/
+
 package-lock.json
 *.lock
+.nfw
+.yarnclean
+credentials*

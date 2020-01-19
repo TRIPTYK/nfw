@@ -13,7 +13,7 @@ export class LoggerConfiguration {
 
     public static setup() {
         const {env} = EnvironmentConfiguration.config;
-        const directory = env === "test" ? "test" : "dist";
+        const directory = env === Environments.Test ? "test" : "dist";
 
         LoggerConfiguration.logger = Winston.createLogger({
             format: Winston.format.json(),

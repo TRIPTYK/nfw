@@ -13,6 +13,7 @@ import IndexRouter from "./../api/routes/v1";
 import { PassportConfig } from "./passport.config";
 import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
 import EnvironmentConfiguration from "./environment.config";
+import { Environments } from "../api/enums/environments.enum";
 
 export class Application {
     private readonly app: Express.Application;
@@ -95,9 +96,9 @@ export class Application {
          *
          * @inheritdoc https://github.com/expressjs/morgan
          */
-        if (env.toUpperCase() !== "test") {
+        if (env !== Environments.Test) {
             this.app.use(Morgan(
-                env === "production" ?
+                env === Environments.Production ?
                 "production" : "dev"
             ));
         }
@@ -107,7 +108,7 @@ export class Application {
          */
         const errorHandler = new ErrorHandlerMiddleware();
 
-        if (env === "development" || env === "test") {
+        if (env === Environments.Production || env === Environments.Test) {
             this.app.use(
                 (err, req, res, next) => errorHandler.exit(err, req, res, next) // need to call like this do not loose references
             );

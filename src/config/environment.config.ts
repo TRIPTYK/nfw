@@ -69,11 +69,11 @@ export default class EnvironmentConfiguration {
         return EnvironmentConfiguration.env;
     }
 
-    public static loadEnvironment(env: string = "development"): Configuration {
+    public static loadEnvironment(env: Environments = Environments.Development): Configuration {
         return EnvironmentConfiguration.env = EnvironmentConfiguration.getEnvironment(env);
     }
 
-    public static getEnvironment(env: string = "development"): Configuration {
+    public static getEnvironment(env: Environments = Environments.Development): Configuration {
         const loaded = dotenv.parse(fs.readFileSync(`${process.cwd()}/${env}.env`));
         return EnvironmentConfiguration.buildEnvObject(loaded);
     }
