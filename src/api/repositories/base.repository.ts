@@ -147,63 +147,51 @@ class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterf
                     const filtered: string[] = splitAndFilter(query.filter[key], ",");
                     for (const e of filtered) {
                         const [strategy, value] = e.split(":");
+                        let method;
+                        let sqlExpression: string;
 
-                        // TODO : fix params not working with TypeORM where
+                        if (strategy.startsWith("or")) {
+                            method = qb.orWhere;
+                        } else {
+                            method = qb.andWhere;
+                        }
+
                         switch (strategy) {
                             case "like" :
-                                qb.andWhere(SqlString.format(`?? LIKE ?`, [key, value]));
+                                sqlExpression = (SqlString.format(`?? LIKE ?`, [key, value]));
                                 break ;
                             case "eq" :
-                                qb.andWhere(SqlString.format(`?? = ?`, [key, value]));
+                                sqlExpression = SqlString.format(`?? = ?`, [key, value]);
                                 break ;
                             case "noteq" :
-                                qb.andWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
+                                sqlExpression = SqlString.format(`NOT ?? = ?`, [key, value]);
                                 break ;
-                            case "andin":
-                                qb.andWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilter(value, "+")]));
+                            case "in":
+                                sqlExpression = SqlString.format(`?? IN (?)`, [key, splitAndFilter(value, "+")]);
                                 break ;
                             case "notin" :
-                                qb.andWhere(SqlString.format(`?? NOT IN (?)`, [key, splitAndFilter(value, "+")]));
+                                sqlExpression = SqlString.format(`?? NOT IN (?)`, [key, splitAndFilter(value, "+")]);
                                 break ;
-                            case "orlike" :
-                                qb.orWhere(SqlString.format(`?? LIKE ?`, [key, value]));
-                                break ;
-                            case "oreq" :
-                                qb.orWhere(SqlString.format(`?? = ?`, [key, value]));
-                                break ;
-                            case "ornoteq" :
-                                qb.orWhere(SqlString.format(`NOT ?? = ?`, [key, value]));
-                                break ;
-                            case "orin" :
-                                qb.orWhere(SqlString.format(`?? IN (?)`, [key, splitAndFilter(value, "+")]));
-                                break ;
-                            case "orbtw":
-                                const orvalues = splitAndFilter(value, "+");
-                                if (orvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
-                                qb.orWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, orvalues[0], orvalues[1]]));
-                                break ;
-                            case "andbtw":
+                            case "btw":
                                 const andvalues = splitAndFilter(value, "+");
                                 if (andvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
-                                qb.andWhere(SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0], andvalues[1]]));
+                                sqlExpression = SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0], andvalues[1]]);
                                 break ;
-                            case "andsuporeq":
-                                qb.andWhere(SqlString.format(`?? >= ?`, [key, value]));
+                            case "suporeq":
+                                sqlExpression = SqlString.format(`?? >= ?`, [key, value]);
                                 break;
-                            case "orsuporeq":
-                                qb.orWhere(SqlString.format(`?? >= ?`, [key, value]));
+                            case "lessoreq":
+                                sqlExpression = SqlString.format(`?? <= ?`, [key, value]);
                                 break;
-                            case "andlessoreq":
-                                qb.andWhere(SqlString.format(`?? <= ?`, [key, value]));
-                                break;
-                            case "orlessoreq":
-                                qb.orWhere(SqlString.format(`?? <= ?`, [key, value]));
-                                break;
+                            default:
+                                throw Boom.badRequest(`Unrecognized filter : ${strategy}`);
                         }
+
+                        method(sqlExpression);
                     }
                 }
             });
-            queryBuilder.where(queryBrackets);
+            queryBuilder.andWhere(queryBrackets);
         }
 
         return queryBuilder;

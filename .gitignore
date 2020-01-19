@@ -83,9 +83,6 @@ out/
 # NFW FILES
 .nfw
 
-# Credentials generated for super admin
-credentials.json
-
 # Production and staging env not public , because can contain sensitive informations 
 production.env
 staging.env
