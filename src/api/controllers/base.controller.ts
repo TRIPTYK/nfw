@@ -1,5 +1,7 @@
-import {cache, cleanupRouteCache, IController} from "@triptyk/nfw-core";
+import {IController} from "@triptyk/nfw-core";
 import EnvironmentConfiguration from "../../config/environment.config";
+import { container } from "tsyringe";
+import { CacheService } from "../services/cache.services";
 
 /**
  * Main controller contains properties/methods
@@ -16,6 +18,8 @@ abstract class BaseController implements IController {
 
     public method = (method, {enableCache = true}: {enableCache?: boolean} = {}) => async (req, res, next) => {
         try {
+            const cacheService = container.resolve(CacheService);
+
             if (!this[method]) {
                 next(new Error(`Controller does not have a method ${method}`));
             }
@@ -24,7 +28,7 @@ abstract class BaseController implements IController {
             this.beforeMethod();
 
             if (cacheEnabled && req.method === "GET") {
-                const cached: any = cache.get(req.originalUrl);
+                const cached: any = cacheService.cache.get(req.originalUrl);
                 if (cached !== undefined) {
                     res.json(cached);
                     return;
@@ -37,9 +41,9 @@ abstract class BaseController implements IController {
                     const routeType = req.originalUrl.split("?")[0]
                         .replace(/\/api\/v1\/?/, "");
 
-                    cleanupRouteCache(routeType);
+                    cacheService.cleanupRouteCache(routeType);
                 } else {
-                    cache.set(req.originalUrl, extracted);
+                    cacheService.cache.set(req.originalUrl, extracted);
                 }
             }
 

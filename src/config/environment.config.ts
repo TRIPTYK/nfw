@@ -50,6 +50,12 @@ type Configuration = {
         xl: number,
         xs: number
     };
+    mailgun?: {
+        privateKey: string,
+        publicKey: string,
+        domain: string,
+        host: string
+    };
     https?: {
         ca: string,
         cert: string,
@@ -130,17 +136,24 @@ export default class EnvironmentConfiguration {
         };
 
         applyObj.jimp = {
-            isActive: parseBool(process.env.JIMP_IS_ACTIVE),
-            md: parseInt(process.env.JIMP_SIZE_MD, 10),
-            xl: parseInt(process.env.JIMP_SIZE_XL, 10),
-            xs: parseInt(process.env.JIMP_SIZE_XS, 10)
+            isActive: parseBool(envObj.JIMP_IS_ACTIVE),
+            md: parseInt(envObj.JIMP_SIZE_MD, 10),
+            xl: parseInt(envObj.JIMP_SIZE_XL, 10),
+            xs: parseInt(envObj.JIMP_SIZE_XS, 10)
         };
 
         applyObj.https = {
-            ca: process.env.HTTPS_CHAIN,
-            cert: process.env.HTTPS_CERT,
-            isActive: parseBool(process.env.HTTPS_IS_ACTIVE),
-            key: process.env.HTTPS_KEY
+            ca: envObj.HTTPS_CHAIN,
+            cert: envObj.HTTPS_CERT,
+            isActive: parseBool(envObj.HTTPS_IS_ACTIVE),
+            key: envObj.HTTPS_KEY
+        };
+
+        applyObj.mailgun = {
+            domain : envObj.MAILGUN_DOMAIN,
+            host : envObj.MAILGUN_HOST,
+            privateKey : envObj.MAILGUN_API_KEY,
+            publicKey : envObj.MAILGUN_PUBLIC_KEY
         };
 
         return applyObj;

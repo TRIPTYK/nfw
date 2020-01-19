@@ -11,10 +11,10 @@
     "src/api/models/*.ts"
   ],
   "migrations": [
-    "src/migration/*.ts"
+    "src/migration/development/*.ts"
   ],
   "migrationsTableName": "migration_table",
   "cli": {
-    "migrationsDir": "src/migration"
+    "migrationsDir": "src/migration/development"
   }
 }
