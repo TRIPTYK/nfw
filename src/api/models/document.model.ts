@@ -11,17 +11,17 @@ import {User} from "./user.model";
 import * as Fs from "fs";
 import {BaseModel} from "./base.model";
 import * as Path from "path";
-import {mimeTypes, imageMimeTypes} from "../enums/mime-type.enum";
-import {documentTypes} from "../enums/document-type.enum";
+import {MimeTypes} from "../enums/mime-type.enum";
+import {DocumentTypes} from "../enums/document-type.enum";
 
 @Entity()
 export class Document extends BaseModel {
     @Column({
-        enum: documentTypes,
+        enum: DocumentTypes,
         nullable: false,
         type: "simple-enum"
     })
-    public fieldname: "avatar" | "document" | "cover";
+    public fieldname: DocumentTypes;
 
     @Column()
     public filename: string;
@@ -30,11 +30,11 @@ export class Document extends BaseModel {
     public path: string;
 
     @Column({
-        enum: mimeTypes,
+        enum: MimeTypes,
         nullable : false,
         type: "simple-enum"
     })
-    public mimetype: string;
+    public mimetype: MimeTypes;
 
     @Column()
     public size: number;

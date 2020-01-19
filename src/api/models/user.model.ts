@@ -12,16 +12,16 @@ import {
 
 
 import {Document} from "./document.model";
-import {roles} from "../enums/role.enum";
-import {UserSerializer} from "../serializers/user.serializer";
+import {Roles} from "../enums/role.enum";
 
 import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "@hapi/boom";
 import {BaseModel} from "./base.model";
-import {env, jwtExpirationInterval, jwtSecret} from "../../config/environment.config";
-import {imageMimeTypes} from "../enums/mime-type.enum";
+import {ImageMimeTypes} from "../enums/mime-type.enum";
+import EnvironmentConfiguration from "../../config/environment.config";
+import { Environments } from "../enums/environments.enum";
 
 
 @Entity()
@@ -81,11 +81,11 @@ export class User extends BaseModel {
     public lastname: string;
 
     @Column({
-        default: roles.ghost,
-        enum: roles,
+        default: Roles.Ghost,
+        enum: Roles,
         type: "simple-enum"
     })
-    public role: roles;
+    public role: Roles;
 
     @CreateDateColumn()
     public createdAt;
@@ -112,12 +112,14 @@ export class User extends BaseModel {
      *
      */
     public token() {
+        const { jwt : { expires , secret } } = EnvironmentConfiguration.config;
+
         const payload = {
-            exp: Moment().add(jwtExpirationInterval, "minutes").unix(),
+            exp: Moment().add(expires, "minutes").unix(),
             iat: Moment().unix(),
             sub: this.id
         };
-        return Jwt.encode(payload, jwtSecret);
+        return Jwt.encode(payload, secret);
     }
 
     /**
@@ -141,7 +143,7 @@ export class User extends BaseModel {
     @BeforeInsert()
     public checkAvatar() {
         if (this.avatar) {
-            if (!imageMimeTypes.includes(this.avatar.mimetype)) {
+            if (!(this.avatar.mimetype in ImageMimeTypes)) {
                 throw Boom.notAcceptable("Wrong document type");
             }
         }
@@ -151,7 +153,7 @@ export class User extends BaseModel {
     @BeforeUpdate()
     public async hashPassword(): Promise<boolean> {
         try {
-            const rounds = env === "test" ? 1 : 10;
+            const rounds = EnvironmentConfiguration.config.env === Environments.Test ? 1 : 10;
             this.password = await Bcrypt.hash(this.password, rounds);
             return true;
         } catch (error) {

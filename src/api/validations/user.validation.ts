@@ -1,5 +1,5 @@
 // modifier le 24/09/19
-import {roles} from "../enums/role.enum";
+import {Roles} from "../enums/role.enum";
 import {Schema} from "express-validator";
 import { UserRepository } from "../repositories/user.repository";
 import { getCustomRepository } from "typeorm";
@@ -57,7 +57,7 @@ export const createUser: Schema = {
     },
     role: {
         isIn: {
-            options: [roles]
+            options: [Roles]
         }
     },
     username: {
@@ -98,7 +98,7 @@ export const updateUser: Schema = {
     },
     role: {
         isIn: {
-            options: [roles]
+            options: [Roles]
         },
         optional: true
     },

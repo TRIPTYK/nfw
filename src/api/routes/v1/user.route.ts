@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {roles} from "../../enums/role.enum";
+import {Roles} from "../../enums/role.enum";
 import {relationships} from "@triptyk/nfw-core";
 import { IRouter } from ".";
 import { UserController } from "../../controllers/user.controller";
@@ -24,11 +24,11 @@ export default class UserRouter implements IRouter {
     public setup() {
         this.router.route("/")
             .get(
-                AuthMiddleware.authorize([roles.admin]),
+                AuthMiddleware.authorize([Roles.Admin]),
                 this.controller.method("list")
             )
             .post(
-                AuthMiddleware.authorize([roles.admin]),
+                AuthMiddleware.authorize([Roles.Admin]),
                 this.middleware.deserialize(),
                 this.middleware.handleValidation(createUser),
                 SecurityMiddleware.sanitize,
@@ -37,13 +37,13 @@ export default class UserRouter implements IRouter {
 
         this.router.route("/profile")
             .get(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.controller.method("loggedIn")
             );
 
         this.router.route("/changePassword")
             .post(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.middleware.deserialize({ withRelationships : false }),
                 this.middleware.handleValidation(changePassword),
                 this.controller.method("changePassword")
@@ -51,26 +51,26 @@ export default class UserRouter implements IRouter {
 
         this.router.route("/:userId")
             .get(
-                AuthMiddleware.authorize([roles.admin]),
+                AuthMiddleware.authorize([Roles.Admin]),
                 this.middleware.handleValidation(getUser),
                 this.controller.method("get")
             )
             .patch(
-                AuthMiddleware.authorize([roles.admin]),
+                AuthMiddleware.authorize([Roles.Admin]),
                 this.middleware.deserialize({nullEqualsUndefined : true}),
                 this.middleware.handleValidation(updateUser),
                 SecurityMiddleware.sanitize,
                 this.controller.method("update")
             )
             .put(
-                AuthMiddleware.authorize([roles.admin]),
+                AuthMiddleware.authorize([Roles.Admin]),
                 this.middleware.deserialize({nullEqualsUndefined : true}),
                 this.middleware.handleValidation(createUser),
                 SecurityMiddleware.sanitize,
                 this.controller.method("update")
             )
             .delete(
-                AuthMiddleware.authorize([roles.admin]),
+                AuthMiddleware.authorize([Roles.Admin]),
                 this.middleware.handleValidation(getUser),
                 this.controller.method("remove")
             );

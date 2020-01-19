@@ -5,8 +5,8 @@ import {getRepository} from "typeorm";
 import {Document} from "../models/document.model";
 import {DocumentSerializer} from "../serializers/document.serializer";
 import {BaseMiddleware} from "./base.middleware";
-import {jimp as JimpConfiguration} from "../../config/environment.config";
-import {imageMimeTypes} from "../enums/mime-type.enum";
+import {ImageMimeTypes} from "../enums/mime-type.enum";
+import EnvironmentConfiguration from "../../config/environment.config";
 
 
 
@@ -53,9 +53,12 @@ export class DocumentMiddleware extends BaseMiddleware {
      *
      */
     public resize = async (req: Request, res: Response, next) => {
+        const { jimp } = EnvironmentConfiguration.config;
+
+
         try {
             // If image optimization is activated and is image mime type
-            if (JimpConfiguration.isActive === 1 && imageMimeTypes.lastIndexOf(req["file"].mimetype) !== -1) {
+            if (jimp.isActive && req["file"].mimetype in ImageMimeTypes) {
                 const {destination, path , filename} = req["file"];
 
                 // Read original file

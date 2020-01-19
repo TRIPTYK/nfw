@@ -3,11 +3,11 @@ import * as Boom from "@hapi/boom";
 
 import { User } from "../models/user.model";
 import { promisify } from "util";
-import { roles as userRoles } from "./../enums/role.enum";
+import { Roles } from "./../enums/role.enum";
 import { Request , Response } from "express";
 
 export default class AuthMiddleware {
-    public static authorize = (roles: userRoles[] = []) => (req: Request, res: Response, next) =>
+    public static authorize = (roles: Roles[] = []) => (req: Request, res: Response, next) =>
         Passport.authenticate( "jwt", { session: false }, AuthMiddleware.handleJWT(req, res, next, roles) ) (req, res, next)
 
     public static oAuth = (service, scope: any = []) => Passport.authenticate(service, {session: false, scope});
@@ -25,8 +25,8 @@ export default class AuthMiddleware {
             return next(Boom.forbidden(e.message));
         }
 
-        if (roles === userRoles.user) {
-            if (user.role !== userRoles.admin && req.params.userId !== user.id.toString()) {
+        if (roles === Roles.User) {
+            if (user.role !== Roles.Admin && req.params.userId !== user.id.toString()) {
                 return next(Boom.forbidden("Forbidden area"));
             }
         } else if (!roles.includes(user.role)) {

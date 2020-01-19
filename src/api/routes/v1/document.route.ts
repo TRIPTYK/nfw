@@ -1,14 +1,15 @@
 import {Router} from "express";
 import {DocumentController} from "../../controllers/document.controller";
 import {DocumentMiddleware} from "../../middlewares/document.middleware";
-import {roles} from "../../enums/role.enum";
+import {Roles} from "../../enums/role.enum";
 import {relationships} from "@triptyk/nfw-core";
 import {deleteDocument, getDocument, updateDocument, validateFile} from "../../validations/document.validation";
 import { MulterService, StorageType } from "../../services/multer.service";
-import {ServiceContainer} from "../../services/service-container.service";
 import { IRouter } from ".";
 import * as Multer from "multer";
 import AuthMiddleware from "../../middlewares/auth.middleware";
+import { container } from "tsyringe";
+
 
 export default class DocumentRouter implements IRouter {
     private router: Router;
@@ -22,7 +23,7 @@ export default class DocumentRouter implements IRouter {
     constructor() {
         this.router = Router();
 
-        this.multerService = ServiceContainer.getService("upload") as MulterService;
+        this.multerService = container.resolve(MulterService);
         this.multer = this.multerService.makeMulter(
             StorageType.DISK, "./dist/uploads/documents",
             validateFile,
@@ -38,11 +39,11 @@ export default class DocumentRouter implements IRouter {
 
         this.router.route("/")
             .get(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.controller.method("list")
             )
             .post(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.multer.single("document"),
                 this.middleware.resize,
                 this.controller.method("create")
@@ -50,26 +51,26 @@ export default class DocumentRouter implements IRouter {
 
         this.router.route("/:documentId")
             .get(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.middleware.handleValidation(getDocument),
                 this.controller.method("get")
             )
             .patch(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.middleware.handleValidation(updateDocument),
                 this.multer.single("document"),
                 this.middleware.resize,
                 this.controller.method("update")
             )
             .put(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.middleware.handleValidation(updateDocument),
                 this.multer.single("document"),
                 this.middleware.resize,
                 this.controller.method("update")
             )
             .delete(
-                AuthMiddleware.authorize([roles.admin, roles.user]),
+                AuthMiddleware.authorize([Roles.Admin, Roles.User]),
                 this.middleware.handleValidation(deleteDocument),
                 this.controller.method("remove")
             );

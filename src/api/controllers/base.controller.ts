@@ -1,7 +1,5 @@
-import {Connection, getConnection, getCustomRepository, getRepository, Repository} from "typeorm";
 import {cache, cleanupRouteCache, IController} from "@triptyk/nfw-core";
-import {caching_enabled, typeorm as TypeORM} from "../../config/environment.config";
-import { BaseRepository } from "../repositories/base.repository";
+import EnvironmentConfiguration from "../../config/environment.config";
 
 /**
  * Main controller contains properties/methods
@@ -22,7 +20,7 @@ abstract class BaseController implements IController {
                 next(new Error(`Controller does not have a method ${method}`));
             }
 
-            const cacheEnabled = caching_enabled && enableCache;
+            const cacheEnabled = EnvironmentConfiguration.config.caching_enabled && enableCache;
             this.beforeMethod();
 
             if (cacheEnabled && req.method === "GET") {
@@ -49,7 +47,6 @@ abstract class BaseController implements IController {
                 res.json(extracted);
             }
         } catch (e) {
-            console.log(e);
             next(e);
         }
     }

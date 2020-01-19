@@ -4,9 +4,9 @@ import * as uuid from "uuid/v4";
 import * as Moment from "moment-timezone";
 import * as Boom from "@hapi/boom";
 import {RefreshToken} from "../models/refresh-token.model";
-import {roles} from "../enums/role.enum";
-import {jwtAuthMode} from "../../config/environment.config";
+import {Roles} from "../enums/role.enum";
 import {BaseRepository} from "./base.repository";
+import EnvironmentConfiguration from "../../config/environment.config";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -34,7 +34,7 @@ export class UserRepository extends BaseRepository<User> {
             const qb = refreshTokenRepository.createQueryBuilder("refresh")
                 .where("refresh.user = :userId", {userId: user.id});
 
-            if (jwtAuthMode === "multiple") {
+            if (EnvironmentConfiguration.config.jwt.authMode === "multiple") {
                 qb.andWhere("refresh.ip = :ip", {ip});
             }
 

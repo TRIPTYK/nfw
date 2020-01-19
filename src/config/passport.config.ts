@@ -1,6 +1,5 @@
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
 import {UserRepository} from "../api/repositories/user.repository";
-import {google, facebook, outlook, jwtSecret, url} from "./environment.config";
 import {getCustomRepository, getRepository} from "typeorm";
 import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
@@ -9,6 +8,7 @@ import {Strategy as OutlookStrategy} from "passport-outlook";
 import { Application , Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
+import EnvironmentConfiguration from "./environment.config";
 
 class PassportConfig {
     private strategies = [];
@@ -22,9 +22,16 @@ class PassportConfig {
     public init(app: Application): void {
         app.use(Passport.initialize());
 
+        const {config : {
+            jwt,
+            outlook,
+            google,
+            facebook
+        }} = EnvironmentConfiguration;
+
         this.registerStrategy("jwt", new JwtStrategy({
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
-            secretOrKey: jwtSecret,
+            secretOrKey: jwt.secret,
         }, this.jwt));
 
         this.registerStrategy("windowslive", new OutlookStrategy({

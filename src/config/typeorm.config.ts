@@ -3,8 +3,8 @@ import {Connection, createConnection} from "typeorm";
 import {User} from "../api/models/user.model";
 import {RefreshToken} from "../api/models/refresh-token.model";
 import {Document} from "../api/models/document.model";
-import {typeorm as TypeORM, env} from "./environment.config";
-
+import { container } from "tsyringe";
+import EnvironmentConfiguration from "./environment.config";
 
 /**
  * Define TypeORM default configuration
@@ -19,17 +19,19 @@ class TypeORMConfiguration {
             return TypeORMConfiguration.connection;
         }
 
+        const {config : {env, typeorm}} = EnvironmentConfiguration;
+
         TypeORMConfiguration.connection = await createConnection({
-            database: TypeORM.database,
+            database: typeorm.database,
             entities : [
                 env === "production" ? __dirname + "/../api/models/*.js" : __dirname + "/../api/models/*.ts"
             ],
-            host: TypeORM.host,
-            name: TypeORM.name,
-            password: TypeORM.pwd,
-            port: parseInt(TypeORM.port, 10),
-            type: TypeORM.type as any,
-            username: TypeORM.user
+            host: typeorm.host,
+            name: typeorm.name,
+            password: typeorm.pwd,
+            port: typeorm.port,
+            type: typeorm.type as any,
+            username: typeorm.user
         });
 
         return TypeORMConfiguration.connection;

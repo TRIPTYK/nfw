@@ -85,6 +85,7 @@
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
     "sqlstring": "^2.3.1",
+    "tsyringe": "^4.0.1",
     "typeorm": "^0.2.22",
     "typescript": "^3.7.4",
     "uuid": "^3.3.3",

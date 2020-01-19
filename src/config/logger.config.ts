@@ -5,35 +5,41 @@
  */
 
 import * as Winston from "winston";
+import EnvironmentConfiguration from "./environment.config";
+import { Environments } from "../api/enums/environments.enum";
 
-const env = process.argv[2] && process.argv[2] === "--env" ? process.argv[3] : "development";
-const directory = env === "test" ? "test" : "dist";
+export class LoggerConfiguration {
+    public static logger: Winston.Logger;
 
-const logger = Winston.createLogger({
-    format: Winston.format.json(),
-    level: "info",
-    transports: [
+    public static setup() {
+        const {env} = EnvironmentConfiguration.config;
+        const directory = env === "test" ? "test" : "dist";
+
+        LoggerConfiguration.logger = Winston.createLogger({
+            format: Winston.format.json(),
+            level: "info",
+            transports: [
+                //
+                // - Write to all logs with level `info` and below to `combined.log`
+                // - Write all logs error (and below) to `error.log`.
+                //
+                new Winston.transports.File({filename: `${directory}/logs/error.log`, level: "error"}),
+                new Winston.transports.File({filename: `${directory}/logs/combined.log`}),
+            ],
+        });
+
         //
-        // - Write to all logs with level `info` and below to `combined.log`
-        // - Write all logs error (and below) to `error.log`.
+        // If we're not in production then log to the `console` with the format:
+        // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
         //
-        new Winston.transports.File({filename: `${process.cwd()}/${directory}/logs/error.log`, level: "error"}),
-        new Winston.transports.File({filename: `${process.cwd()}/${directory}/logs/combined.log`}),
-    ],
-});
+        if (env !== Environments.Production) {
+            LoggerConfiguration.logger.add(new Winston.transports.Console({format: Winston.format.simple()}));
+        }
 
-//
-// If we're not in production then log to the `console` with the format:
-// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-//
-if (process.env.NODE_ENV !== "production") {
-    logger.add(new Winston.transports.Console({format: Winston.format.simple()}));
-}
-
-logger.stream({
-    write: (message) => {
-        logger.info(message.trim());
+        LoggerConfiguration.logger.stream({
+            write: (message) => {
+                LoggerConfiguration.logger.info(message.trim());
+            }
+        });
     }
-});
-
-export {logger};
+}

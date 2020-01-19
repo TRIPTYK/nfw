@@ -1,28 +1,17 @@
-import {userDeserialize, userSerialize} from "../enums/json-api/user.enum";
-import { SerializerParams } from "@triptyk/nfw-core";
-import { BaseSerializer } from "./base.serializer";
+import { RefreshToken } from "../models/refresh-token.model";
 
-export class RefreshTokenSerializer extends BaseSerializer {
-    constructor(serializerParams: SerializerParams = new SerializerParams()) {
-        super("refresh-token");
-
-        const data = {
-            jsonapiObject : false,
-            relationships: {
-                user: {
-                    type: "user"
-                }
-            },
-            whitelist: userSerialize,
-            whitelistOnDeserialize : userDeserialize
+export class RefreshTokenSerializer {
+    public serialize(token: RefreshToken) {
+        return {
+            accessToken : token.accessToken,
+            refreshToken : token.refreshToken,
+            user : {
+                email : token.user.email,
+                firstname : token.user.firstname,
+                id : token.user.id,
+                lastname : token.user.lastname,
+                username : token.user.username
+            }
         };
-
-        this.setupLinks(data, serializerParams);
-
-        this.serializer.register(this.type, data);
-
-        this.serializer.register("user", {
-            whitelist: userSerialize
-        });
     }
 }

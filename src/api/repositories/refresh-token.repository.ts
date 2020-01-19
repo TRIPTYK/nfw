@@ -3,7 +3,7 @@ import * as Crypto from "crypto";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {jwtExpirationInterval} from "../../config/environment.config";
+import EnvironmentConfiguration from "../../config/environment.config";
 
 @EntityRepository(RefreshToken)
 export class RefreshTokenRepository extends Repository<RefreshToken> {
@@ -14,9 +14,10 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
      */
     public async generate(user: User, ip: string): Promise<RefreshToken> {
         const token = `${user.id}.${Crypto.randomBytes(40).toString("hex")}`;
-        const expires = Moment().add(jwtExpirationInterval, "minutes").toDate();
+        const expires = Moment().add(EnvironmentConfiguration.config.jwt.expires, "minutes").toDate();
 
         const tokenObject = this.create({refreshToken : token, user, expires , ip});
+
 
         await this.save(tokenObject);
 

@@ -2,34 +2,41 @@ import * as Fs from "fs";
 import * as HTTPS from "https";
 import {TypeORMConfiguration} from "./config/typeorm.config";
 import {ElasticSearchConfiguration} from "./config/elastic.config";
+import yargs = require("yargs");
+import EnvironmentConfiguration from "./config/environment.config";
+import { LoggerConfiguration } from "./config/logger.config";
 
-import {logger as Logger} from "../src/config/logger.config" ;
-import {env, environments , https, port, typeorm , elastic_enable , elastic_url} from "./config/environment.config";
+export default (async () => {
+    const {argv : { env }} = yargs.options({
+        env: { type: "string", default: "development" }
+    });
 
-module.exports = (async () => {
+    const configuration = EnvironmentConfiguration.loadEnvironment(env);
+    LoggerConfiguration.setup();
+
     /** Connection to Database server before app configuration */
     await TypeORMConfiguration.connect()
         .catch( (error) => {
-            if (env !== environments["TEST"].toLowerCase()) {
-                Logger.error(`${typeorm.type} connection error : ${error.message}`);
+            if (env !== "test") {
+                LoggerConfiguration.logger.error(`${configuration.typeorm.type} connection error : ${error.message}`);
             }
             process.exit(1);
         });
 
-    if (env !== environments["TEST"].toLowerCase()) {
-        Logger.info(`Connection to ${typeorm.type} server established on port ${typeorm.port} (${env})`);
+    if (env !== "test") {
+        LoggerConfiguration.logger.info(`Connection to ${configuration.typeorm.type} server established on port ${configuration.typeorm.port} (${env})`);
     }
 
     /**
      * ELASTIC support , might change in future releases
      */
-    if (elastic_enable) {
+    if (configuration.elastic.enabled) {
         try {
             const connection = await ElasticSearchConfiguration.connect();
             await connection.ping();
-            Logger.info(`Connection to ElasticSearch server established on url ${elastic_url} (${env})`);
+            LoggerConfiguration.logger.info(`Connection to ElasticSearch server established on url ${configuration.elastic.url} (${env})`);
         } catch (e) {
-            Logger.error(`Failed to establish connection to ElasticSearch server on url ${elastic_url} (${env})`);
+            LoggerConfiguration.logger.error(`Failed to establish connection to ElasticSearch server on url ${configuration.elastic.url} (${env})`);
             process.exit(1);
         }
     }
@@ -41,24 +48,24 @@ module.exports = (async () => {
     /**
      * HTTPS configuration
      */
-    if (https.isActive === 1) {
+    if (configuration.https.isActive) {
         const credentials = {
-            ca: [Fs.readFileSync(https.ca, "utf8")],
-            cert: Fs.readFileSync(https.cert, "utf8"),
-            key: Fs.readFileSync(https.key, "utf8")
+            ca: [Fs.readFileSync(configuration.https.ca, "utf8")],
+            cert: Fs.readFileSync(configuration.https.cert, "utf8"),
+            key: Fs.readFileSync(configuration.https.key, "utf8")
         };
 
         HTTPS
             .createServer(credentials, SetupApp.App)
-            .listen(port, () => {
-                if (env !== environments["TEST"].toLowerCase()) {
-                    Logger.info(`HTTPS server is now running on port ${port} (${env})`);
+            .listen(configuration.port, () => {
+                if (env !== "test") {
+                    LoggerConfiguration.logger.info(`HTTPS server is now running on port ${configuration.port} (${env})`);
                 }
             });
     } else {
-        SetupApp.App.listen( port, () => {
-            if (env !== environments["TEST"].toLowerCase()) {
-                Logger.info(`HTTP server is now running on port ${port} (${env})`);
+        SetupApp.App.listen( configuration.port, () => {
+            if (env !== "test") {
+                LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port} (${env})`);
             }
         });
     }

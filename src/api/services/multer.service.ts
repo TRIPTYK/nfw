@@ -1,11 +1,13 @@
 import * as Multer from "multer";
 import { Request } from "express";
+import {singleton} from "tsyringe";
 
 enum StorageType {
     MEMORY,
     DISK
 }
 
+@singleton()
 class MulterService {
     private multers: object = {
         [StorageType.MEMORY] : {},

@@ -1,13 +1,13 @@
-import {logger as Logger} from "../../config/logger.config";
 import * as Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
+import { LoggerConfiguration } from "../../config/logger.config";
 
 export default class ErrorHandlerMiddleware {
     private serializer = new JSONAPISerializer();
 
     public log(err, req, res, next): void {
         const message = `${req.method} ${req.url} : ${err.message}`;
-        Logger.error(message);
+        LoggerConfiguration.logger.error(message);
         next(err);
     }
 

@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import * as Express from "express";
 import * as BodyParser from "body-parser";
 import * as Morgan from "morgan";
@@ -8,12 +10,9 @@ import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 
 import IndexRouter from "./../api/routes/v1";
-import {api, authorized, env, environments, HTTPLogs} from "./environment.config";
 import { PassportConfig } from "./passport.config";
-import {ServiceContainer} from "../api/services/service-container.service";
-import { MulterService } from "../api/services/multer.service";
 import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
-
+import EnvironmentConfiguration from "./environment.config";
 
 export class Application {
     private readonly app: Express.Application;
@@ -28,8 +27,7 @@ export class Application {
     }
 
     private setup(): Express.Application {
-        ServiceContainer.registerService("upload", new MulterService());
-
+        const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
 
         /**
          * Expose body on req.body
@@ -97,8 +95,11 @@ export class Application {
          *
          * @inheritdoc https://github.com/expressjs/morgan
          */
-        if (env.toUpperCase() !== environments["TEST"]) {
-            this.app.use(Morgan(HTTPLogs));
+        if (env.toUpperCase() !== "test") {
+            this.app.use(Morgan(
+                env === "production" ?
+                "production" : "dev"
+            ));
         }
 
         /**
@@ -106,7 +107,7 @@ export class Application {
          */
         const errorHandler = new ErrorHandlerMiddleware();
 
-        if (env.toUpperCase() === environments["DEVELOPMENT"] || env.toUpperCase() === environments["TEST"]) {
+        if (env === "development" || env === "test") {
             this.app.use(
                 (err, req, res, next) => errorHandler.exit(err, req, res, next) // need to call like this do not loose references
             );

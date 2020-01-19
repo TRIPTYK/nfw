@@ -1,6 +1,5 @@
 import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique} from "typeorm";
 import {User} from "./user.model";
-import {jwtExpirationInterval} from "../../config/environment.config";
 
 @Entity()
 @Unique(["user", "ip", "pid"])
@@ -32,10 +31,10 @@ export class RefreshToken {
     @Column()
     public expires: Date;
 
-    public jwtExpirationInterval: string = jwtExpirationInterval;
+    public jwtExpirationInterval: string;
     public accessToken: string;
 
-    public constructor(payload: object = {}) {
+    public constructor(payload: Partial<RefreshToken> = {}) {
         Object.assign(this, payload);
     }
 }

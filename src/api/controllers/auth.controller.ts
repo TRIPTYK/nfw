@@ -7,12 +7,13 @@ import {Request, Response} from "express";
 import {getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
 import {BaseController} from "./base.controller";
-import {roles} from "../enums/role.enum";
-import {env, jwtAuthMode} from "../../config/environment.config";
+import {Roles} from "../enums/role.enum";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import { Controller } from "@triptyk/nfw-core";
 import Refresh from "passport-oauth2-refresh";
 import { RefreshTokenSerializer } from "../serializers/refresh-token.serializer";
+import { container } from "tsyringe";
+import EnvironmentConfiguration from "../../config/environment.config";
 
 /**
  * Authentification Controller!
@@ -42,14 +43,15 @@ class AuthController extends BaseController {
      */
     protected async register(req: Request, res: Response, next) {
         let user: User = this.repository.create(req.body);
-        user.role = ["test", "development"].includes(env.toLowerCase()) ? roles.admin : roles.user;
+
+        const {config : {env}} = EnvironmentConfiguration; // load env
+
+        user.role = ["test", "development"].includes(env.toLowerCase()) ? Roles.Admin : Roles.User;
         user = await this.repository.save(user);
         const token = await this.refreshRepository.generateTokenResponse(user, user.token(), req.ip);
         res.status(HttpStatus.CREATED);
 
-        return {
-            token
-        };
+        return new RefreshTokenSerializer().serialize(token);
     }
 
     /**
@@ -67,12 +69,15 @@ class AuthController extends BaseController {
         const { force } = req.query;
         const { email , password } = req.body;
 
+        const {config : {jwt : {authMode}}} = EnvironmentConfiguration; // load env
+
         const {user, accessToken} = await this.repository.findAndGenerateToken({
             email,
             ip : req.ip,
             password
-        }, jwtAuthMode === "normal", force);
-        const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
+        }, authMode === "normal", force);
+
+        const token: RefreshToken = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
 
         return new RefreshTokenSerializer().serialize(token);
     }
@@ -90,11 +95,12 @@ class AuthController extends BaseController {
         const user: User = req["user"] as User;
         const{ service } = req.params;
 
-        const {refreshToken, accessToken} = await new Promise((res, rej) => {
+        const {refreshToken, accessToken} = await new Promise((resolve, rej) => {
             Refresh.requestNewAccessToken(service, user.services[service].refreshToken,
+                // tslint:disable-next-line: no-shadowed-variable
                 (err, accessToken, refreshToken) => {
                     if (err) { rej(err); }
-                    res({
+                    resolve({
                         accessToken,
                         refreshToken
                     });

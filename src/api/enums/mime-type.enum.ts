@@ -1,4 +1,4 @@
-const mimeTypes = [
+export enum MimeTypes  {
     "application/vnd.ms-excel",
     "application/msword",
     "application/zip",
@@ -8,13 +8,11 @@ const mimeTypes = [
     "image/jpeg",
     "image/png",
     "text/csv"
-];
+}
 
-const imageMimeTypes = [
+export enum ImageMimeTypes {
     "image/bmp",
     "image/gif",
     "image/jpeg",
     "image/png"
-];
-
-export {mimeTypes, imageMimeTypes};
+}
