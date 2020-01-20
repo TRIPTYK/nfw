@@ -6,7 +6,7 @@ import {UserRepository} from "../repositories/user.repository";
 import {BaseController} from "./base.controller";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
-import {SerializerParams , Controller} from "@triptyk/nfw-core";
+import {Controller} from "@triptyk/nfw-core";
 
 /**
  *
@@ -14,14 +14,14 @@ import {SerializerParams , Controller} from "@triptyk/nfw-core";
 @Controller({
     repository : UserRepository
 })
-export class UserController extends BaseController {
+export class UserController extends BaseController<User> {
     /**
      *
      * @param req
      * @param res
      */
     public get(req: Request, res: Response) {
-        return new UserSerializer(req["locals"]);
+        return new UserSerializer().serialize(req["locals"]);
     }
 
     /**
@@ -101,7 +101,20 @@ export class UserController extends BaseController {
      */
     public async list(req: Request, res: Response, next) {
         const [users, totalUsers] = await this.repository.jsonApiRequest(req.query, userRelations).getManyAndCount();
-        return new UserSerializer(new SerializerParams().enablePagination(req, totalUsers)).serialize(users);
+
+        if (req.query.page) {
+            return new UserSerializer({
+                pagination: {
+                    page: parseInt(req.query.page.number, 10),
+                    size: parseInt(req.query.page.size, 10),
+                    total: totalUsers,
+                    url: req.url
+                }
+            }).serialize(users);
+        }
+
+        return new UserSerializer()
+            .serialize(users);
     }
 
     /**

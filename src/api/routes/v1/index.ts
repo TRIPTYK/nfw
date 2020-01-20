@@ -27,7 +27,7 @@ export default class IndexRouter {
         return this.router;
     }
 
-    private register(route: string,type, ...args) {
+    private register(route: string, type, ...args) {
         const newRouter: IRouter = new type(args);
         this.registeredRouters.push(newRouter);
         this.router.use(route, newRouter.setup());

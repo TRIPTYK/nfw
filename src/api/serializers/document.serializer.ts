@@ -1,13 +1,10 @@
 import {documentDeserialize, documentSerialize} from "../enums/json-api/document.enum";
 import {userSerialize} from "../enums/json-api/user.enum";
-import { SerializerParams } from "@triptyk/nfw-core";
-import { BaseSerializer } from "./base.serializer";
+import { BaseSerializer, SerializerParams } from "./base.serializer";
 
 export class DocumentSerializer extends BaseSerializer {
-    constructor(serializerParams = new SerializerParams()) {
-        super("document");
-
-        const data = {
+    constructor(serializerParams: SerializerParams = {}) {
+        super("document", {
             relationships: {
                 user : {
                     type: "user"
@@ -15,11 +12,11 @@ export class DocumentSerializer extends BaseSerializer {
             },
             whitelist: documentSerialize,
             whitelistOnDeserialize : documentDeserialize
-        };
+        });
 
-        this.setupLinks(data, serializerParams);
-
-        this.serializer.register(this.type, data);
+        if (serializerParams.pagination) {
+            this.setupPaginationLinks(serializerParams.pagination);
+        }
 
         this.serializer.register("user", {
             whitelist: userSerialize

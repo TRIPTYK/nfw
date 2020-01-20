@@ -1,22 +1,23 @@
-import {IController} from "@triptyk/nfw-core";
+import {IController, JsonApiRepositoryInterface, fullLog} from "@triptyk/nfw-core";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { container } from "tsyringe";
 import { CacheService } from "../services/cache.services";
+import { BaseRepository } from "../repositories/base.repository";
 
 /**
  * Main controller contains properties/methods
  * @abstract
  */
-abstract class BaseController implements IController {
+abstract class BaseController<T> implements IController {
 
     /**
      * Store the TypeORM current connection to database
      * @property Connection
      * @property Connection
      */
-    protected repository: any;
+    protected repository: BaseRepository<T>;
 
-    public method = (method, {enableCache = true}: {enableCache?: boolean} = {}) => async (req, res, next) => {
+    public method = (method: keyof this, {enableCache = true}: {enableCache?: boolean} = {}) => async (req, res, next) => {
         try {
             const cacheService = container.resolve(CacheService);
 
@@ -25,7 +26,8 @@ abstract class BaseController implements IController {
             }
 
             const cacheEnabled = EnvironmentConfiguration.config.caching_enabled && enableCache;
-            this.beforeMethod();
+
+            await this.beforeMethod();
 
             if (cacheEnabled && req.method === "GET") {
                 const cached: any = cacheService.cache.get(req.originalUrl);
@@ -34,7 +36,7 @@ abstract class BaseController implements IController {
                     return;
                 }
             }
-            const extracted = await this[method](req, res, next);
+            const extracted = await (this as any)[method](req, res, next);
 
             if (cacheEnabled) {
                 if (["PATCH", "DELETE", "PUT", "POST"].includes(req.method)) {
@@ -55,7 +57,7 @@ abstract class BaseController implements IController {
         }
     }
 
-    protected beforeMethod() {
+    protected async beforeMethod() {
         return;
     }
 }

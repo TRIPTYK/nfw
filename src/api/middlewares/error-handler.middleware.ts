@@ -1,6 +1,7 @@
 import * as Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
 import { LoggerConfiguration } from "../../config/logger.config";
+import { fullLog } from "@triptyk/nfw-core";
 
 export default class ErrorHandlerMiddleware {
     private serializer = new JSONAPISerializer();
@@ -12,6 +13,8 @@ export default class ErrorHandlerMiddleware {
     }
 
     public exit(err: Boom.Boom, req, res, next): void {
+        fullLog(err);
+
         if (!err.isBoom) {
             err = Boom.expectationFailed(err.message);
         }

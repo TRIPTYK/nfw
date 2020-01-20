@@ -8,6 +8,7 @@
         "no-arg": true,
         "no-bitwise": true,
         "no-empty-interface" : true,
+        "interface-over-type-literal": false,
         "no-for-in-array" : true,
         "no-unused-variable" : true,
         "no-conditional-assignment": true,

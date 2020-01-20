@@ -1,10 +1,49 @@
 import {Request} from "express";
 import * as JSONAPISerializer from "json-api-serializer";
-import {ISerialize, SerializerParams} from "@triptyk/nfw-core";
+import {ISerialize} from "@triptyk/nfw-core";
 import { plural } from "pluralize";
+import EnvironmentConfiguration from "../../config/environment.config";
 
-abstract class BaseSerializer implements ISerialize {
+export type SerializerParams = {
+    pagination?: PaginationParams
+};
 
+export type PaginationParams = {
+    total: number,
+    url: string,
+    page: number,
+    size: number
+};
+
+export type JSONAPISerializerCustom = string | ((arg1: object, arg2: object) => object | string);
+
+export type JSONAPISerializerRelation = {
+    type: JSONAPISerializerCustom,
+    alternativeKey?: string,
+    schema?: string,
+    links?: JSONAPISerializerCustom,
+    meta?: JSONAPISerializerCustom,
+    deserialize?: JSONAPISerializerCustom
+};
+
+export type JSONAPISerializerOptions = {
+    id?: string
+    blacklist?: string[],
+    whitelist?: string[],
+    jsonapiObject?: boolean,
+    links?: JSONAPISerializerCustom,
+    topLevelMeta?: JSONAPISerializerCustom,
+    topLevelLinks?: JSONAPISerializerCustom,
+    meta?: JSONAPISerializerCustom,
+    relationships?: { [key: string]: JSONAPISerializerRelation },
+    convertCase?: "kebab-case" | "snake_case" | "camelCase",
+    // unconvert
+    unconvertCase?: "kebab-case" | "snake_case" | "camelCase",
+    blacklistOnDeserialize?: string[],
+    whitelistOnDeserialize?: string[]
+};
+
+export abstract class BaseSerializer implements ISerialize {
     public static whitelist: string[] = [];
     public type: string;
     public serializer: JSONAPISerializer;
@@ -13,14 +52,36 @@ abstract class BaseSerializer implements ISerialize {
      * @param type Entity type
      * @param options
      */
-    protected constructor(type: string, options = {}) {
+    protected constructor(type: string, globalArgs?: JSONAPISerializerOptions, entityArgs?: JSONAPISerializerOptions) {
         this.serializer = new JSONAPISerializer({
             convertCase: "kebab-case",
             unconvertCase: "camelCase",
-            ...options
-        });
+            ...globalArgs
+        } as JSONAPISerializerOptions);
         this.type = type;
+        this.serializer.register(this.type, entityArgs);
     }
+
+    /**
+     * 
+     */
+    public setupPaginationLinks(paginationParams: PaginationParams): this {
+        const { api } = EnvironmentConfiguration.config;
+        const { total, url, page , size } = paginationParams;
+        const baseUrl = `/api/${api}`;
+        const max = Math.ceil(total / size);
+
+        this.getSchemaData()["topLevelLinks"] = {
+            first: () => `${baseUrl}/${this.type}${this.replacePage(url, 1)}`,
+            last: () => `${baseUrl}/${this.type}${this.replacePage(url, max)}`,
+            next: () => `${baseUrl}/${this.type}${this.replacePage(url, page + 1 > max ? max : page + 1)}`,
+            prev: () => `${baseUrl}/${this.type}${this.replacePage(url, page - 1 < 1 ? page : page - 1)}`,
+            self: () => `${baseUrl}/${this.type}${url}`
+        };
+
+        return this;
+    }
+
 
     /**
      * Serialize a payload to json-api format
@@ -67,27 +128,13 @@ abstract class BaseSerializer implements ISerialize {
         return url.replace(/(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i, `$1${newPage}$3`);
     }
 
-    protected setupLinks = (data: object, serializerParams: SerializerParams): void => {
-        if (serializerParams.hasPaginationEnabled()) {
-            const {total, request} = serializerParams.getPaginationData();
-            const page = parseInt(request.query.page.number, 10);
-            const size = request.query.page.size;
-            const baseUrl = `/api/${process.env.API_VERSION}`;
-            const max = Math.ceil(total / size);
-
-            data["topLevelLinks"] = {
-                first: () => `${baseUrl}/${this.type}${this.replacePage(request.url, 1)}`,
-                last: () => `${baseUrl}/${this.type}${this.replacePage(request.url, max)}`,
-                next: () => `${baseUrl}/${this.type}${this.replacePage(request.url, page + 1 > max ? max : page + 1)}`,
-                prev: () => `${baseUrl}/${this.type}${this.replacePage(request.url, page - 1 < 1 ? page : page - 1)}`,
-                self: () => `${baseUrl}/${this.type}${request.url}`
-            };
-        }
+    protected setupLinks = (data: object): void => {
+        const { api } = EnvironmentConfiguration.config;
 
         // link for entity
         data["links"] = {
             self: (d) => {
-                return `/api/${process.env.API_VERSION}/${this.type}s/${d.id}`;
+                return `/api/${api}/${this.type}s/${d.id}`;
             }
         };
 
@@ -95,14 +142,12 @@ abstract class BaseSerializer implements ISerialize {
         for (const key in data["relationships"]) {
             data["relationships"][key]["links"] = {
                 related: (d) => {
-                    return `/api/${process.env.API_VERSION}/${plural(this.type)}/${d.id}/${key}`;
+                    return `/api/${api}/${plural(this.type)}/${d.id}/${key}`;
                 },
                 self: (d) => {
-                    return `/api/${process.env.API_VERSION}/${plural(this.type)}/${d.id}/relationships/${key}`;
+                    return `/api/${api}/${plural(this.type)}/${d.id}/relationships/${key}`;
                 }
             };
         }
     }
 }
-
-export {BaseSerializer};

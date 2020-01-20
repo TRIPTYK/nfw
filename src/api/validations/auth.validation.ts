@@ -1,6 +1,5 @@
 import {Schema} from "express-validator";
-import {getRepository, getCustomRepository} from "typeorm";
-import {User} from "../models/user.model";
+import {getCustomRepository} from "typeorm";
 import { UserRepository } from "../repositories/user.repository";
 
 // POST /v1/auth/register
