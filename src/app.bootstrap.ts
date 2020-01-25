@@ -31,7 +31,7 @@ export default (async () => {
         });
 
     if (env !== Environments.Test) {
-        LoggerConfiguration.logger.info(`Connection to ${configuration.typeorm.type} server established on port ${configuration.typeorm.port} (${env})`);
+        LoggerConfiguration.logger.info(`Connection to ${configuration.typeorm.type} server established on port ${configuration.typeorm.port}`);
     }
 
     /**
@@ -41,9 +41,9 @@ export default (async () => {
         try {
             const connection = await ElasticSearchConfiguration.connect();
             await connection.ping();
-            LoggerConfiguration.logger.info(`Connection to ElasticSearch server established on url ${configuration.elastic.url} (${env})`);
+            LoggerConfiguration.logger.info(`Connection to ElasticSearch server established on url ${configuration.elastic.url}`);
         } catch (e) {
-            LoggerConfiguration.logger.error(`Failed to establish connection to ElasticSearch server on url ${configuration.elastic.url} (${env})`);
+            LoggerConfiguration.logger.error(`Failed to establish connection to ElasticSearch server on url ${configuration.elastic.url}`);
             process.exit(1);
         }
     }
@@ -66,13 +66,13 @@ export default (async () => {
             .createServer(credentials, SetupApp.App)
             .listen(configuration.port, () => {
                 if (env !== Environments.Test) {
-                    LoggerConfiguration.logger.info(`HTTPS server is now running on port ${configuration.port} (${env})`);
+                    LoggerConfiguration.logger.info(`HTTPS server is now running on port ${configuration.port}`);
                 }
             });
     } else {
         SetupApp.App.listen( configuration.port, () => {
             if (env !== Environments.Test) {
-                LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port} (${env})`);
+                LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port}`);
             }
         });
     }

@@ -13,7 +13,8 @@ type Configuration = {
     caching_enabled?: boolean;
     jwt?: {
         authMode: JwtAuthModes,
-        expires: number,
+        refresh_expires: number,
+        access_expires: number,
         secret: string
     };
     elastic?: {
@@ -97,8 +98,9 @@ export default class EnvironmentConfiguration {
         applyObj.caching_enabled = parseBool(envObj.REQUEST_CACHING);
 
         applyObj.jwt = {
+            access_expires : parseInt(envObj.JWT_ACCESS_EXPIRATION_MINUTES, 10),
             authMode : (["normal", "multiple", "single"].includes(envObj.JWT_AUTH_MODE) ? envObj.JWT_AUTH_MODE : "normal") as JwtAuthModes,
-            expires : parseInt(envObj.JWT_EXPIRATION_MINUTES, 10),
+            refresh_expires : parseInt(envObj.JWT_REFRESH_EXPIRATION_MINUTES, 10),
             secret : envObj.JWT_SECRET
         };
 

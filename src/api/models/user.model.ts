@@ -111,14 +111,15 @@ export class User extends BaseModel {
     /**
      *
      */
-    public token() {
-        const { jwt : { expires , secret } } = EnvironmentConfiguration.config;
+    public generateAccessToken() {
+        const { jwt : { access_expires , secret } } = EnvironmentConfiguration.config;
 
         const payload = {
-            exp: Moment().add(expires, "minutes").unix(),
+            exp: Moment().add(access_expires, "minutes").unix(),
             iat: Moment().unix(),
             sub: this.id
         };
+
         return Jwt.encode(payload, secret);
     }
 

@@ -1,5 +1,4 @@
 
-import * as Boom from "@hapi/boom";
 import * as HttpStatus from "http-status";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
@@ -10,10 +9,10 @@ import BaseController from "./base.controller";
 import {Roles} from "../enums/role.enum";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import Refresh from "passport-oauth2-refresh";
-import { RefreshTokenSerializer } from "../serializers/refresh-token.serializer";
-import { container } from "tsyringe";
+import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
+import * as Boom from "@hapi/boom";
 
 /**
  * Authentification Controller!
@@ -46,10 +45,11 @@ class AuthController extends BaseController<User> {
 
         user.role = [Environments.Test, Environments.Development].includes(env) ? Roles.Admin : Roles.User;
         user = await this.repository.save(user);
-        const token = await this.refreshRepository.generateTokenResponse(user, user.token(), req.ip);
+        const accessToken = user.generateAccessToken();
+        const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
         res.status(HttpStatus.CREATED);
 
-        return new RefreshTokenSerializer().serialize(token);
+        return new AuthTokenSerializer().serialize(accessToken, refreshToken.refreshToken, user);
     }
 
     /**
@@ -64,20 +64,12 @@ class AuthController extends BaseController<User> {
      * @public
      */
     public async login(req: Request, res: Response) {
-        const { force } = req.query;
         const { email , password } = req.body;
+        const { user, accessToken } = await this.repository.findAndGenerateAccessToken(email, password);
 
-        const {config : {jwt : {authMode}}} = EnvironmentConfiguration; // load env
+        const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
 
-        const {user, accessToken} = await this.repository.findAndGenerateToken({
-            email,
-            ip : req.ip,
-            password
-        }, authMode === "normal", force);
-
-        const token: RefreshToken = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
-
-        return new RefreshTokenSerializer().serialize(token);
+        return new AuthTokenSerializer().serialize(accessToken, refreshToken.refreshToken, user);
     }
 
     /**
@@ -126,12 +118,10 @@ class AuthController extends BaseController<User> {
      * @public
      */
     public async oAuth(req: Request, res: Response, next) {
-        const user: User = req["user"] as User;
-        const accessToken = user.token();
-        const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
-        token.user = user;
-
-        return new RefreshTokenSerializer().serialize(token);
+        const user = req.user;
+        const accessToken = user.generateAccessToken();
+        const token = await this.refreshRepository.generateNewRefreshToken(user);
+        return new AuthTokenSerializer().serialize(accessToken, token.refreshToken, user);
     }
 
     /**
@@ -155,19 +145,13 @@ class AuthController extends BaseController<User> {
         });
 
         if (!refreshObject) {
-            return next(Boom.expectationFailed("RefreshObject cannot be empty"));
+            throw Boom.forbidden("Invalid refresh token");
         }
 
-        await refreshTokenRepository.remove(refreshObject);
         // Get owner user of the token
-        const { user, accessToken } = await this.repository.findAndGenerateToken({
-            email: refreshObject.user.email,
-            ip : req.ip,
-            refreshObject
-        }, true);
-        const refreshedToken = await this.refreshRepository.generateTokenResponse(user, accessToken , req.ip);
+        const { user, accessToken } = await this.repository.findAndGenerateAccessToken(refreshObject.user.email, refreshObject);
 
-        return new RefreshTokenSerializer().serialize(refreshedToken);
+        return new AuthTokenSerializer().serialize(accessToken, refreshObject.refreshToken, user);
     }
 }
 

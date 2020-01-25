@@ -7,6 +7,7 @@
 import * as Winston from "winston";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
+import * as Moment from "moment-timezone";
 
 export class LoggerConfiguration {
     public static logger: Winston.Logger;
@@ -15,8 +16,23 @@ export class LoggerConfiguration {
         const {env} = EnvironmentConfiguration.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
+        const timestampFnc = () => Moment().format("YYYY-MM-DD HH:mm:ss.SSS");
+
+        const timestampFormatJSON = Winston.format.printf(({ level, message, label }) => {
+            return JSON.stringify({
+                label,
+                level,
+                message,
+                timestamp : timestampFnc()
+            });
+        });
+
+        const timestampFormatText = Winston.format.printf(({ level, message, label }) => {
+            return `${timestampFnc()} [${label}] ${level}: ${message}`;
+        });
+
         LoggerConfiguration.logger = Winston.createLogger({
-            format: Winston.format.json(),
+            format: timestampFormatJSON,
             level: "info",
             transports: [
                 //
@@ -33,7 +49,10 @@ export class LoggerConfiguration {
         // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
         //
         if (env !== Environments.Production) {
-            LoggerConfiguration.logger.add(new Winston.transports.Console({format: Winston.format.simple()}));
+            LoggerConfiguration.logger.add(new Winston.transports.Console({format: Winston.format.combine(
+                Winston.format.label({ label: env }),
+                timestampFormatText
+            )}));
         }
 
         LoggerConfiguration.logger.stream({

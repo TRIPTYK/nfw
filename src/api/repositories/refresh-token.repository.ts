@@ -12,16 +12,13 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
      * @param user
      * @param ip
      */
-    public async generate(user: User, ip: string): Promise<RefreshToken> {
+    public generate(user: User): Promise<RefreshToken> {
         const token = `${user.id}.${Crypto.randomBytes(40).toString("hex")}`;
-        const expires = Moment().add(EnvironmentConfiguration.config.jwt.expires, "minutes").toDate();
+        const expires = Moment().add(EnvironmentConfiguration.config.jwt.refresh_expires, "minutes").toDate();
 
-        const tokenObject = this.create({refreshToken : token, user, expires , ip});
+        const tokenObject = this.create({refreshToken : token, user, expires});
 
-
-        await this.save(tokenObject);
-
-        return tokenObject;
+        return this.save(tokenObject);
     }
 
     /**
@@ -30,15 +27,14 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
      * @param accessToken
      * @param ip
      */
-    public async generateTokenResponse(user: User, accessToken: string, ip: string): Promise<RefreshToken>  {
-        const oldToken = await this.findOne({where: {user, ip}});
+    public async generateNewRefreshToken(user: User): Promise<RefreshToken>  {
+        const oldToken = await this.findOne({where: {user}});
 
         if (oldToken) {
             await this.remove(oldToken);
         }
 
-        const token = await this.generate(user, ip);
-        token.accessToken = accessToken;
+        const token = await this.generate(user);
         return token;
     }
 }

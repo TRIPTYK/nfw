@@ -2,6 +2,7 @@ import {Request, Response, Application , Router} from "express";
 import DocumentRouter from "./document.route";
 import UserRouter from "./user.route";
 import AuthRouter from "./auth.route";
+import EnvironmentConfiguration from "../../../config/environment.config";
 
 export interface IRouter {
     setup(): Router;
@@ -17,7 +18,11 @@ export default class IndexRouter {
 
     public setup() {
         this.router.get("/status", (req: Request, res: Response) => {
-            res.sendStatus(200);
+            res.status(200);
+            res.json({
+                env : EnvironmentConfiguration.config.env,
+                url : EnvironmentConfiguration.config.url
+            });
         });
 
         this.register("/documents/", DocumentRouter);
