@@ -6,10 +6,9 @@ import {RefreshToken} from "../models/refresh-token.model";
 import {Request, Response} from "express";
 import {getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
-import {BaseController} from "./base.controller";
+import BaseController from "./base.controller";
 import {Roles} from "../enums/role.enum";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
-import { Controller } from "@triptyk/nfw-core";
 import Refresh from "passport-oauth2-refresh";
 import { RefreshTokenSerializer } from "../serializers/refresh-token.serializer";
 import { container } from "tsyringe";
@@ -20,14 +19,12 @@ import { Environments } from "../enums/environments.enum";
  * Authentification Controller!
  * @module controllers/auth.controller.ts
  */
-@Controller({
-    repository : UserRepository
-})
-class AuthController extends BaseController {
-    protected refreshRepository;
+class AuthController extends BaseController<User> {
+    protected repository: UserRepository;
+    private refreshRepository: RefreshTokenRepository;
 
     constructor() {
-        super();
+        super(UserRepository);
         this.refreshRepository = getCustomRepository(RefreshTokenRepository);
     }
 
@@ -42,8 +39,8 @@ class AuthController extends BaseController {
      *
      * @public
      */
-    protected async register(req: Request, res: Response, next) {
-        let user: User = this.repository.create(req.body);
+    public async register(req: Request, res: Response, next) {
+        let user = this.repository.create(req.body as object);
 
         const {config : {env}} = EnvironmentConfiguration; // load env
 
@@ -66,7 +63,7 @@ class AuthController extends BaseController {
      *
      * @public
      */
-    protected async login(req: Request, res: Response) {
+    public async login(req: Request, res: Response) {
         const { force } = req.query;
         const { email , password } = req.body;
 
@@ -92,8 +89,8 @@ class AuthController extends BaseController {
      * @param {Function} next
      * @memberof AuthController
      */
-    protected async refreshOAuth(req: Request, res: Response, next: Function) {
-        const user: User = req["user"] as User;
+    public async refreshOAuth(req: Request, res: Response, next) {
+        const user = req.user;
         const{ service } = req.params;
 
         const {refreshToken, accessToken} = await new Promise((resolve, rej) => {
@@ -128,7 +125,7 @@ class AuthController extends BaseController {
      *
      * @public
      */
-    protected async oAuth(req: Request, res: Response, next) {
+    public async oAuth(req: Request, res: Response, next) {
         const user: User = req["user"] as User;
         const accessToken = user.token();
         const token = await this.refreshRepository.generateTokenResponse(user, accessToken, req.ip);
@@ -148,7 +145,7 @@ class AuthController extends BaseController {
      *
      * @public
      */
-    protected async refresh(req: Request, res: Response, next) {
+    public async refresh(req: Request, res: Response, next) {
         const refreshTokenRepository = getRepository(RefreshToken);
 
         const {token} = req.body;

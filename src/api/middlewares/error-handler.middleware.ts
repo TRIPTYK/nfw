@@ -13,8 +13,6 @@ export default class ErrorHandlerMiddleware {
     }
 
     public exit(err: Boom.Boom, req, res, next): void {
-        fullLog(err);
-
         if (!err.isBoom) {
             err = Boom.expectationFailed(err.message);
         }

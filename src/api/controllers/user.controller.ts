@@ -1,27 +1,33 @@
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
-import {Request, Response} from "express";
-import {User} from "../models/user.model";
-import {UserRepository} from "../repositories/user.repository";
-import {BaseController} from "./base.controller";
+import {Request , Response} from "express";
+import BaseController from "./base.controller";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
-import {Controller} from "@triptyk/nfw-core";
+import { User } from "../models/user.model";
+import { UserRepository } from "../repositories/user.repository";
 
-/**
- *
- */
-@Controller({
-    repository : UserRepository
-})
 export class UserController extends BaseController<User> {
+    protected repository: UserRepository;
+
+    constructor() {
+        super(UserRepository);
+    }
+
     /**
      *
      * @param req
      * @param res
+     * @param next
      */
-    public get(req: Request, res: Response) {
-        return new UserSerializer().serialize(req["locals"]);
+    public async get(req: Request, res: Response, next) {
+        const user = await this.repository.jsonApiFindOne(req, req.params.userId, userRelations);
+
+        if (!user) {
+            throw Boom.notFound("User not found");
+        }
+
+        return new UserSerializer().serialize(user);
     }
 
     /**
@@ -30,7 +36,7 @@ export class UserController extends BaseController<User> {
      * @param res
      */
     public loggedIn(req: Request, res: Response) {
-        return new UserSerializer().serialize(req["user"]);
+        return new UserSerializer().serialize(req.user);
     }
 
     /**
@@ -40,7 +46,7 @@ export class UserController extends BaseController<User> {
      * @param next
      */
     public async changePassword(req: Request, res: Response, next) {
-        let currentUser: User = req["user"] as User;
+        let currentUser = req.user;
 
         if (await currentUser.passwordMatches(req.body.old_password)) {
             currentUser.password = req.body.new_password;

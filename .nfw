@@ -1,4 +1,12 @@
 {
   "env": "development",
-  "dockerContainer": "nfw_server_docker"
+  "development": {
+    "dockerContainers": [
+      "nfw",
+      "elastic"
+    ]
+  },
+  "production": {
+    "dockerContainers": []
+  }
 }

@@ -19,8 +19,8 @@ export class UserRepository extends BaseRepository<User> {
      * @param force
      * @returns token
      */
-    public async findAndGenerateToken(options: { email: string , password?: string, refreshObject: any , ip: string },
-    ignoreCheck = false , force: boolean = false ): Promise<object> {
+    public async findAndGenerateToken(options: { email: string , password?: string, refreshObject?: any , ip: string },
+    ignoreCheck = false , force: boolean = false ): Promise<{user : User,accessToken : string}> {
         const {password, refreshObject , ip , email} = options;
 
         const user = await this.findOne({email});

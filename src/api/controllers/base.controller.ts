@@ -1,33 +1,28 @@
-import {IController, JsonApiRepositoryInterface, fullLog} from "@triptyk/nfw-core";
+import {IController} from "@triptyk/nfw-core";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { container } from "tsyringe";
 import { CacheService } from "../services/cache.services";
+import { BaseModel } from "../models/base.model";
+import { Repository, getCustomRepository, ObjectType } from "typeorm";
 import { BaseRepository } from "../repositories/base.repository";
 
 /**
  * Main controller contains properties/methods
  * @abstract
  */
-abstract class BaseController<T> implements IController {
-
-    /**
-     * Store the TypeORM current connection to database
-     * @property Connection
-     * @property Connection
-     */
+export default abstract class BaseEntityController<T extends BaseModel> implements IController {
     protected repository: BaseRepository<T>;
+
+    protected constructor(entity: ObjectType<BaseRepository<T>>) {
+        this.repository = getCustomRepository(entity);
+    }
 
     public method = (method: keyof this, {enableCache = true}: {enableCache?: boolean} = {}) => async (req, res, next) => {
         try {
             const cacheService = container.resolve(CacheService);
-
-            if (!this[method]) {
-                next(new Error(`Controller does not have a method ${method}`));
-            }
-
             const cacheEnabled = EnvironmentConfiguration.config.caching_enabled && enableCache;
 
-            await this.beforeMethod();
+            await this.beforeMethod({method, enableCache});
 
             if (cacheEnabled && req.method === "GET") {
                 const cached: any = cacheService.cache.get(req.originalUrl);
@@ -57,9 +52,7 @@ abstract class BaseController<T> implements IController {
         }
     }
 
-    protected async beforeMethod() {
+    protected async beforeMethod(options: object): Promise<any> {
         return;
     }
 }
-
-export {BaseController};

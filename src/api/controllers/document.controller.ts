@@ -1,22 +1,20 @@
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
 
-import {Document} from "../models/document.model";
 import {Request, Response} from "express";
-import {DocumentRepository} from "../repositories/document.repository";
-import {BaseController} from "./base.controller";
+import BaseController from "./base.controller";
 import {DocumentSerializer} from "../serializers/document.serializer";
 import {UserSerializer} from "../serializers/user.serializer";
 import {documentRelations} from "../enums/json-api/document.enum";
-import { Controller } from "@triptyk/nfw-core";
+import { Document } from "../models/document.model";
+import { DocumentRepository } from "../repositories/document.repository";
 
-/**
- *
- */
-@Controller({
-    repository : DocumentRepository
-})
 class DocumentController extends BaseController<Document> {
+    constructor() {
+        super(DocumentRepository);
+    }
+
+
     /**
      * Retrieve a list of documents, according to some parameters
      *
@@ -141,7 +139,7 @@ class DocumentController extends BaseController<Document> {
      *
      * @public
      */
-    protected async update(req: Request, res: Response, next) {
+    public async update(req: Request, res: Response, next) {
         const document = await this.repository.findOne(req.params.documentId);
         const file: Express.Multer.File = req["file"];
 
@@ -164,7 +162,7 @@ class DocumentController extends BaseController<Document> {
      *
      * @public
      */
-    protected async remove(req: Request, res: Response, next) {
+    public async remove(req: Request, res: Response, next) {
         const document = await this.repository.findOne(req.params.documentId);
 
         if (!document) {
