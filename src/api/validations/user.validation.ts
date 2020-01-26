@@ -48,23 +48,16 @@ export const createUser: Schema = {
         }
     },
     password: {
+        isEmpty : {
+            negated : true
+        },
         isString : true,
-        /*
-        matches: {
-            options: /^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$/,
-            errorMessage: "Password must have at least 8 characters,1 uppercase,1 lowercase and 1 special"
-        }*/
-    },
-    role: {
-        isIn: {
-            options: [Roles]
-        }
     },
     username: {
         custom: {
             options: async (value) => {
                 if (await (getCustomRepository(UserRepository).exists("username", value))) {
-                    return Promise.reject("Username already exists");
+                    return Promise.reject("username already exists");
                 }
             }
         },
@@ -98,7 +91,7 @@ export const updateUser: Schema = {
     },
     role: {
         isIn: {
-            options: [Roles]
+            options: [Object.values(Roles)]
         },
         optional: true
     },

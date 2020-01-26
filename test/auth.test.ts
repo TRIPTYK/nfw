@@ -3,7 +3,7 @@ import * as fixtures from "./fixtures/index";
 import {expect} from "chai";
 import * as faker from "faker";
 
-describe("Authentification", function () {
+describe("Authentification", function() {
   let agent;
   let credentials;
   let localRefreshToken: string;

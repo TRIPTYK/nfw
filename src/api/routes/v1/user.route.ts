@@ -65,7 +65,7 @@ export default class UserRouter implements IRouter {
             .put(
                 AuthMiddleware.authorize([Roles.Admin]),
                 this.middleware.deserialize({nullEqualsUndefined : true}),
-                this.middleware.handleValidation(createUser),
+                this.middleware.handleValidation(updateUser),
                 SecurityMiddleware.sanitize,
                 this.controller.method("update")
             )

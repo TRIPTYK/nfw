@@ -81,7 +81,7 @@ export class UserController extends BaseController<User> {
      */
     public async update(req: Request, res: Response, next) {
         if (!req.body.password) {
-            req.body.password = undefined;
+            delete req.body.password;
         }
 
         const saved = await this.repository.preload({
