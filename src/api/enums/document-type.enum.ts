@@ -2,7 +2,7 @@
  * Different types of documents in database
  */
 export enum DocumentTypes {
-    picture,
-    document,
-    avatar
+    Picture = "picture",
+    Document = "document",
+    Avatar = "avatar"
 }

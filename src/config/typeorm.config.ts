@@ -33,7 +33,7 @@ class TypeORMConfiguration {
             name: typeorm.name,
             password: typeorm.pwd,
             port: typeorm.port,
-            type: typeorm.type as any,
+            type: typeorm.type,
             username: typeorm.user
         });
 

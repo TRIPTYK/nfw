@@ -42,7 +42,7 @@ type Configuration = {
         name: string,
         port: number,
         pwd: string,
-        type: string,
+        type: SupportedDatabasesTypes,
         user: string
     };
     jimp?: {
@@ -65,6 +65,7 @@ type Configuration = {
     };
 };
 
+type SupportedDatabasesTypes = "mysql" | "oracle" | "mariadb";
 type JwtAuthModes = "normal" | "multiple" | "single";
 
 export default class EnvironmentConfiguration {
@@ -133,7 +134,9 @@ export default class EnvironmentConfiguration {
             name: envObj.TYPEORM_NAME,
             port: parseInt(envObj.TYPEORM_PORT, 10),
             pwd: envObj.TYPEORM_PWD,
-            type: envObj.TYPEORM_TYPE,
+            type: (["mariadb", "mysql", "oracle"].includes(envObj.TYPEORM_TYPE) ?
+                envObj.TYPEORM_TYPE : "mysql"
+            ) as SupportedDatabasesTypes,
             user: envObj.TYPEORM_USER
         };
 

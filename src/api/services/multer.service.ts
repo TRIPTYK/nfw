@@ -20,7 +20,7 @@ class MulterService {
             return this.multers[type][destinationOrName];
         }
 
-        const storage = type === StorageType.MEMORY ? Multer.diskStorage({
+        const storage = type === StorageType.DISK ? Multer.diskStorage({
             destination(req: Request, file: any, next: (err: Error, destination: string) => void ) {
                 next(null, destinationOrName);
             },

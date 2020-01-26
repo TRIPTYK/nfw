@@ -84,15 +84,13 @@ export class UserController extends BaseController<User> {
             req.body.password = undefined;
         }
 
-        const user = await this.repository.findOne(req.params.userId);
+        const saved = await this.repository.preload({
+            ...req.body, ...{id : req.params.userId}
+        } as any);
 
-        if (!user) {
-            throw Boom.notFound();
+        if (saved === undefined) {
+            throw Boom.notFound("User not found");
         }
-
-        this.repository.merge(user, req.body);
-
-        const saved = await this.repository.save(user);
 
         return new UserSerializer().serialize(saved);
     }

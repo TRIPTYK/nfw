@@ -14,6 +14,7 @@
         "no-conditional-assignment": true,
         "no-var-requires":true,
         "prefer-for-of":true,
+        "only-arrow-functions":false,
         "await-promise":true,
         "no-return-await":true,
         "no-duplicate-variable":true,

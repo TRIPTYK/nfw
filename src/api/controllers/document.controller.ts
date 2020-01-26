@@ -8,6 +8,7 @@ import {UserSerializer} from "../serializers/user.serializer";
 import {documentRelations} from "../enums/json-api/document.enum";
 import { Document } from "../models/document.model";
 import { DocumentRepository } from "../repositories/document.repository";
+import { DocumentTypes } from "../enums/document-type.enum";
 
 class DocumentController extends BaseController<Document> {
     constructor() {
@@ -51,7 +52,7 @@ class DocumentController extends BaseController<Document> {
      * @public
      */
     public async create(req: Request, res: Response, next) {
-        const file: Express.Multer.File = req["file"];
+        const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as any);
         const saved = await this.repository.save(document);
         return new DocumentSerializer().serialize(saved);
@@ -140,15 +141,15 @@ class DocumentController extends BaseController<Document> {
      * @public
      */
     public async update(req: Request, res: Response, next) {
-        const document = await this.repository.findOne(req.params.documentId);
-        const file: Express.Multer.File = req["file"];
+        const file: Express.Multer.File = req.file;
 
-        if (!document) {
+        const saved = await this.repository.preload({
+            file, ...{id : req.params.documentId}
+        } as any);
+
+        if (saved === undefined) {
             throw Boom.notFound("Document not found");
         }
-
-        this.repository.merge(document, file as any);
-        const saved = await this.repository.save(document);
 
         return new DocumentSerializer().serialize(saved);
     }

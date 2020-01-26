@@ -7,13 +7,13 @@ import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";
 import { Environments } from "./api/enums/environments.enum";
 
-export default (async () => {
+module.exports = (async () => {
     let {argv : { env }} = yargs.options({
         env: { type: "string" }
     });
 
     if (env === undefined) {
-        env = process.env.NODE_ENV;
+        env = process.env.NODE_ENV ? process.env.NODE_ENV : "development";
     }
 
     const configuration = EnvironmentConfiguration.loadEnvironment(env);
@@ -24,9 +24,7 @@ export default (async () => {
     /** Connection to Database server before app configuration */
     await TypeORMConfiguration.connect()
         .catch( (error) => {
-            if (env !== Environments.Test) {
-                LoggerConfiguration.logger.error(`${configuration.typeorm.type} connection error : ${error.message}`);
-            }
+            LoggerConfiguration.logger.error(`${configuration.typeorm.type} connection error : ${error.message}`);
             process.exit(1);
         });
 

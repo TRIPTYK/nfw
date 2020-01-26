@@ -58,13 +58,11 @@ export class DocumentMiddleware extends BaseMiddleware {
 
         try {
             // If image optimization is activated and is image mime type
-            if (jimp.isActive && req["file"].mimetype in ImageMimeTypes) {
-                const {destination, path , filename} = req["file"];
+            if (jimp.isActive && Object.values(ImageMimeTypes).includes(req.file.mimetype as any)) {
+                const {destination, path , filename} = req.file;
 
                 // Read original file
-                    // @ts-ignore
-                    const image = await Jimp.read(path);
-
+                Jimp.read(path).then((image) => {
                     // Clone in 3 files according to 3 sizes
                     const xsImage = image.clone();
                     const mdImage = image.clone();
@@ -72,19 +70,17 @@ export class DocumentMiddleware extends BaseMiddleware {
 
                     // Resize and write file in server
                     xsImage
-                        // @ts-ignore
-                        .resize(JimpConfiguration.xs, Jimp.AUTO)
+                        .resize(jimp.xs, Jimp.AUTO)
                         .writeAsync(`${destination}/xs/${filename}`);
 
                     mdImage
-                        // @ts-ignore
-                        .resize(JimpConfiguration.md, Jimp.AUTO)
+                        .resize(jimp.md, Jimp.AUTO)
                         .writeAsync(`${destination}/md/${filename}`);
 
                     xlImage
-                        // @ts-ignore
-                        .resize(JimpConfiguration.xl, Jimp.AUTO)
+                        .resize(jimp.xl, Jimp.AUTO)
                         .writeAsync(`${destination}/xl/${filename}`);
+                });
             }
             return next();
         } catch (e) {

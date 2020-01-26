@@ -7,7 +7,8 @@ export const getDocument: Schema = {
     documentId: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
-        isInt: true
+        isInt: true,
+        toInt: true
     }
 };
 
@@ -16,7 +17,8 @@ export const updateDocument: Schema = {
     documentId: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
-        isInt: true
+        isInt: true,
+        toInt: true
     }
 };
 
@@ -25,7 +27,8 @@ export const deleteDocument: Schema = {
     documentId: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
-        isInt: true
+        isInt: true,
+        toInt: true
     }
 };
 
@@ -37,7 +40,7 @@ export const deleteDocument: Schema = {
 export const validateFile = (req,
     file: {mimetype: string, destination: string, filename: string, fieldname: string, path: string, size: string},
     next) => {
-    if (file.mimetype in MimeTypes) {
+    if (Object.values(MimeTypes).includes(file.mimetype as any)) {
         return next(null, true);
     }
     return next(Boom.unsupportedMediaType("File mimetype not supported"), false);

@@ -53,6 +53,7 @@ export class Document extends BaseModel {
     public deletedAt: Date;
 
     @BeforeInsert()
+    @BeforeUpdate()
     public updatePath() {
         this.path = Path.dirname(this.path.toString());
     }
