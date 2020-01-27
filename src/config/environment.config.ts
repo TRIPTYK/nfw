@@ -11,8 +11,8 @@ type Configuration = {
     authorized?: string;
     api?: string;
     caching_enabled?: boolean;
+    auth_mode?: AuthModes;
     jwt?: {
-        authMode: JwtAuthModes,
         refresh_expires: number,
         access_expires: number,
         secret: string
@@ -66,7 +66,7 @@ type Configuration = {
 };
 
 type SupportedDatabasesTypes = "mysql" | "oracle" | "mariadb";
-type JwtAuthModes = "normal" | "multiple" | "single";
+type AuthModes = "jwt" | "session";
 
 export default class EnvironmentConfiguration {
 
@@ -97,10 +97,10 @@ export default class EnvironmentConfiguration {
         applyObj.authorized = envObj.AUTHORIZED;
         applyObj.api = envObj.API_VERSION;
         applyObj.caching_enabled = parseBool(envObj.REQUEST_CACHING);
+        applyObj.auth_mode = (["jwt", "session"].includes(envObj.AUTH_MODE) ? envObj.AUTH_MODE : "jwt") as AuthModes;
 
         applyObj.jwt = {
             access_expires : parseInt(envObj.JWT_ACCESS_EXPIRATION_MINUTES, 10),
-            authMode : (["normal", "multiple", "single"].includes(envObj.JWT_AUTH_MODE) ? envObj.JWT_AUTH_MODE : "normal") as JwtAuthModes,
             refresh_expires : parseInt(envObj.JWT_REFRESH_EXPIRATION_MINUTES, 10),
             secret : envObj.JWT_SECRET
         };

@@ -5,6 +5,7 @@ import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
 import {Strategy as OutlookStrategy} from "passport-outlook";
+import {Strategy as LocalStrategy} from "passport-local";
 import { Application , Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
@@ -23,12 +24,13 @@ class PassportConfig {
         app.use(Passport.initialize());
 
         const {config : {
+            auth_mode,
             jwt,
             outlook,
             google,
             facebook
         }} = EnvironmentConfiguration;
-
+    
         this.registerStrategy("jwt", new JwtStrategy({
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
             secretOrKey: jwt.secret,
@@ -42,7 +44,7 @@ class PassportConfig {
         }, this.oAuth("windowslive")), true);
 
         this.registerStrategy("google", new GoogleStrategy({
-            callbackURL: "http://localhost:4200",
+            callbackURL: google.redirect,
             clientID: google.id,
             clientSecret: google.secret,
             passReqToCallback: true
