@@ -82,6 +82,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "passport-oauth2-refresh": "^1.1.0",
     "passport-outlook": "^2.2.1",
     "pluralize": "^8.0.0",

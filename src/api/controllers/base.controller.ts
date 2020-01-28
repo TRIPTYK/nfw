@@ -3,7 +3,8 @@ import EnvironmentConfiguration from "../../config/environment.config";
 import { container } from "tsyringe";
 import { CacheService } from "../services/cache.services";
 import { BaseModel } from "../models/base.model";
-import { Repository, getCustomRepository, ObjectType } from "typeorm";
+import { Request , Response } from "express";
+import { getCustomRepository, ObjectType } from "typeorm";
 import { BaseRepository } from "../repositories/base.repository";
 
 /**
@@ -17,7 +18,7 @@ export default abstract class BaseEntityController<T extends BaseModel> implemen
         this.repository = getCustomRepository(entity);
     }
 
-    public method = (method: keyof this, {enableCache = true}: {enableCache?: boolean} = {}) => async (req, res, next) => {
+    public method = (method: keyof this, {enableCache = true}: {enableCache?: boolean} = {}) => async (req: Request, res: Response, next) => {
         try {
             const cacheService = container.resolve(CacheService);
             const cacheEnabled = EnvironmentConfiguration.config.caching_enabled && enableCache;
@@ -31,16 +32,22 @@ export default abstract class BaseEntityController<T extends BaseModel> implemen
                     return;
                 }
             }
+
             const extracted = await (this as any)[method](req, res, next);
 
             if (cacheEnabled) {
-                if (["PATCH", "DELETE", "PUT", "POST"].includes(req.method)) {
-                    const routeType = req.originalUrl.split("?")[0]
-                        .replace(/\/api\/v1\/?/, "");
+                if (res.statusCode >= 200 && res.statusCode <= 201) {
+                    if (["PATCH", "DELETE", "PUT", "POST"].includes(req.method)) {
+                        const [path, query] = req.originalUrl.split("?");
 
-                    cacheService.cleanupRouteCache(routeType);
-                } else {
-                    cacheService.cache.set(req.originalUrl, extracted);
+                        const [, api, v1, route_name, route_method] = path.match(/\/(.+)\/(.+)\/(.+)\/(.+)\??/);
+
+                        cacheService.cleanupRouteCache((key) => {
+                            return key.includes(route_name);
+                        });
+                    } else {
+                        cacheService.cache.set(req.originalUrl, extracted);
+                    }
                 }
             }
 

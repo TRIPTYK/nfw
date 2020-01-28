@@ -1,9 +1,10 @@
 import {User} from "../models/user.model";
-import {EntityRepository} from "typeorm";
+import {EntityRepository, getRepository} from "typeorm";
 import * as Moment from "moment-timezone";
 import * as Boom from "@hapi/boom";
 import {RefreshToken} from "../models/refresh-token.model";
 import {BaseRepository} from "./base.repository";
+import { OAuthToken } from "../models/oauth-token.model";
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -45,18 +46,5 @@ export class UserRepository extends BaseRepository<User> {
      */
     public async exists(keyname, value) {
         return (await this.findOne({[keyname] : value})) !== undefined;
-    }
-
-    /**
-     *
-     * @param param
-     */
-    public async oAuthLogin(user, {service, accessToken, refreshToken}) {
-        user.services[service] = {
-            accessToken,
-            refreshToken
-        };
-
-        return this.save(user);
     }
 }

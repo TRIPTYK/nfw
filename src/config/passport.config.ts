@@ -10,6 +10,7 @@ import { Application , Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
 import EnvironmentConfiguration from "./environment.config";
+import { OAuthTokenRepository } from "../api/repositories/oauth.repository";
 
 class PassportConfig {
     private strategies = [];
@@ -93,13 +94,13 @@ class PassportConfig {
     public oAuth = (service: string) =>
         async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: object, cb) => {
         try {
-            const userRepository = getCustomRepository(UserRepository);
+            const tokenRepo = getCustomRepository(OAuthTokenRepository);
 
             const reqUser: User = req["user"] as User;
-            const user: User = await userRepository.oAuthLogin(reqUser, {service, accessToken, refreshToken});
+            await tokenRepo.oAuthLogin(reqUser, {service, accessToken, refreshToken});
 
-            req.user = user;
-            return cb(null, user);
+            req.user = reqUser;
+            return cb(null, reqUser);
         } catch (err) {
             return cb(err);
         }

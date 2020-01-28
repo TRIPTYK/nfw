@@ -3,12 +3,14 @@ import {User} from "./user.model";
 
 @Entity()
 @Unique(["user"])
-export class RefreshToken {
+export class OAuthToken {
     @PrimaryGeneratedColumn()
     public id: number;
 
     @Index()
-    @Column()
+    @Column({
+        nullable : false
+    })
     public refreshToken: string;
 
     @ManyToOne((type) => User, {
@@ -19,10 +21,19 @@ export class RefreshToken {
     @JoinColumn()
     public user: User;
 
-    @Column()
-    public expires: Date;
+    @Column({
+        nullable : true
+    })
+    public accessToken: string;
 
-    public constructor(payload: Partial<RefreshToken> = {}) {
+    @Column({
+        enum: ["google", "facebook" , "outlook"],
+        nullable : false,
+        type: "enum"
+    })
+    public type: "google" | "facebook" | "outlook";
+
+    public constructor(payload: Partial<OAuthToken> = {}) {
         Object.assign(this, payload);
     }
 }

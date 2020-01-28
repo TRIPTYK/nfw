@@ -13,11 +13,12 @@ export class CacheService {
         this.pcache = new NodeCache({stdTTL: 180, checkperiod: 240});
     }
 
-    public cleanupRouteCache(routeType) {
+    public async cleanupRouteCache(filterFnc) {
         for (const key of this.pcache.keys()) {
-            if (key.includes(routeType)) {
+            if (filterFnc(key)) {
                 this.pcache.del(key);
             }
         }
+        return true;
     }
 }

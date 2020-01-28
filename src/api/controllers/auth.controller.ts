@@ -13,6 +13,7 @@ import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import * as Boom from "@hapi/boom";
+import { OAuthToken } from "../models/oauth-token.model";
 
 /**
  * Authentification Controller!
@@ -83,10 +84,13 @@ class AuthController extends BaseController<User> {
      */
     public async refreshOAuth(req: Request, res: Response, next) {
         const user = req.user;
-        const{ service } = req.params;
+        const { service } = req.params;
+        const oAuthRepository = getRepository(OAuthToken);
+
+        const OAuthTokens = await oAuthRepository.findOne({type : service as any, user});
 
         const {refreshToken, accessToken} = await new Promise((resolve, rej) => {
-            Refresh.requestNewAccessToken(service, user.services[service].refreshToken,
+            Refresh.requestNewAccessToken(service, OAuthTokens.refreshToken,
                 // tslint:disable-next-line: no-shadowed-variable
                 (err, accessToken, refreshToken) => {
                     if (err) { rej(err); }
@@ -98,10 +102,10 @@ class AuthController extends BaseController<User> {
             );
         });
 
-        user.services[service].accessToken = accessToken;
-        user.services[service].refreshToken = refreshToken;
+        OAuthTokens.accessToken = accessToken;
+        OAuthTokens.refreshToken = refreshToken;
 
-        await this.repository.save(user);
+        await oAuthRepository.save(user);
 
         res.sendStatus(HttpStatus.OK);
     }

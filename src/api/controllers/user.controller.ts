@@ -66,7 +66,6 @@ export class UserController extends BaseController<User> {
     public async create(req: Request, res: Response, next) {
         const user = this.repository.create(req.body);
         const savedUser = await this.repository.save(user);
-
         res.status(HttpStatus.CREATED);
         return new UserSerializer().serialize(savedUser);
     }

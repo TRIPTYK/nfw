@@ -103,24 +103,19 @@ export class Application {
             ));
         }
 
-        /**
-         * Errors handlers
-         */
-        const errorHandler = new ErrorHandlerMiddleware();
-
         if (env === Environments.Production || env === Environments.Test) {
             this.app.use(
-                (err, req, res, next) => errorHandler.exit(err, req, res, next) // need to call like this do not loose references
+                (err, req, res, next) => ErrorHandlerMiddleware.exit(err, req, res, next) // need to call like this do not loose references
             );
         } else {
             this.app.use(
-                (err, req, res, next) => errorHandler.log(err, req, res, next),
-                (err, req, res, next) => errorHandler.exit(err, req, res, next)
+                (err, req, res, next) => ErrorHandlerMiddleware.log(err, req, res, next),
+                (err, req, res, next) => ErrorHandlerMiddleware.exit(err, req, res, next)
             );
         }
 
         this.app.use(
-            (req, res, next) => errorHandler.notFound(req, res, next)
+            (req, res, next) => ErrorHandlerMiddleware.notFound(req, res, next)
         );
 
         return this.app;
