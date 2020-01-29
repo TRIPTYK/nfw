@@ -30,24 +30,6 @@ export class User extends BaseModel {
     public id: number;
 
     @Column({
-        type: "simple-json"
-    })
-    public services: {
-        facebook?: {
-            refreshToken: string,
-            accessToken: string
-        },
-        google?: {
-            refreshToken: string,
-            accessToken: string
-        },
-        outlook?: {
-            refreshToken: string,
-            accessToken: string
-        }
-    };
-
-    @Column({
         default: "User",
         length: 32,
         nullable: false,
@@ -128,16 +110,6 @@ export class User extends BaseModel {
      */
     public async passwordMatches(password: string): Promise<boolean> {
         return Bcrypt.compare(password, this.password);
-    }
-
-    /*
-        JSON can't have a default value in Mysql , so we need to set the value manually if value is not set
-     */
-    @BeforeInsert()
-    public checkServices() {
-        if (!this.services) {
-            this.services = {};
-        }
     }
 
     @BeforeUpdate()

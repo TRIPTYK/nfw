@@ -2,14 +2,15 @@ import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, I
 import {User} from "./user.model";
 
 @Entity()
-@Unique(["user"])
+@Unique(["user", "type"])
 export class OAuthToken {
     @PrimaryGeneratedColumn()
     public id: number;
 
     @Index()
     @Column({
-        nullable : false
+        nullable : false,
+        type : "text"
     })
     public refreshToken: string;
 
@@ -22,7 +23,8 @@ export class OAuthToken {
     public user: User;
 
     @Column({
-        nullable : true
+        nullable : false,
+        type : "text"
     })
     public accessToken: string;
 

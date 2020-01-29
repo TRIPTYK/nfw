@@ -10,6 +10,7 @@ export class AuthTokenSerializer {
                 firstname : user.firstname,
                 id : user.id,
                 lastname : user.lastname,
+                role : user.role,
                 username : user.username
             }
         };
