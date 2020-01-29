@@ -38,12 +38,8 @@ export default abstract class BaseEntityController<T extends BaseModel> implemen
             if (cacheEnabled) {
                 if (res.statusCode >= 200 && res.statusCode <= 201) {
                     if (["PATCH", "DELETE", "PUT", "POST"].includes(req.method)) {
-                        const [path, query] = req.originalUrl.split("?");
-
-                        const [, api, v1, route_name, route_method] = path.match(/\/(.+)\/(.+)\/(.+)\/(.+)\??/);
-
                         cacheService.cleanupRouteCache((key) => {
-                            return key.includes(route_name);
+                            return key.includes(req.baseUrl);
                         });
                     } else {
                         cacheService.cache.set(req.originalUrl, extracted);

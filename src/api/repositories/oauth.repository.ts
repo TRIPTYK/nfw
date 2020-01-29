@@ -14,7 +14,8 @@ export class OAuthTokenRepository extends Repository<OAuthToken> {
             OAuthTokens = this.create({
                 accessToken,
                 refreshToken,
-                user
+                type: service,
+                user,
             });
         }
 

@@ -85,9 +85,13 @@ class AuthController extends BaseController<User> {
     public async refreshOAuth(req: Request, res: Response, next) {
         const user = req.user;
         const { service } = req.params;
-        const oAuthRepository = getRepository(OAuthToken);
 
+        const oAuthRepository = getRepository(OAuthToken);
         const OAuthTokens = await oAuthRepository.findOne({type : service as any, user});
+
+        if (!OAuthTokens) {
+            throw Boom.forbidden(`No ${service} account linked`);
+        }
 
         const {refreshToken, accessToken} = await new Promise((resolve, rej) => {
             Refresh.requestNewAccessToken(service, OAuthTokens.refreshToken,
@@ -105,7 +109,7 @@ class AuthController extends BaseController<User> {
         OAuthTokens.accessToken = accessToken;
         OAuthTokens.refreshToken = refreshToken;
 
-        await oAuthRepository.save(user);
+        await oAuthRepository.save(OAuthTokens);
 
         res.sendStatus(HttpStatus.OK);
     }

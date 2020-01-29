@@ -1,11 +1,9 @@
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
-import {UserRepository} from "../api/repositories/user.repository";
 import {getCustomRepository, getRepository} from "typeorm";
 import {User} from "../api/models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
 import {Strategy as OutlookStrategy} from "passport-outlook";
-import {Strategy as LocalStrategy} from "passport-local";
 import { Application , Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
@@ -31,7 +29,7 @@ class PassportConfig {
             google,
             facebook
         }} = EnvironmentConfiguration;
-    
+
         this.registerStrategy("jwt", new JwtStrategy({
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
             secretOrKey: jwt.secret,
