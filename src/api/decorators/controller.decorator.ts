@@ -13,19 +13,23 @@ export function Controller(routeName: string): ClassDecorator {
 }
 
 /**
+ *
+ * @param routeName
+ */
+export function ControllerMiddleware(middlewares: any[]): ClassDecorator {
+    return function <TFunction extends Function> (target: TFunction): void {
+        Reflect.defineMetadata("middlewares", middlewares, target);
+    };
+}
+
+/**
  * Comment
  *
  * @returns {MethodDecorator}
  */
-export function Middleware(middlewares: any | any[]): MethodDecorator {
-    return function(target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor): any {
-        if (! Reflect.hasMetadata("middlewares", target.constructor)) {
-            if (Array.isArray(middlewares)) {
-                Reflect.defineMetadata("middlewares", middlewares, target.constructor);
-            } else {
-                Reflect.defineMetadata("middlewares", [middlewares], target.constructor);
-            }
-        }
+export function Middleware(middlewareFunction: any[]): MethodDecorator {
+    return function(target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+        Reflect.defineMetadata("middlewares", middlewareFunction , target.constructor , propertyKey);
     };
 }
 
@@ -51,7 +55,7 @@ const registerMethod = (path: string = null , method: RequestMethods) =>
 
     routes.push({
         methodName: propertyKey,
-        path : path ? path : propertyKey,
+        path : path ? path : `/${propertyKey}`,
         requestMethod: method,
     });
 

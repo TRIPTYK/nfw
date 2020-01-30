@@ -1,19 +1,26 @@
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
 import {Request , Response} from "express";
-import BaseController from "./base.controller";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
-import { User } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
-import { Controller, Get, Post, Patch, Put, Delete } from "../decorators/controller.decorator";
+import { Controller, Get, Post, Patch, Put, Delete, ControllerMiddleware } from "../decorators/controller.decorator";
+import AuthMiddleware from "../middlewares/auth.middleware";
+import { Roles } from "../enums/role.enum";
+import { getCustomRepository } from "typeorm";
 
 @Controller("users")
-export class UserController extends BaseController<User> {
+@ControllerMiddleware([
+    AuthMiddleware.authorize([Roles.Admin])
+])
+export default class UserController {
     protected repository: UserRepository;
 
+    /**
+     *
+     */
     constructor() {
-        super(UserRepository);
+        this.repository = getCustomRepository(UserRepository);
     }
 
     /**
@@ -22,7 +29,7 @@ export class UserController extends BaseController<User> {
      * @param res
      * @param next
      */
-    @Get("/")
+    @Get("/:userId")
     public async get(req: Request, res: Response, next) {
         const user = await this.repository.jsonApiFindOne(req, req.params.userId, userRelations);
 

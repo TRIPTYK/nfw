@@ -1,21 +1,21 @@
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
 
-import {Request, Response} from "express";
-import BaseController from "./base.controller";
-import {DocumentSerializer} from "../serializers/document.serializer";
-import {UserSerializer} from "../serializers/user.serializer";
-import {documentRelations} from "../enums/json-api/document.enum";
-import { Document } from "../models/document.model";
+import { Request, Response } from "express";
+import { DocumentSerializer } from "../serializers/document.serializer";
+import { UserSerializer } from "../serializers/user.serializer";
+import { documentRelations } from "../enums/json-api/document.enum";
 import { DocumentRepository } from "../repositories/document.repository";
 import { Controller, Post, Get, Patch, Delete, Put } from "../decorators/controller.decorator";
+import { getCustomRepository } from "typeorm";
 
 @Controller("documents")
-class DocumentController extends BaseController<Document> {
-    constructor() {
-        super(DocumentRepository);
-    }
+export default class DocumentController {
+    protected repository: DocumentRepository;
 
+    constructor() {
+        this.repository = getCustomRepository(DocumentRepository);
+    }
 
     /**
      * Retrieve a list of documents, according to some parameters
@@ -187,5 +187,3 @@ class DocumentController extends BaseController<Document> {
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 }
-
-export {DocumentController};

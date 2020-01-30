@@ -1,11 +1,9 @@
 
 import * as HttpStatus from "http-status";
-import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
 import {Request, Response} from "express";
 import {getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
-import BaseController from "./base.controller";
 import {Roles} from "../enums/role.enum";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import Refresh from "passport-oauth2-refresh";
@@ -21,12 +19,12 @@ import { Controller, Post } from "../decorators/controller.decorator";
  * @module controllers/auth.controller.ts
  */
 @Controller("auth")
-class AuthController extends BaseController<User> {
+export default class AuthController {
     protected repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;
 
     constructor() {
-        super(UserRepository);
+        this.repository = getCustomRepository(UserRepository);
         this.refreshRepository = getCustomRepository(RefreshTokenRepository);
     }
 
@@ -71,7 +69,6 @@ class AuthController extends BaseController<User> {
     public async login(req: Request, res: Response) {
         const { email , password } = req.body;
         const { user, accessToken } = await this.repository.findAndGenerateAccessToken(email, password);
-
         const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
 
         return new AuthTokenSerializer().serialize(accessToken, refreshToken.refreshToken, user);
@@ -149,7 +146,7 @@ class AuthController extends BaseController<User> {
      *
      * @public
      */
-    @Post()
+    @Post("/refresh-token")
     public async refresh(req: Request, res: Response, next) {
         const refreshTokenRepository = getRepository(RefreshToken);
 
@@ -169,5 +166,3 @@ class AuthController extends BaseController<User> {
         return new AuthTokenSerializer().serialize(accessToken, refreshObject.refreshToken, user);
     }
 }
-
-export {AuthController};

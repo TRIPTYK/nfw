@@ -1,6 +1,5 @@
-import "reflect-metadata";
-
 import * as Express from "express";
+import {Request, Response} from "express";
 import * as BodyParser from "body-parser";
 import * as Morgan from "morgan";
 import * as Cors from "cors";
@@ -13,9 +12,10 @@ import { PassportConfig } from "./passport.config";
 import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
-import { UserController } from "../api/controllers/user.controller";
 import { RouteDefinition } from "../api/decorators/controller.decorator";
 import { fstat, readdirSync } from "fs";
+import { join } from "path";
+import { fullLog } from "@triptyk/nfw-core";
 
 export class Application {
     private readonly app: Express.Application;
@@ -26,10 +26,13 @@ export class Application {
 
     constructor() {
         this.app = Express();
-        this.setup();
     }
 
-    private setup(): Express.Application {
+    public async init() {
+        return this.setup();
+    }
+
+    private async setup(): Promise<Express.Application> {
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
 
         /**
@@ -86,8 +89,9 @@ export class Application {
             windowMs: 60 * 60 * 1000
         });
 
-        const router = new IndexRouter();
-        this.app.use(`/api/${api}`, apiLimiter , router.setup());
+        const mainRouter = await this.registerRoutes();
+
+        this.app.use(`/api/${api}`, apiLimiter , mainRouter );
 
         const passportConfig = new PassportConfig();
         passportConfig.init(this.app);
@@ -125,25 +129,54 @@ export class Application {
 
     private async registerRoutes() {
         // Iterate over all our controllers and register our routes
-        const controllers = await Promise.all(readdirSync("../api/controllers").map((e) => import("../api/controllers/" + e)));
+        const controllers = await Promise.all(
+            readdirSync(join(process.cwd(), "src/api/controllers/"))
+                .filter((e) => e.includes("base.controller") === false)
+                .map((e) => import("./../api/controllers/" + e))
+        );
 
-        controllers.forEach((controller) => {
+        const mainRouter = Express.Router();
+        for (const controller of controllers) {
             // This is our instantiated class
-            const instance                       = new controller();
-            // The prefix saved to our controller
-            const prefix                         = Reflect.getMetadata("prefix", controller);
-            // Our `routes` array containing all our routes for this controller
-            const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
+            const instance = new controller.default();
 
+            // The prefix saved to our controller
+            const prefix = Reflect.getMetadata("routeName", controller.default);
+            // Our `routes` array containing all our routes for this controller
+            const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller.default);
+
+            const middlewaresForController: any[] = Reflect.getMetadata("middlewares", controller.default);
             const router = Express.Router();
 
+            if (middlewaresForController && middlewaresForController.length > 0) {
+                router.use(middlewaresForController);
+            }
+
+            mainRouter.use(`/${prefix}`, router);
+
             // Iterate over all routes and register them to our express application
-            routes.forEach((route) => {
-                this.app.use[route.requestMethod](`${prefix}${route.path}`, (req: Request, res: Response) => {
-                    // Execute our method for this path and pass our express request and response object.
-                    instance[route.methodName](req, res);
-                });
-            });
-        });
+            for (const route of routes) {
+                let middlewares: any[] = Reflect.getMetadata("middlewares", controller.default , route.methodName);
+
+                if (!middlewares) {
+                    middlewares = [];
+                }
+
+                const controllerMiddleware = async (req: Request, res: Response, next) => {
+                    try {
+                        const response = await instance[route.methodName](req, res);
+                        res.send(response);
+                    } catch (e) {
+                        return next(e);
+                    }
+                };
+
+                middlewares.push(controllerMiddleware);
+
+                router[route.requestMethod](`${route.path}`, middlewares);
+            }
+        }
+
+        return mainRouter;
     }
 }

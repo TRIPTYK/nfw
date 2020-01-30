@@ -15,7 +15,7 @@ before(async () => {
 
     // global user
     const agent = request.agent(global["server"]);
-    const credentials = fixtures.user({      
+    const credentials = fixtures.user({
         email: faker.internet.email(),
         firstname: faker.name.firstName(),
         lastname: faker.name.lastName(),

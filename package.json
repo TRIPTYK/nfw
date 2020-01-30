@@ -103,6 +103,7 @@
     "@types/supertest": "^2.0.8",
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
+    "express-list-endpoints": "^4.0.1",
     "faker": "^4.1.0",
     "jenkins": "^0.27.0",
     "jsonapi-typescript": "^0.1.3",

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import * as Fs from "fs";
 import * as HTTPS from "https";
 import {TypeORMConfiguration} from "./config/typeorm.config";
@@ -49,6 +50,7 @@ module.exports = (async () => {
 
     const { Application } = await import("./config/app.config");
     const SetupApp = new Application();
+    await SetupApp.init();
 
     /**
      * HTTPS configuration

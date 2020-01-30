@@ -1,4 +1,4 @@
 /** Constructor type */
-type constructor<T> = new (...args: any[]) => T;
+type Constructor<T> = new (...args: any[]) => T;
 
-export default constructor;
+export default Constructor;
