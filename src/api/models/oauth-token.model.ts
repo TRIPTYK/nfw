@@ -1,5 +1,6 @@
 import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, Index, BeforeInsert, BeforeUpdate} from "typeorm";
 import {User} from "./user.model";
+import { OAuthTypes } from "../enums/oauth-type.enum";
 
 @Entity()
 @Unique(["user", "type"])
@@ -29,11 +30,11 @@ export class OAuthToken {
     public accessToken: string;
 
     @Column({
-        enum: ["google", "facebook" , "outlook"],
+        enum: OAuthTypes,
         nullable : false,
         type: "enum"
     })
-    public type: "google" | "facebook" | "outlook";
+    public type: OAuthTypes;
 
     public constructor(payload: Partial<OAuthToken> = {}) {
         Object.assign(this, payload);

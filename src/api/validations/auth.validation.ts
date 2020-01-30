@@ -69,10 +69,10 @@ const login: Schema = {
 
 // POST /v1/auth/refresh
 const refresh: Schema = {
-    token: {
+    refreshToken : {
         exists : true,
         isString : true
     }
 };
 
-export {register, login, refresh};
+export {register, login, refresh };

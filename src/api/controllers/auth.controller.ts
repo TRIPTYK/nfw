@@ -146,10 +146,10 @@ class AuthController extends BaseController<User> {
     public async refresh(req: Request, res: Response, next) {
         const refreshTokenRepository = getRepository(RefreshToken);
 
-        const {token} = req.body;
+        const {refreshToken} = req.body;
 
         const refreshObject = await refreshTokenRepository.findOne({
-            where: {refreshToken: token}
+            where: {refreshToken}
         });
 
         if (!refreshObject) {

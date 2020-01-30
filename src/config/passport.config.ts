@@ -23,7 +23,6 @@ class PassportConfig {
         app.use(Passport.initialize());
 
         const {config : {
-            auth_mode,
             jwt,
             outlook,
             google,
@@ -93,11 +92,8 @@ class PassportConfig {
         async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: object, cb) => {
         try {
             const tokenRepo = getCustomRepository(OAuthTokenRepository);
-
             const reqUser: User = req["user"] as User;
             await tokenRepo.oAuthLogin(reqUser, {service, accessToken, refreshToken});
-
-            req.user = reqUser;
             return cb(null, reqUser);
         } catch (err) {
             return cb(err);
