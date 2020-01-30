@@ -6,7 +6,9 @@ import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
 import { User } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
+import { Controller, Get, Post, Patch, Put, Delete } from "../decorators/controller.decorator";
 
+@Controller("users")
 export class UserController extends BaseController<User> {
     protected repository: UserRepository;
 
@@ -20,6 +22,7 @@ export class UserController extends BaseController<User> {
      * @param res
      * @param next
      */
+    @Get("/")
     public async get(req: Request, res: Response, next) {
         const user = await this.repository.jsonApiFindOne(req, req.params.userId, userRelations);
 
@@ -35,6 +38,7 @@ export class UserController extends BaseController<User> {
      * @param req
      * @param res
      */
+    @Get("/loggedIn")
     public loggedIn(req: Request, res: Response) {
         return new UserSerializer().serialize(req.user);
     }
@@ -45,6 +49,7 @@ export class UserController extends BaseController<User> {
      * @param res
      * @param next
      */
+    @Post("/changePassword")
     public async changePassword(req: Request, res: Response, next) {
         let currentUser = req.user;
 
@@ -63,6 +68,7 @@ export class UserController extends BaseController<User> {
      * @param res
      * @param next
      */
+    @Post("/")
     public async create(req: Request, res: Response, next) {
         const user = this.repository.create(req.body);
         const savedUser = await this.repository.save(user);
@@ -78,6 +84,8 @@ export class UserController extends BaseController<User> {
      * @param next Next middleware function
      *
      */
+    @Patch("/:userId")
+    @Put("/:userId")
     public async update(req: Request, res: Response, next) {
         if (!req.body.password) {
             delete req.body.password;
@@ -102,6 +110,7 @@ export class UserController extends BaseController<User> {
      * @param next Next middleware function
      *
      */
+    @Get("/")
     public async list(req: Request, res: Response, next) {
         const [users, totalUsers] = await this.repository.jsonApiRequest(req.query, userRelations).getManyAndCount();
 
@@ -182,6 +191,7 @@ export class UserController extends BaseController<User> {
      * @param next Next middleware function
      *
      */
+    @Delete("/:userId")
     public async remove(req: Request, res: Response, next) {
         const user = await this.repository.findOne(req.params.userId);
 

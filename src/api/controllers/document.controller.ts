@@ -8,8 +8,9 @@ import {UserSerializer} from "../serializers/user.serializer";
 import {documentRelations} from "../enums/json-api/document.enum";
 import { Document } from "../models/document.model";
 import { DocumentRepository } from "../repositories/document.repository";
-import { DocumentTypes } from "../enums/document-type.enum";
+import { Controller, Post, Get, Patch, Delete, Put } from "../decorators/controller.decorator";
 
+@Controller("documents")
 class DocumentController extends BaseController<Document> {
     constructor() {
         super(DocumentRepository);
@@ -25,6 +26,7 @@ class DocumentController extends BaseController<Document> {
      *
      * @public
      */
+    @Get("/")
     public async list(req: Request, res: Response, next) {
         const [documents, total] = await this.repository.jsonApiFind(req, documentRelations);
 
@@ -51,6 +53,7 @@ class DocumentController extends BaseController<Document> {
      *
      * @public
      */
+    @Post("/")
     public async create(req: Request, res: Response, next) {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as any);
@@ -67,6 +70,7 @@ class DocumentController extends BaseController<Document> {
      *
      * @public
      */
+    @Get("/:documentId")
     public async get(req: Request, res: Response, next) {
         const document = await this.repository.jsonApiFindOne(req, req.params.documentId, documentRelations);
 
@@ -83,6 +87,7 @@ class DocumentController extends BaseController<Document> {
      * @param res
      * @param next
      */
+    @Get()
     public async fetchRelated(req: Request, res: Response, next) {
         return this.repository.fetchRelated(req, new UserSerializer());
     }
@@ -93,6 +98,7 @@ class DocumentController extends BaseController<Document> {
      * @param res
      * @param next
      */
+    @Get()
     public async fetchRelationships(req: Request, res: Response, next) {
         return this.repository.fetchRelationshipsFromRequest(req, new UserSerializer());
     }
@@ -103,6 +109,7 @@ class DocumentController extends BaseController<Document> {
      * @param res
      * @param next
      */
+    @Post()
     public async addRelationships(req: Request, res: Response, next) {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
@@ -114,6 +121,7 @@ class DocumentController extends BaseController<Document> {
      * @param res
      * @param next
      */
+    @Patch()
     public async updateRelationships(req: Request, res: Response, next) {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
@@ -125,6 +133,7 @@ class DocumentController extends BaseController<Document> {
      * @param res
      * @param next
      */
+    @Delete()
     public async removeRelationships(req: Request, res: Response, next) {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
@@ -140,6 +149,8 @@ class DocumentController extends BaseController<Document> {
      *
      * @public
      */
+    @Patch("/:documentId")
+    @Put("/:documentId")
     public async update(req: Request, res: Response, next) {
         const file: Express.Multer.File = req.file;
 
@@ -163,6 +174,7 @@ class DocumentController extends BaseController<Document> {
      *
      * @public
      */
+    @Delete("/:documentId")
     public async remove(req: Request, res: Response, next) {
         const document = await this.repository.findOne(req.params.documentId);
 

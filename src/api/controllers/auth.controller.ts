@@ -14,11 +14,13 @@ import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
+import { Controller, Post } from "../decorators/controller.decorator";
 
 /**
  * Authentification Controller!
  * @module controllers/auth.controller.ts
  */
+@Controller("auth")
 class AuthController extends BaseController<User> {
     protected repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;
@@ -39,6 +41,7 @@ class AuthController extends BaseController<User> {
      *
      * @public
      */
+    @Post()
     public async register(req: Request, res: Response, next) {
         let user = this.repository.create(req.body as object);
 
@@ -64,6 +67,7 @@ class AuthController extends BaseController<User> {
      *
      * @public
      */
+    @Post()
     public async login(req: Request, res: Response) {
         const { email , password } = req.body;
         const { user, accessToken } = await this.repository.findAndGenerateAccessToken(email, password);
@@ -82,6 +86,7 @@ class AuthController extends BaseController<User> {
      * @param {Function} next
      * @memberof AuthController
      */
+    @Post()
     public async refreshOAuth(req: Request, res: Response, next) {
         const user = req.user;
         const { service } = req.params;
@@ -125,6 +130,7 @@ class AuthController extends BaseController<User> {
      *
      * @public
      */
+    @Post()
     public async oAuth(req: Request, res: Response, next) {
         const user = req.user;
         const accessToken = user.generateAccessToken();
@@ -143,6 +149,7 @@ class AuthController extends BaseController<User> {
      *
      * @public
      */
+    @Post()
     public async refresh(req: Request, res: Response, next) {
         const refreshTokenRepository = getRepository(RefreshToken);
 

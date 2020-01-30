@@ -9,11 +9,13 @@ import * as Passport from "passport";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 
-import IndexRouter from "./../api/routes/v1";
 import { PassportConfig } from "./passport.config";
 import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
+import { UserController } from "../api/controllers/user.controller";
+import { RouteDefinition } from "../api/decorators/controller.decorator";
+import { fstat, readdirSync } from "fs";
 
 export class Application {
     private readonly app: Express.Application;
@@ -119,5 +121,29 @@ export class Application {
         );
 
         return this.app;
+    }
+
+    private async registerRoutes() {
+        // Iterate over all our controllers and register our routes
+        const controllers = await Promise.all(readdirSync("../api/controllers").map((e) => import("../api/controllers/" + e)));
+
+        controllers.forEach((controller) => {
+            // This is our instantiated class
+            const instance                       = new controller();
+            // The prefix saved to our controller
+            const prefix                         = Reflect.getMetadata("prefix", controller);
+            // Our `routes` array containing all our routes for this controller
+            const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
+
+            const router = Express.Router();
+
+            // Iterate over all routes and register them to our express application
+            routes.forEach((route) => {
+                this.app.use[route.requestMethod](`${prefix}${route.path}`, (req: Request, res: Response) => {
+                    // Execute our method for this path and pass our express request and response object.
+                    instance[route.methodName](req, res);
+                });
+            });
+        });
     }
 }
