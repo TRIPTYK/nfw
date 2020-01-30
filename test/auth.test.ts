@@ -106,7 +106,7 @@ describe("Authentification", function() {
         .set("Accept", "application/vnd.api+json")
         .set("Content-Type", "application/vnd.api+json")
         .send({
-          token: localRefreshToken
+          refreshToken: localRefreshToken
         })
         .end(function(err, res) {
           expect(res.statusCode).to.equal(200);
