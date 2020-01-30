@@ -8,6 +8,7 @@ describe("Authentification", function() {
   let credentials;
   let localRefreshToken: string;
   let localAccessToken: string;
+  let createdUserId: number;
 
   before(function(done) {
     agent = request.agent(global["server"]);
@@ -35,7 +36,11 @@ describe("Authentification", function() {
         })
         .set("Accept", "application/vnd.api+json")
         .set("Content-Type", "application/vnd.api+json")
-        .expect(201, done);
+        .end(function(err, res) {
+          expect(res.statusCode).to.equal(201);
+          createdUserId = res.body.user.id;
+          done();
+        });
     });
 
     it("POST api/v1/auth/register failed with 400 (email or username already taken)", function(done) {
@@ -202,4 +207,17 @@ describe("Authentification", function() {
 
   });
 
+  after(() => {
+    if (!createdUserId) {
+      return false;
+    }
+    console.log("Deleting created user ...");
+    return request(global["server"])
+      .delete(`/api/v1/users/${createdUserId}`)
+      .set("Authorization", `Bearer ${global["login"]["accessToken"]}`)
+      .then((response) => {
+          expect(response.status).to.equal(204);
+          console.log("Deleted");
+      });
+  });
 });

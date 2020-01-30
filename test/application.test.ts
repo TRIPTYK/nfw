@@ -15,7 +15,7 @@ before(async () => {
 
     // global user
     const agent = request.agent(global["server"]);
-    const credentials = fixtures.user({
+    const credentials = fixtures.user({      
         email: faker.internet.email(),
         firstname: faker.name.firstName(),
         lastname: faker.name.lastName(),
@@ -34,9 +34,9 @@ before(async () => {
             expect(response.status).to.equal(201);
             global["login"] = {
                 accessToken: response.body["accessToken"],
+                email : response.body.user["email"],
                 refreshToken: response.body["refreshToken"],
-                userId : response.body.user["id"],
-                email : response.body.user["email"]
+                userId : response.body.user["id"]
             };
         });
 });
