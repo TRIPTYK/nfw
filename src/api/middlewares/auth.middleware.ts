@@ -5,14 +5,17 @@ import { User } from "../models/user.model";
 import { promisify } from "util";
 import { Roles } from "./../enums/role.enum";
 import { Request , Response } from "express";
+import { injectable } from "tsyringe";
+import { IMiddleware } from "./base.middleware";
 
-export default class AuthMiddleware {
-    public static authorize = (roles: Roles[] = []) => (req: Request, res: Response, next) =>
-        Passport.authenticate( "jwt", { session: false }, AuthMiddleware.handleJWT(req, res, next, roles) ) (req, res, next)
+@injectable()
+export default class AuthMiddleware implements IMiddleware {
+    public use(req: Request, res: Response, next: () => void, args) {
+        return Passport.authenticate( "jwt", { session: false },
+            this.handleJWT(req, res, next, args) ) (req, res, next);
+    }
 
-    public static oAuth = (service, scope: any = []) => Passport.authenticate(service, {session: false, scope});
-
-    public static handleJWT = (req: any, res: Response, next , roles: any) => async (err: Error, user: User, info) => {
+    private handleJWT = (req: any, res: Response, next , roles: any) => async (err: Error, user: User, info) => {
         const error = err || info;
         const logIn = promisify(req.logIn);
 

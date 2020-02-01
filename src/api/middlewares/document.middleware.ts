@@ -11,7 +11,7 @@ import EnvironmentConfiguration from "../../config/environment.config";
 
 
 export class DocumentMiddleware extends BaseMiddleware {
-
+    /** 
     constructor() {
         super(new DocumentSerializer());
     }
@@ -28,6 +28,7 @@ export class DocumentMiddleware extends BaseMiddleware {
      * @public
      *
      */
+    /** 
     public create = (req: Request, res: Response, next) => {
         try {
             const documentRepository = getRepository(Document);
@@ -39,6 +40,7 @@ export class DocumentMiddleware extends BaseMiddleware {
             return next(Boom.expectationFailed(e.message));
         }
     }
+    **/
 
     /**
      * Resize image according to .env file directives
@@ -52,6 +54,7 @@ export class DocumentMiddleware extends BaseMiddleware {
      * @public
      *
      */
+    /**
     public resize = async (req: Request, res: Response, next) => {
         const { jimp } = EnvironmentConfiguration.config;
 
@@ -87,4 +90,5 @@ export class DocumentMiddleware extends BaseMiddleware {
             return next(e);
         }
     }
+    **/
 }

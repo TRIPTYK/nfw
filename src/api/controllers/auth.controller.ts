@@ -5,6 +5,7 @@ import {Request, Response} from "express";
 import {getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
 import {Roles} from "../enums/role.enum";
+import AuthMiddleware from "../middlewares/auth.middleware";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import Refresh from "passport-oauth2-refresh";
 import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
@@ -12,7 +13,7 @@ import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
-import { Controller, Post } from "../decorators/controller.decorator";
+import { Controller, Post, MethodMiddleware } from "../decorators/controller.decorator";
 
 /**
  * Authentification Controller!
@@ -23,6 +24,9 @@ export default class AuthController {
     protected repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;
 
+    /**
+     *
+     */
     constructor() {
         this.repository = getCustomRepository(UserRepository);
         this.refreshRepository = getCustomRepository(RefreshTokenRepository);

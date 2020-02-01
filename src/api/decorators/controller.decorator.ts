@@ -16,9 +16,13 @@ export function Controller(routeName: string): ClassDecorator {
  *
  * @param routeName
  */
-export function ControllerMiddleware(middlewares: any[]): ClassDecorator {
+export function RouteMiddleware(middlewareFunction, args?: any): ClassDecorator {
     return function <TFunction extends Function> (target: TFunction): void {
-        Reflect.defineMetadata("middlewares", middlewares, target);
+        if (! Reflect.hasMetadata("middlewares",  target)) {
+            Reflect.defineMetadata("middlewares", [], target);
+        }
+        const middlewares = Reflect.getMetadata("middlewares", target);
+        middlewares.push({middleware : middlewareFunction , args});
     };
 }
 
@@ -27,9 +31,13 @@ export function ControllerMiddleware(middlewares: any[]): ClassDecorator {
  *
  * @returns {MethodDecorator}
  */
-export function Middleware(middlewareFunction: any[]): MethodDecorator {
+export function MethodMiddleware(middlewareFunction, args?: any): MethodDecorator {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
-        Reflect.defineMetadata("middlewares", middlewareFunction , target.constructor , propertyKey);
+        if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
+            Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
+        }
+        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
+        middlewares.push({middleware : middlewareFunction , args});
     };
 }
 

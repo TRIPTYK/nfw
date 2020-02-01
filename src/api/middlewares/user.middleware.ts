@@ -6,10 +6,10 @@ import {BaseMiddleware} from "./base.middleware";
 import {userRelations} from "../enums/json-api/user.enum";
 
 export class UserMiddleware extends BaseMiddleware {
-
+    /*
     constructor() {
         super(new UserSerializer());
-    }
+    }*/
 
     /**
      * Load user and append to req
@@ -20,6 +20,7 @@ export class UserMiddleware extends BaseMiddleware {
      * @param id User id
      *
      */
+    /*
     public load = async (req: Request, res: Response, next, id: number) => {
         try {
             const repository = getCustomRepository(UserRepository);
@@ -28,5 +29,5 @@ export class UserMiddleware extends BaseMiddleware {
         } catch (e) {
             return next(e);
         }
-    }
+    }*/
 }

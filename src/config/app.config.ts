@@ -15,7 +15,8 @@ import { Environments } from "../api/enums/environments.enum";
 import { RouteDefinition } from "../api/decorators/controller.decorator";
 import { fstat, readdirSync } from "fs";
 import { join } from "path";
-import { fullLog } from "@triptyk/nfw-core";
+import { container } from "tsyringe";
+import { IMiddleware, BaseMiddleware } from "../api/middlewares/base.middleware";
 
 export class Application {
     private readonly app: Express.Application;
@@ -145,22 +146,29 @@ export class Application {
             // Our `routes` array containing all our routes for this controller
             const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller.default);
 
-            const middlewaresForController: any[] = Reflect.getMetadata("middlewares", controller.default);
+            const middlewaresForController: { middleware: any , args: object }[] = Reflect.getMetadata("middlewares", controller.default);
             const router = Express.Router();
 
             if (middlewaresForController && middlewaresForController.length > 0) {
-                router.use(middlewaresForController);
+                router.use(middlewaresForController.map((e) => {
+                    const realMiddleware: BaseMiddleware = container.resolve(e.middleware);
+
+                    return (req, res, next) => realMiddleware.use(req, res, next, e.args);
+                }));
             }
 
             mainRouter.use(`/${prefix}`, router);
 
             // Iterate over all routes and register them to our express application
             for (const route of routes) {
-                let middlewares: any[] = Reflect.getMetadata("middlewares", controller.default , route.methodName);
+                let middlewaresWithArgs =
+                    Reflect.getMetadata("middlewares", controller.default , route.methodName) as { middleware: any , args: object }[];
 
-                if (!middlewares) {
-                    middlewares = [];
+                if (!middlewaresWithArgs) {
+                    middlewaresWithArgs = [];
                 }
+
+                const middlewares = [];
 
                 const controllerMiddleware = async (req: Request, res: Response, next) => {
                     try {
@@ -170,6 +178,13 @@ export class Application {
                         return next(e);
                     }
                 };
+
+                for (const iterator of middlewaresWithArgs) {
+                    const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
+
+                    // need to arrow function to keep "this" context in method
+                    middlewares.push((req, res, next) => realMiddleware.use(req, res, next, iterator.args));
+                }
 
                 middlewares.push(controllerMiddleware);
 

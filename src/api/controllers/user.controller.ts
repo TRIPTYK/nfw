@@ -4,15 +4,15 @@ import {Request , Response} from "express";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
 import { UserRepository } from "../repositories/user.repository";
-import { Controller, Get, Post, Patch, Put, Delete, ControllerMiddleware } from "../decorators/controller.decorator";
+import { Controller, Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware } from "../decorators/controller.decorator";
+import { getCustomRepository } from "typeorm";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
-import { getCustomRepository } from "typeorm";
+import { SecurityMiddleware } from "../middlewares/security.middleware";
 
 @Controller("users")
-@ControllerMiddleware([
-    AuthMiddleware.authorize([Roles.Admin])
-])
+@RouteMiddleware(AuthMiddleware, [Roles.User])
+@RouteMiddleware(SecurityMiddleware)
 export default class UserController {
     protected repository: UserRepository;
 

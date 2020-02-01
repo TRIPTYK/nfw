@@ -2,16 +2,18 @@ import {Request, Response} from "express";
 import * as Boom from "@hapi/boom";
 import {checkSchema, Location, Schema, ValidationChain} from "express-validator";
 import {getRepository} from "typeorm";
-import {IMiddleware} from "@triptyk/nfw-core";
 import { BaseSerializer } from "../serializers/base.serializer";
 
-export abstract class BaseMiddleware implements IMiddleware {
-    protected serializer: BaseSerializer;
+export interface IMiddleware {
+    use(req: Request, res: Response, next: () => void, args: any);
+}
 
-    constructor(serializer: BaseSerializer) {
-        this.serializer = serializer;
+export abstract class BaseMiddleware implements IMiddleware {
+    public use(req: Request, res: Response, next: () => void, args: any) {
+        return next();
     }
 
+    /*
     public handleValidation = (schema: Schema, location: Location[] = ["body"]) => async (req: Request, resp, next) => {
         const validationChain: ValidationChain[] = checkSchema(schema, location);
 
@@ -80,6 +82,7 @@ export abstract class BaseMiddleware implements IMiddleware {
      * @param withRelationships
      * @param specificRelationships
      */
+    /**
     public deserialize = (
         {nullEqualsUndefined = false, withRelationships = true, specificRelationships = []}:
         { nullEqualsUndefined?: boolean, withRelationships?: boolean, specificRelationships?: string[]} = {}) =>
@@ -116,4 +119,5 @@ export abstract class BaseMiddleware implements IMiddleware {
             return next(e);
         }
     }
+    **/
 }
