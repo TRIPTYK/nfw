@@ -1,63 +1,12 @@
-import * as Boom from "@hapi/boom";
 import * as Jimp from "jimp";
-import {Request, Response} from "express";
-import {getRepository} from "typeorm";
-import {Document} from "../models/document.model";
-import {DocumentSerializer} from "../serializers/document.serializer";
 import {BaseMiddleware} from "./base.middleware";
+import { Request , Response } from "express";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 
-
-
-export class DocumentMiddleware extends BaseMiddleware {
-    /** 
-    constructor() {
-        super(new DocumentSerializer());
-    }
-
-    /**
-     * Create Document and append it to req
-     *
-     * @param {Object} req
-     * @param {Object} res
-     * @param {Function} next
-     *
-     * @returns {Function}
-     *
-     * @public
-     *
-     */
-    /** 
-    public create = (req: Request, res: Response, next) => {
-        try {
-            const documentRepository = getRepository(Document);
-            const document = new Document(req["file"]);
-            documentRepository.save(document);
-            req["doc"] = document;
-            return next();
-        } catch (e) {
-            return next(Boom.expectationFailed(e.message));
-        }
-    }
-    **/
-
-    /**
-     * Resize image according to .env file directives
-     *
-     * @param {Object} req
-     * @param {Object} res
-     * @param {Function} next
-     *
-     * @returns {Function}
-     *
-     * @public
-     *
-     */
-    /**
-    public resize = async (req: Request, res: Response, next) => {
+export class DocumentResizeMiddleware extends BaseMiddleware {
+    public use(req: Request, res: Response, next: (err?: any) => void, args: any) {
         const { jimp } = EnvironmentConfiguration.config;
-
 
         try {
             // If image optimization is activated and is image mime type
@@ -90,5 +39,4 @@ export class DocumentMiddleware extends BaseMiddleware {
             return next(e);
         }
     }
-    **/
 }

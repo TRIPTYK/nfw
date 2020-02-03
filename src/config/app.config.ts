@@ -150,10 +150,17 @@ export class Application {
             const router = Express.Router();
 
             if (middlewaresForController && middlewaresForController.length > 0) {
+                middlewaresForController.reverse();
                 router.use(middlewaresForController.map((e) => {
                     const realMiddleware: BaseMiddleware = container.resolve(e.middleware);
 
-                    return (req, res, next) => realMiddleware.use(req, res, next, e.args);
+                    return (req, res, next) => {
+                        try {
+                            return realMiddleware.use(req, res, next, e.args);
+                        } catch (e) {
+                            return next(e);
+                        }
+                    };
                 }));
             }
 
@@ -168,12 +175,16 @@ export class Application {
                     middlewaresWithArgs = [];
                 }
 
+                middlewaresWithArgs.reverse();
+
                 const middlewares = [];
 
                 const controllerMiddleware = async (req: Request, res: Response, next) => {
                     try {
                         const response = await instance[route.methodName](req, res);
-                        res.send(response);
+                        if (!res.headersSent) {
+                            res.send(response);
+                        }
                     } catch (e) {
                         return next(e);
                     }
@@ -183,7 +194,13 @@ export class Application {
                     const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
 
                     // need to arrow function to keep "this" context in method
-                    middlewares.push((req, res, next) => realMiddleware.use(req, res, next, iterator.args));
+                    middlewares.push((req, res, next) => {
+                        try {
+                            return realMiddleware.use(req, res, next, iterator.args);
+                        } catch (e) {
+                            return next(e);
+                        }
+                    });
                 }
 
                 middlewares.push(controllerMiddleware);

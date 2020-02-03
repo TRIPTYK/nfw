@@ -1,6 +1,7 @@
 import * as Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
 import { LoggerConfiguration } from "../../config/logger.config";
+import { ValidationError } from "express-validator";
 
 export default class ErrorHandlerMiddleware {
     public static log(err, req, res, next): void {
@@ -9,7 +10,25 @@ export default class ErrorHandlerMiddleware {
         next(err);
     }
 
-    public static exit(err: Boom.Boom, req, res, next): void {
+    public static exit(err: any, req, res, next): void {
+        if (Array.isArray(err)) {
+            const errs = err;
+            const allErrors = [];
+
+            for (const err of errs) {
+                for (const suberror of err) {
+                    allErrors.push({
+                        title: "Validation Error",
+                        source: { pointer: `/data/attributes/${suberror.param}` },
+                        detail: `${suberror.msg} for ${suberror.param} in ${suberror.location}, value is ${suberror.value}`
+                    });
+                }
+            }
+
+            res.status(400);
+            return res.json(ErrorHandlerMiddleware.serializer.serializeError(allErrors));
+        }
+
         if (!err.isBoom) {
             err = Boom.expectationFailed(err.message);
         }

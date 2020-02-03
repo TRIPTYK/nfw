@@ -1,5 +1,7 @@
 import { User } from "../models/user.model";
+import { injectable } from "tsyringe";
 
+@injectable()
 export class AuthTokenSerializer {
     public serialize(accessToken: string, refreshToken: string, user: User) {
         return {

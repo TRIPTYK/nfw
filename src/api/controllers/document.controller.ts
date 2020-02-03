@@ -6,10 +6,17 @@ import { DocumentSerializer } from "../serializers/document.serializer";
 import { UserSerializer } from "../serializers/user.serializer";
 import { documentRelations } from "../enums/json-api/document.enum";
 import { DocumentRepository } from "../repositories/document.repository";
-import { Controller, Post, Get, Patch, Delete, Put } from "../decorators/controller.decorator";
+import { Controller, Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware } from "../decorators/controller.decorator";
 import { getCustomRepository } from "typeorm";
+import AuthMiddleware from "../middlewares/auth.middleware";
+import { Roles } from "../enums/role.enum";
+import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
+import FileUploadMiddleware from "../middlewares/file-upload.middleware";
+import ValidationMiddleware from "../middlewares/validation.middleware";
+import { updateDocument } from "../validations/document.validation";
 
 @Controller("documents")
+@RouteMiddleware(AuthMiddleware,[Roles.Admin, Roles.User])
 export default class DocumentController {
     protected repository: DocumentRepository;
 
@@ -54,6 +61,8 @@ export default class DocumentController {
      * @public
      */
     @Post("/")
+    @MethodMiddleware(FileUploadMiddleware)
+    @MethodMiddleware(DocumentResizeMiddleware)
     public async create(req: Request, res: Response, next) {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as any);
@@ -151,11 +160,14 @@ export default class DocumentController {
      */
     @Patch("/:documentId")
     @Put("/:documentId")
+    @MethodMiddleware(ValidationMiddleware, {schema : updateDocument})
+    @MethodMiddleware(FileUploadMiddleware)
+    @MethodMiddleware(DocumentResizeMiddleware)
     public async update(req: Request, res: Response, next) {
         const file: Express.Multer.File = req.file;
 
         const saved = await this.repository.preload({
-            file, ...{id : req.params.documentId}
+            ...file, ...{id : req.params.documentId}
         } as any);
 
         if (saved === undefined) {

@@ -1,3 +1,7 @@
+import { BaseMiddleware } from "../middlewares/base.middleware";
+
+export interface Type<T> extends Function { new (...args: any[]): T; }
+
 /**
  *
  * @param routeName
@@ -16,13 +20,13 @@ export function Controller(routeName: string): ClassDecorator {
  *
  * @param routeName
  */
-export function RouteMiddleware(middlewareFunction, args?: any): ClassDecorator {
+export function RouteMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any): ClassDecorator {
     return function <TFunction extends Function> (target: TFunction): void {
         if (! Reflect.hasMetadata("middlewares",  target)) {
             Reflect.defineMetadata("middlewares", [], target);
         }
         const middlewares = Reflect.getMetadata("middlewares", target);
-        middlewares.push({middleware : middlewareFunction , args});
+        middlewares.push({middleware : middlewareClass , args});
     };
 }
 
@@ -31,13 +35,13 @@ export function RouteMiddleware(middlewareFunction, args?: any): ClassDecorator 
  *
  * @returns {MethodDecorator}
  */
-export function MethodMiddleware(middlewareFunction, args?: any): MethodDecorator {
+export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any): MethodDecorator {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
         if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
             Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
         }
         const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
-        middlewares.push({middleware : middlewareFunction , args});
+        middlewares.push({middleware : middlewareClass , args});
     };
 }
 
@@ -66,8 +70,6 @@ const registerMethod = (path: string = null , method: RequestMethods) =>
         path : path ? path : `/${propertyKey}`,
         requestMethod: method,
     });
-
-    Reflect.defineMetadata("routes", routes, target.constructor);
 };
 
 /**

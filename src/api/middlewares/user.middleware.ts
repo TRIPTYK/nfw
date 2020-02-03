@@ -1,33 +1,10 @@
-import {Request, Response} from "express";
-import {UserRepository} from "../repositories/user.repository";
-import {getCustomRepository} from "typeorm";
-import {UserSerializer} from "../serializers/user.serializer";
-import {BaseMiddleware} from "./base.middleware";
-import {userRelations} from "../enums/json-api/user.enum";
+import { BaseMiddleware } from "./base.middleware";
+import { injectable } from "tsyringe";
+import { Request, Response } from "express";
 
-export class UserMiddleware extends BaseMiddleware {
-    /*
-    constructor() {
-        super(new UserSerializer());
-    }*/
-
-    /**
-     * Load user and append to req
-     *
-     * @param req Request object
-     * @param res Response object
-     * @param next Next middleware function
-     * @param id User id
-     *
-     */
-    /*
-    public load = async (req: Request, res: Response, next, id: number) => {
-        try {
-            const repository = getCustomRepository(UserRepository);
-            req["locals"] = await repository.jsonApiFindOne(req, id, userRelations);
-            return next();
-        } catch (e) {
-            return next(e);
-        }
-    }*/
+@injectable()
+export default class UserMiddleware extends BaseMiddleware {
+    public use(req: Request, res: Response, next: (err?: any) => void, args: any) {
+        throw new Error("Method not implemented.");
+    }
 }

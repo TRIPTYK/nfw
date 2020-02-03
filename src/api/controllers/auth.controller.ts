@@ -5,7 +5,6 @@ import {Request, Response} from "express";
 import {getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
 import {Roles} from "../enums/role.enum";
-import AuthMiddleware from "../middlewares/auth.middleware";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import Refresh from "passport-oauth2-refresh";
 import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
@@ -13,7 +12,13 @@ import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
-import { Controller, Post, MethodMiddleware } from "../decorators/controller.decorator";
+import { Controller, Post, MethodMiddleware, Get } from "../decorators/controller.decorator";
+import SecurityMiddleware from "../middlewares/security.middleware";
+import DeserializeMiddleware from "../middlewares/deserialize.middleware";
+import { UserSerializer } from "../serializers/user.serializer";
+import ValidationMiddleware from "../middlewares/validation.middleware";
+import { register } from "../validations/auth.validation";
+import AuthMiddleware from "../middlewares/auth.middleware";
 
 /**
  * Authentification Controller!
@@ -24,26 +29,15 @@ export default class AuthController {
     protected repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;
 
-    /**
-     *
-     */
     constructor() {
         this.repository = getCustomRepository(UserRepository);
         this.refreshRepository = getCustomRepository(RefreshTokenRepository);
     }
 
-    /**
-     * Create and save a new user
-     *
-     * @param {Object} req
-     * @param {Object}res
-     * @param {Function}next
-     *
-     * @return JWT|next
-     *
-     * @public
-     */
     @Post()
+    @MethodMiddleware(DeserializeMiddleware, UserSerializer)
+    @MethodMiddleware(ValidationMiddleware, {schema : register})
+    @MethodMiddleware(SecurityMiddleware)
     public async register(req: Request, res: Response, next) {
         let user = this.repository.create(req.body as object);
 
@@ -58,17 +52,6 @@ export default class AuthController {
         return new AuthTokenSerializer().serialize(accessToken, refreshToken.refreshToken, user);
     }
 
-    /**
-     * Login with an existing user or creates a new one if valid accessToken token
-     *
-     * @param {Object} req
-     * @param {Object} res
-     * @param {Function} next
-     *
-     * @return JWT|next
-     *
-     * @public
-     */
     @Post()
     public async login(req: Request, res: Response) {
         const { email , password } = req.body;
@@ -78,16 +61,7 @@ export default class AuthController {
         return new AuthTokenSerializer().serialize(accessToken, refreshToken.refreshToken, user);
     }
 
-    /**
-     *
-     *
-     * @protected
-     * @param {Request} req
-     * @param {Response} res
-     * @param {Function} next
-     * @memberof AuthController
-     */
-    @Post()
+    @Post("/:service/refresh-token")
     public async refreshOAuth(req: Request, res: Response, next) {
         const user = req.user;
         const { service } = req.params;
@@ -120,18 +94,7 @@ export default class AuthController {
         res.sendStatus(HttpStatus.OK);
     }
 
-    /**
-     * Login with an existing user or creates a new one if valid accessToken token
-     *
-     * @param {Object} req
-     * @param {Object} res
-     * @param {Function} next
-     *
-     * @return JWT|next
-     *
-     * @public
-     */
-    @Post()
+    @Post("/oAuth")
     public async oAuth(req: Request, res: Response, next) {
         const user = req.user;
         const accessToken = user.generateAccessToken();
@@ -139,17 +102,6 @@ export default class AuthController {
         return new AuthTokenSerializer().serialize(accessToken, token.refreshToken, user);
     }
 
-    /**
-     * Refresh JWT token by RefreshToken removing, and re-creating
-     *
-     * @param {Object} req
-     * @param {Object} res
-     * @param {Function} next
-     *
-     * @return JWT|next
-     *
-     * @public
-     */
     @Post("/refresh-token")
     public async refresh(req: Request, res: Response, next) {
         const refreshTokenRepository = getRepository(RefreshToken);

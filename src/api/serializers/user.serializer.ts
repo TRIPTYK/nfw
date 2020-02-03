@@ -1,7 +1,9 @@
 import {documentSerialize} from "../enums/json-api/document.enum";
 import {userDeserialize, userSerialize} from "../enums/json-api/user.enum";
 import { BaseSerializer, SerializerParams } from "./base.serializer";
+import { injectable } from "tsyringe";
 
+@injectable()
 export class UserSerializer extends BaseSerializer {
     constructor(serializerParams: SerializerParams = {}) {
         super("user", {
