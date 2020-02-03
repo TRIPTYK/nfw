@@ -11,7 +11,7 @@ import {User} from "./user.model";
 import * as Fs from "fs";
 import {BaseModel} from "./base.model";
 import * as Path from "path";
-import {MimeTypes} from "../enums/mime-type.enum";
+import {MimeTypes, ImageMimeTypes} from "../enums/mime-type.enum";
 import {DocumentTypes} from "../enums/document-type.enum";
 
 @Entity()
@@ -61,10 +61,12 @@ export class Document extends BaseModel {
     @BeforeRemove()
     @BeforeUpdate()
     public deleteOnDisk() {
-        Fs.unlinkSync(`${this.path}/${this.filename}`);
+        Fs.promises.unlink(`${this.path}/${this.filename}`);
 
-        for (const size of ["xs", "md", "xl"]) {
-            Fs.unlinkSync(`${this.path}/${size}/${this.filename}`);
+        if (Object.values(ImageMimeTypes).includes(this.mimetype as any)) {
+            for (const size of ["xs", "md", "xl"]) {
+                Fs.promises.unlink(`${this.path}/${size}/${this.filename}`);
+            }
         }
     }
 }

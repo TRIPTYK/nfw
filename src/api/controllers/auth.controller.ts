@@ -18,7 +18,6 @@ import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
-import AuthMiddleware from "../middlewares/auth.middleware";
 
 /**
  * Authentification Controller!

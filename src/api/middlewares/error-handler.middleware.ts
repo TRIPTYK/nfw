@@ -1,7 +1,6 @@
 import * as Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
 import { LoggerConfiguration } from "../../config/logger.config";
-import { ValidationError } from "express-validator";
 
 export default class ErrorHandlerMiddleware {
     public static log(err, req, res, next): void {
