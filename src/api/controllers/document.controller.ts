@@ -16,7 +16,7 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import { updateDocument } from "../validations/document.validation";
 
 @Controller("documents")
-@RouteMiddleware(AuthMiddleware,[Roles.Admin, Roles.User])
+@RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 export default class DocumentController {
     protected repository: DocumentRepository;
 
