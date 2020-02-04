@@ -9,7 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Setup MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        # The port of host
+        host port: 3306
+        # MYSQL_ROOT_PASSWORD - root superuser password
+        mysql root password: test123*
+        # MYSQL_DATABASE - name for the default database that is created
+        mysql database: nfw
+        # MYSQL_PASSWORD - specified superuser password which user is power for created database
+        mysql password: test123*
     - name: Build and test
       run: |
         npm install
