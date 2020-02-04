@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Disable Original Mysql
+      run: service mysql stop
+      
     - name: Setup MySQL
       uses: mirromutth/mysql-action@v1.1
       with:
