@@ -1,8 +1,8 @@
 import {Request} from "express";
 import * as JSONAPISerializer from "json-api-serializer";
-import {ISerialize} from "@triptyk/nfw-core";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
+import ISerializer from "../interfaces/serializer.interface";
 
 export type SerializerParams = {
     pagination?: PaginationParams
@@ -43,7 +43,7 @@ export type JSONAPISerializerOptions = {
     whitelistOnDeserialize?: string[]
 };
 
-export abstract class BaseSerializer implements ISerialize {
+export abstract class BaseSerializer implements ISerializer {
     public static whitelist: string[] = [];
     public type: string;
     public serializer: JSONAPISerializer;
@@ -62,9 +62,6 @@ export abstract class BaseSerializer implements ISerialize {
         this.serializer.register(this.type, entityArgs);
     }
 
-    /**
-     * 
-     */
     public setupPaginationLinks(paginationParams: PaginationParams): this {
         const { api } = EnvironmentConfiguration.config;
         const { total, url, page , size } = paginationParams;

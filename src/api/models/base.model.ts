@@ -1,7 +1,7 @@
-import {IModelize} from "@triptyk/nfw-core";
 import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import IModel from "../interfaces/model.interface";
 
-export abstract class BaseModel implements IModelize {
+export abstract class BaseModel implements IModel {
     @PrimaryGeneratedColumn()
     public id: number;
 

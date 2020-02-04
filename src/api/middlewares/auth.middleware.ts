@@ -6,10 +6,10 @@ import { promisify } from "util";
 import { Roles } from "./../enums/role.enum";
 import { Request , Response } from "express";
 import { injectable } from "tsyringe";
-import { IMiddleware } from "./base.middleware";
+import { BaseMiddleware } from "./base.middleware";
 
 @injectable()
-export default class AuthMiddleware implements IMiddleware {
+export default class AuthMiddleware extends BaseMiddleware {
     public use(req: Request, res: Response, next: () => void, args) {
         return Passport.authenticate( "jwt", { session: false },
             this.handleJWT(req, res, next, args) ) (req, res, next);

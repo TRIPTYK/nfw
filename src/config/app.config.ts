@@ -16,10 +16,10 @@ import { RouteDefinition } from "../api/decorators/controller.decorator";
 import { fstat, readdirSync } from "fs";
 import { join } from "path";
 import { container } from "tsyringe";
-import { IMiddleware, BaseMiddleware } from "../api/middlewares/base.middleware";
+import { BaseMiddleware } from "../api/middlewares/base.middleware";
 
 export class Application {
-    private readonly app: Express.Application;
+    protected readonly app: Express.Application;
 
     get App() {
         return this.app;

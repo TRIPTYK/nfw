@@ -1,10 +1,10 @@
-import { IMiddleware } from "./base.middleware";
 import { Request, Response } from "express";
 import { ValidationChain, checkSchema, Location } from "express-validator";
 import { injectable } from "tsyringe";
+import { BaseMiddleware } from "./base.middleware";
 
 @injectable()
-export default class ValidationMiddleware implements IMiddleware {
+export default class ValidationMiddleware extends BaseMiddleware {
     public async use(req: Request, response: Response, next: (err?: any) => void, args: any) {
         const { schema , location = ["body"] } = args;
 

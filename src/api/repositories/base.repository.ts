@@ -5,15 +5,15 @@ import * as Boom from "@hapi/boom";
 import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
-import {JsonApiRepositoryInterface} from "@triptyk/nfw-core";
 import { BaseSerializer } from "../serializers/base.serializer";
+import IRepository from "../interfaces/repository.interface";
 
 
 /**
  * Base Repository class , inherited for all current repositories
  */
 @EntityRepository()
-class BaseRepository<T> extends Repository<T> implements JsonApiRepositoryInterface<T> {
+class BaseRepository<T> extends Repository<T> implements IRepository<T> {
 
     /**
      * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.
