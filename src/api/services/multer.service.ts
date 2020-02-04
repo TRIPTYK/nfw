@@ -14,8 +14,7 @@ class MulterService {
         [StorageType.DISK] : {}
     };
 
-    public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number)
-    : Multer.Instance {
+    public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number) {
         if (this.multers[type][destinationOrName]) {
             return this.multers[type][destinationOrName];
         }
