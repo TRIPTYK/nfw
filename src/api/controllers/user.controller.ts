@@ -12,17 +12,14 @@ import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { createUser, updateUser } from "../validations/user.validation";
+import { repository } from "../decorators/repository.decorator";
 
 @Controller("users")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 @RouteMiddleware(DeserializeMiddleware, UserSerializer)
 @RouteMiddleware(SecurityMiddleware)
 export default class UserController {
-    protected repository: UserRepository;
-
-    constructor() {
-        this.repository = getCustomRepository(UserRepository);
-    }
+    @repository(UserRepository) private repository: UserRepository;
 
     @Get()
     @MethodMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
@@ -45,9 +42,9 @@ export default class UserController {
     @MethodMiddleware(ValidationMiddleware, { schema: createUser })
     public async create(req: Request, res: Response, next) {
         const user = this.repository.create(req.body);
-        const savedUser = await this.repository.save(user);
+        await this.repository.insert(user);
         res.status(HttpStatus.CREATED);
-        return new UserSerializer().serialize(savedUser);
+        return new UserSerializer().serialize(user);
     }
 
     @Patch("/:userId")

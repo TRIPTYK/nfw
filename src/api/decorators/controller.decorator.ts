@@ -1,6 +1,5 @@
 import { BaseMiddleware } from "../middlewares/base.middleware";
-
-export interface Type<T> extends Function { new (...args: any[]): T; }
+import { Type } from "../types/global";
 
 /**
  *
@@ -16,10 +15,6 @@ export function Controller(routeName: string): ClassDecorator {
     };
 }
 
-/**
- *
- * @param routeName
- */
 export function RouteMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any): ClassDecorator {
     return function <TFunction extends Function> (target: TFunction): void {
         if (! Reflect.hasMetadata("middlewares",  target)) {
@@ -30,11 +25,6 @@ export function RouteMiddleware(middlewareClass: Type<BaseMiddleware>, args?: an
     };
 }
 
-/**
- * Comment
- *
- * @returns {MethodDecorator}
- */
 export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any): MethodDecorator {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
         if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
@@ -72,47 +62,22 @@ const registerMethod = (path: string = null , method: RequestMethods) =>
     });
 };
 
-/**
- * Comment
- *
- * @returns {MethodDecorator}
- */
 export function Get(path: string = null): MethodDecorator {
     return registerMethod(path, "get");
 }
 
-/**
- * Comment
- *
- * @returns {MethodDecorator}
- */
 export function Post(path: string = null): MethodDecorator {
     return registerMethod(path, "post");
 }
 
-/**
- * Comment
- *
- * @returns {MethodDecorator}
- */
 export function Patch(path: string = null): MethodDecorator {
     return registerMethod(path, "patch");
 }
 
-/**
- * Comment
- *
- * @returns {MethodDecorator}
- */
 export function Put(path: string = null): MethodDecorator {
     return registerMethod(path, "put");
 }
 
-/**
- * Comment
- *
- * @returns {MethodDecorator}
- */
 export function Delete(path: string = null): MethodDecorator {
     return registerMethod(path, "delete");
 }

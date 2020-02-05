@@ -18,6 +18,9 @@ import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
+import { service } from "../decorators/service.decorator";
+import { MulterService } from "../services/multer.service";
+import { repository } from "../decorators/repository.decorator";
 
 /**
  * Authentification Controller!
@@ -25,25 +28,20 @@ import { register } from "../validations/auth.validation";
  */
 @Controller("auth")
 export default class AuthController {
-    protected repository: UserRepository;
-    private refreshRepository: RefreshTokenRepository;
-
-    constructor() {
-        this.repository = getCustomRepository(UserRepository);
-        this.refreshRepository = getCustomRepository(RefreshTokenRepository);
-    }
+    @repository(UserRepository) private repository: UserRepository;
+    @repository(RefreshTokenRepository) private refreshRepository: RefreshTokenRepository;
 
     @Post()
     @MethodMiddleware(DeserializeMiddleware, UserSerializer)
     @MethodMiddleware(ValidationMiddleware, {schema : register})
     @MethodMiddleware(SecurityMiddleware)
     public async register(req: Request, res: Response, next) {
-        let user = this.repository.create(req.body as object);
+        const user = this.repository.create(req.body as object);
 
         const {config : {env}} = EnvironmentConfiguration; // load env
 
         user.role = [Environments.Test, Environments.Development].includes(env) ? Roles.Admin : Roles.User;
-        user = await this.repository.save(user);
+        await this.repository.insert(user);
         const accessToken = user.generateAccessToken();
         const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
         res.status(HttpStatus.CREATED);

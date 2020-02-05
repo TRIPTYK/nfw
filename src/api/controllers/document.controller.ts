@@ -7,22 +7,18 @@ import { UserSerializer } from "../serializers/user.serializer";
 import { documentRelations } from "../enums/json-api/document.enum";
 import { DocumentRepository } from "../repositories/document.repository";
 import { Controller, Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware } from "../decorators/controller.decorator";
-import { getCustomRepository } from "typeorm";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
 import FileUploadMiddleware from "../middlewares/file-upload.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { updateDocument } from "../validations/document.validation";
+import { repository } from "../decorators/repository.decorator";
 
 @Controller("documents")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 export default class DocumentController {
-    protected repository: DocumentRepository;
-
-    constructor() {
-        this.repository = getCustomRepository(DocumentRepository);
-    }
+    @repository(DocumentRepository) private repository: DocumentRepository;
 
     /**
      * Retrieve a list of documents, according to some parameters
@@ -66,8 +62,8 @@ export default class DocumentController {
     public async create(req: Request, res: Response, next) {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as any);
-        const saved = await this.repository.save(document);
-        return new DocumentSerializer().serialize(saved);
+        await this.repository.insert(document);
+        return new DocumentSerializer().serialize(document);
     }
 
     /**

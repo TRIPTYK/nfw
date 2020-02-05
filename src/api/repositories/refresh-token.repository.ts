@@ -4,9 +4,10 @@ import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
 import EnvironmentConfiguration from "../../config/environment.config";
+import { BaseRepository } from "./base.repository";
 
 @EntityRepository(RefreshToken)
-export class RefreshTokenRepository extends Repository<RefreshToken> {
+export class RefreshTokenRepository extends BaseRepository<RefreshToken> {
     /**
      *
      * @param user

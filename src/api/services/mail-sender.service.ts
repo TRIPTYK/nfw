@@ -2,7 +2,7 @@ import Boom from "@hapi/boom";
 import { default as Axios } from "axios";
 import { Request } from "express";
 import * as Mailgun from "mailgun-js";
-import { singleton } from "tsyringe";
+import { singleton, injectable } from "tsyringe";
 import EnvironmentConfiguration from "../../config/environment.config";
 
 // tslint:disable-next-line: interface-over-type-literal
@@ -17,7 +17,7 @@ type MailGunData = {
     filename?: string
 };
 
-@singleton()
+@injectable()
 export class MailService {
     /**
      * Sparkpost API
