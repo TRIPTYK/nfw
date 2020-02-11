@@ -86,64 +86,33 @@ export default class DocumentController {
         return new DocumentSerializer().serialize(document);
     }
 
-    /**
-     *
-     * @param req
-     * @param res
-     * @param next
-     */
-    @Get()
+    @Get("/:id/:relation")
     public async fetchRelated(req: Request, res: Response, next) {
-        return this.repository.fetchRelated(req, new UserSerializer());
+        return this.repository.fetchRelated(req, new DocumentSerializer());
     }
 
-    /**
-     *
-     * @param req
-     * @param res
-     * @param next
-     */
-    @Get()
+    @Get("/:id/relationships/:relation")
     public async fetchRelationships(req: Request, res: Response, next) {
-        return this.repository.fetchRelationshipsFromRequest(req, new UserSerializer());
+        return this.repository.fetchRelationshipsFromRequest(req, new DocumentSerializer());
     }
 
-    /**
-     *
-     * @param req
-     * @param res
-     * @param next
-     */
-    @Post()
+    @Post("/:id/relationships/:relation")
     public async addRelationships(req: Request, res: Response, next) {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    /**
-     *
-     * @param req
-     * @param res
-     * @param next
-     */
-    @Patch()
+    @Patch("/:id/relationships/:relation")
     public async updateRelationships(req: Request, res: Response, next) {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    /**
-     *
-     * @param req
-     * @param res
-     * @param next
-     */
-    @Delete()
+    @Delete("/:id/relationships/:relation")
     public async removeRelationships(req: Request, res: Response, next) {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
-
 
     /**
      * Update one document according to :documentId

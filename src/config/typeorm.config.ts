@@ -1,9 +1,5 @@
 import "reflect-metadata";
 import {Connection, createConnection} from "typeorm";
-import {User} from "../api/models/user.model";
-import {RefreshToken} from "../api/models/refresh-token.model";
-import {Document} from "../api/models/document.model";
-import { container } from "tsyringe";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
 

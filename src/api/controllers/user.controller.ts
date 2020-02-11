@@ -5,7 +5,6 @@ import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
 import { UserRepository } from "../repositories/user.repository";
 import { Controller, Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware } from "../decorators/controller.decorator";
-import { getCustomRepository } from "typeorm";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import SecurityMiddleware from "../middlewares/security.middleware";
@@ -85,24 +84,29 @@ export default class UserController {
             .serialize(users);
     }
 
+    @Get("/:id/:relation")
     public async fetchRelated(req: Request, res: Response, next) {
         return this.repository.fetchRelated(req, new UserSerializer());
     }
 
+    @Get("/:id/relationships/:relation")
     public async fetchRelationships(req: Request, res: Response, next) {
         return this.repository.fetchRelationshipsFromRequest(req, new UserSerializer());
     }
 
+    @Post("/:id/relationships/:relation")
     public async addRelationships(req: Request, res: Response, next) {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
+    @Patch("/:id/relationships/:relation")
     public async updateRelationships(req: Request, res: Response, next) {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
+    @Delete("/:id/relationships/:relation")
     public async removeRelationships(req: Request, res: Response, next) {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
