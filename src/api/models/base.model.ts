@@ -12,8 +12,4 @@ export abstract class BaseModel implements IModel {
         nullable: true
     })
     public updated_at: Date;
-
-    public constructor(payload: object = {}) {
-        Object.assign(this, payload);
-    }
 }

@@ -78,6 +78,7 @@ export abstract class BaseSerializer implements ISerializer {
 
         this.type = schema.type;
 
+        this.serializer.register(schema.type, schema);
         this.registerFromSchema(schema);
     }
 
@@ -86,7 +87,7 @@ export abstract class BaseSerializer implements ISerializer {
      */
     public registerFromSchema(schema: any) {
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
-        const schemaCopy = rfdc({ proto : true , cirlcles : true})(schema);
+        const schemaCopy = rfdc({ proto : true , circles : true})(schema);
 
         for (const key in schema.relationships) {
             if (schema.relationships[key]) {
@@ -96,11 +97,10 @@ export abstract class BaseSerializer implements ISerializer {
             }
         }
 
-        schema.relationships = relationShips;
-        this.serializer.register(schema.type, schema);
-
+        schemaCopy.relationships = relationShips;
         for (const key in schemaCopy.relationships) {
             if (schemaCopy.relationships[key]) {
+                this.serializer.register(schemaCopy.relationships[key].type, schemaCopy.relationships[key]);
                 this.registerFromSchema(schemaCopy.relationships);
             }
         }

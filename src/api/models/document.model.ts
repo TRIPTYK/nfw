@@ -52,6 +52,11 @@ export class Document extends BaseModel {
     })
     public deletedAt: Date;
 
+    public constructor(payload: Partial<Document> = {}) {
+        super();
+        Object.assign(this, payload);
+    }
+
     @BeforeInsert()
     @BeforeUpdate()
     public updatePath() {

@@ -90,6 +90,11 @@ export class User extends BaseModel {
     @JoinColumn()
     public avatar: Document;
 
+    public constructor(payload: Partial<User> = {}) {
+        super();
+        Object.assign(this, payload);
+    }
+
     /**
      *
      */

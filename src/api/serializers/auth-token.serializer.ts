@@ -1,8 +1,15 @@
 import { User } from "../models/user.model";
 import { injectable } from "tsyringe";
+import ISerializer from "../interfaces/serializer.interface";
 
 @injectable()
-export class AuthTokenSerializer {
+/**
+ * This is a 'fake' serailizer for non json-api auth response
+ */
+export class AuthTokenSerializer implements ISerializer {
+    public deserialize(payload) {
+        return payload;
+    }
     public serialize(accessToken: string, refreshToken: string, user: User) {
         return {
             accessToken,

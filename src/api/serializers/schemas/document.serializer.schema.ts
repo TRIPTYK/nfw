@@ -1,5 +1,5 @@
 import { JSONAPISerializerSchema } from "../base.serializer";
-import UserSchema from "./user.serializer.schema";
+import UserSchema, { userSerialize } from "./user.serializer.schema";
 import { userType, documentType } from "./types";
 /**
  * Allowed serialized elements
@@ -11,11 +11,11 @@ export const documentSerialize: string[] = ["fieldname", "filename", "path", "mi
  */
 export const documentDeserialize: string[] = [];
 
-const DocumentSchema: JSONAPISerializerSchema = {
+const DocumentSchema: Readonly<JSONAPISerializerSchema> = {
     relationships : {
         user : {
             type: userType,
-            whitelist : UserSchema.whitelist
+            whitelist : userSerialize
         }
     },
     type: documentType,

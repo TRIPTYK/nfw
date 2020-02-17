@@ -12,7 +12,7 @@ export const userSerialize: string[] = ["username", "email", "firstname", "lastn
  */
 export const userDeserialize: string[] = ["username", "email", "firstname", "password", "lastname", "role", "user"];
 
-const UserSchema: JSONAPISerializerSchema = {
+const UserSchema: Readonly<JSONAPISerializerSchema> = {
     relationships : {
         avatar : {
             type: documentType,
