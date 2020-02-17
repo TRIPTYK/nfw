@@ -3,6 +3,7 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
 import ISerializer from "../interfaces/serializer.interface";
+import * as rfdc from "rfdc";
 
 export type SerializerParams = {
     pagination?: PaginationParams
@@ -15,7 +16,24 @@ export type PaginationParams = {
     size: number
 };
 
-export type JSONAPISerializerCustom = string | ((arg1: object, arg2: object) => object | string);
+export type JSONAPISerializerSchema = {
+    id?: string,
+    type: string,
+    blacklist?: string[],
+    whitelist?: string[],
+    jsonapiObject?: boolean,
+    links?: JSONAPISerializerCustom,
+    topLevelMeta?: JSONAPISerializerCustom,
+    topLevelLinks?: JSONAPISerializerCustom,
+    meta?: JSONAPISerializerCustom,
+    relationships?: { [key: string]: JSONAPISerializerSchema },
+    convertCase?: "kebab-case" | "snake_case" | "camelCase",
+    unconvertCase?: "kebab-case" | "snake_case" | "camelCase",
+    blacklistOnDeserialize?: string[],
+    whitelistOnDeserialize?: string[]
+};
+
+export type JSONAPISerializerCustom = string | ((arg1?: object, arg2?: object) => object | string);
 
 export type JSONAPISerializerRelation = {
     type: JSONAPISerializerCustom,
@@ -52,16 +70,46 @@ export abstract class BaseSerializer implements ISerializer {
      * @param type Entity type
      * @param options
      */
-    protected constructor(type: string, globalArgs?: JSONAPISerializerOptions, entityArgs?: JSONAPISerializerOptions) {
+    protected constructor(schema: JSONAPISerializerSchema) {
         this.serializer = new JSONAPISerializer({
             convertCase: "kebab-case",
-            unconvertCase: "camelCase",
-            ...globalArgs
-        } as JSONAPISerializerOptions);
-        this.type = type;
-        this.serializer.register(this.type, entityArgs);
+            unconvertCase: "camelCase"
+        } as JSONAPISerializerSchema);
+
+        this.type = schema.type;
+
+        this.registerFromSchema(schema);
     }
 
+    /**
+     * 
+     */
+    public registerFromSchema(schema: any) {
+        const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
+        const schemaCopy = rfdc({ proto : true , cirlcles : true})(schema);
+
+        for (const key in schema.relationships) {
+            if (schema.relationships[key]) {
+                relationShips[key] = {
+                    type : schema.relationships[key].type
+                };
+            }
+        }
+
+        schema.relationships = relationShips;
+        this.serializer.register(schema.type, schema);
+
+        for (const key in schemaCopy.relationships) {
+            if (schemaCopy.relationships[key]) {
+                this.registerFromSchema(schemaCopy.relationships);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param paginationParams
+     */
     public setupPaginationLinks(paginationParams: PaginationParams): this {
         const { api } = EnvironmentConfiguration.config;
         const { total, url, page , size } = paginationParams;

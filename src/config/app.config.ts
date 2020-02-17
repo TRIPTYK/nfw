@@ -17,6 +17,7 @@ import { fstat, readdirSync } from "fs";
 import { join } from "path";
 import { container } from "tsyringe";
 import { BaseMiddleware } from "../api/middlewares/base.middleware";
+import { DocumentSerializer } from "../api/serializers/document.serializer";
 
 export class Application {
     protected readonly app: Express.Application;
@@ -35,6 +36,10 @@ export class Application {
 
     private async setup(): Promise<Express.Application> {
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
+
+        container.resolve(DocumentSerializer);
+        container.resolve(DocumentSerializer);
+        container.resolve(DocumentSerializer);
 
         /**
          * Expose body on req.body

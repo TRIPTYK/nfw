@@ -7,6 +7,8 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import { BaseSerializer } from "../serializers/base.serializer";
 import IRepository from "../interfaces/repository.interface";
+import { Type } from "../types/global";
+import { container } from "tsyringe";
 
 
 /**
@@ -226,9 +228,9 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
      * @param req
      * @param serializer
      */
-    public async fetchRelated(req: Request, serializer: BaseSerializer) {
+    public async fetchRelated(req: Request, serializer: Type<BaseSerializer>) {
         const { id , relation } = req.params;
-        let type = serializer.getSchemaData()["relationships"];
+        let type = container.resolve(serializer).getSchemaData()["relationships"];
 
         if (!type[relation]) {
             throw Boom.notFound("Relation not found");
@@ -371,7 +373,7 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
      * @param req
      * @param serializer
      */
-    public async fetchRelationshipsFromRequest(req: Request, serializer: BaseSerializer) {
+    public async fetchRelationshipsFromRequest(req: Request, serializer: Type<BaseSerializer>) {
         const {id, relation} = req.params;
 
         const user = await this.createQueryBuilder("relationQb")
@@ -384,7 +386,7 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
             throw Boom.notFound();
         }
 
-        const serialized = serializer.serialize(user);
+        const serialized = container.resolve(serializer).serialize(user);
         return serialized["data"]["relationships"][relation];
     }
 }

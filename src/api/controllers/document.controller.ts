@@ -88,12 +88,12 @@ export default class DocumentController {
 
     @Get("/:id/:relation")
     public async fetchRelated(req: Request, res: Response, next) {
-        return this.repository.fetchRelated(req, new DocumentSerializer());
+        return this.repository.fetchRelated(req, DocumentSerializer);
     }
 
     @Get("/:id/relationships/:relation")
     public async fetchRelationships(req: Request, res: Response, next) {
-        return this.repository.fetchRelationshipsFromRequest(req, new DocumentSerializer());
+        return this.repository.fetchRelationshipsFromRequest(req, DocumentSerializer);
     }
 
     @Post("/:id/relationships/:relation")

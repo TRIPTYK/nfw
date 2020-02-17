@@ -1,6 +1,7 @@
 import {SelectQueryBuilder} from "typeorm";
 import {Request} from "express";
 import ISerializer from "./serializer.interface";
+import { Type } from "../types/global";
 
 export default interface IRepository<T> {
     /**
@@ -27,7 +28,7 @@ export default interface IRepository<T> {
      * @param req
      * @param serializer
      */
-    fetchRelated(req: Request, serializer: ISerializer);
+    fetchRelated(req: Request, serializer: Type<ISerializer>);
 
     /**
      *
@@ -52,5 +53,5 @@ export default interface IRepository<T> {
      * @param req
      * @param serializer
      */
-    fetchRelationshipsFromRequest(req: Request, serializer: ISerializer);
+    fetchRelationshipsFromRequest(req: Request, serializer: Type<ISerializer>);
 }

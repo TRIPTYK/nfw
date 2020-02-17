@@ -12,6 +12,8 @@ import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { createUser, updateUser } from "../validations/user.validation";
 import { repository } from "../decorators/repository.decorator";
+import DeserializeRelationsMiddleware from "../middlewares/deserialize-relations.middleware";
+import UserSchema from "../serializers/schemas/user.serializer.schema";
 
 @Controller("users")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
@@ -38,6 +40,7 @@ export default class UserController {
     }
 
     @Post("/")
+    @MethodMiddleware(DeserializeRelationsMiddleware, {serializer : UserSerializer})
     @MethodMiddleware(ValidationMiddleware, { schema: createUser })
     public async create(req: Request, res: Response, next) {
         const user = this.repository.create(req.body);
@@ -86,12 +89,12 @@ export default class UserController {
 
     @Get("/:id/:relation")
     public async fetchRelated(req: Request, res: Response, next) {
-        return this.repository.fetchRelated(req, new UserSerializer());
+        return this.repository.fetchRelated(req, UserSerializer);
     }
 
     @Get("/:id/relationships/:relation")
     public async fetchRelationships(req: Request, res: Response, next) {
-        return this.repository.fetchRelationshipsFromRequest(req, new UserSerializer());
+        return this.repository.fetchRelationshipsFromRequest(req, UserSerializer);
     }
 
     @Post("/:id/relationships/:relation")
