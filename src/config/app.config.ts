@@ -13,11 +13,12 @@ import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware"
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
 import { RouteDefinition } from "../api/decorators/controller.decorator";
-import { fstat, readdirSync } from "fs";
-import { join } from "path";
 import { container } from "tsyringe";
 import { BaseMiddleware } from "../api/middlewares/base.middleware";
-import { DocumentSerializer } from "../api/serializers/document.serializer";
+import UserController from "../api/controllers/user.controller";
+import AuthController from "../api/controllers/auth.controller";
+import DocumentController from "../api/controllers/document.controller";
+import StatusController from "../api/controllers/status.controller";
 
 export class Application {
     protected readonly app: Express.Application;
@@ -36,10 +37,6 @@ export class Application {
 
     private async setup(): Promise<Express.Application> {
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
-
-        container.resolve(DocumentSerializer);
-        container.resolve(DocumentSerializer);
-        container.resolve(DocumentSerializer);
 
         /**
          * Expose body on req.body
@@ -135,23 +132,19 @@ export class Application {
 
     private async registerRoutes() {
         // Iterate over all our controllers and register our routes
-        const controllers = await Promise.all(
-            readdirSync(join(process.cwd(), "src/api/controllers/"))
-                .filter((e) => e.includes("base.controller") === false)
-                .map((e) => import("./../api/controllers/" + e))
-        );
+        const controllers = [UserController, AuthController, DocumentController, StatusController];
 
         const mainRouter = Express.Router();
         for (const controller of controllers) {
             // This is our instantiated class
-            const instance = new controller.default();
+            const instance = new controller();
 
             // The prefix saved to our controller
-            const prefix = Reflect.getMetadata("routeName", controller.default);
+            const prefix = Reflect.getMetadata("routeName", controller);
             // Our `routes` array containing all our routes for this controller
-            const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller.default);
+            const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
 
-            const middlewaresForController: { middleware: any , args: object }[] = Reflect.getMetadata("middlewares", controller.default);
+            const middlewaresForController: { middleware: any , args: object }[] = Reflect.getMetadata("middlewares", controller);
             const router = Express.Router();
 
             if (middlewaresForController && middlewaresForController.length > 0) {
@@ -174,7 +167,7 @@ export class Application {
             // Iterate over all routes and register them to our express application
             for (const route of routes) {
                 let middlewaresWithArgs =
-                    Reflect.getMetadata("middlewares", controller.default , route.methodName) as { middleware: any , args: object }[];
+                    Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any , args: object }[];
 
                 if (!middlewaresWithArgs) {
                     middlewaresWithArgs = [];

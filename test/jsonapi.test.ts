@@ -70,8 +70,10 @@ describe("JSON-API Tests on User", () => {
     .set("Accept", "application/vnd.api+json")
     .set("Content-Type", "application/vnd.api+json")
     .send({
-        relation : "avatar",
-        id : doc.id
+        data : {
+          type : "documents",
+          id : doc.id
+        }
     })
     .end((err, res) => {
         const status = res.status;
@@ -80,18 +82,34 @@ describe("JSON-API Tests on User", () => {
       });
   });
 
-  it("GET relationship to avatar", (done) => {
+  it("PATCH relationship to avatar", (done) => {
     agent
-    .get(`/api/v1/users/${user.id}/relationships/avatar`)
+    .patch(`/api/v1/users/${user.id}/relationships/avatar`)
+    .set("Authorization", "Bearer " + token)
+    .set("Accept", "application/vnd.api+json")
+    .set("Content-Type", "application/vnd.api+json")
+    .send({
+        data : {
+          type : "documents",
+          id : doc.id
+        }
+    })
+    .end((err, res) => {
+        const status = res.status;
+        expect(status).to.equal(204);
+        done();
+      });
+  });
+
+  it("DELETE relationship to avatar", (done) => {
+    agent
+    .delete(`/api/v1/users/${user.id}/relationships/avatar`)
     .set("Authorization", "Bearer " + token)
     .set("Accept", "application/vnd.api+json")
     .set("Content-Type", "application/vnd.api+json")
     .end((err, res) => {
         const status = res.status;
-        expect(status).to.equal(200);
-        expect(res.body.data.attributes).to.include.all.keys(
-            
-        );
+        expect(status).to.equal(204);
         done();
       });
   });

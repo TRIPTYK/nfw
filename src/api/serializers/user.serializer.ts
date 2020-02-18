@@ -1,4 +1,3 @@
-import {documentSerialize} from "../enums/json-api/document.enum";
 import { BaseSerializer, SerializerParams } from "./base.serializer";
 import { injectable } from "tsyringe";
 import UserSchema from "./schemas/user.serializer.schema";

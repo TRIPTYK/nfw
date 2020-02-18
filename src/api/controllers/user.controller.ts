@@ -21,11 +21,16 @@ import UserSchema from "../serializers/schemas/user.serializer.schema";
 @RouteMiddleware(SecurityMiddleware)
 export default class UserController {
     @repository(UserRepository) private repository: UserRepository;
+    private serializer: UserSerializer;
+
+    constructor() {
+        this.serializer = new UserSerializer();
+    }
 
     @Get()
     @MethodMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
     public profile(req: Request, res: Response) {
-        return new UserSerializer().serialize(req.user);
+        return this.serializer.serialize(req.user);
     }
 
     @Get("/:userId")
@@ -36,17 +41,17 @@ export default class UserController {
             throw Boom.notFound("User not found");
         }
 
-        return new UserSerializer().serialize(user);
+        return this.serializer.serialize(user);
     }
 
     @Post("/")
-    @MethodMiddleware(DeserializeRelationsMiddleware, {serializer : UserSerializer})
+    @MethodMiddleware(DeserializeRelationsMiddleware, { schema : UserSchema })
     @MethodMiddleware(ValidationMiddleware, { schema: createUser })
     public async create(req: Request, res: Response, next) {
         const user = this.repository.create(req.body);
         await this.repository.insert(user);
         res.status(HttpStatus.CREATED);
-        return new UserSerializer().serialize(user);
+        return this.serializer.serialize(user);
     }
 
     @Patch("/:userId")
@@ -65,7 +70,7 @@ export default class UserController {
             throw Boom.notFound("User not found");
         }
 
-        return new UserSerializer().serialize(saved);
+        return this.serializer.serialize(saved);
     }
 
     @Get("/")
@@ -83,18 +88,18 @@ export default class UserController {
             }).serialize(users);
         }
 
-        return new UserSerializer()
+        return this.serializer
             .serialize(users);
     }
 
     @Get("/:id/:relation")
     public async fetchRelated(req: Request, res: Response, next) {
-        return this.repository.fetchRelated(req, UserSerializer);
+        return this.repository.fetchRelated(req, this.serializer);
     }
 
     @Get("/:id/relationships/:relation")
     public async fetchRelationships(req: Request, res: Response, next) {
-        return this.repository.fetchRelationshipsFromRequest(req, UserSerializer);
+        return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
     }
 
     @Post("/:id/relationships/:relation")

@@ -1,7 +1,7 @@
 import { BaseMiddleware } from "./base.middleware";
 import { Request , Response } from "express";
 import { injectable, container } from "tsyringe";
-import { BaseSerializer } from "../serializers/base.serializer";
+import { BaseSerializer, JSONAPISerializerSchema } from "../serializers/base.serializer";
 import { getRepository } from "typeorm";
 import * as Boom from "@hapi/boom";
 import { Type } from "../types/global";
@@ -9,13 +9,12 @@ import { Type } from "../types/global";
 @injectable()
 export default class DeserializeRelationsMiddleware extends BaseMiddleware {
     public async use(req: Request, response: Response, next: (err?: any) => void, args: {
-        serializer?: Type<BaseSerializer>,
+        schema?: JSONAPISerializerSchema,
         specificRelations?: string[]
     }) {
-        const serializer = container.resolve(args.serializer);
         const payload = req.body;
-        const schemaData = serializer.getSchemaData();
-        let relations: object = schemaData["relationships"];
+        const schemaData = args.schema;
+        let relations: object = schemaData.relationships;
 
         if (Array.isArray(args.specificRelations)) {
             relations = args.specificRelations.map((rel) => relations[rel]);

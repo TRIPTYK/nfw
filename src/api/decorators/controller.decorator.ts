@@ -38,11 +38,8 @@ export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: a
 export type RequestMethods = "get" | "post" | "delete" | "options" | "put" | "patch";
 
 export interface RouteDefinition {
-    // Path to our route
     path: string;
-    // HTTP Request method (get, post, ...)
     requestMethod: RequestMethods;
-    // Method name within our class responsible for this route
     methodName: string;
 }
 

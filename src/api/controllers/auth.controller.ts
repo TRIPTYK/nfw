@@ -18,8 +18,6 @@ import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
-import { service } from "../decorators/service.decorator";
-import { MulterService } from "../services/multer.service";
 import { repository } from "../decorators/repository.decorator";
 
 /**

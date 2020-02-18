@@ -3,7 +3,6 @@ import * as Boom from "@hapi/boom";
 
 import { Request, Response } from "express";
 import { DocumentSerializer } from "../serializers/document.serializer";
-import { UserSerializer } from "../serializers/user.serializer";
 import { documentRelations } from "../enums/json-api/document.enum";
 import { DocumentRepository } from "../repositories/document.repository";
 import { Controller, Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware } from "../decorators/controller.decorator";
@@ -19,6 +18,11 @@ import { repository } from "../decorators/repository.decorator";
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 export default class DocumentController {
     @repository(DocumentRepository) private repository: DocumentRepository;
+    private serializer: DocumentSerializer;
+
+    constructor() {
+        this.serializer = new DocumentSerializer();
+    }
 
     /**
      * Retrieve a list of documents, according to some parameters
@@ -88,12 +92,12 @@ export default class DocumentController {
 
     @Get("/:id/:relation")
     public async fetchRelated(req: Request, res: Response, next) {
-        return this.repository.fetchRelated(req, DocumentSerializer);
+        return this.repository.fetchRelated(req, this.serializer);
     }
 
     @Get("/:id/relationships/:relation")
     public async fetchRelationships(req: Request, res: Response, next) {
-        return this.repository.fetchRelationshipsFromRequest(req, DocumentSerializer);
+        return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
     }
 
     @Post("/:id/relationships/:relation")
