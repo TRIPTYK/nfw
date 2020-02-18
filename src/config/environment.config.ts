@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as dotenv from "dotenv";
-import { parseBool } from "../api/utils/string-parse.util";
+import { parseBool } from "../core/utils/string-parse.util";
 import { Environments } from "../api/enums/environments.enum";
 
 // tslint:disable-next-line: interface-over-type-literal

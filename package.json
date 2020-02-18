@@ -89,7 +89,7 @@
     "request": "^2.88.0",
     "rfdc": "^1.1.4",
     "sqlstring": "^2.3.1",
-    "tsyringe": "^4.0.1",
+    "tsyringe": "^4.1.0",
     "typeorm": "^0.2.22",
     "typescript": "^3.7.5",
     "uuid": "^3.3.3",

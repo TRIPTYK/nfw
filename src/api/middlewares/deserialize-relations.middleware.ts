@@ -4,7 +4,7 @@ import { injectable, container } from "tsyringe";
 import { BaseSerializer, JSONAPISerializerSchema } from "../serializers/base.serializer";
 import { getRepository } from "typeorm";
 import * as Boom from "@hapi/boom";
-import { Type } from "../types/global";
+import { Type } from "../../core/types/global";
 
 @injectable()
 export default class DeserializeRelationsMiddleware extends BaseMiddleware {

@@ -3,7 +3,7 @@ import { injectable, container } from "tsyringe";
 import { MulterService, StorageType } from "../services/multer.service";
 import { validateFile } from "../validations/document.validation";
 import { Request , Response } from "express";
-import { service } from "../decorators/service.decorator";
+import { service } from "../../core/decorators/service.decorator";
 
 @injectable()
 export default class FileUploadMiddleware extends BaseMiddleware {

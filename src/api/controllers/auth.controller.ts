@@ -12,22 +12,30 @@ import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
-import { Controller, Post, MethodMiddleware, Get } from "../decorators/controller.decorator";
+import { Controller, Post, MethodMiddleware, Get } from "../../core/decorators/controller.decorator";
 import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
-import { repository } from "../decorators/repository.decorator";
+import { repository } from "../../core/decorators/repository.decorator";
+import { autoInjectable } from "tsyringe";
 
 /**
  * Authentification Controller!
  * @module controllers/auth.controller.ts
  */
 @Controller("auth")
+@autoInjectable()
 export default class AuthController {
-    @repository(UserRepository) private repository: UserRepository;
-    @repository(RefreshTokenRepository) private refreshRepository: RefreshTokenRepository;
+    // can't inject repositories
+    private repository: UserRepository;
+    private refreshRepository: RefreshTokenRepository;
+
+    constructor() {
+        this.repository = getCustomRepository(UserRepository);
+        this.refreshRepository = getCustomRepository(RefreshTokenRepository);
+    }
 
     @Post()
     @MethodMiddleware(DeserializeMiddleware, UserSerializer)

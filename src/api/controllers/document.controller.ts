@@ -5,23 +5,24 @@ import { Request, Response } from "express";
 import { DocumentSerializer } from "../serializers/document.serializer";
 import { documentRelations } from "../enums/json-api/document.enum";
 import { DocumentRepository } from "../repositories/document.repository";
-import { Controller, Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware } from "../decorators/controller.decorator";
+import { Controller, Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware } from "../../core/decorators/controller.decorator";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
 import FileUploadMiddleware from "../middlewares/file-upload.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { updateDocument } from "../validations/document.validation";
-import { repository } from "../decorators/repository.decorator";
+import { autoInjectable } from "tsyringe";
+import { getCustomRepository } from "typeorm";
 
 @Controller("documents")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
+@autoInjectable()
 export default class DocumentController {
-    @repository(DocumentRepository) private repository: DocumentRepository;
-    private serializer: DocumentSerializer;
+    private repository: DocumentRepository;
 
-    constructor() {
-        this.serializer = new DocumentSerializer();
+    public constructor( private serializer?: DocumentSerializer ) {
+        this.repository = getCustomRepository(DocumentRepository);
     }
 
     /**
@@ -48,7 +49,7 @@ export default class DocumentController {
             }).serialize(documents);
         }
 
-        return new DocumentSerializer().serialize(documents);
+        return this.serializer.serialize(documents);
     }
 
     /**
@@ -67,7 +68,7 @@ export default class DocumentController {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as any);
         await this.repository.insert(document);
-        return new DocumentSerializer().serialize(document);
+        return this.serializer.serialize(document);
     }
 
     /**
@@ -87,7 +88,7 @@ export default class DocumentController {
             throw Boom.notFound("Document not found");
         }
 
-        return new DocumentSerializer().serialize(document);
+        return this.serializer.serialize(document);
     }
 
     @Get("/:id/:relation")
@@ -143,7 +144,7 @@ export default class DocumentController {
             throw Boom.notFound("Document not found");
         }
 
-        return new DocumentSerializer().serialize(saved);
+        return this.serializer.serialize(saved);
     }
 
     /**

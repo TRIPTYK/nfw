@@ -6,8 +6,8 @@ import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import { BaseSerializer } from "../serializers/base.serializer";
-import IRepository from "../interfaces/repository.interface";
-import { Type } from "../types/global";
+import IRepository from "../../core/interfaces/repository.interface";
+import { Type } from "../../core/types/global";
 import { container } from "tsyringe";
 
 

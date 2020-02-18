@@ -12,30 +12,46 @@ import { PassportConfig } from "./passport.config";
 import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
-import { RouteDefinition } from "../api/decorators/controller.decorator";
+import { RouteDefinition } from "../core/decorators/controller.decorator";
 import { container } from "tsyringe";
 import { BaseMiddleware } from "../api/middlewares/base.middleware";
 import UserController from "../api/controllers/user.controller";
 import AuthController from "../api/controllers/auth.controller";
 import DocumentController from "../api/controllers/document.controller";
 import StatusController from "../api/controllers/status.controller";
+import { RegisterApplication } from "../core/decorators/application.decorator";
+import IApplication from "../core/interfaces/application.interface";
+import { UserSerializer } from "../api/serializers/user.serializer";
 
-export class Application {
+@RegisterApplication({
+    controllers : [
+        UserController,
+        AuthController,
+        DocumentController,
+        StatusController
+    ],
+    providers : [
+        UserSerializer
+    ]
+})
+export class Application implements IApplication {
     protected readonly app: Express.Application;
+    protected controllers = [];
 
     get App() {
         return this.app;
     }
 
-    constructor() {
+    constructor(controllers) {
         this.app = Express();
+        this.controllers = controllers;
     }
 
     public async init() {
         return this.setup();
     }
 
-    private async setup(): Promise<Express.Application> {
+    public async setup(): Promise<Express.Application> {
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
 
         /**
@@ -131,11 +147,8 @@ export class Application {
     }
 
     private async registerRoutes() {
-        // Iterate over all our controllers and register our routes
-        const controllers = [UserController, AuthController, DocumentController, StatusController];
-
         const mainRouter = Express.Router();
-        for (const controller of controllers) {
+        for (const controller of this.controllers) {
             // This is our instantiated class
             const instance = new controller();
 

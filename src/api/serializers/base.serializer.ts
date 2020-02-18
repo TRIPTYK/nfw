@@ -2,7 +2,7 @@ import {Request} from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
-import ISerializer from "../interfaces/serializer.interface";
+import ISerializer from "../../core/interfaces/serializer.interface";
 import * as rfdc from "rfdc";
 
 export type SerializerParams = {

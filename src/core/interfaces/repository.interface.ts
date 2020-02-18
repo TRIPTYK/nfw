@@ -1,6 +1,6 @@
 import {SelectQueryBuilder} from "typeorm";
 import {Request} from "express";
-import { BaseSerializer } from "../serializers/base.serializer";
+import { BaseSerializer } from "../../api/serializers/base.serializer";
 
 export default interface IRepository<T> {
     /**

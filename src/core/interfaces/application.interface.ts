@@ -1,5 +1,5 @@
 export default interface IApplication {
-    readonly app: Express.Application;
+    readonly App: Express.Application;
     init();
     setup();
 }

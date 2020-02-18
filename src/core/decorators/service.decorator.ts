@@ -1,5 +1,5 @@
 import { container } from "tsyringe";
-import { MulterService } from "../services/multer.service";
+import { MulterService } from "../../api/services/multer.service";
 import { Type } from "../types/global";
 
 /**

@@ -4,27 +4,30 @@ import {Request , Response} from "express";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
 import { UserRepository } from "../repositories/user.repository";
-import { Controller, Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware } from "../decorators/controller.decorator";
+import { Controller, Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware } from "../../core/decorators/controller.decorator";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { createUser, updateUser } from "../validations/user.validation";
-import { repository } from "../decorators/repository.decorator";
+import { repository } from "../../core/decorators/repository.decorator";
 import DeserializeRelationsMiddleware from "../middlewares/deserialize-relations.middleware";
 import UserSchema from "../serializers/schemas/user.serializer.schema";
+import { injectable, inject, autoInjectable } from "tsyringe";
+import { getCustomRepository } from "typeorm";
 
 @Controller("users")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 @RouteMiddleware(DeserializeMiddleware, UserSerializer)
 @RouteMiddleware(SecurityMiddleware)
+@autoInjectable()
 export default class UserController {
-    @repository(UserRepository) private repository: UserRepository;
-    private serializer: UserSerializer;
+    private repository: UserRepository;
 
-    constructor() {
-        this.serializer = new UserSerializer();
+    public constructor( private serializer?: UserSerializer ) {
+        this.repository = getCustomRepository(UserRepository);
+        console.log(serializer);
     }
 
     @Get()

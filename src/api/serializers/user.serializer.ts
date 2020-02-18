@@ -1,6 +1,6 @@
 import { BaseSerializer, SerializerParams } from "./base.serializer";
-import { injectable } from "tsyringe";
 import UserSchema from "./schemas/user.serializer.schema";
+import {injectable, injectAll} from "tsyringe";
 
 @injectable()
 export class UserSerializer extends BaseSerializer {
