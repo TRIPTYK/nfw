@@ -27,7 +27,6 @@ export default class UserController {
 
     public constructor( private serializer?: UserSerializer ) {
         this.repository = getCustomRepository(UserRepository);
-        console.log(serializer);
     }
 
     @Get()
