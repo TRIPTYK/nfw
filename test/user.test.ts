@@ -15,6 +15,9 @@ describe("User CRUD", () => {
   before((done) => {
     agent = request.agent(global["server"]);
     token = global["login"].accessToken;
+    agent
+      .set("Accept", "application/vnd.api+json")
+      .set("Content-Type", "application/vnd.api+json");
     done();
   });
 
