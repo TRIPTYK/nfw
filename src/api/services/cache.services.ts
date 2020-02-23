@@ -1,7 +1,7 @@
 import * as NodeCache from "node-cache";
 import { singleton, injectable } from "tsyringe";
 
-@injectable()
+@singleton()
 export class CacheService {
     private pcache: NodeCache;
 

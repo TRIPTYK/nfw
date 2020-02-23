@@ -17,7 +17,7 @@ type MailGunData = {
     filename?: string
 };
 
-@injectable()
+@singleton()
 export class MailService {
     /**
      * Sparkpost API

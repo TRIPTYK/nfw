@@ -3,7 +3,7 @@ import {EntityRepository, getRepository} from "typeorm";
 import * as Moment from "moment-timezone";
 import * as Boom from "@hapi/boom";
 import {RefreshToken} from "../models/refresh-token.model";
-import {BaseRepository} from "./base.repository";
+import {BaseRepository} from "../../core/repositories/base.repository";
 import { OAuthToken } from "../models/oauth-token.model";
 
 @EntityRepository(User)

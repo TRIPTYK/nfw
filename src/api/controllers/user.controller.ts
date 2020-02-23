@@ -11,10 +11,9 @@ import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { createUser, updateUser } from "../validations/user.validation";
-import { repository } from "../../core/decorators/repository.decorator";
 import DeserializeRelationsMiddleware from "../middlewares/deserialize-relations.middleware";
 import UserSchema from "../serializers/schemas/user.serializer.schema";
-import { injectable, inject, autoInjectable } from "tsyringe";
+import { autoInjectable } from "tsyringe";
 import { getCustomRepository } from "typeorm";
 
 @Controller("users")

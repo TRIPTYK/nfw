@@ -7,7 +7,7 @@ enum StorageType {
     DISK
 }
 
-@injectable()
+@singleton()
 class MulterService {
     private multers: object = {
         [StorageType.MEMORY] : {},

@@ -6,7 +6,7 @@ import { promisify } from "util";
 import { Roles } from "./../enums/role.enum";
 import { Request , Response } from "express";
 import { injectable } from "tsyringe";
-import { BaseMiddleware } from "./base.middleware";
+import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 @injectable()
 export default class AuthMiddleware extends BaseMiddleware {

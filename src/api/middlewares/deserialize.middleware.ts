@@ -1,4 +1,4 @@
-import { BaseMiddleware } from "./base.middleware";
+import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 import { Request , Response } from "express";
 import { container, injectable } from "tsyringe";
 import { BaseSerializer } from "../serializers/base.serializer";

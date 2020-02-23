@@ -1,5 +1,4 @@
 import * as Express from "express";
-import {Request, Response} from "express";
 import * as BodyParser from "body-parser";
 import * as Morgan from "morgan";
 import * as Cors from "cors";
@@ -12,16 +11,12 @@ import { PassportConfig } from "./passport.config";
 import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
-import { RouteDefinition } from "../core/decorators/controller.decorator";
-import { container } from "tsyringe";
-import { BaseMiddleware } from "../api/middlewares/base.middleware";
 import UserController from "../api/controllers/user.controller";
 import AuthController from "../api/controllers/auth.controller";
 import DocumentController from "../api/controllers/document.controller";
 import StatusController from "../api/controllers/status.controller";
 import { RegisterApplication } from "../core/decorators/application.decorator";
-import IApplication from "../core/interfaces/application.interface";
-import { UserSerializer } from "../api/serializers/user.serializer";
+import BaseApplication from "../core/application/base.application";
 
 @RegisterApplication({
     controllers : [
@@ -30,27 +25,9 @@ import { UserSerializer } from "../api/serializers/user.serializer";
         DocumentController,
         StatusController
     ],
-    providers : [
-        UserSerializer
-    ]
+    providers : []
 })
-export class Application implements IApplication {
-    protected readonly app: Express.Application;
-    protected controllers = [];
-
-    get App() {
-        return this.app;
-    }
-
-    constructor(controllers) {
-        this.app = Express();
-        this.controllers = controllers;
-    }
-
-    public async init() {
-        return this.setup();
-    }
-
+export class Application extends BaseApplication {
     public async setup(): Promise<Express.Application> {
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
 
@@ -144,82 +121,5 @@ export class Application implements IApplication {
         );
 
         return this.app;
-    }
-
-    private async registerRoutes() {
-        const mainRouter = Express.Router();
-        for (const controller of this.controllers) {
-            // This is our instantiated class
-            const instance = new controller();
-
-            // The prefix saved to our controller
-            const prefix = Reflect.getMetadata("routeName", controller);
-            // Our `routes` array containing all our routes for this controller
-            const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
-
-            const middlewaresForController: { middleware: any , args: object }[] = Reflect.getMetadata("middlewares", controller);
-            const router = Express.Router();
-
-            if (middlewaresForController && middlewaresForController.length > 0) {
-                middlewaresForController.reverse();
-                router.use(middlewaresForController.map((e) => {
-                    const realMiddleware: BaseMiddleware = container.resolve(e.middleware);
-
-                    return (req, res, next) => {
-                        try {
-                            return realMiddleware.use(req, res, next, e.args);
-                        } catch (e) {
-                            return next(e);
-                        }
-                    };
-                }));
-            }
-
-            mainRouter.use(`/${prefix}`, router);
-
-            // Iterate over all routes and register them to our express application
-            for (const route of routes) {
-                let middlewaresWithArgs =
-                    Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any , args: object }[];
-
-                if (!middlewaresWithArgs) {
-                    middlewaresWithArgs = [];
-                }
-
-                middlewaresWithArgs.reverse();
-
-                const middlewares = [];
-
-                const controllerMiddleware = async (req: Request, res: Response, next) => {
-                    try {
-                        const response = await instance[route.methodName](req, res);
-                        if (!res.headersSent) {
-                            res.send(response);
-                        }
-                    } catch (e) {
-                        return next(e);
-                    }
-                };
-
-                for (const iterator of middlewaresWithArgs) {
-                    const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
-
-                    // need to arrow function to keep "this" context in method
-                    middlewares.push((req, res, next) => {
-                        try {
-                            return realMiddleware.use(req, res, next, iterator.args);
-                        } catch (e) {
-                            return next(e);
-                        }
-                    });
-                }
-
-                middlewares.push(controllerMiddleware);
-
-                router[route.requestMethod](`${route.path}`, middlewares);
-            }
-        }
-
-        return mainRouter;
     }
 }

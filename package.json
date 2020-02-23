@@ -110,8 +110,7 @@
     "jsonapi-typescript": "^0.1.3",
     "leasot": "^8.2.0",
     "mocha": "^6.1.4",
-    "pm2": "Unitech/pm2#development",
-    "ts-node-dev": "^1.0.0-pre.32",
+    "ts-node-dev": "^1.0.0-pre.44",
     "tslint": "^5.20.0",
     "typedoc": "^0.15.0",
     "typestrict": "^1.0.2"

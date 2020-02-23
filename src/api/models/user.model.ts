@@ -18,7 +18,7 @@ import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "@hapi/boom";
-import {BaseModel} from "./base.model";
+import {BaseModel} from "../../core/models/base.model";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";

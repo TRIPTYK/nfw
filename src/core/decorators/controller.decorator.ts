@@ -1,4 +1,4 @@
-import { BaseMiddleware } from "../../api/middlewares/base.middleware";
+import { BaseMiddleware } from "../middlewares/base.middleware";
 import { Type } from "../types/global";
 
 /**

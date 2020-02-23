@@ -9,7 +9,7 @@ import {
 
 import {User} from "./user.model";
 import * as Fs from "fs";
-import {BaseModel} from "./base.model";
+import {BaseModel} from "../../core/models/base.model";
 import * as Path from "path";
 import {MimeTypes, ImageMimeTypes} from "../enums/mime-type.enum";
 import {DocumentTypes} from "../enums/document-type.enum";

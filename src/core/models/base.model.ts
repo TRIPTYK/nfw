@@ -1,5 +1,5 @@
 import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import IModel from "../../core/interfaces/model.interface";
+import IModel from "../interfaces/model.interface";
 
 export abstract class BaseModel implements IModel {
     @PrimaryGeneratedColumn()

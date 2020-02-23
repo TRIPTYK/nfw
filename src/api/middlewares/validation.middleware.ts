@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ValidationChain, checkSchema, Location } from "express-validator";
 import { injectable } from "tsyringe";
-import { BaseMiddleware } from "./base.middleware";
+import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 @injectable()
 export default class ValidationMiddleware extends BaseMiddleware {

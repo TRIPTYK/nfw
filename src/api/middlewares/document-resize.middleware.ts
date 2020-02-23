@@ -1,5 +1,5 @@
 import * as Jimp from "jimp";
-import {BaseMiddleware} from "./base.middleware";
+import {BaseMiddleware} from "../../core/middlewares/base.middleware";
 import { Request , Response } from "express";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
