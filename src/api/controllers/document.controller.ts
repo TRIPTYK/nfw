@@ -25,17 +25,8 @@ export default class DocumentController {
         this.repository = getCustomRepository(DocumentRepository);
     }
 
-    /**
-     * Retrieve a list of documents, according to some parameters
-     *
-     * @param {Object}req Request
-     * @param {Object}res Response
-     * @param {Function}next Function
-     *
-     * @public
-     */
     @Get("/")
-    public async list(req: Request, res: Response, next) {
+    public async list(req: Request, res: Response) {
         const [documents, total] = await this.repository.jsonApiFind(req, documentRelations);
 
         if (req.query.page) {
@@ -52,19 +43,10 @@ export default class DocumentController {
         return this.serializer.serialize(documents);
     }
 
-    /**
-     * Create a new document
-     *
-     * @param {Object}req Request
-     * @param {Object}res Response
-     * @param {Function}next Function
-     *
-     * @public
-     */
     @Post("/")
     @MethodMiddleware(FileUploadMiddleware)
     @MethodMiddleware(DocumentResizeMiddleware)
-    public async create(req: Request, res: Response, next) {
+    public async create(req: Request, res: Response) {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as any);
         await this.repository.insert(document);
@@ -81,7 +63,7 @@ export default class DocumentController {
      * @public
      */
     @Get("/:documentId")
-    public async get(req: Request, res: Response, next) {
+    public async get(req: Request, res: Response) {
         const document = await this.repository.jsonApiFindOne(req, req.params.documentId, documentRelations);
 
         if (!document) {
@@ -92,48 +74,39 @@ export default class DocumentController {
     }
 
     @Get("/:id/:relation")
-    public async fetchRelated(req: Request, res: Response, next) {
+    public async fetchRelated(req: Request, res: Response) {
         return this.repository.fetchRelated(req, this.serializer);
     }
 
     @Get("/:id/relationships/:relation")
-    public async fetchRelationships(req: Request, res: Response, next) {
+    public async fetchRelationships(req: Request, res: Response) {
         return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
     }
 
     @Post("/:id/relationships/:relation")
-    public async addRelationships(req: Request, res: Response, next) {
+    public async addRelationships(req: Request, res: Response) {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Patch("/:id/relationships/:relation")
-    public async updateRelationships(req: Request, res: Response, next) {
+    public async updateRelationships(req: Request, res: Response) {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Delete("/:id/relationships/:relation")
-    public async removeRelationships(req: Request, res: Response, next) {
+    public async removeRelationships(req: Request, res: Response) {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    /**
-     * Update one document according to :documentId
-     *
-     * @param {Object}req Request
-     * @param {Object}res Response
-     * @param {Function}next Function
-     *
-     * @public
-     */
     @Patch("/:documentId")
     @Put("/:documentId")
     @MethodMiddleware(ValidationMiddleware, {schema : updateDocument})
     @MethodMiddleware(FileUploadMiddleware)
     @MethodMiddleware(DocumentResizeMiddleware)
-    public async update(req: Request, res: Response, next) {
+    public async update(req: Request, res: Response) {
         const file: Express.Multer.File = req.file;
 
         const saved = await this.repository.preload({
@@ -157,7 +130,7 @@ export default class DocumentController {
      * @public
      */
     @Delete("/:documentId")
-    public async remove(req: Request, res: Response, next) {
+    public async remove(req: Request, res: Response) {
         const document = await this.repository.findOne(req.params.documentId);
 
         if (!document) {

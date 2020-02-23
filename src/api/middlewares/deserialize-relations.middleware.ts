@@ -1,5 +1,5 @@
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import { Request , Response } from "express";
+import { Request , Response, NextFunction } from "express";
 import { injectable, container } from "tsyringe";
 import { BaseSerializer, JSONAPISerializerSchema } from "../serializers/base.serializer";
 import { getRepository } from "typeorm";
@@ -8,7 +8,7 @@ import { Type } from "../../core/types/global";
 
 @injectable()
 export default class DeserializeRelationsMiddleware extends BaseMiddleware {
-    public async use(req: Request, response: Response, next: (err?: any) => void, args: {
+    public async use(req: Request, response: Response, next: NextFunction, args: {
         schema?: JSONAPISerializerSchema,
         specificRelations?: string[]
     }) {

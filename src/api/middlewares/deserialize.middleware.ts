@@ -1,11 +1,11 @@
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import { Request , Response } from "express";
+import { Request , Response, NextFunction } from "express";
 import { container, injectable } from "tsyringe";
 import { BaseSerializer } from "../serializers/base.serializer";
 
 @injectable()
 export default class DeserializeMiddleware extends BaseMiddleware {
-    public async use(req: Request, response: Response, next: (err?: any) => void, args: any) {
+    public async use(req: Request, response: Response, next: NextFunction, args: any) {
         if (!req.body.data || !req.body.data.attributes) {
             return next();
         }

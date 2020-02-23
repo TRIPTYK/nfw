@@ -1,45 +1,46 @@
 import * as Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
 import { LoggerConfiguration } from "../../config/logger.config";
+import { NextFunction , Request , Response } from "express";
 
 export default class ErrorHandlerMiddleware {
-    public static log(err, req, res, next): void {
+    public static log(err: any, req: Request, res: Response, next: NextFunction): void {
         const message = `${req.method} ${req.url} : ${err.message}`;
         LoggerConfiguration.logger.error(message);
         next(err);
     }
 
-    public static exit(err: any, req, res, next): void {
-        if (Array.isArray(err)) {
-            const errs = err;
+    public static exit(error: any, req: Request, res: Response, next: NextFunction): void {
+        if (Array.isArray(error)) {
+            const errs = error;
             const allErrors = [];
 
             for (const err of errs) {
                 for (const suberror of err) {
                     allErrors.push({
-                        title: "Validation Error",
+                        detail: `${suberror.msg} for ${suberror.param} in ${suberror.location}, value is ${suberror.value}`,
                         source: { pointer: `/data/attributes/${suberror.param}` },
-                        detail: `${suberror.msg} for ${suberror.param} in ${suberror.location}, value is ${suberror.value}`
+                        title: "Validation Error"
                     });
                 }
             }
 
             res.status(400);
-            return res.json(ErrorHandlerMiddleware.serializer.serializeError(allErrors));
+            res.json(ErrorHandlerMiddleware.serializer.serializeError(allErrors));
         }
 
-        if (!err.isBoom) {
-            err = Boom.expectationFailed(err.message);
+        if (!error.isBoom) {
+            error = Boom.expectationFailed(error.message);
         }
 
-        res.status(err.output.statusCode);
+        res.status(error.output.statusCode);
         res.json(ErrorHandlerMiddleware.serializer.serializeError({
-            detail: err.message,
-            status: err.output.statusCode
+            detail: error.message,
+            status: error.output.statusCode
         }));
     }
 
-    public static notFound(req, res , next): void {
+    public static notFound(req: Request, res: Response , next: NextFunction): void {
         res.status(404);
         res.json(ErrorHandlerMiddleware.serializer.serializeError({
             detail: "Not found",

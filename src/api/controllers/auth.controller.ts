@@ -18,15 +18,14 @@ import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
-import { repository } from "../../core/decorators/repository.decorator";
-import { autoInjectable } from "tsyringe";
+import { autoInjectable, injectable } from "tsyringe";
 
 /**
  * Authentification Controller!
  * @module controllers/auth.controller.ts
  */
 @Controller("auth")
-@autoInjectable()
+@injectable()
 export default class AuthController {
     // can't inject repositories
     private repository: UserRepository;

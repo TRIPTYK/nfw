@@ -1,11 +1,11 @@
 import * as Jimp from "jimp";
 import {BaseMiddleware} from "../../core/middlewares/base.middleware";
-import { Request , Response } from "express";
+import { Request , Response, NextFunction } from "express";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 
 export class DocumentResizeMiddleware extends BaseMiddleware {
-    public use(req: Request, res: Response, next: (err?: any) => void, args: any) {
+    public use(req: Request, res: Response, next: NextFunction, args: any) {
         const { jimp } = EnvironmentConfiguration.config;
 
         try {

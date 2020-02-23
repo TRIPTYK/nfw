@@ -2,7 +2,7 @@ import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
-import {EntityRepository, getCustomRepository, Repository} from "typeorm";
+import {EntityRepository} from "typeorm";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { BaseRepository } from "../../core/repositories/base.repository";
 

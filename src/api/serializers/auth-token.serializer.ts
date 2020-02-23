@@ -10,6 +10,7 @@ export class AuthTokenSerializer implements ISerializer {
     public deserialize(payload) {
         return payload;
     }
+
     public serialize(accessToken: string, refreshToken: string, user: User) {
         return {
             accessToken,

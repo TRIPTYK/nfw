@@ -4,7 +4,7 @@ import { Request , Response } from "express";
 @Controller("status")
 export default class StatusController {
     @Get("/")
-    public status(req: Request, res: Response, next) {
+    public status(req: Request, res: Response) {
         res.sendStatus(200);
     }
 }

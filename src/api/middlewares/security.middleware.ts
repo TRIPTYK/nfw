@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import {Request, Response, NextFunction} from "express";
 import * as XSS from "xss";
 import * as Boom from "@hapi/boom";
 import { injectable } from "tsyringe";
@@ -6,7 +6,7 @@ import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 @injectable()
 export default class SecurityMiddleware extends BaseMiddleware {
-    public use(req: Request, res: Response, next) {
+    public use(req: Request, res: Response, next: NextFunction) {
         try {
             this.filterXSS(req.body);
             next();

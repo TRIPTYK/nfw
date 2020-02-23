@@ -111,13 +111,13 @@ export class Application extends BaseApplication {
             );
         } else {
             this.app.use(
-                (err, req, res, next) => ErrorHandlerMiddleware.log(err, req, res, next),
-                (err, req, res, next) => ErrorHandlerMiddleware.exit(err, req, res, next)
+                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => ErrorHandlerMiddleware.log(err, req, res, next),
+                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => ErrorHandlerMiddleware.exit(err, req, res, next)
             );
         }
 
         this.app.use(
-            (req, res, next) => ErrorHandlerMiddleware.notFound(req, res, next)
+            (req: Express.Request, res: Express.Response, next: Express.NextFunction) => ErrorHandlerMiddleware.notFound(req, res, next)
         );
 
         return this.app;

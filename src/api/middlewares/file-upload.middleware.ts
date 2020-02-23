@@ -1,12 +1,12 @@
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import { injectable } from "tsyringe";
+import { injectable, inject } from "tsyringe";
 import { MulterService, StorageType } from "../services/multer.service";
 import { validateFile } from "../validations/document.validation";
 import { Request , Response } from "express";
 
 @injectable()
 export default class FileUploadMiddleware extends BaseMiddleware {
-    constructor(private multer: MulterService) {
+    constructor(@inject(MulterService) private multer: MulterService) {
         super();
     }
 

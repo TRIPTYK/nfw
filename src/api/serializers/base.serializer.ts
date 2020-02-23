@@ -82,9 +82,6 @@ export abstract class BaseSerializer implements ISerializer {
         this.registerFromSchema(schema);
     }
 
-    /**
-     * 
-     */
     public registerFromSchema(schema: any) {
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
         const schemaCopy = rfdc({ proto : true , circles : true})(schema);

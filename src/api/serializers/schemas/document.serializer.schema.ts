@@ -1,5 +1,5 @@
 import { JSONAPISerializerSchema } from "../base.serializer";
-import UserSchema, { userSerialize } from "./user.serializer.schema";
+import { userSerialize } from "./user.serializer.schema";
 import { userType, documentType } from "./types";
 /**
  * Allowed serialized elements
