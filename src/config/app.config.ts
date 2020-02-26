@@ -36,7 +36,7 @@ export class Application extends BaseApplication {
          *
          * @inheritdoc https://www.npmjs.com/package/body-parser
          */
-        this.app.use(BodyParser.urlencoded({extended: false}));
+        this.app.use(BodyParser.urlencoded({ extended: false }));
         this.app.use(BodyParser.json({type: "application/vnd.api+json"}));
 
         /**
