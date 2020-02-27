@@ -134,7 +134,7 @@ export default class EnvironmentConfiguration {
             name: envObj.TYPEORM_NAME,
             port: parseInt(envObj.TYPEORM_PORT, 10),
             pwd: envObj.TYPEORM_PWD,
-            type: (["mariadb", "mysql", "oracle"].includes(envObj.TYPEORM_TYPE) ?
+            type: (["mariadb", "mysql", "oracle", "mongodb"].includes(envObj.TYPEORM_TYPE) ?
                 envObj.TYPEORM_TYPE : "mysql"
             ) as SupportedDatabasesTypes,
             user: envObj.TYPEORM_USER
