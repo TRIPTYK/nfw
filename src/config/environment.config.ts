@@ -65,7 +65,7 @@ type Configuration = {
     };
 };
 
-type SupportedDatabasesTypes = "mysql" | "oracle" | "mariadb";
+type SupportedDatabasesTypes = "mysql" | "oracle" | "mariadb" | "mongodb";
 type AuthModes = "jwt" | "session";
 
 export default class EnvironmentConfiguration {
