@@ -2,9 +2,6 @@ import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "type
 import IModel from "../interfaces/model.interface";
 
 export abstract class BaseModel implements IModel {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
     @CreateDateColumn()
     public created_at: Date;
 

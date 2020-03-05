@@ -63,13 +63,15 @@ export default class UserController {
             delete req.body.password;
         }
 
-        const saved = await this.repository.preload({
+        let saved = await this.repository.preload({
             ...req.body, ...{id : req.params.userId}
         } as any);
 
         if (saved === undefined) {
             throw Boom.notFound("User not found");
         }
+
+        saved = await this.repository.save(saved);
 
         return this.serializer.serialize(saved);
     }

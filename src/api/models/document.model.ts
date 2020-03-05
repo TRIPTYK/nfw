@@ -5,6 +5,7 @@ import {
     Entity,
     ManyToOne,
     OneToOne,
+    PrimaryGeneratedColumn,
 } from "typeorm";
 
 import {User} from "./user.model";
@@ -16,6 +17,9 @@ import {DocumentTypes} from "../enums/document-type.enum";
 
 @Entity()
 export class Document extends BaseModel {
+    @PrimaryGeneratedColumn()
+    public id: number;
+
     @Column({
         enum: DocumentTypes,
         nullable: false,

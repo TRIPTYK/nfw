@@ -109,13 +109,15 @@ export default class DocumentController {
     public async update(req: Request, res: Response) {
         const file: Express.Multer.File = req.file;
 
-        const saved = await this.repository.preload({
+        let saved = await this.repository.preload({
             ...file, ...{id : req.params.documentId}
         } as any);
 
         if (saved === undefined) {
             throw Boom.notFound("Document not found");
         }
+
+        saved = await this.repository.save(saved);
 
         return this.serializer.serialize(saved);
     }
