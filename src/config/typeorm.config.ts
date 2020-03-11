@@ -19,6 +19,7 @@ class TypeORMConfiguration {
         const {config : {env, typeorm}} = EnvironmentConfiguration;
 
         TypeORMConfiguration.connection = await createConnection({
+            authSource: "admin",,
             database: typeorm.database,
             entities : [
                 env === Environments.Production ?
@@ -30,6 +31,8 @@ class TypeORMConfiguration {
             password: typeorm.pwd,
             port: typeorm.port,
             type: typeorm.type,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
             username: typeorm.user
         });
 
