@@ -19,7 +19,7 @@ class TypeORMConfiguration {
         const {config : {env, typeorm}} = EnvironmentConfiguration;
 
         TypeORMConfiguration.connection = await createConnection({
-            authSource: "admin",,
+            authSource: "admin",
             database: typeorm.database,
             entities : [
                 env === Environments.Production ?
