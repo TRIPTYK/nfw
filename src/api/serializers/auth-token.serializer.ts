@@ -4,7 +4,7 @@ import ISerializer from "../../core/interfaces/serializer.interface";
 
 @injectable()
 /**
- * This is a 'fake' serailizer for non json-api auth response
+ * This is a 'fake' serializer for non json-api auth response
  */
 export class AuthTokenSerializer implements ISerializer {
     public deserialize(payload) {

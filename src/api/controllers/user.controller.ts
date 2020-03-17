@@ -46,7 +46,7 @@ export default class UserController {
     }
 
     @Post("/")
-    @MethodMiddleware(DeserializeRelationsMiddleware, { schema : UserSchema })
+    @MethodMiddleware(DeserializeRelationsMiddleware, { schema : UserSchema.schema })
     @MethodMiddleware(ValidationMiddleware, { schema: createUser })
     public async create(req: Request, res: Response) {
         const user = this.repository.create(req.body);

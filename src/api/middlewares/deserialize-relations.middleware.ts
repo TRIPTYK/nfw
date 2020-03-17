@@ -23,27 +23,31 @@ export default class DeserializeRelationsMiddleware extends BaseMiddleware {
         const promises: Promise<void>[] = [];
 
         for (const originalRel in relations) {
-            promises.push((async () => {
-                const rel = relations[originalRel];
-                const modelName = rel["type"];
-                let importModel = await import(`../models/${modelName}.model`);
-                [importModel] = Object.keys(importModel);
+            if (payload[originalRel]) {
+                promises.push((async () => {
+                    const rel = relations[originalRel];
+                    const modelName = rel["type"];
+                    let importModel = await import(`../models/${modelName}.model`);
+                    [importModel] = Object.keys(importModel);
 
-                let relationData = null;
+                    let relationData = null;
 
-                if (typeof payload[originalRel] === "string") {
-                    relationData = await getRepository(importModel).findOne(payload[originalRel]);
-                } else if (Array.isArray(payload[originalRel])) {
-                    relationData = await getRepository(importModel).findByIds(payload[originalRel]);
-                }
+                    if (typeof payload[originalRel] === "string") {
+                        relationData = await getRepository(importModel).findOne(payload[originalRel]);
+                    } else if (Array.isArray(payload[originalRel])) {
+                        relationData = await getRepository(importModel).findByIds(payload[originalRel]);
+                    }
 
-                if (!relationData && payload[originalRel] !== null) {
-                    throw Boom.notFound(`Related object not found for ${modelName}`);
-                }
+                    if (!relationData && payload[originalRel] !== null) {
+                        throw Boom.notFound(`Related object not found for ${modelName}`);
+                    }
 
-                req.body[originalRel] = relationData;
-            })());
+                    req.body[originalRel] = relationData;
+                })());
+            }
         }
+
+        await Promise.all(promises);
 
         return next();
     }

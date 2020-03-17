@@ -7,9 +7,6 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import { BaseSerializer } from "../../api/serializers/base.serializer";
 import IRepository from "../interfaces/repository.interface";
-import { Type } from "../types/global";
-import { container } from "tsyringe";
-
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -152,12 +149,6 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
                         let method;
                         let sqlExpression: string;
 
-                        if (strategy.startsWith("or")) {
-                            method = qb.orWhere;
-                        } else {
-                            method = qb.andWhere;
-                        }
-
                         switch (strategy) {
                             case "like" :
                                 sqlExpression = (SqlString.format(`?? LIKE ?`, [key, value]));
@@ -179,17 +170,21 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
                                 if (andvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
                                 sqlExpression = SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0], andvalues[1]]);
                                 break ;
-                            case "suporeq":
+                            case "orsupeq":
                                 sqlExpression = SqlString.format(`?? >= ?`, [key, value]);
                                 break;
-                            case "lessoreq":
+                            case "andlesseq":
                                 sqlExpression = SqlString.format(`?? <= ?`, [key, value]);
                                 break;
                             default:
                                 throw Boom.badRequest(`Unrecognized filter : ${strategy}`);
                         }
 
-                        method(sqlExpression);
+                        if (strategy.startsWith("or")) {
+                            method = qb.orWhere(sqlExpression);
+                        } else {
+                            method = qb.andWhere(sqlExpression);
+                        }
                     }
                 }
             });
