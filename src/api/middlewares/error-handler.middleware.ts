@@ -27,6 +27,7 @@ export default class ErrorHandlerMiddleware {
 
             res.status(400);
             res.json(ErrorHandlerMiddleware.serializer.serializeError(allErrors));
+            return;
         }
 
         if (!error.isBoom) {
