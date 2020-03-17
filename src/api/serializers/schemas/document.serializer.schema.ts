@@ -1,26 +1,30 @@
 import { JSONAPISerializerSchema } from "../base.serializer";
-import { userSerialize } from "./user.serializer.schema";
-import { userType, documentType } from "./types";
-/**
- * Allowed serialized elements
- */
-export const documentSerialize: string[] = ["fieldname", "filename", "path", "mimetype", "size", "createdAt"];
+import UserSerializerSchema from "./user.serializer.schema";
 
-/**
- * Allowed deserialize elements
- */
-export const documentDeserialize: string[] = [];
+export default class DocumentSerializerSchema {
+    public static type: string = "document";
 
-const DocumentSchema: Readonly<JSONAPISerializerSchema> = {
-    relationships : {
-        user : {
-            type: userType,
-            whitelist : userSerialize
-        }
-    },
-    type: documentType,
-    whitelist: documentSerialize,
-    whitelistOnDeserialize : documentDeserialize
-};
+    /**
+     * Allowed serialized elements
+     */
+    public static serialize: string[] = ["fieldname", "filename", "path", "mimetype", "size", "createdAt"];
 
-export default DocumentSchema;
+    /**
+     * Allowed deserialize elements
+     */
+    public static deserialize: string[] = [];
+
+    public static get schema(): Readonly<JSONAPISerializerSchema> {
+        return {
+            relationships : {
+                user : {
+                    type: UserSerializerSchema.type,
+                    whitelist : UserSerializerSchema.serialize
+                }
+            },
+            type: DocumentSerializerSchema.type,
+            whitelist: DocumentSerializerSchema.serialize,
+            whitelistOnDeserialize : DocumentSerializerSchema.deserialize
+        };
+    }
+}

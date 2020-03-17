@@ -5,7 +5,7 @@ import DocumentSchema from "./schemas/document.serializer.schema";
 @injectable()
 export class DocumentSerializer extends BaseSerializer {
     constructor(serializerParams: SerializerParams = {}) {
-        super(DocumentSchema);
+        super(DocumentSchema.schema);
 
         if (serializerParams.pagination) {
             this.setupPaginationLinks(serializerParams.pagination);

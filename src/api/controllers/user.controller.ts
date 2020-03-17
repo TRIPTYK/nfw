@@ -28,7 +28,7 @@ export default class UserController {
         this.repository = getCustomRepository(UserRepository);
     }
 
-    @Get()
+    @Get("/profile")
     @MethodMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
     public profile(req: Request, res: Response) {
         return this.serializer.serialize(req.user);
@@ -50,9 +50,9 @@ export default class UserController {
     @MethodMiddleware(ValidationMiddleware, { schema: createUser })
     public async create(req: Request, res: Response) {
         const user = this.repository.create(req.body);
-        await this.repository.insert(user);
+        const saved = await this.repository.save(user);
         res.status(HttpStatus.CREATED);
-        return this.serializer.serialize(user);
+        return this.serializer.serialize(saved);
     }
 
     @Patch("/:userId")

@@ -3,7 +3,6 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
 import ISerializer from "../../core/interfaces/serializer.interface";
-import * as rfdc from "rfdc";
 
 export type SerializerParams = {
     pagination?: PaginationParams
@@ -78,29 +77,26 @@ export abstract class BaseSerializer implements ISerializer {
 
         this.type = schema.type;
 
-        this.serializer.register(schema.type, schema);
         this.registerFromSchema(schema);
     }
 
-    public registerFromSchema(schema: any) {
+    /**
+     * 
+     * @param schema
+     */
+    public registerFromSchema(schema: JSONAPISerializerSchema) {
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
-        const schemaCopy = rfdc({ proto : true , circles : true})(schema);
 
         for (const key in schema.relationships) {
             if (schema.relationships[key]) {
                 relationShips[key] = {
                     type : schema.relationships[key].type
                 };
+                this.registerFromSchema(schema.relationships[key]);
             }
         }
 
-        schemaCopy.relationships = relationShips;
-        for (const key in schemaCopy.relationships) {
-            if (schemaCopy.relationships[key]) {
-                this.serializer.register(schemaCopy.relationships[key].type, schemaCopy.relationships[key]);
-                this.registerFromSchema(schemaCopy.relationships);
-            }
-        }
+        this.serializer.register(schema.type, {...schema, ...{relationships : relationShips}});
     }
 
     /**
@@ -170,6 +166,9 @@ export abstract class BaseSerializer implements ISerializer {
         return url.replace(/(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i, `$1${newPage}$3`);
     }
 
+    /**
+     * 
+     */
     protected setupLinks = (data: object): void => {
         const { api } = EnvironmentConfiguration.config;
 

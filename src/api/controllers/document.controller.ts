@@ -49,7 +49,7 @@ export default class DocumentController {
     public async create(req: Request, res: Response) {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as any);
-        await this.repository.insert(document);
+        await this.repository.save(document);
         return this.serializer.serialize(document);
     }
 

@@ -1,27 +1,30 @@
 import { JSONAPISerializerSchema } from "../base.serializer";
-import {documentSerialize} from "./document.serializer.schema";
-import { documentType, userType } from "./types";
+import DocumentSerializerSchema from "./document.serializer.schema";
 
-/**
- * Allowed serialized elements
- */
-export const userSerialize: string[] = ["username", "email", "firstname", "lastname", "role", "createdAt", "updatedAt", "user"];
+export default class UserSerializerSchema {
+    public static type: string = "user";
 
-/**
- * Allowed deserialize elements
- */
-export const userDeserialize: string[] = ["username", "email", "firstname", "password", "lastname", "role", "user"];
+    /**
+     * Allowed serialized elements
+     */
+    public static serialize: string[] = ["username", "email", "firstname", "lastname", "role", "createdAt", "updatedAt", "user"];
 
-const UserSchema: Readonly<JSONAPISerializerSchema> = {
-    relationships : {
-        avatar : {
-            type: documentType,
-            whitelist : documentSerialize
-        },
-    },
-    type: userType,
-    whitelist: userSerialize,
-    whitelistOnDeserialize : userDeserialize
-};
+    /**
+     * Allowed deserialize elements
+     */
+    public static deserialize: string[] = ["username", "email", "firstname", "password", "lastname", "role", "user"];
 
-export default UserSchema;
+    public static get schema(): Readonly<JSONAPISerializerSchema> {
+        return {
+            relationships : {
+                avatar : {
+                    type: DocumentSerializerSchema.type,
+                    whitelist : DocumentSerializerSchema.serialize
+                },
+            },
+            type: UserSerializerSchema.type,
+            whitelist: UserSerializerSchema.serialize,
+            whitelistOnDeserialize : UserSerializerSchema.deserialize
+        };
+    }
+}
