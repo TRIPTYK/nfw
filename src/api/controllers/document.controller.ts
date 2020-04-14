@@ -51,7 +51,7 @@ export default class DocumentController {
     @MethodMiddleware(DocumentResizeMiddleware)
     public async create(req: Request, res: Response) {
         const file: Express.Multer.File = req.file;
-        const document = this.repository.create(file as any);
+        const document = this.repository.create(file as object);
         await this.repository.save(document);
         return this.serializer.serialize(document);
     }

@@ -26,7 +26,8 @@ describe("JSON-API Tests on User", () => {
     let tuser = new User(fixtures.user() as any);
     doc = new Document({
         fieldname : DocumentTypes.Picture,
-        filename : "",
+        filename : "fake.jpg",
+        originalname : "fake.jpg",
         size : 10,
         path : "/",
         mimetype: MimeTypes.JPEG
