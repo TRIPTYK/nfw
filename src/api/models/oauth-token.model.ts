@@ -8,7 +8,6 @@ export class OAuthToken {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Index()
     @Column({
         nullable : false,
         type : "text"
