@@ -7,6 +7,7 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import { BaseSerializer } from "../../api/serializers/base.serializer";
 import IRepository from "../interfaces/repository.interface";
+import PaginationQueryParams from "../types/jsonapi";
 
 /**
  * Base Repository class , inherited for all current repositories
@@ -117,9 +118,9 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
             // need to use SqlString.escapeId in order to prevent SQL injection on orderBy()
             for (const field of sortFields) {
                 if (field[0] === "-") {  // JSON-API convention , when sort field starts with '-' order is DESC
-                    queryBuilder.orderBy(SqlString.escapeId(field.substr(1)), "DESC");
+                    queryBuilder.addOrderBy(field.substr(1), "DESC");
                 } else {
-                    queryBuilder.orderBy(SqlString.escapeId(field), "ASC");
+                    queryBuilder.addOrderBy(field, "ASC");
                 }
             }
         }
@@ -132,7 +133,7 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
          * @ref https://jsonapi.org/format/#fetching-pagination
          */
         if (allowPagination && query.page && query.page.number && query.page.size) {
-            const {number, size} = query.page;
+            const {number, size}: PaginationQueryParams = query.page;
 
             queryBuilder
                 .skip((number - 1) * size)

@@ -22,7 +22,7 @@ export type JSONAPISerializerSchema = {
     whitelist?: string[],
     jsonapiObject?: boolean,
     links?: JSONAPISerializerCustom,
-    topLevelMeta?: JSONAPISerializerCustom,
+    topLevelMeta?: any,
     topLevelLinks?: JSONAPISerializerCustom,
     meta?: JSONAPISerializerCustom,
     relationships?: { [key: string]: JSONAPISerializerSchema },
@@ -108,8 +108,17 @@ export abstract class BaseSerializer implements ISerializer {
         const { total, url, page , size } = paginationParams;
         const baseUrl = `/api/${api}`;
         const max = Math.ceil(total / size);
+        const schema = this.getSchemaData();
 
-        this.getSchemaData()["topLevelLinks"] = {
+
+        schema["topLevelMeta"] = {
+            max,
+            page,
+            size,
+            total
+        };
+
+        schema["topLevelLinks"] = {
             first: () => `${baseUrl}/${this.type}${this.replacePage(url, 1)}`,
             last: () => `${baseUrl}/${this.type}${this.replacePage(url, max)}`,
             next: () => `${baseUrl}/${this.type}${this.replacePage(url, page + 1 > max ? max : page + 1)}`,

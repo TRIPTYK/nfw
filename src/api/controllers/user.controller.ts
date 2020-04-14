@@ -15,6 +15,7 @@ import DeserializeRelationsMiddleware from "../middlewares/deserialize-relations
 import UserSchema from "../serializers/schemas/user.serializer.schema";
 import { autoInjectable } from "tsyringe";
 import { getCustomRepository } from "typeorm";
+import PaginationQueryParams from "../../core/types/jsonapi";
 
 @Controller("users")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
@@ -81,10 +82,12 @@ export default class UserController {
         const [users, totalUsers] = await this.repository.jsonApiRequest(req.query, userRelations).getManyAndCount();
 
         if (req.query.page) {
+            const page: PaginationQueryParams = req.query.page as any;
+
             return new UserSerializer({
                 pagination: {
-                    page: parseInt(req.query.page.number, 10),
-                    size: parseInt(req.query.page.size, 10),
+                    page: page.number,
+                    size: page.size,
                     total: totalUsers,
                     url: req.url
                 }

@@ -14,6 +14,7 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import { updateDocument } from "../validations/document.validation";
 import { autoInjectable } from "tsyringe";
 import { getCustomRepository } from "typeorm";
+import PaginationQueryParams from "../../core/types/jsonapi";
 
 @Controller("documents")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
@@ -30,10 +31,12 @@ export default class DocumentController {
         const [documents, total] = await this.repository.jsonApiFind(req, documentRelations);
 
         if (req.query.page) {
+            const page: PaginationQueryParams = req.query.page as any;
+
             return new DocumentSerializer({
                 pagination : {
-                    page: req.query.page.number,
-                    size: req.query.page.size,
+                    page: page.number,
+                    size: page.size,
                     total,
                     url: req.url
                 }
