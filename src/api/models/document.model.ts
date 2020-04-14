@@ -27,10 +27,19 @@ export class Document extends BaseModel {
     })
     public fieldname: DocumentTypes;
 
-    @Column()
+    @Column({
+        nullable : false
+    })
     public filename: string;
 
-    @Column()
+    @Column({
+        nullable : false
+    })
+    public originalname: string;
+
+    @Column({
+        nullable : false
+    })
     public path: string;
 
     @Column({
@@ -40,7 +49,9 @@ export class Document extends BaseModel {
     })
     public mimetype: MimeTypes;
 
-    @Column()
+    @Column({
+        nullable : false
+    })
     public size: number;
 
     @ManyToOne((type) => User, (user) => user.documents, {
