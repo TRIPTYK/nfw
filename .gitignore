@@ -84,12 +84,11 @@ out/
 .nfw
 
 # Production and staging env not public , because can contain sensitive informations 
-production.env
-staging.env
+*.env
+!example.env
 
 src/migration/development/
 
 package-lock.json
 *.lock
-.nfw
 .yarnclean
