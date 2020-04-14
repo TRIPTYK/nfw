@@ -1,6 +1,7 @@
 import * as Multer from "multer";
 import { Request } from "express";
 import {singleton, injectable} from "tsyringe";
+import {sync as mkdirpSync} from "mkdirp";
 
 enum StorageType {
     MEMORY,
@@ -17,6 +18,11 @@ class MulterService {
     public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number) {
         if (this.multers[type][destinationOrName]) {
             return this.multers[type][destinationOrName];
+        }
+
+        if (type === StorageType.DISK) {
+            // sync is done 1 time on instanciation , not a big deal for performances
+            mkdirpSync(destinationOrName);
         }
 
         const storage = type === StorageType.DISK ? Multer.diskStorage({
