@@ -30,9 +30,6 @@ jobs:
         mysql database: "nfw_test"
         mysql user: "nfw"
         mysql password: "test123*"
-
-    - name: Build
-      uses: actions/Build
     
     - name: Run test
       run: npm run test
