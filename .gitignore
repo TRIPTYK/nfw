@@ -86,6 +86,7 @@ out/
 # Production and staging env not public , because can contain sensitive informations 
 *.env
 !example.env
+!test.env
 
 src/migration/development/
 
