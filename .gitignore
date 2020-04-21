@@ -93,3 +93,4 @@ src/migration/development/
 package-lock.json
 *.lock
 .yarnclean
+*credentials.json
