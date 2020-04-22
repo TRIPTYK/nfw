@@ -33,6 +33,7 @@ jobs:
         mysql database: "nfw_test"
         mysql user: "nfw"
         mysql password: "test123*"
+        mysql version: "5.7" # mysqljs does not actually support mysql 8 new password auth , need to wait a release
 
     - name: Install
       run: npm i
