@@ -8,7 +8,6 @@ import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";
 import { Environments } from "./api/enums/environments.enum";
 import ApplicationFactory from "./core/factory/application.factory";
-import { Application } from "./config/app.config";
 
 module.exports = (async () => {
     let {argv : { env }} = yargs.options({
@@ -48,6 +47,8 @@ module.exports = (async () => {
             process.exit(1);
         }
     }
+
+    const {Application} = await import("./config/app.config");
 
     const SetupApp = ApplicationFactory.create(Application);
     await SetupApp.init();

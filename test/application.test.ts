@@ -2,7 +2,7 @@
 process.env.NODE_ENV = "test";
 
 // Require modules to test
-const pkgInfo = require("./../package.json");
+const pkgInfo = require(process.cwd() + "/package.json");
 
 // Require the dev-dependencies
 import * as request from "supertest";

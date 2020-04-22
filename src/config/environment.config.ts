@@ -40,6 +40,8 @@ type Configuration = {
         database: string,
         host: string,
         name: string,
+        synchronize: boolean,
+        entities: string[]
         port: number,
         pwd: string,
         type: SupportedDatabasesTypes,
@@ -78,6 +80,7 @@ export default class EnvironmentConfiguration {
     }
 
     public static loadEnvironment(env: Environments = Environments.Development): Configuration {
+        dotenv.config({path : `${process.cwd()}/${env}.env`});
         return EnvironmentConfiguration.env = EnvironmentConfiguration.getEnvironment(env);
     }
 
@@ -134,6 +137,8 @@ export default class EnvironmentConfiguration {
             name: envObj.TYPEORM_NAME,
             port: parseInt(envObj.TYPEORM_PORT, 10),
             pwd: envObj.TYPEORM_PWD,
+            synchronize : parseBool(envObj.TYPEORM_SYNCHRONIZE),
+            entities : envObj.TYPEORM_ENTITIES.split(","),
             type: (["mariadb", "mysql", "oracle", "mongodb"].includes(envObj.TYPEORM_TYPE) ?
                 envObj.TYPEORM_TYPE : "mysql"
             ) as SupportedDatabasesTypes,

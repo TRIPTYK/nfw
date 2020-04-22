@@ -6,8 +6,8 @@
     "setup": "npm i && node ./init_scripts/setup",
     "deploy": "npm i && node ./init_scripts/deploy",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
-    "start": "tsc && node ./dist/src/app.bootstrap --env production",
-    "test": "./node_modules/.bin/mocha --require ts-node/register/transpile-only ./test/*.ts --reporter spec --timeout 10000 --colors --exit",
+    "start": "./node_modules/.bin/tsc && node ./dist/src/app.bootstrap --env production",
+    "test": "./node_modules/.bin/tsc && ./node_modules/.bin/mocha ./dist/test/*.js --reporter spec --timeout 10000 --colors --exit",
     "start-dev": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env development"
   },
   "engines": {

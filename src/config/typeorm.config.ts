@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Connection, createConnection} from "typeorm";
+import {Connection, createConnection, ConnectionOptions} from "typeorm";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
 
@@ -17,15 +17,11 @@ class TypeORMConfiguration {
         }
 
         const {config : {env, typeorm}} = EnvironmentConfiguration;
-
-        TypeORMConfiguration.connection = await createConnection({
+        const connectionObject: ConnectionOptions = {
             authSource: "admin",
             database: typeorm.database,
-            entities : [
-                env === Environments.Production ?
-                    __dirname + "/../api/models/*.js" :
-                    __dirname + "/../api/models/*.ts"
-            ],
+            entities : typeorm.entities,
+            synchronize : typeorm.synchronize,
             host: typeorm.host,
             name: typeorm.name,
             password: typeorm.pwd,
@@ -34,9 +30,9 @@ class TypeORMConfiguration {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             username: typeorm.user
-        });
+        };
 
-        return TypeORMConfiguration.connection;
+        return TypeORMConfiguration.connection = await createConnection(connectionObject);
     }
 
     private static connection: Connection;
