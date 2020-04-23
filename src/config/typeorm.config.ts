@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import {Connection, createConnection, ConnectionOptions} from "typeorm";
 import EnvironmentConfiguration from "./environment.config";
-import { Environments } from "../api/enums/environments.enum";
 
 /**
  * Define TypeORM default configuration
@@ -9,15 +8,10 @@ import { Environments } from "../api/enums/environments.enum";
  * @inheritdoc https://http://typeorm.io
  */
 class TypeORMConfiguration {
+    static get ConfigurationObject() : ConnectionOptions {
+        const {config : {typeorm}} = EnvironmentConfiguration;
 
-    public static async connect() {
-        /** Singleton pattern */
-        if (TypeORMConfiguration.connection) {
-            return TypeORMConfiguration.connection;
-        }
-
-        const {config : {env, typeorm}} = EnvironmentConfiguration;
-        const connectionObject: ConnectionOptions = {
+        return  {
             authSource: "admin",
             database: typeorm.database,
             entities : typeorm.entities,
@@ -27,12 +21,24 @@ class TypeORMConfiguration {
             password: typeorm.pwd,
             port: typeorm.port,
             type: typeorm.type,
+            migrations : typeorm.migrations,
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            username: typeorm.user
+            username: typeorm.user,
+            cli : {
+                entitiesDir: typeorm.entitiesDir,
+                migrationsDir: typeorm.migrationsDir,
+            }
         };
+    }
 
-        return TypeORMConfiguration.connection = await createConnection(connectionObject);
+    public static async connect() {
+        /** Singleton pattern */
+        if (TypeORMConfiguration.connection) {
+            return TypeORMConfiguration.connection;
+        }
+
+        return TypeORMConfiguration.connection = await createConnection(TypeORMConfiguration.ConfigurationObject);
     }
 
     private static connection: Connection;

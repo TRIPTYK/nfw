@@ -5,6 +5,8 @@
   "scripts": {
     "setup": "npm i && node ./init_scripts/setup",
     "deploy": "npm i && node ./init_scripts/deploy",
+    "migration-generate": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:generate -n ",
+    "migration-run": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:run",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
     "start": "./node_modules/.bin/tsc && node ./dist/src/app.bootstrap --env production",
     "test": "./node_modules/.bin/tsc && ./node_modules/.bin/mocha ./dist/test/*.js --reporter spec --timeout 10000 --colors --exit",

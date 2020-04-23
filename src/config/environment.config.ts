@@ -45,7 +45,11 @@ type Configuration = {
         port: number,
         pwd: string,
         type: SupportedDatabasesTypes,
-        user: string
+        user: string,
+        tableName : string,
+        migrationsDir : string,
+        entitiesDir : string,
+        migrations: string[]
     };
     jimp?: {
         isActive: boolean,
@@ -77,6 +81,12 @@ export default class EnvironmentConfiguration {
             throw new Error("Environment not loaded");
         }
         return EnvironmentConfiguration.env;
+    }
+
+    public static guessCurrentEnvironment() : Environments {
+        return ["production", "test", "staging", "development"].includes(process.env.NODE_ENV) ? 
+            process.env.NODE_ENV as Environments : 
+            Environments.Development;
     }
 
     public static loadEnvironment(env: Environments = Environments.Development): Configuration {
@@ -142,7 +152,11 @@ export default class EnvironmentConfiguration {
             type: (["mariadb", "mysql", "oracle", "mongodb"].includes(envObj.TYPEORM_TYPE) ?
                 envObj.TYPEORM_TYPE : "mysql"
             ) as SupportedDatabasesTypes,
-            user: envObj.TYPEORM_USER
+            user: envObj.TYPEORM_USER,
+            tableName : envObj.TYPEORM_MIGRATIONS_TABLE_NAME,
+            entitiesDir : envObj.TYPEORM_ENTITIES_DIR,
+            migrationsDir : envObj.TYPEORM_MIGRATIONS_DIR,
+            migrations : envObj.TYPEORM_MIGRATIONS.split(",")
         };
 
         applyObj.jimp = {
