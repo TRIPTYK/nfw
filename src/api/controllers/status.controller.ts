@@ -5,6 +5,7 @@ import { Request , Response } from "express";
 export default class StatusController {
     @Get("/")
     public status(req: Request, res: Response): void {
+        let unused = null;
         res.sendStatus(200);
     }
 }
