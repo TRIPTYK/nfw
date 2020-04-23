@@ -1,3 +1,0 @@
-
-### TODOs
-- Single login option

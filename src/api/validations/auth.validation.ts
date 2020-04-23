@@ -52,12 +52,6 @@ const login: Schema = {
     email: {
         isEmail: true
     },
-    force : {
-        in : ["query"],
-        isBoolean : true,
-        optional : true,
-        toBoolean : true
-    },
     password: {
         isEmpty : {
             errorMessage : "Password must not be empty",

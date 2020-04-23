@@ -8,7 +8,7 @@ type Configuration = {
     env?: Environments;
     port?: number;
     url?: string;
-    authorized?: string;
+    authorized?: string | string[];
     api?: string;
     caching_enabled?: boolean;
     auth_mode?: AuthModes;
@@ -97,7 +97,7 @@ export default class EnvironmentConfiguration {
         applyObj.env = (["production", "test", "staging", "development"].includes(envObj.NODE_ENV) ? envObj.NODE_ENV : "development") as Environments;
         applyObj.port = parseInt(envObj.PORT, 10);
         applyObj.url = envObj.URL;
-        applyObj.authorized = envObj.AUTHORIZED;
+        applyObj.authorized = envObj.AUTHORIZED.split(",");
         applyObj.api = envObj.API_VERSION;
         applyObj.caching_enabled = parseBool(envObj.REQUEST_CACHING);
         applyObj.auth_mode = (["jwt", "session"].includes(envObj.AUTH_MODE) ? envObj.AUTH_MODE : "jwt") as AuthModes;
