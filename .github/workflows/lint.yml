@@ -4,7 +4,7 @@ name: eslint
 # events but only for the master branch
 on:
   push:
-    branches: [ develop ]
+    branches: [ simplify-deploy-install ]
   pull_request:
     branches: [ develop ]
 
