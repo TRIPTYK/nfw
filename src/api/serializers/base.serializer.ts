@@ -9,54 +9,54 @@ export type SerializerParams = {
 };
 
 export type PaginationParams = {
-    total: number,
-    url: string,
-    page: number,
+    total: number
+    url: string
+    page: number
     size: number
 };
 
 export type JSONAPISerializerSchema = {
-    id?: string,
-    type: string,
-    blacklist?: string[],
-    whitelist?: string[],
-    jsonapiObject?: boolean,
-    links?: JSONAPISerializerCustom,
-    topLevelMeta?: any,
-    topLevelLinks?: JSONAPISerializerCustom,
-    meta?: JSONAPISerializerCustom,
-    relationships?: { [key: string]: JSONAPISerializerSchema },
-    convertCase?: "kebab-case" | "snake_case" | "camelCase",
-    unconvertCase?: "kebab-case" | "snake_case" | "camelCase",
-    blacklistOnDeserialize?: string[],
+    id?: string
+    type: string
+    blacklist?: string[]
+    whitelist?: string[]
+    jsonapiObject?: boolean
+    links?: JSONAPISerializerCustom
+    topLevelMeta?: any
+    topLevelLinks?: JSONAPISerializerCustom
+    meta?: JSONAPISerializerCustom
+    relationships?: { [key: string]: JSONAPISerializerSchema }
+    convertCase?: "kebab-case" | "snake_case" | "camelCase"
+    unconvertCase?: "kebab-case" | "snake_case" | "camelCase"
+    blacklistOnDeserialize?: string[]
     whitelistOnDeserialize?: string[]
 };
 
 export type JSONAPISerializerCustom = string | ((arg1?: object, arg2?: object) => object | string);
 
 export type JSONAPISerializerRelation = {
-    type: JSONAPISerializerCustom,
-    alternativeKey?: string,
-    schema?: string,
-    links?: JSONAPISerializerCustom,
-    meta?: JSONAPISerializerCustom,
+    type: JSONAPISerializerCustom
+    alternativeKey?: string
+    schema?: string
+    links?: JSONAPISerializerCustom
+    meta?: JSONAPISerializerCustom
     deserialize?: JSONAPISerializerCustom
 };
 
 export type JSONAPISerializerOptions = {
     id?: string
-    blacklist?: string[],
-    whitelist?: string[],
-    jsonapiObject?: boolean,
-    links?: JSONAPISerializerCustom,
-    topLevelMeta?: JSONAPISerializerCustom,
-    topLevelLinks?: JSONAPISerializerCustom,
-    meta?: JSONAPISerializerCustom,
-    relationships?: { [key: string]: JSONAPISerializerRelation },
-    convertCase?: "kebab-case" | "snake_case" | "camelCase",
+    blacklist?: string[]
+    whitelist?: string[]
+    jsonapiObject?: boolean
+    links?: JSONAPISerializerCustom
+    topLevelMeta?: JSONAPISerializerCustom
+    topLevelLinks?: JSONAPISerializerCustom
+    meta?: JSONAPISerializerCustom
+    relationships?: { [key: string]: JSONAPISerializerRelation }
+    convertCase?: "kebab-case" | "snake_case" | "camelCase"
     // unconvert
-    unconvertCase?: "kebab-case" | "snake_case" | "camelCase",
-    blacklistOnDeserialize?: string[],
+    unconvertCase?: "kebab-case" | "snake_case" | "camelCase"
+    blacklistOnDeserialize?: string[]
     whitelistOnDeserialize?: string[]
 };
 
@@ -65,10 +65,6 @@ export abstract class BaseSerializer implements ISerializer {
     public type: string;
     public serializer: JSONAPISerializer;
 
-    /**
-     * @param type Entity type
-     * @param options
-     */
     protected constructor(schema: JSONAPISerializerSchema) {
         this.serializer = new JSONAPISerializer({
             convertCase: "kebab-case",
@@ -80,11 +76,7 @@ export abstract class BaseSerializer implements ISerializer {
         this.registerFromSchema(schema);
     }
 
-    /**
-     * 
-     * @param schema
-     */
-    public registerFromSchema(schema: JSONAPISerializerSchema) {
+    public registerFromSchema(schema: JSONAPISerializerSchema): void {
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
 
         for (const key in schema.relationships) {
@@ -99,10 +91,6 @@ export abstract class BaseSerializer implements ISerializer {
         this.serializer.register(schema.type, {...schema, ...{relationships : relationShips}});
     }
 
-    /**
-     *
-     * @param paginationParams
-     */
     public setupPaginationLinks(paginationParams: PaginationParams): this {
         const { api } = EnvironmentConfiguration.config;
         const { total, url, page , size } = paginationParams;
@@ -137,66 +125,44 @@ export abstract class BaseSerializer implements ISerializer {
      * @param schema
      * @param params
      */
-    public serialize = (payload: any, schema = null, params = {}): any => {
-        return this.serializer.serialize(this.type, payload, schema, params);
-    }
-
-    /**
-     *
-     * @param relationshipType
-     * @param payload
-     * @param schema
-     */
-    public serializeRelationships(relationshipType: string, payload: any, schema: string = "default") {
-        return this.serializer.serializeRelationship(relationshipType, schema, null, payload);
-    }
+    public serialize = (payload: any, schema = null, params = {}): any =>
+        this.serializer.serialize(this.type, payload, schema, params);
 
     /**
      * Deserialize a payload from json-api format
      *
      * @param req
      */
-    public deserialize = (req: Request): any => {
-        return this.serializer.deserialize(this.type, req.body);
-    }
+    public deserialize = (req: Request): any =>
+        this.serializer.deserialize(this.type, req.body);
 
     /**
      *
      * @param schema
      */
-    public getSchemaData(schema: string = "default") {
+    public getSchemaData(schema = "default"): any {
         return this.serializer.schemas[this.type][schema];
     }
 
     /**
      *  Replace page number parameter value in given URL
      */
-    protected replacePage = (url: string, newPage: number): string => {
-        return url.replace(/(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i, `$1${newPage}$3`);
-    }
+    protected replacePage = (url: string, newPage: number): string =>
+        url.replace(/(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i, `$1${newPage}$3`);
 
-    /**
-     * 
-     */
     protected setupLinks = (data: object): void => {
         const { api } = EnvironmentConfiguration.config;
 
         // link for entity
         data["links"] = {
-            self: (d) => {
-                return `/api/${api}/${this.type}s/${d.id}`;
-            }
+            self: (d) => `/api/${api}/${this.type}s/${d.id}`
         };
 
         // link for relationship
         for (const key in data["relationships"]) {
             data["relationships"][key]["links"] = {
-                related: (d) => {
-                    return `/api/${api}/${plural(this.type)}/${d.id}/${key}`;
-                },
-                self: (d) => {
-                    return `/api/${api}/${plural(this.type)}/${d.id}/relationships/${key}`;
-                }
+                related: (d) => `/api/${api}/${plural(this.type)}/${d.id}/${key}`,
+                self: (d) => `/api/${api}/${plural(this.type)}/${d.id}/relationships/${key}`
             };
         }
     }

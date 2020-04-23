@@ -100,8 +100,7 @@ export class Application extends BaseApplication {
          */
         if (env !== Environments.Test) {
             this.app.use(Morgan(
-                env === Environments.Production ?
-                "production" : "dev"
+                env === Environments.Production ? "production" : "dev"
             ));
         }
 

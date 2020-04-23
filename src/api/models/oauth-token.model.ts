@@ -14,7 +14,7 @@ export class OAuthToken {
     })
     public refreshToken: string;
 
-    @ManyToOne((type) => User, {
+    @ManyToOne(() => User, {
         eager: true,
         nullable: false,
         onDelete: "CASCADE" // Remove refresh-token when user is deleted

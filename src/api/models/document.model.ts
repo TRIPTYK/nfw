@@ -54,12 +54,12 @@ export class Document extends BaseModel {
     })
     public size: number;
 
-    @ManyToOne((type) => User, (user) => user.documents, {
+    @ManyToOne(() => User, (user) => user.documents, {
         onDelete: "CASCADE" // Remove all documents when user is deleted
     })
     public user: User;
 
-    @OneToOne((type) => User, (avatar) => avatar.avatar)
+    @OneToOne(() => User, (avatar) => avatar.avatar)
     public userAvatar: User;
 
     @Column({
@@ -74,13 +74,13 @@ export class Document extends BaseModel {
 
     @BeforeInsert()
     @BeforeUpdate()
-    public updatePath() {
+    public updatePath(): void {
         this.path = Path.dirname(this.path.toString());
     }
 
     @BeforeRemove()
     @BeforeUpdate()
-    public deleteOnDisk() {
+    public deleteOnDisk(): void {
         Fs.promises.unlink(`${this.path}/${this.filename}`);
 
         if (Object.values(ImageMimeTypes).includes(this.mimetype as any)) {

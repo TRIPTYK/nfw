@@ -27,7 +27,7 @@ export default class DocumentController {
     }
 
     @Get("/")
-    public async list(req: Request, res: Response) {
+    public async list(req: Request): Promise<any> {
         const [documents, total] = await this.repository.jsonApiFind(req, documentRelations);
 
         if (req.query.page) {
@@ -49,7 +49,7 @@ export default class DocumentController {
     @Post("/")
     @MethodMiddleware(FileUploadMiddleware)
     @MethodMiddleware(DocumentResizeMiddleware)
-    public async create(req: Request, res: Response) {
+    public async create(req: Request): Promise<void> {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as object);
         await this.repository.save(document);
@@ -66,7 +66,7 @@ export default class DocumentController {
      * @public
      */
     @Get("/:documentId")
-    public async get(req: Request, res: Response) {
+    public async get(req: Request): Promise<any> {
         const document = await this.repository.jsonApiFindOne(req, req.params.documentId, documentRelations);
 
         if (!document) {
@@ -77,29 +77,29 @@ export default class DocumentController {
     }
 
     @Get("/:id/:relation")
-    public async fetchRelated(req: Request, res: Response) {
+    public async fetchRelated(req: Request): Promise<any> {
         return this.repository.fetchRelated(req, this.serializer);
     }
 
     @Get("/:id/relationships/:relation")
-    public async fetchRelationships(req: Request, res: Response) {
+    public async fetchRelationships(req: Request): Promise<any> {
         return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
     }
 
     @Post("/:id/relationships/:relation")
-    public async addRelationships(req: Request, res: Response) {
+    public async addRelationships(req: Request, res: Response): Promise<any> {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Patch("/:id/relationships/:relation")
-    public async updateRelationships(req: Request, res: Response) {
+    public async updateRelationships(req: Request, res: Response): Promise<any> {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Delete("/:id/relationships/:relation")
-    public async removeRelationships(req: Request, res: Response) {
+    public async removeRelationships(req: Request, res: Response): Promise<any> {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
@@ -109,7 +109,7 @@ export default class DocumentController {
     @MethodMiddleware(ValidationMiddleware, {schema : updateDocument})
     @MethodMiddleware(FileUploadMiddleware)
     @MethodMiddleware(DocumentResizeMiddleware)
-    public async update(req: Request, res: Response) {
+    public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
 
         let saved = await this.repository.preload({
@@ -135,7 +135,7 @@ export default class DocumentController {
      * @public
      */
     @Delete("/:documentId")
-    public async remove(req: Request, res: Response) {
+    public async remove(req: Request, res: Response): Promise<any> {
         const document = await this.repository.findOne(req.params.documentId);
 
         if (!document) {

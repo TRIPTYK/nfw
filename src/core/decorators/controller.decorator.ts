@@ -38,9 +38,9 @@ export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: a
 export type RequestMethods = "get" | "post" | "delete" | "options" | "put" | "patch";
 
 export interface RouteDefinition {
-    path: string;
-    requestMethod: RequestMethods;
-    methodName: string;
+    path: string
+    requestMethod: RequestMethods
+    methodName: string
 }
 
 const registerMethod = (path: string = null , method: RequestMethods) =>

@@ -1,5 +1,4 @@
 import {
-    AfterLoad,
     BeforeInsert,
     BeforeUpdate,
     Column,
@@ -98,7 +97,8 @@ export class User extends BaseModel {
     /**
      *
      */
-    public generateAccessToken() {
+    public generateAccessToken(): string {
+        // eslint-disable-next-line @typescript-eslint/camelcase
         const { jwt : { access_expires , secret } } = EnvironmentConfiguration.config;
 
         const payload = {
@@ -113,13 +113,13 @@ export class User extends BaseModel {
     /**
      * @param password
      */
-    public async passwordMatches(password: string): Promise<boolean> {
+    public passwordMatches(password: string): Promise<boolean> {
         return Bcrypt.compare(password, this.password);
     }
 
     @BeforeUpdate()
     @BeforeInsert()
-    public checkAvatar() {
+    public checkAvatar(): void {
         if (this.avatar) {
             if (!(this.avatar.mimetype in ImageMimeTypes)) {
                 throw Boom.notAcceptable("Wrong document type");

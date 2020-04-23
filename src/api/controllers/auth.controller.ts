@@ -1,4 +1,3 @@
-
 import * as HttpStatus from "http-status";
 import {RefreshToken} from "../models/refresh-token.model";
 import {Request, Response} from "express";
@@ -12,13 +11,13 @@ import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
-import { Controller, Post, MethodMiddleware, Get } from "../../core/decorators/controller.decorator";
+import { Controller, Post, MethodMiddleware } from "../../core/decorators/controller.decorator";
 import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
-import { autoInjectable, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 
 /**
  * Authentification Controller!
@@ -31,7 +30,7 @@ export default class AuthController {
     private repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;
 
-    constructor() {
+    public constructor() {
         this.repository = getCustomRepository(UserRepository);
         this.refreshRepository = getCustomRepository(RefreshTokenRepository);
     }
@@ -40,7 +39,7 @@ export default class AuthController {
     @MethodMiddleware(DeserializeMiddleware, UserSerializer)
     @MethodMiddleware(ValidationMiddleware, {schema : register})
     @MethodMiddleware(SecurityMiddleware)
-    public async register(req: Request, res: Response, next) {
+    public async register(req: Request, res: Response): Promise<any> {
         const user = this.repository.create(req.body as object);
 
         const {config : {env}} = EnvironmentConfiguration; // load env
@@ -55,7 +54,7 @@ export default class AuthController {
     }
 
     @Post()
-    public async login(req: Request, res: Response) {
+    public async login(req: Request): Promise<any> {
         const { email , password } = req.body;
         const { user, accessToken } = await this.repository.findAndGenerateAccessToken(email, password);
         const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
@@ -64,7 +63,7 @@ export default class AuthController {
     }
 
     @Post("/:service/refresh-token")
-    public async refreshOAuth(req: Request, res: Response, next) {
+    public async refreshOAuth(req: Request, res: Response): Promise<void> {
         const user = req.user;
         const { service } = req.params;
 
@@ -77,12 +76,11 @@ export default class AuthController {
 
         const {refreshToken, accessToken} = await new Promise((resolve, rej) => {
             Refresh.requestNewAccessToken(service, OAuthTokens.refreshToken,
-                // tslint:disable-next-line: no-shadowed-variable
-                (err, accessToken, refreshToken) => {
+                (err, newAccessToken, newRefreshToken) => {
                     if (err) { rej(err); }
                     resolve({
-                        accessToken,
-                        refreshToken
+                        accessToken : newAccessToken,
+                        refreshToken : newRefreshToken
                     });
                 }
             );
@@ -97,7 +95,7 @@ export default class AuthController {
     }
 
     @Post("/oAuth")
-    public async oAuth(req: Request, res: Response, next) {
+    public async oAuth(req: Request): Promise<any> {
         const user = req.user;
         const accessToken = user.generateAccessToken();
         const token = await this.refreshRepository.generateNewRefreshToken(user);
@@ -105,7 +103,7 @@ export default class AuthController {
     }
 
     @Post("/refresh-token")
-    public async refresh(req: Request, res: Response, next) {
+    public async refresh(req: Request): Promise<any> {
         const refreshTokenRepository = getRepository(RefreshToken);
 
         const {refreshToken} = req.body;

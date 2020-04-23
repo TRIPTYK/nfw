@@ -1,6 +1,6 @@
 import * as Multer from "multer";
 import { Request } from "express";
-import {singleton, injectable} from "tsyringe";
+import {singleton} from "tsyringe";
 import {sync as mkdirpSync} from "mkdirp";
 
 enum StorageType {
@@ -15,7 +15,7 @@ class MulterService {
         [StorageType.DISK] : {}
     };
 
-    public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number) {
+    public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number): any {
         if (this.multers[type][destinationOrName]) {
             return this.multers[type][destinationOrName];
         }

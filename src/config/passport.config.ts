@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
 import {getCustomRepository, getRepository} from "typeorm";
 import {User} from "../api/models/user.model";
@@ -72,7 +73,7 @@ class PassportConfig {
      * @returns
      * @memberof PassportConfig
      */
-    public async jwt(payload: any, next: (error: null | Error, arg: boolean|User) => void) {
+    public async jwt(payload: any, next: (error: null | Error, arg: boolean|User) => void): Promise<any> {
         try {
             const userRepository = getRepository(User);
             const user = await userRepository.findOne(payload.sub, {relations: ["avatar"]});
@@ -89,16 +90,16 @@ class PassportConfig {
      * @memberof PassportConfig
      */
     public oAuth = (service: string) =>
-        async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: object, cb) => {
-        try {
-            const tokenRepo = getCustomRepository(OAuthTokenRepository);
-            const reqUser: User = req["user"] as User;
-            await tokenRepo.oAuthLogin(reqUser, {service, accessToken, refreshToken});
-            return cb(null, reqUser);
-        } catch (err) {
-            return cb(err);
+        async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: object, cb): Promise<any> => {
+            try {
+                const tokenRepo = getCustomRepository(OAuthTokenRepository);
+                const reqUser: User = req.user;
+                await tokenRepo.oAuthLogin(reqUser, {service, accessToken, refreshToken});
+                return cb(null, reqUser);
+            } catch (err) {
+                return cb(err);
+            }
         }
-    }
 
     /**
      *
@@ -109,7 +110,7 @@ class PassportConfig {
      * @param {boolean} [refresh=false]
      * @memberof PassportConfig
      */
-    private registerStrategy(name: string, object: Passport.Strategy, refresh = false) {
+    private registerStrategy(name: string, object: Passport.Strategy, refresh = false): void {
         this.strategies.push({name, object, refresh});
     }
 }

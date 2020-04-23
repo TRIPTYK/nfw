@@ -1,5 +1,5 @@
 import * as NodeCache from "node-cache";
-import { singleton, injectable } from "tsyringe";
+import { singleton } from "tsyringe";
 
 @singleton()
 export class CacheService {
@@ -9,11 +9,11 @@ export class CacheService {
         return this.pcache;
     }
 
-    constructor() {
+    public constructor() {
         this.pcache = new NodeCache({stdTTL: 180, checkperiod: 240});
     }
 
-    public async cleanupRouteCache(filterFnc) {
+    public cleanupRouteCache(filterFnc): boolean {
         for (const key of this.pcache.keys()) {
             if (filterFnc(key)) {
                 this.pcache.del(key);

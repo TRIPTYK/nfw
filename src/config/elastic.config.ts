@@ -6,15 +6,14 @@ import EnvironmentConfiguration from "./environment.config";
  * Elastic search
  */
 class ElasticSearchConfiguration {
+    private static connection: Client;
 
-    public static async connect() {
+    public static connect(): Client {
         if (!ElasticSearchConfiguration.connection) {
             return new Client({ node: EnvironmentConfiguration.config.elastic.url });
         }
         return ElasticSearchConfiguration.connection;
     }
-
-    private static connection: Client;
 }
 
 export { ElasticSearchConfiguration };

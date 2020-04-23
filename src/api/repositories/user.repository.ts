@@ -16,8 +16,7 @@ export class UserRepository extends BaseRepository<User> {
      * @param force
      * @returns token
      */
-    public async findAndGenerateAccessToken(email: string, refreshTokenOrPassword: string | RefreshToken)
-    : Promise<{user: User, accessToken: string }> {
+    public async findAndGenerateAccessToken(email: string, refreshTokenOrPassword: string | RefreshToken): Promise<{user: User, accessToken: string }> {
         const user = await this.findOne({email});
 
         if (!user) {
@@ -43,7 +42,7 @@ export class UserRepository extends BaseRepository<User> {
      * @param keyname
      * @param value
      */
-    public async exists(keyname, value) {
+    public async exists(keyname, value): Promise<boolean> {
         return (await this.findOne({[keyname] : value})) !== undefined;
     }
 }

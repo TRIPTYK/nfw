@@ -31,12 +31,12 @@ export default class UserController {
 
     @Get("/profile")
     @MethodMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
-    public profile(req: Request, res: Response) {
+    public profile(req: Request): Promise<any> {
         return this.serializer.serialize(req.user);
     }
 
     @Get("/:userId")
-    public async get(req: Request, res: Response) {
+    public async get(req: Request): Promise<void> {
         const user = await this.repository.jsonApiFindOne(req, req.params.userId, userRelations);
 
         if (!user) {
@@ -49,7 +49,7 @@ export default class UserController {
     @Post("/")
     @MethodMiddleware(DeserializeRelationsMiddleware, { schema : UserSchema.schema })
     @MethodMiddleware(ValidationMiddleware, { schema: createUser })
-    public async create(req: Request, res: Response) {
+    public async create(req: Request, res: Response): Promise<any> {
         const user = this.repository.create(req.body);
         const saved = await this.repository.save(user);
         res.status(HttpStatus.CREATED);
@@ -59,14 +59,14 @@ export default class UserController {
     @Patch("/:userId")
     @Put("/:userId")
     @MethodMiddleware(ValidationMiddleware, { schema: updateUser })
-    public async update(req: Request, res: Response) {
+    public async update(req: Request): Promise<any> {
         if (!req.body.password) {
             delete req.body.password;
         }
 
         let saved = await this.repository.preload({
             ...req.body, ...{id : req.params.userId}
-        } as any);
+        });
 
         if (saved === undefined) {
             throw Boom.notFound("User not found");
@@ -78,7 +78,7 @@ export default class UserController {
     }
 
     @Get("/")
-    public async list(req: Request, res: Response) {
+    public async list(req: Request): Promise<any> {
         const [users, totalUsers] = await this.repository.jsonApiRequest(req.query, userRelations).getManyAndCount();
 
         if (req.query.page) {
@@ -99,35 +99,35 @@ export default class UserController {
     }
 
     @Get("/:id/:relation")
-    public async fetchRelated(req: Request, res: Response) {
+    public async fetchRelated(req: Request): Promise<any> {
         return this.repository.fetchRelated(req, this.serializer);
     }
 
     @Get("/:id/relationships/:relation")
-    public async fetchRelationships(req: Request, res: Response) {
+    public async fetchRelationships(req: Request): Promise<any> {
         return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
     }
 
     @Post("/:id/relationships/:relation")
-    public async addRelationships(req: Request, res: Response) {
+    public async addRelationships(req: Request, res: Response): Promise<any> {
         await this.repository.addRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Patch("/:id/relationships/:relation")
-    public async updateRelationships(req: Request, res: Response) {
+    public async updateRelationships(req: Request, res: Response): Promise<any> {
         await this.repository.updateRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Delete("/:id/relationships/:relation")
-    public async removeRelationships(req: Request, res: Response) {
+    public async removeRelationships(req: Request, res: Response): Promise<any> {
         await this.repository.removeRelationshipsFromRequest(req);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Delete("/:userId")
-    public async remove(req: Request, res: Response) {
+    public async remove(req: Request, res: Response): Promise<any> {
         const user = await this.repository.findOne(req.params.userId);
 
         if (!user) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import * as fs from "fs";
 import * as dotenv from "dotenv";
 import { parseBool } from "../core/utils/string-parse.util";
@@ -5,76 +6,77 @@ import { Environments } from "../api/enums/environments.enum";
 
 // tslint:disable-next-line: interface-over-type-literal
 type Configuration = {
-    env?: Environments;
-    port?: number;
-    url?: string;
-    authorized?: string | string[];
-    api?: string;
-    caching_enabled?: boolean;
-    auth_mode?: AuthModes;
+    env?: Environments
+    port?: number
+    url?: string
+    authorized?: string | string[]
+    api?: string
+    caching_enabled?: boolean
+    auth_mode?: AuthModes
     jwt?: {
-        refresh_expires: number,
-        access_expires: number,
+        refresh_expires: number
+        access_expires: number
         secret: string
-    };
+    }
     elastic?: {
-        enabled: boolean,
+        enabled: boolean
         url: string
-    };
+    }
     facebook?: {
-        id: string,
-        redirect: string,
+        id: string
+        redirect: string
         secret: string
-    };
+    }
     outlook?: {
-        id: string,
-        redirect: string,
+        id: string
+        redirect: string
         secret: string
-    };
+    }
     google?: {
-        id: string,
-        redirect: string,
+        id: string
+        redirect: string
         secret: string
-    };
+    }
     typeorm?: {
-        database: string,
-        host: string,
-        name: string,
-        synchronize: boolean,
-        entities: string[]
-        port: number,
-        pwd: string,
-        type: SupportedDatabasesTypes,
-        user: string,
-        tableName : string,
-        migrationsDir : string,
-        entitiesDir : string,
-        migrations: string[]
-    };
-    jimp?: {
-        isActive: boolean,
-        md: number,
-        xl: number,
-        xs: number
-    };
-    mailgun?: {
-        privateKey: string,
-        publicKey: string,
-        domain: string,
+        database: string
         host: string
-    };
+        name: string
+        synchronize: boolean
+        entities: string[]
+        port: number
+        pwd: string
+        type: SupportedDatabasesTypes
+        user: string
+        tableName: string
+        migrationsDir: string
+        entitiesDir: string
+        migrations: string[]
+    }
+    jimp?: {
+        isActive: boolean
+        md: number
+        xl: number
+        xs: number
+    }
+    mailgun?: {
+        privateKey: string
+        publicKey: string
+        domain: string
+        host: string
+    }
     https?: {
-        ca: string,
-        cert: string,
-        isActive: boolean,
+        ca: string
+        cert: string
+        isActive: boolean
         key: string
-    };
+    }
 };
 
 type SupportedDatabasesTypes = "mysql" | "oracle" | "mariadb" | "mongodb";
 type AuthModes = "jwt" | "session";
 
 export default class EnvironmentConfiguration {
+    private static env: Configuration;
 
     public static get config(): Configuration {
         if (!EnvironmentConfiguration.env) {
@@ -83,10 +85,9 @@ export default class EnvironmentConfiguration {
         return EnvironmentConfiguration.env;
     }
 
-    public static guessCurrentEnvironment() : Environments {
-        return ["production", "test", "staging", "development"].includes(process.env.NODE_ENV) ? 
-            process.env.NODE_ENV as Environments : 
-            Environments.Development;
+    public static guessCurrentEnvironment(): Environments {
+        return ["production", "test", "staging", "development"].includes(process.env.NODE_ENV) ?
+            process.env.NODE_ENV as Environments : Environments.Development;
     }
 
     public static loadEnvironment(env: Environments = Environments.Development): Configuration {
@@ -98,8 +99,6 @@ export default class EnvironmentConfiguration {
         const loaded = dotenv.parse(fs.readFileSync(`${process.cwd()}/${env}.env`));
         return EnvironmentConfiguration.buildEnvObject(loaded);
     }
-
-    private static  env: Configuration;
 
     private static buildEnvObject(envObj: dotenv.DotenvParseOutput): Configuration {
         const applyObj: Configuration = {};

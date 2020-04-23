@@ -1,19 +1,18 @@
 import Boom from "@hapi/boom";
 import { default as Axios } from "axios";
-import { Request } from "express";
 import * as Mailgun from "mailgun-js";
-import { singleton, injectable } from "tsyringe";
+import { singleton } from "tsyringe";
 import EnvironmentConfiguration from "../../config/environment.config";
 
 // tslint:disable-next-line: interface-over-type-literal
 type MailGunData = {
-    attachment?: string,
-    from?: string,
-    subject?: string,
-    template?: string,
-    text?: string,
-    to?: string,
-    variables?: object,
+    attachment?: string
+    from?: string
+    subject?: string
+    template?: string
+    text?: string
+    to?: string
+    variables?: object
     filename?: string
 };
 
@@ -22,7 +21,7 @@ export class MailService {
     /**
      * Sparkpost API
      */
-    public async sendmailSparkpost(emailData: object) {
+    public async sendmailSparkpost(emailData: object): Promise<any> {
 
         const data = JSON.stringify(emailData);
         // 2. Send email to user with request_token, with a link to the "new password page [FRONT]"
@@ -46,30 +45,30 @@ export class MailService {
                 data,
                 url: "https://" + options.host + options.path
             })
-            .then((response) => {
-                const object =  {
-                    data: response.data,
-                    error: response.data.error || "",
-                    message: response.data.message,
-                    status: response.status
-                };
-                resolve(object);
-            })
-            .catch( ( error ) => {
-                const object =  {
-                    error: error.message,
-                    message: error.message,
-                    status: 500,
-                };
-                reject(object);
-            });
+                .then((response) => {
+                    const object =  {
+                        data: response.data,
+                        error: response.data.error || "",
+                        message: response.data.message,
+                        status: response.status
+                    };
+                    resolve(object);
+                })
+                .catch( ( error ) => {
+                    const object =  {
+                        error: error.message,
+                        message: error.message,
+                        status: 500,
+                    };
+                    reject(object);
+                });
         });
     }
 
     /**
      * Mailgun API
      */
-    public async sendmailGun(gunData: MailGunData, type: "attachment" | null) {
+    public async sendmailGun(gunData: MailGunData, type: "attachment" | null): Promise<any> {
         const { mailgun : mailgunConf } = EnvironmentConfiguration.config;
 
         const mailgun: Mailgun = new Mailgun({

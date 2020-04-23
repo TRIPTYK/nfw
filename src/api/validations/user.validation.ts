@@ -1,4 +1,4 @@
-// modifier le 24/09/19
+/* eslint-disable @typescript-eslint/camelcase */
 import {Roles} from "../enums/role.enum";
 import {Schema} from "express-validator";
 import { UserRepository } from "../repositories/user.repository";

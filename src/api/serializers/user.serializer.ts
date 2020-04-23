@@ -4,7 +4,7 @@ import {injectable} from "tsyringe";
 
 @injectable()
 export class UserSerializer extends BaseSerializer {
-    constructor(serializerParams: SerializerParams = {}) {
+    public constructor(serializerParams: SerializerParams = {}) {
         super(UserSchema.schema);
 
         if (serializerParams.pagination) {

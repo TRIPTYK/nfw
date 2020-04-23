@@ -12,24 +12,24 @@ import * as Moment from "moment-timezone";
 export class LoggerConfiguration {
     public static logger: Winston.Logger;
 
-    public static setup() {
+    public static setup(): void {
         const {env} = EnvironmentConfiguration.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
         const timestampFnc = () => Moment().format("YYYY-MM-DD HH:mm:ss.SSS");
 
-        const timestampFormatJSON = Winston.format.printf(({ level, message, label }) => {
-            return JSON.stringify({
+        const timestampFormatJSON = Winston.format.printf(({ level, message, label }) =>
+            JSON.stringify({
                 label,
                 level,
                 message,
                 timestamp : timestampFnc()
-            });
-        });
+            })
+        );
 
-        const timestampFormatText = Winston.format.printf(({ level, message, label }) => {
-            return `${timestampFnc()} [${label}] ${level}: ${message}`;
-        });
+        const timestampFormatText = Winston.format.printf(({ level, message, label }) =>
+            `${timestampFnc()} [${label}] ${level}: ${message}`
+        );
 
         LoggerConfiguration.logger = Winston.createLogger({
             format: timestampFormatJSON,

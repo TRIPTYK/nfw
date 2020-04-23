@@ -7,11 +7,11 @@ import ISerializer from "../../core/interfaces/serializer.interface";
  * This is a 'fake' serializer for non json-api auth response
  */
 export class AuthTokenSerializer implements ISerializer {
-    public deserialize(payload) {
+    public deserialize(payload): any {
         return payload;
     }
 
-    public serialize(accessToken: string, refreshToken: string, user: User) {
+    public serialize(accessToken: string, refreshToken: string, user: User): any {
         return {
             accessToken,
             refreshToken,

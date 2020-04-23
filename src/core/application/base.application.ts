@@ -1,5 +1,4 @@
 import * as Express from "express";
-import {Request, Response} from "express";
 import { RouteDefinition } from "../decorators/controller.decorator";
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { container } from "tsyringe";
@@ -8,22 +7,17 @@ export default abstract class BaseApplication {
     protected readonly app: Express.Application;
     protected controllers = [];
 
-    get App() {
-        return this.app;
-    }
-
-    constructor(controllers) {
+    public constructor(controllers) {
         this.app = Express();
         this.controllers = controllers;
     }
 
-    public init() {
+    public init(): void {
         this.setup();
     }
 
-    protected abstract setup();
-
-    protected async registerRoutes() {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    protected async registerRoutes(): Promise<Express.Router> {
         const mainRouter = Express.Router();
         for (const controller of this.controllers) {
             // This is our instantiated class
@@ -34,7 +28,7 @@ export default abstract class BaseApplication {
             // Our `routes` array containing all our routes for this controller
             const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
 
-            const middlewaresForController: { middleware: any , args: object }[] = Reflect.getMetadata("middlewares", controller);
+            const middlewaresForController: { middleware: any ; args: object }[] = Reflect.getMetadata("middlewares", controller);
             const router = Express.Router();
 
             if (middlewaresForController && middlewaresForController.length > 0) {
@@ -45,8 +39,8 @@ export default abstract class BaseApplication {
                     return (req, res, next) => {
                         try {
                             return realMiddleware.use(req, res, next, e.args);
-                        } catch (e) {
-                            return next(e);
+                        } catch (error) {
+                            return next(error);
                         }
                     };
                 }));
@@ -57,7 +51,7 @@ export default abstract class BaseApplication {
             // Iterate over all routes and register them to our express application
             for (const route of routes) {
                 let middlewaresWithArgs =
-                    Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any , args: object }[];
+                    Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any ; args: object }[];
 
                 if (!middlewaresWithArgs) {
                     middlewaresWithArgs = [];
@@ -67,7 +61,7 @@ export default abstract class BaseApplication {
 
                 const middlewares = [];
 
-                const controllerMiddleware = async (req: Request, res: Response, next) => {
+                const controllerMiddleware = async (req: Express.Request, res: Express.Response, next) => {
                     try {
                         const response = await instance[route.methodName](req, res);
                         if (!res.headersSent) {
@@ -98,5 +92,11 @@ export default abstract class BaseApplication {
         }
 
         return mainRouter;
+    }
+
+    protected abstract setup();
+
+    public get App(): Express.Application {
+        return this.app;
     }
 }
