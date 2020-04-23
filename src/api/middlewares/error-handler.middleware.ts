@@ -12,7 +12,7 @@ export default class ErrorHandlerMiddleware {
         next(err);
     }
 
-    public static exit(error: any, req: Request, res: Response): void {
+    public static exit(error: any, req: Request, res: Response, next: NextFunction): void {
         if (Array.isArray(error)) {
             const errs = error;
             const allErrors = [];
@@ -43,7 +43,7 @@ export default class ErrorHandlerMiddleware {
         }));
     }
 
-    public static notFound(req: Request, res: Response): void {
+    public static notFound(req: Request, res: Response , next: NextFunction): void {
         res.status(404);
         res.json(ErrorHandlerMiddleware.serializer.serializeError({
             detail: "Not found",

@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as dotenv from "dotenv";
 import { parseBool } from "../core/utils/string-parse.util";
 import { Environments } from "../api/enums/environments.enum";
+import * as yargs from "yargs";
 
 // tslint:disable-next-line: interface-over-type-literal
 type Configuration = {
@@ -86,6 +87,12 @@ export default class EnvironmentConfiguration {
     }
 
     public static guessCurrentEnvironment(): Environments {
+        const {argv : { env }} = yargs.options({
+            env: { type: "string" }
+        });
+
+        if (env) { return env };
+
         return ["production", "test", "staging", "development"].includes(process.env.NODE_ENV) ?
             process.env.NODE_ENV as Environments : Environments.Development;
     }
