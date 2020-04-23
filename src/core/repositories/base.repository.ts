@@ -6,14 +6,14 @@ import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import { BaseSerializer } from "../../api/serializers/base.serializer";
-import IRepository from "../interfaces/repository.interface";
+import RepositoryInterface from "../interfaces/repository.interface";
 import PaginationQueryParams from "../types/jsonapi";
 
 /**
  * Base Repository class , inherited for all current repositories
  */
 @EntityRepository()
-class BaseRepository<T> extends Repository<T> implements IRepository<T> {
+class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> {
 
     /**
      * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.
@@ -22,7 +22,7 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
      */
     public jsonApiRequest(query: any, allowedIncludes: string[] = [],
         {allowIncludes = true, allowSorting = true, allowPagination = true, allowFields = true, allowFilters = false}:
-        {allowIncludes?: boolean, allowSorting?: boolean, allowPagination?: boolean, allowFields?: boolean,
+        {allowIncludes?: boolean , allowSorting?: boolean , allowPagination?: boolean , allowFields?: boolean
             allowFilters?: boolean } = {}
     ): SelectQueryBuilder<T> {
         const currentTable = this.metadata.tableName;
@@ -49,18 +49,17 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
                 const noDashDotInclude = include.replace(/-|\./g, "");
 
                 // insensitive check of dash-dot includes for aliases
-                if (noDashDotIncludes.indexOf(noDashDotInclude) !== -1) {
+                if (noDashDotIncludes.includes(noDashDotInclude)) {
 
                     let property: string;
-                    let alias: string;
 
-                    if (include.indexOf(".") !== -1) {
+                    if (include.includes(".")) {
                         property = include;
                     } else {
                         property = `${currentTable}.${include}`;
                     }
 
-                    alias = dashify(include);
+                    const alias = dashify(include);
 
                     queryBuilder.leftJoinAndSelect(property, alias);
                 } else {
@@ -117,7 +116,7 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
 
             // need to use SqlString.escapeId in order to prevent SQL injection on orderBy()
             for (const field of sortFields) {
-                if (field[0] === "-") {  // JSON-API convention , when sort field starts with '-' order is DESC
+                if (field.startsWith("-")) {  // JSON-API convention , when sort field starts with '-' order is DESC
                     queryBuilder.addOrderBy(field.substr(1), "DESC");
                 } else {
                     queryBuilder.addOrderBy(field, "ASC");
@@ -152,39 +151,39 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
 
                         switch (strategy) {
                             case "like" :
-                                sqlExpression = (SqlString.format(`?? LIKE ?`, [key, value]));
+                                sqlExpression = (SqlString.format("?? LIKE ?", [key, value]));
                                 break ;
                             case "eq" :
-                                sqlExpression = SqlString.format(`?? = ?`, [key, value]);
+                                sqlExpression = SqlString.format("?? = ?", [key, value]);
                                 break ;
                             case "noteq" :
-                                sqlExpression = SqlString.format(`NOT ?? = ?`, [key, value]);
+                                sqlExpression = SqlString.format("NOT ?? = ?", [key, value]);
                                 break ;
                             case "in":
-                                sqlExpression = SqlString.format(`?? IN (?)`, [key, splitAndFilter(value, "+")]);
+                                sqlExpression = SqlString.format("?? IN (?)", [key, splitAndFilter(value, "+")]);
                                 break ;
                             case "notin" :
-                                sqlExpression = SqlString.format(`?? NOT IN (?)`, [key, splitAndFilter(value, "+")]);
+                                sqlExpression = SqlString.format("?? NOT IN (?)", [key, splitAndFilter(value, "+")]);
                                 break ;
                             case "btw":
                                 const andvalues = splitAndFilter(value, "+");
                                 if (andvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
-                                sqlExpression = SqlString.format(`?? BETWEEN ? AND ?`, [key, andvalues[0], andvalues[1]]);
+                                sqlExpression = SqlString.format("?? BETWEEN ? AND ?", [key, andvalues[0], andvalues[1]]);
                                 break ;
                             case "orsupeq":
-                                sqlExpression = SqlString.format(`?? >= ?`, [key, value]);
+                                sqlExpression = SqlString.format("?? >= ?", [key, value]);
                                 break;
                             case "andlesseq":
-                                sqlExpression = SqlString.format(`?? <= ?`, [key, value]);
+                                sqlExpression = SqlString.format("?? <= ?", [key, value]);
                                 break;
                             default:
                                 throw Boom.badRequest(`Unrecognized filter : ${strategy}`);
                         }
 
                         if (strategy.startsWith("or")) {
-                            method = qb.orWhere(sqlExpression);
+                            qb.orWhere(sqlExpression);
                         } else {
-                            method = qb.andWhere(sqlExpression);
+                            qb.andWhere(sqlExpression);
                         }
                     }
                 }
@@ -200,8 +199,8 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
      * Shortcut function to make a JSON-API findOne request on id key
      */
     public jsonApiFindOne(req: Request, id: any, allowedIncludes: string[] = [], options?:
-        { allowIncludes?: boolean; allowSorting?: boolean;
-            allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }
+        { allowIncludes?: boolean,allowSorting?: boolean
+            allowPagination?: boolean,allowFields?: boolean,allowFilters?: boolean }
     ): Promise<T> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .where(`${this.metadata.tableName}.id = :id`, {id})
@@ -212,8 +211,8 @@ class BaseRepository<T> extends Repository<T> implements IRepository<T> {
      * Shortcut function to make a JSON-API findMany request with data used for pagination
      */
     public jsonApiFind(req: Request, allowedIncludes: string[] = [], options?:
-        { allowIncludes?: boolean; allowSorting?: boolean;
-            allowPagination?: boolean; allowFields?: boolean; allowFilters?: boolean; }
+        { allowIncludes?: boolean,allowSorting?: boolean
+            allowPagination?: boolean,allowFields?: boolean,allowFilters?: boolean }
     ): Promise<[T[], number]> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .getManyAndCount();

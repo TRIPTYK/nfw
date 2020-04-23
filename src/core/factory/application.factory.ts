@@ -1,9 +1,8 @@
 import { Type } from "../types/global";
 import { container } from "tsyringe";
-import { UserSerializer } from "../../api/serializers/user.serializer";
 
 export default class ApplicationFactory {
-    public static create(application: Type<any>) {
+    public static create(application: Type<any>): any {
         const controllers: Type<any>[] = Reflect.getMetadata("controllers", application);
         const providers: Type<any>[] = Reflect.getMetadata("providers", application);
 

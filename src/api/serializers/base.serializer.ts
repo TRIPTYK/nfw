@@ -2,7 +2,7 @@ import {Request} from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
-import ISerializer from "../../core/interfaces/serializer.interface";
+import SerializerInterface from "../../core/interfaces/serializer.interface";
 
 export type SerializerParams = {
     pagination?: PaginationParams
@@ -60,7 +60,7 @@ export type JSONAPISerializerOptions = {
     whitelistOnDeserialize?: string[]
 };
 
-export abstract class BaseSerializer implements ISerializer {
+export abstract class BaseSerializer implements SerializerInterface {
     public static whitelist: string[] = [];
     public type: string;
     public serializer: JSONAPISerializer;

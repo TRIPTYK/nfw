@@ -1,4 +1,4 @@
-export default interface ISerializer {
-    serialize(...args);
-    deserialize(...args);
+export default interface SerializerInterface {
+    serialize(...args)
+    deserialize(...args)
 }

@@ -9,6 +9,7 @@ import { LoggerConfiguration } from "./config/logger.config";
 import { Environments } from "./api/enums/environments.enum";
 import ApplicationFactory from "./core/factory/application.factory";
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 module.exports = (async () => {
     let {argv : { env }} = yargs.options({
         env: { type: "string" }
@@ -39,7 +40,7 @@ module.exports = (async () => {
      */
     if (configuration.elastic.enabled) {
         try {
-            const connection = await ElasticSearchConfiguration.connect();
+            const connection = ElasticSearchConfiguration.connect();
             await connection.ping();
             LoggerConfiguration.logger.info(`Connection to ElasticSearch server established on url ${configuration.elastic.url}`);
         } catch (e) {
