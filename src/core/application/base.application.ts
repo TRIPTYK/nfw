@@ -8,7 +8,6 @@ export default abstract class BaseApplication {
     protected controllers = [];
 
     public constructor(controllers) {
-        let test = null;
         this.app = Express();
         this.controllers = controllers;
     }
