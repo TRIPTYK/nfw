@@ -6,11 +6,11 @@ import { Request , Response } from "express";
 
 @injectable()
 export default class FileUploadMiddleware extends BaseMiddleware {
-    constructor(@inject(MulterService) private multer: MulterService) {
+    public constructor(@inject(MulterService) private multer: MulterService) {
         super();
     }
 
-    public use(req: Request, res: Response, next: (err?: any) => void, args: any = {}) {
+    public use(req: Request, res: Response, next: (err?: any) => void, args: any = {}): any {
         const { type = "single" , fieldName = "document" } = args;
         const multerInstance = this.multer.makeMulter(StorageType.DISK, "./dist/uploads/documents", validateFile , 50000 );
 

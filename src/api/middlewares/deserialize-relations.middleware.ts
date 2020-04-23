@@ -9,7 +9,7 @@ import { Type } from "../../core/types/global";
 @injectable()
 export default class DeserializeRelationsMiddleware extends BaseMiddleware {
     public async use(req: Request, response: Response, next: NextFunction, args: {
-        schema?: JSONAPISerializerSchema,
+        schema?: JSONAPISerializerSchema
         specificRelations?: string[]
     }) {
         const payload = req.body;

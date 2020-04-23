@@ -140,12 +140,6 @@ module.exports = {
             "error",
             1
         ],
-        "max-len": [
-            "error",
-            {
-                "code": 150
-            }
-        ],
         "max-lines": [
             "error",
             500

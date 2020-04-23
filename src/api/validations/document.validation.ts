@@ -38,7 +38,7 @@ export const deleteDocument: Schema = {
  * @param cb
  */
 export const validateFile = (req,
-    file: {mimetype: string, destination: string, filename: string, fieldname: string, path: string, size: string},
+    file: {mimetype: string; destination: string; filename: string; fieldname: string; path: string; size: string},
     next) => {
     if (Object.values(MimeTypes).includes(file.mimetype as any)) {
         return next(null, true);

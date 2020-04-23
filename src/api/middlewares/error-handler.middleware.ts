@@ -4,13 +4,15 @@ import { LoggerConfiguration } from "../../config/logger.config";
 import { NextFunction , Request , Response } from "express";
 
 export default class ErrorHandlerMiddleware {
+    private static serializer = new JSONAPISerializer();
+
     public static log(err: any, req: Request, res: Response, next: NextFunction): void {
         const message = `${req.method} ${req.url} : ${err.message}`;
         LoggerConfiguration.logger.error(message);
         next(err);
     }
 
-    public static exit(error: any, req: Request, res: Response, next: NextFunction): void {
+    public static exit(error: any, req: Request, res: Response): void {
         if (Array.isArray(error)) {
             const errs = error;
             const allErrors = [];
@@ -41,13 +43,11 @@ export default class ErrorHandlerMiddleware {
         }));
     }
 
-    public static notFound(req: Request, res: Response , next: NextFunction): void {
+    public static notFound(req: Request, res: Response): void {
         res.status(404);
         res.json(ErrorHandlerMiddleware.serializer.serializeError({
             detail: "Not found",
             status: "404"
         }));
     }
-
-    private static serializer = new JSONAPISerializer();
 }

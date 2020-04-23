@@ -16,7 +16,7 @@ export class UserRepository extends BaseRepository<User> {
      * @param force
      * @returns token
      */
-    public async findAndGenerateAccessToken(email: string, refreshTokenOrPassword: string | RefreshToken): Promise<{user: User, accessToken: string }> {
+    public async findAndGenerateAccessToken(email: string, refreshTokenOrPassword: string | RefreshToken): Promise<{user: User; accessToken: string }> {
         const user = await this.findOne({email});
 
         if (!user) {
