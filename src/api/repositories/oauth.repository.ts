@@ -1,4 +1,4 @@
-import {EntityRepository, Repository, getRepository} from "typeorm";
+import {EntityRepository, Repository} from "typeorm";
 import { OAuthToken } from "../models/oauth-token.model";
 
 @EntityRepository(OAuthToken)

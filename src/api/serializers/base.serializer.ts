@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import {Request} from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";

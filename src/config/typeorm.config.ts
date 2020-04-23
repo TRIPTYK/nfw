@@ -8,7 +8,9 @@ import EnvironmentConfiguration from "./environment.config";
  * @inheritdoc https://http://typeorm.io
  */
 class TypeORMConfiguration {
-    static get ConfigurationObject() : ConnectionOptions {
+    private static connection: Connection;
+
+    public static get ConfigurationObject(): ConnectionOptions {
         const {config : {typeorm}} = EnvironmentConfiguration;
 
         return  {
@@ -32,7 +34,7 @@ class TypeORMConfiguration {
         };
     }
 
-    public static async connect() {
+    public static async connect(): Promise<Connection> {
         /** Singleton pattern */
         if (TypeORMConfiguration.connection) {
             return TypeORMConfiguration.connection;
@@ -40,8 +42,6 @@ class TypeORMConfiguration {
 
         return TypeORMConfiguration.connection = await createConnection(TypeORMConfiguration.ConfigurationObject);
     }
-
-    private static connection: Connection;
 }
 
 export {TypeORMConfiguration};

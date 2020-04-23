@@ -5,6 +5,7 @@
   "scripts": {
     "setup": "npm i && node ./init_scripts/setup",
     "deploy": "npm i && node ./init_scripts/deploy",
+    "lint": "./node_modules/.bin/eslint src/**/*.ts",
     "migration-generate": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:generate -n ",
     "migration-run": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:run",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",

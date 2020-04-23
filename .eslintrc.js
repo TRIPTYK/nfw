@@ -135,11 +135,7 @@ module.exports = {
         "guard-for-in": "off",
         "id-blacklist": "off",
         "id-match": "off",
-        "import/no-extraneous-dependencies": "error",
         "import/order": "off",
-        "jsdoc/check-alignment": "error",
-        "jsdoc/check-indentation": "error",
-        "jsdoc/newline-after-description": "error",
         "max-classes-per-file": [
             "error",
             1
@@ -231,39 +227,7 @@ module.exports = {
             }
         ],
         "spaced-comment": "error",
-        "unicorn/filename-case": "error",
         "use-isnan": "error",
-        "valid-typeof": "off",
-        "@typescript-eslint/tslint/config": [
-            "error",
-            {
-                "rules": {
-                    "import-spacing": true,
-                    "no-promise-as-boolean": true,
-                    "no-unnecessary-callback-wrapper": true,
-                    "no-unused-variable": true,
-                    "object-literal-sort-keys": true,
-                    "one-line": [
-                        true,
-                        "check-catch",
-                        "check-else",
-                        "check-finally",
-                        "check-open-brace",
-                        "check-whitespace"
-                    ],
-                    "static-this": true,
-                    "strict-comparisons": true,
-                    "whitespace": [
-                        true,
-                        "check-branch",
-                        "check-decl",
-                        "check-operator",
-                        "check-separator",
-                        "check-type",
-                        "check-typecast"
-                    ]
-                }
-            }
-        ]
+        "valid-typeof": "off"
     }
 };

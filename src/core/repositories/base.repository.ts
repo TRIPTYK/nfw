@@ -22,10 +22,10 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      */
     public jsonApiRequest(query: any, allowedIncludes: string[] = [],
         {allowIncludes = true, allowSorting = true, allowPagination = true, allowFields = true, allowFilters = false}:
-        {allowIncludes?: boolean , allowSorting?: boolean , allowPagination?: boolean , allowFields?: boolean
-            allowFilters?: boolean } = {}
+        {allowIncludes?: boolean ;allowSorting?: boolean ;allowPagination?: boolean ;allowFields?: boolean; allowFilters?: boolean } = {}
     ): SelectQueryBuilder<T> {
         const currentTable = this.metadata.tableName;
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const splitAndFilter = (string: string, symbol: string) => string
             .split(symbol)
             .map((e) => e.trim()).filter((str) => str !== "");  // split parameters and filter empty strings
@@ -79,6 +79,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
             /**
              * Recursive function to populate select statement with fields array
              */
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             const fillFields = (props: object | string, parents: string[] = []) => {
                 if (typeof props === "string") {
                     if (!parents.length) {
@@ -146,7 +147,6 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
                     const filtered: string[] = splitAndFilter(query.filter[key], ",");
                     for (const e of filtered) {
                         const [strategy, value] = e.split(":");
-                        let method;
                         let sqlExpression: string;
 
                         switch (strategy) {
@@ -199,8 +199,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      * Shortcut function to make a JSON-API findOne request on id key
      */
     public jsonApiFindOne(req: Request, id: any, allowedIncludes: string[] = [], options?:
-        { allowIncludes?: boolean,allowSorting?: boolean
-            allowPagination?: boolean,allowFields?: boolean,allowFilters?: boolean }
+    { allowIncludes?: boolean;allowSorting?: boolean ; allowPagination?: boolean;allowFields?: boolean;allowFilters?: boolean }
     ): Promise<T> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .where(`${this.metadata.tableName}.id = :id`, {id})
@@ -211,8 +210,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      * Shortcut function to make a JSON-API findMany request with data used for pagination
      */
     public jsonApiFind(req: Request, allowedIncludes: string[] = [], options?:
-        { allowIncludes?: boolean,allowSorting?: boolean
-            allowPagination?: boolean,allowFields?: boolean,allowFilters?: boolean }
+    { allowIncludes?: boolean;allowSorting?: boolean; allowPagination?: boolean;allowFields?: boolean;allowFilters?: boolean }
     ): Promise<[T[], number]> {
         return this.jsonApiRequest(req.query, allowedIncludes, options)
             .getManyAndCount();
@@ -223,7 +221,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      * @param req
      * @param serializer
      */
-    public async fetchRelated(req: Request, serializer: BaseSerializer) {
+    public async fetchRelated(req: Request, serializer: BaseSerializer): Promise<any> {
         const { id , relation } = req.params;
         let type = serializer.getSchemaData()["relationships"];
 
@@ -231,9 +229,6 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
             throw Boom.notFound("Relation not found");
         }
         type = type[relation]["type"];
-
-        let serializerImport = await import(`../serializers/${type}.serializer`);
-        serializerImport = Object.values(serializerImport)[0];
 
         const rel = await this.findOne(id, {relations : [relation]});
 
@@ -248,7 +243,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      *
      * @param req
      */
-    public async addRelationshipsFromRequest(req: Request)  {
+    public async addRelationshipsFromRequest(req: Request): Promise<any>  {
         const {id, relation} = req.params;
         const user = await this.findOne(id);
 
@@ -289,7 +284,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      *
      * @param req
      */
-    public async updateRelationshipsFromRequest(req: Request) {
+    public async updateRelationshipsFromRequest(req: Request): Promise<any> {
         const {id, relation} = req.params;
         const user = await this.findOne(id);
 
@@ -326,7 +321,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      *
      * @param req
      */
-    public async removeRelationshipsFromRequest(req: Request) {
+    public async removeRelationshipsFromRequest(req: Request): Promise<any> {
         const {id, relation} = req.params;
         const user = await this.findOne(id);
 
@@ -368,7 +363,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      * @param req
      * @param serializer
      */
-    public async fetchRelationshipsFromRequest(req: Request, serializer: BaseSerializer) {
+    public async fetchRelationshipsFromRequest(req: Request, serializer: BaseSerializer): Promise<any> {
         const {id, relation} = req.params;
 
         const user = await this.createQueryBuilder("relationQb")
@@ -381,7 +376,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
             throw Boom.notFound();
         }
 
-        let serialized = serializer.serialize(user);
+        const serialized = serializer.serialize(user);
 
         return serialized["data"]["relationships"][relation];
     }

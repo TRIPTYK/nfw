@@ -16,6 +16,7 @@ export class LoggerConfiguration {
         const {env} = EnvironmentConfiguration.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const timestampFnc = () => Moment().format("YYYY-MM-DD HH:mm:ss.SSS");
 
         const timestampFormatJSON = Winston.format.printf(({ level, message, label }) =>
