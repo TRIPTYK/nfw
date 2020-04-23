@@ -1,9 +1,10 @@
 name: Build
 
-on: 
+on:
   push:
-    branches:
-      - develop
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
 
 jobs:
   build:
@@ -13,4 +14,4 @@ jobs:
     - name: Build and test
       run: |
         npm install
-        tsc
+        ./node_modules/.bin/tsc
