@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es7"],
+    "lib": ["es7","DOM"],
     "target": "ES2017",
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
