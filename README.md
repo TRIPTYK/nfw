@@ -132,58 +132,7 @@ Run watching compilation :
 $ tsc --watch
 ```
 
-If required, yo can adapt typescript configuration in [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) :
-
-```javascript
-{
-  "compilerOptions": {
-    "lib": ["dom", "es5", "es6"],
-    "target": "es2017",
-    "module": "commonjs",
-    "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "sourceMap": false,
-    "outDir": "./dist/",
-    "plugins": [
-      { "name": "typescript-tslint-plugin" }
-    ]
-  },
-  "exclude" : [
-    "**/**/node_modules",
-    "node_modules"
-  ]
-}
-```
-
-## TypeORM configuration
-
-If you will use TypeORM as CLI, begin by update the ormconfig.json file and fill in with your own configuration :
-
-```javascript
-{
-  "type": "mysql",
-  "name": "default",
-  "host": "localhost",
-  "port": "3306",
-  "username": "root",
-  "password": "test123*",
-  "database": "nfw",
-  "logging": false,
-  "entities": [
-    "src/api/models/*.ts"
-  ],
-  "migrations": [
-    "src/migration/*.ts"
-  ],
-  "migrationsTableName": "migration_table",
-  "cli": {
-    "migrationsDir": "src/migration"
-  }
-}
-```
-
-More info about [ormconfig file](http://typeorm.io/#/using-ormconfig).
+If required, yo can adapt typescript configuration in [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
 
 ### Database migration
 
