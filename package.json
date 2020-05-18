@@ -9,12 +9,16 @@
     "migration-generate": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:generate -n ",
     "migration-run": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:run",
     "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
+    "seed-config": "./node_modules/.bin/ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
+    "seed-run": "./node_modules/.bin/ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
+    "schema-drop": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js schema:drop",
+    "schema-sync": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js schema:sync",
     "start": "./node_modules/.bin/tsc && node ./dist/src/app.bootstrap --env production",
     "test": "./node_modules/.bin/tsc && ./node_modules/.bin/mocha ./dist/test/*.js --reporter spec --timeout 10000 --colors --exit",
     "start-dev": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env development"
   },
   "engines": {
-    "node": ">=10.0"
+    "node": ">=10.16"
   },
   "repository": {
     "type": "git",
@@ -93,6 +97,7 @@
     "supertest": "^4.0.2",
     "tsyringe": "^4.1.0",
     "typeorm": "^0.2.22",
+    "typeorm-seeding": "^1.6.1",
     "typescript": "3.7.5",
     "uuid": "^3.3.3",
     "winston": "^3.2.1",

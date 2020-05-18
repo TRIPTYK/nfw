@@ -11,7 +11,10 @@ type Configuration = {
     port?: number
     url?: string
     authorized?: string | string[]
-    api?: string
+    api?: {
+        name : string,
+        version : string
+    }
     caching_enabled?: boolean
     auth_mode?: AuthModes
     jwt?: {
@@ -52,6 +55,16 @@ type Configuration = {
         migrationsDir: string
         entitiesDir: string
         migrations: string[]
+        seeds: string
+        factories: string
+    }
+    deploy?: {
+        ip: string
+        user: string
+        path: string
+        key: string
+        repo: string
+        ref: string
     }
     jimp?: {
         isActive: boolean
@@ -114,9 +127,21 @@ export default class EnvironmentConfiguration {
         applyObj.port = parseInt(envObj.PORT, 10);
         applyObj.url = envObj.URL;
         applyObj.authorized = envObj.AUTHORIZED.split(",");
-        applyObj.api = envObj.API_VERSION;
+        applyObj.api = {
+            version : envObj.API_VERSION,
+            name : envObj.API_NAME
+        };
         applyObj.caching_enabled = parseBool(envObj.REQUEST_CACHING);
         applyObj.auth_mode = (["jwt", "session"].includes(envObj.AUTH_MODE) ? envObj.AUTH_MODE : "jwt") as AuthModes;
+
+        applyObj.deploy = {
+            ip : envObj.DEPLOY_IP,
+            user : envObj.DEPLOY_USER,
+            path : envObj.DEPLOY_PATH,
+            ref : envObj.DEPLOY_REF,
+            repo : envObj.DEPLOY_REPO,
+            key : envObj.DEPLOY_KEY
+        }
 
         applyObj.jwt = {
             access_expires : parseInt(envObj.JWT_ACCESS_EXPIRATION_MINUTES, 10),
@@ -162,7 +187,9 @@ export default class EnvironmentConfiguration {
             tableName : envObj.TYPEORM_MIGRATIONS_TABLE_NAME,
             entitiesDir : envObj.TYPEORM_ENTITIES_DIR,
             migrationsDir : envObj.TYPEORM_MIGRATIONS_DIR,
-            migrations : envObj.TYPEORM_MIGRATIONS.split(",")
+            migrations : envObj.TYPEORM_MIGRATIONS.split(","),
+            seeds : envObj.TYPEORM_SEEDING_SEEDS,
+            factories : envObj.TYPEORM_SEEDING_FACTORIES
         };
 
         applyObj.jimp = {

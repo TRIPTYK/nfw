@@ -1,7 +1,12 @@
 // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
+import EnvironmentConfiguration from "./src/config/environment.config";
+
+const env = EnvironmentConfiguration.guessCurrentEnvironment();
+const envVariables = EnvironmentConfiguration.loadEnvironment(env);
+
 module.exports = {
   apps : [{
-    name: 'NFW-API',
+    name: envVariables.api.name,
     script: './dist/src/app.bootstrap.js',
     args: '',
     exec_mode: "fork",
@@ -10,7 +15,7 @@ module.exports = {
     restart_delay : 1,
     node_args: "--max-old-space-size=512",
     watch: false,
-    max_memory_restart: '1G',
+    max_memory_restart: '500M',
     env: {
       NODE_ENV: 'development'
     },
@@ -24,7 +29,7 @@ module.exports = {
   deploy : {
     production : {
       user : 'nodejs',
-      host : '<ip>',
+      host : envVariables.api.name,
       ssh_options : ["PasswordAuthentication=no","IdentityFile=<SSH_KEY>"],
       ref  : 'origin/develop',
       repo : 'git@github:TRIPTYK/nfw.git',

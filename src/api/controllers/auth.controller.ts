@@ -40,12 +40,12 @@ export default class AuthController {
     @MethodMiddleware(ValidationMiddleware, {schema : register})
     @MethodMiddleware(SecurityMiddleware)
     public async register(req: Request, res: Response): Promise<any> {
-        const user = this.repository.create(req.body as object);
+        let user = this.repository.create(req.body as object);
 
         const {config : {env}} = EnvironmentConfiguration; // load env
 
         user.role = [Environments.Test, Environments.Development].includes(env) ? Roles.Admin : Roles.User;
-        await this.repository.insert(user);
+        user = await this.repository.save(user);
         const accessToken = user.generateAccessToken();
         const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
         res.status(HttpStatus.CREATED);
