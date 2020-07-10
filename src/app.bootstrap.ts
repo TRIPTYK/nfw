@@ -24,9 +24,7 @@ module.exports = (async () => {
             process.exit(1);
         });
 
-    if (env !== Environments.Test) {
-        LoggerConfiguration.logger.info(`Connection to ${configuration.typeorm.type} server established on port ${configuration.typeorm.port}`);
-    }
+    LoggerConfiguration.logger.info(`Connection to ${configuration.typeorm.type} server established on port ${configuration.typeorm.port}`);
 
     /**
      * ELASTIC support , might change in future releases
@@ -60,15 +58,11 @@ module.exports = (async () => {
         HTTPS
             .createServer(credentials, SetupApp.App)
             .listen(configuration.port, () => {
-                if (env !== Environments.Test) {
-                    LoggerConfiguration.logger.info(`HTTPS server is now running on port ${configuration.port}`);
-                }
+                LoggerConfiguration.logger.info(`HTTPS server is now running on port ${configuration.port}`);
             });
     } else {
         SetupApp.App.listen( configuration.port, () => {
-            if (env !== Environments.Test) {
-                LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port}`);
-            }
+            LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port}`);
         });
     }
 

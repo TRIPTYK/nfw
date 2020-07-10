@@ -15,16 +15,10 @@ const register: Schema = {
         isEmail: true
     },
     firstname: {
-        isString : true,
-        isUppercase: {
-            negated: true,
-        }
+        isString : true
     },
     lastname: {
-        isString : true,
-        isUppercase: {
-            negated: true,
-        }
+        isString : true
     },
     password: {
         isEmpty : {
@@ -40,10 +34,7 @@ const register: Schema = {
                 }
             }
         },
-        isString : true,
-        isUppercase: {
-            negated: true,
-        }
+        isString : true
     }
 };
 

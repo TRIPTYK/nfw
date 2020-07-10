@@ -87,7 +87,7 @@ export default abstract class BaseApplication {
 
                 middlewares.push(controllerMiddleware);
 
-                router[route.requestMethod](`${route.path}`, middlewares);
+                router[route.requestMethod](route.path, middlewares);
             }
         }
 

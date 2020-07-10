@@ -9,9 +9,6 @@ const pkgInfo = require(process.cwd() + "/package.json");
 import * as request from "supertest";
 import {expect} from "chai";
 
-before(async () => {
-    global["server"] = await import("./../src/app.bootstrap");
-});
 
 describe("Express application", function() {
     it("Express instance type is function", function() {

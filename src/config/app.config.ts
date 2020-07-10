@@ -87,7 +87,7 @@ export class Application extends BaseApplication {
 
         const mainRouter = await this.registerRoutes();
 
-        this.app.use(`/api/${api}`, apiLimiter , mainRouter );
+        this.app.use(`/api/${api.version}`, apiLimiter , mainRouter );
 
         const passportConfig = new PassportConfig();
         passportConfig.init(this.app);

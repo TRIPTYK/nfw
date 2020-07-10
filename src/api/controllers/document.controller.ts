@@ -112,15 +112,15 @@ export default class DocumentController {
     public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
 
-        let saved = await this.repository.preload({
-            ...file, ...{id : req.params.documentId}
-        } as any);
+        const originalDocument = await this.repository.findOne(req.params.documentId);
 
-        if (saved === undefined) {
+        if (originalDocument === undefined) {
             throw Boom.notFound("Document not found");
         }
 
-        saved = await this.repository.save(saved);
+        await originalDocument.removeAssociatedFiles();
+
+        const saved = await this.repository.save(this.repository.merge(originalDocument,file as any));
 
         return this.serializer.serialize(saved);
     }
@@ -142,6 +142,7 @@ export default class DocumentController {
             throw Boom.notFound("Document not found");
         }
 
+        await document.removeAssociatedFiles();
         await this.repository.remove(document);
 
         res.sendStatus(HttpStatus.NO_CONTENT).end();
