@@ -104,7 +104,7 @@ export default class EnvironmentConfiguration {
             env: { type: "string" }
         });
 
-        if (env) { return env };
+        if (env && ["production", "test", "staging", "development"].includes(env)) { return env as Environments };
 
         return ["production", "test", "staging", "development"].includes(process.env.NODE_ENV) ?
             process.env.NODE_ENV as Environments : Environments.Development;
