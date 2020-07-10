@@ -1,5 +1,5 @@
 import { define } from "typeorm-seeding";
-import Faker from 'faker';
+import Faker from "faker";
 import { User } from "../api/models/user.model";
 import { Roles } from "../api/enums/role.enum";
 

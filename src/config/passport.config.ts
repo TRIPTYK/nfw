@@ -93,9 +93,8 @@ class PassportConfig {
         async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: object, cb): Promise<any> => {
             try {
                 const tokenRepo = getCustomRepository(OAuthTokenRepository);
-                const reqUser: User = req.user;
-                await tokenRepo.oAuthLogin(reqUser, {service, accessToken, refreshToken});
-                return cb(null, reqUser);
+                await tokenRepo.oAuthLogin(req.user, {service, accessToken, refreshToken});
+                return cb(null, req.user);
             } catch (err) {
                 return cb(err);
             }

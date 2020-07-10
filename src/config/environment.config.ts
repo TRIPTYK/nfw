@@ -12,8 +12,8 @@ type Configuration = {
     url?: string
     authorized?: string | string[]
     api?: {
-        name : string,
-        version : string
+        name: string
+        version: string
     }
     caching_enabled?: boolean
     auth_mode?: AuthModes

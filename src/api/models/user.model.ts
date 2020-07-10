@@ -25,6 +25,7 @@ import { Environments } from "../enums/environments.enum";
 
 @Entity()
 export class User extends BaseModel {
+
     @PrimaryGeneratedColumn()
     public id: number;
 
@@ -94,6 +95,28 @@ export class User extends BaseModel {
         Object.assign(this, payload);
     }
 
+    @BeforeUpdate()
+    @BeforeInsert()
+    public checkAvatar(): void {
+        if (this.avatar) {
+            if (!(this.avatar.mimetype in ImageMimeTypes)) {
+                throw Boom.notAcceptable("Wrong document type");
+            }
+        }
+    }
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    public async hashPassword(): Promise<boolean> {
+        try {
+            const rounds = EnvironmentConfiguration.config.env === Environments.Test ? 1 : 10;
+            this.password = await Bcrypt.hash(this.password, rounds);
+            return true;
+        } catch (error) {
+            throw Boom.badImplementation(error.message);
+        }
+    }
+
     /**
      *
      */
@@ -115,27 +138,5 @@ export class User extends BaseModel {
      */
     public passwordMatches(password: string): Promise<boolean> {
         return Bcrypt.compare(password, this.password);
-    }
-
-    @BeforeUpdate()
-    @BeforeInsert()
-    public checkAvatar(): void {
-        if (this.avatar) {
-            if (!(this.avatar.mimetype in ImageMimeTypes)) {
-                throw Boom.notAcceptable("Wrong document type");
-            }
-        }
-    }
-
-    @BeforeInsert()
-    @BeforeUpdate()
-    public async hashPassword(): Promise<boolean> {
-        try {
-            const rounds = EnvironmentConfiguration.config.env === Environments.Test ? 1 : 10;
-            this.password = await Bcrypt.hash(this.password, rounds);
-            return true;
-        } catch (error) {
-            throw Boom.badImplementation(error.message);
-        }
     }
 }
