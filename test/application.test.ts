@@ -2,43 +2,15 @@
 process.env.NODE_ENV = "test";
 
 // Require modules to test
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkgInfo = require(process.cwd() + "/package.json");
 
 // Require the dev-dependencies
 import * as request from "supertest";
 import {expect} from "chai";
-import * as fixtures from "./fixtures/index";
-import * as faker from "faker";
 
 before(async () => {
     global["server"] = await import("./../src/app.bootstrap");
-
-    // global user
-    const agent = request.agent(global["server"]);
-    const credentials = fixtures.user({
-        email: faker.internet.email(),
-        firstname: faker.name.firstName(),
-        lastname: faker.name.lastName(),
-        password: faker.internet.password(8, true),
-        role: "admin",
-        services: {},
-        username: faker.internet.userName(),
-    });
-
-    return agent
-        .post("/api/v1/auth/register")
-        .send(credentials)
-        .set("Accept", "application/vnd.api+json")
-        .set("Content-Type", "application/vnd.api+json")
-        .then(function(response) {
-            expect(response.status).to.equal(201);
-            global["login"] = {
-                accessToken: response.body["accessToken"],
-                email : response.body.user["email"],
-                refreshToken: response.body["refreshToken"],
-                userId : response.body.user["id"]
-            };
-        });
 });
 
 describe("Express application", function() {
@@ -55,14 +27,4 @@ describe("Express application", function() {
             .get("/api/v1/status")
             .expect(200, done);
     });
-});
-
-after(async () => {
-    await request(global["server"])
-        .delete(`/api/v1/users/${global["login"]["userId"]}`)
-        .set("Authorization", `Bearer ${global["login"]["accessToken"]}`)
-        .then((response) => {
-            delete global["server"];
-            expect(response.status).to.equal(204);
-        });
 });

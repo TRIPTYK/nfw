@@ -13,9 +13,9 @@
     "seed-run": "./node_modules/.bin/ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
     "schema-drop": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js schema:drop",
     "schema-sync": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js schema:sync",
-    "start": "./node_modules/.bin/tsc && node ./dist/src/app.bootstrap --env production",
-    "test": "./node_modules/.bin/tsc && ./node_modules/.bin/mocha ./dist/test/*.js --reporter spec --timeout 10000 --colors --exit",
-    "start-dev": "./node_modules/.bin/ts-node-dev --respawn --transpileOnly ./src/app.bootstrap.ts --env development"
+    "start": "NODE_ENV=production ./node_modules/.bin/tsc && node ./dist/src/app.bootstrap",
+    "test": "NODE_ENV=test ./node_modules/.bin/tsc && NODE_ENV=test npm run schema-drop && NODE_ENV=test npm run schema-sync && NODE_ENV=test npm run seed-run && NODE_ENV=test ./node_modules/.bin/mocha ./dist/test/*.js --reporter spec --timeout 10000 --colors --exit",
+    "start-dev": "NODE_ENV=development ./node_modules/.bin/ts-node-dev --respawn --transpile-only ./src/app.bootstrap.ts --env development"
   },
   "engines": {
     "node": ">=10.16"
@@ -47,17 +47,15 @@
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^7.5.0",
-    "@hapi/boom": "^8.0.0",
-    "@hapi/joi": "^17.0.2",
+    "@hapi/boom": "^9.1.0",
+    "@hapi/joi": "^17.1.1",
     "axios": "^0.19.1",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
-    "chai-http": "^4.2.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "cross-spawn": "latest",
     "dashify": "^2.0.0",
-    "dateformat": "^3.0.3",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "express": "^4.17.1",
@@ -75,13 +73,10 @@
     "mocha": "^6.1.4",
     "moment-timezone": "^0.5.27",
     "mongodb": "^3.5.4",
-    "mongoose": "^5.9.3",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "mysql2": "^2.1.0",
     "node-cache": "^5.1.0",
-    "node-notifier": "^6.0.0",
-    "oracledb": "^4.1.0",
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
@@ -92,13 +87,12 @@
     "passport-outlook": "^2.2.1",
     "pluralize": "^8.0.0",
     "reflect-metadata": "^0.1.13",
-    "request": "^2.88.0",
     "sqlstring": "^2.3.1",
     "supertest": "^4.0.2",
     "tsyringe": "^4.1.0",
     "typeorm": "^0.2.22",
     "typeorm-seeding": "^1.6.1",
-    "typescript": "3.9.3",
+    "typescript": "^3.9.3",
     "uuid": "^3.3.3",
     "winston": "^3.2.1",
     "xss": "^1.0.6",
@@ -127,6 +121,7 @@
     "leasot": "^8.2.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typedoc": "^0.15.0",
-    "typestrict": "^1.0.2"
+    "typestrict": "^1.0.2",
+    "chai-http": "^4.2.1"
   }
 }
