@@ -14,7 +14,7 @@
     "schema-drop": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js schema:drop",
     "schema-sync": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js schema:sync",
     "start": "NODE_ENV=production ./node_modules/.bin/tsc && node ./dist/src/app.bootstrap",
-    "test": "NODE_ENV=test && mkdir -p ./dist/uploads/documents &&  ./node_modules/.bin/ts-mocha ./test/*.ts --require ./test/hooks.ts --reporter spec --timeout 10000 --colors --exit",
+    "test": "NODE_ENV=test && mkdir -p ./dist/uploads/documents && ./node_modules/.bin/nyc ./node_modules/.bin/ts-mocha ./test/*.ts --require ./test/hooks.ts --reporter spec --timeout 10000 --colors --exit",
     "start-dev": "NODE_ENV=development ./node_modules/.bin/ts-node-dev --respawn --transpile-only ./src/app.bootstrap.ts --env development"
   },
   "engines": {
@@ -99,6 +99,7 @@
     "yargs": "^15.1.0"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/bcrypt": "^3.0.0",
     "@types/body-parser": "^1.17.1",
     "@types/boom": "^7.3.0",
@@ -121,7 +122,10 @@
     "jenkins": "^0.27.0",
     "jsonapi-typescript": "^0.1.3",
     "leasot": "^8.2.0",
+    "nyc": "^15.1.0",
+    "source-map-support": "^0.5.19",
     "ts-mocha": "^7.0.0",
+    "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "typedoc": "^0.15.0",
     "typestrict": "^1.0.2"
