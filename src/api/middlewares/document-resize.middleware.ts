@@ -5,7 +5,7 @@ import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 
 export class DocumentResizeMiddleware extends BaseMiddleware {
-    public use(req: Request, res: Response, next: NextFunction, args: any) {
+    public use(req: Request, res: Response, next: NextFunction) {
         const { jimp } = EnvironmentConfiguration.config;
 
         try {

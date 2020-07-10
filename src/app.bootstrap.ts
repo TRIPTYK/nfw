@@ -3,7 +3,6 @@ import * as Fs from "fs";
 import * as HTTPS from "https";
 import {TypeORMConfiguration} from "./config/typeorm.config";
 import {ElasticSearchConfiguration} from "./config/elastic.config";
-import yargs = require("yargs");
 import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";
 import { Environments } from "./api/enums/environments.enum";

@@ -18,6 +18,7 @@ import { UserSerializer } from "../serializers/user.serializer";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
 import { injectable } from "tsyringe";
+import { User } from "../models/user.model";
 
 /**
  * Authentification Controller!
@@ -96,7 +97,7 @@ export default class AuthController {
 
     @Post("/oAuth")
     public async oAuth(req: Request): Promise<any> {
-        const user = req.user;
+        const user = req.user as User;
         const accessToken = user.generateAccessToken();
         const token = await this.refreshRepository.generateNewRefreshToken(user);
         return new AuthTokenSerializer().serialize(accessToken, token.refreshToken, user);
