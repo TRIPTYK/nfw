@@ -15,8 +15,8 @@ export default class ValidationMiddleware extends BaseMiddleware {
         const errors = [];
 
         for (const r of res) {
-            if (r.errors.length !== 0) {
-                errors.push(r.errors);
+            if (r.array().length !== 0) {
+                errors.push(r.array());
             }
         }
 
