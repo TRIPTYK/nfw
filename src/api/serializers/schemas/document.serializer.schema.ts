@@ -7,7 +7,7 @@ export default class DocumentSerializerSchema {
     /**
      * Allowed serialized elements
      */
-    public static serialize: string[] = ["fieldname", "filename", "path", "mimetype", "size", "createdAt"];
+    public static serialize: string[] = ["fieldname", "filename", "path", "mimetype", "size", "created_at"];
 
     /**
      * Allowed deserialize elements

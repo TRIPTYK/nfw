@@ -2,11 +2,9 @@ import {
     BeforeInsert,
     BeforeUpdate,
     Column,
-    CreateDateColumn,
     Entity, JoinColumn,
     OneToMany, OneToOne,
     PrimaryGeneratedColumn,
-    UpdateDateColumn
 } from "typeorm";
 
 
@@ -69,24 +67,16 @@ export class User extends BaseModel {
     })
     public role: Roles;
 
-    @CreateDateColumn()
-    public createdAt;
-
-    @UpdateDateColumn({
-        nullable: true
-    })
-    public updatedAt;
-
     @Column({
         default: null,
         type: Date
     })
-    public deletedAt;
+    public deleted_at;
 
     @OneToMany(() => Document, (document) => document.user)
     public documents: Document[];
 
-    @OneToOne(() => Document, (document) => document.userAvatar)
+    @OneToOne(() => Document, (document) => document.user_avatar)
     @JoinColumn()
     public avatar: Document;
 

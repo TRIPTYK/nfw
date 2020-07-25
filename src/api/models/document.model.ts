@@ -60,12 +60,12 @@ export class Document extends BaseModel {
     public user: User;
 
     @OneToOne(() => User, (avatar) => avatar.avatar)
-    public userAvatar: User;
+    public user_avatar: User;
 
     @Column({
         default: null
     })
-    public deletedAt: Date;
+    public deleted_at: Date;
 
     public constructor(payload: Partial<Document> = {}) {
         super();

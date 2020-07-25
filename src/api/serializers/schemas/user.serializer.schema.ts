@@ -7,7 +7,7 @@ export default class UserSerializerSchema {
     /**
      * Allowed serialized elements
      */
-    public static serialize: string[] = ["username", "email", "firstname", "lastname", "role", "createdAt", "updatedAt", "user"];
+    public static serialize: string[] = ["username", "email", "firstname", "lastname", "role", "created_at", "updated_at", "user"];
 
     /**
      * Allowed deserialize elements
