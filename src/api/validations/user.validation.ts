@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Roles} from "../enums/role.enum";
-import {Schema} from "express-validator";
 import { UserRepository } from "../repositories/user.repository";
 import { getCustomRepository } from "typeorm";
+import { ValidationSchema } from "../../core/types/validation";
+import { User } from "../models/user.model";
 
-export const changePassword: Schema = {
+export const changePassword: ValidationSchema<any> = {
     new_password: {
         exists: true
     },
@@ -13,9 +14,9 @@ export const changePassword: Schema = {
     }
 };
 
-// GET /v1/users/userId
-export const getUser: Schema = {
-    userId: {
+// GET /v1/users/id
+export const getUser: ValidationSchema<User> = {
+    id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
@@ -24,7 +25,7 @@ export const getUser: Schema = {
 };
 
 // POST /v1/users
-export const createUser: Schema = {
+export const createUser: ValidationSchema<User> = {
     email: {
         custom: {
             options: async (value) => {
@@ -68,8 +69,8 @@ export const createUser: Schema = {
     }
 };
 
-// PATCH /v1/users/:userId
-export const updateUser: Schema = {
+// PATCH /v1/users/:id
+export const updateUser: ValidationSchema<User> = {
     email: {
         isEmail: true,
         optional: true
@@ -95,7 +96,7 @@ export const updateUser: Schema = {
         },
         optional: true
     },
-    userId: {
+    id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,

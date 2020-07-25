@@ -35,9 +35,9 @@ export default class UserController {
         return this.serializer.serialize(req.user);
     }
 
-    @Get("/:userId")
+    @Get("/:id")
     public async get(req: Request): Promise<void> {
-        const user = await this.repository.jsonApiFindOne(req, req.params.userId, userRelations);
+        const user = await this.repository.jsonApiFindOne(req, req.params.id, userRelations);
 
         if (!user) {
             throw Boom.notFound("User not found");
@@ -56,8 +56,8 @@ export default class UserController {
         return this.serializer.serialize(saved);
     }
 
-    @Patch("/:userId")
-    @Put("/:userId")
+    @Patch("/:id")
+    @Put("/:id")
     @MethodMiddleware(ValidationMiddleware, { schema: updateUser })
     public async update(req: Request): Promise<any> {
         if (!req.body.password) {
@@ -65,7 +65,7 @@ export default class UserController {
         }
 
         let saved = await this.repository.preload({
-            ...req.body, ...{id : req.params.userId}
+            ...req.body, ...{id : req.params.id}
         });
 
         if (saved === undefined) {
@@ -126,9 +126,9 @@ export default class UserController {
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    @Delete("/:userId")
+    @Delete("/:id")
     public async remove(req: Request, res: Response): Promise<any> {
-        const user = await this.repository.findOne(req.params.userId);
+        const user = await this.repository.findOne(req.params.id);
 
         if (!user) {
             throw Boom.notFound();

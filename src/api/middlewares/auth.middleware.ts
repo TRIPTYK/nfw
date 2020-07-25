@@ -29,7 +29,7 @@ export default class AuthMiddleware extends BaseMiddleware {
         }
 
         if (roles === Roles.User) {
-            if (user.role !== Roles.Admin && req.params.userId !== user.id.toString()) {
+            if (user.role !== Roles.Admin && req.params.id !== user.id.toString()) {
                 return next(Boom.forbidden("Forbidden area"));
             }
         } else if (!roles.includes(user.role)) {

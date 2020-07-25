@@ -1,9 +1,10 @@
-import {Schema} from "express-validator";
 import {getCustomRepository} from "typeorm";
 import { UserRepository } from "../repositories/user.repository";
+import { ValidationSchema } from "../../core/types/validation";
+import { User } from "../models/user.model";
 
 // POST /v1/auth/register
-const register: Schema = {
+const register: ValidationSchema<User> = {
     email: {
         custom: {
             options: async (value) => {
@@ -39,7 +40,7 @@ const register: Schema = {
 };
 
 // POST /v1/auth/login
-const login: Schema = {
+const login: ValidationSchema<User> = {
     email: {
         isEmail: true
     },
@@ -53,7 +54,7 @@ const login: Schema = {
 };
 
 // POST /v1/auth/refresh
-const refresh: Schema = {
+const refresh: ValidationSchema<any> = {
     refreshToken : {
         exists : true,
         isString : true

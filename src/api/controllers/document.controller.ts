@@ -57,7 +57,7 @@ export default class DocumentController {
     }
 
     /**
-     * Retrieve one document according to :documentId
+     * Retrieve one document according to :id
      *
      * @param {Object}req Request
      * @param {Object}res Response
@@ -65,9 +65,9 @@ export default class DocumentController {
      *
      * @public
      */
-    @Get("/:documentId")
+    @Get("/:id")
     public async get(req: Request): Promise<any> {
-        const document = await this.repository.jsonApiFindOne(req, req.params.documentId, documentRelations);
+        const document = await this.repository.jsonApiFindOne(req, req.params.id, documentRelations);
 
         if (!document) {
             throw Boom.notFound("Document not found");
@@ -104,15 +104,15 @@ export default class DocumentController {
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    @Patch("/:documentId")
-    @Put("/:documentId")
+    @Patch("/:id")
+    @Put("/:id")
     @MethodMiddleware(ValidationMiddleware, {schema : updateDocument})
     @MethodMiddleware(FileUploadMiddleware)
     @MethodMiddleware(DocumentResizeMiddleware)
     public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
 
-        const originalDocument = await this.repository.findOne(req.params.documentId);
+        const originalDocument = await this.repository.findOne(req.params.id);
 
         if (originalDocument === undefined) {
             throw Boom.notFound("Document not found");
@@ -126,7 +126,7 @@ export default class DocumentController {
     }
 
     /**
-     * Delete one document according to :documentId
+     * Delete one document according to :id
      *
      * @param {Object}req Request
      * @param {Object}res Response
@@ -134,9 +134,9 @@ export default class DocumentController {
      *
      * @public
      */
-    @Delete("/:documentId")
+    @Delete("/:id")
     public async remove(req: Request, res: Response): Promise<any> {
-        const document = await this.repository.findOne(req.params.documentId);
+        const document = await this.repository.findOne(req.params.id);
 
         if (!document) {
             throw Boom.notFound("Document not found");

@@ -1,10 +1,11 @@
-// GET /v1/documents/:documentId
-import {Schema} from "express-validator";
+// GET /v1/documents/:id
 import { MimeTypes } from "../enums/mime-type.enum";
 import * as Boom from "@hapi/boom";
+import { Document } from "../models/document.model";
+import { ValidationSchema } from "../../core/types/validation";
 
-export const getDocument: Schema = {
-    documentId: {
+export const getDocument: ValidationSchema<Document> = {
+    id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
@@ -12,9 +13,9 @@ export const getDocument: Schema = {
     }
 };
 
-// PATCH /v1/documents/:documentId
-export const updateDocument: Schema = {
-    documentId: {
+// PATCH /v1/documents/:id
+export const updateDocument: ValidationSchema<Document> = {
+    id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
@@ -22,9 +23,9 @@ export const updateDocument: Schema = {
     }
 };
 
-// DELETE /v1/documents/:documentId
-export const deleteDocument: Schema = {
-    documentId: {
+// DELETE /v1/documents/:id
+export const deleteDocument: ValidationSchema<Document> = {
+    id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
