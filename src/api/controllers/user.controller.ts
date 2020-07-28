@@ -4,7 +4,7 @@ import {Request , Response} from "express";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
 import { UserRepository } from "../repositories/user.repository";
-import { Controller, Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware } from "../../core/decorators/controller.decorator";
+import { Controller, Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware, JsonApiControllers } from "../../core/decorators/controller.decorator";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import SecurityMiddleware from "../middlewares/security.middleware";
@@ -14,22 +14,17 @@ import { createUser, updateUser } from "../validations/user.validation";
 import DeserializeRelationsMiddleware from "../middlewares/deserialize-relations.middleware";
 import UserSchema from "../serializers/schemas/user.serializer.schema";
 import { autoInjectable } from "tsyringe";
-import { getCustomRepository } from "typeorm";
 import PaginationQueryParams from "../../core/types/jsonapi";
 import { User } from "../models/user.model";
+import { JsonApiRegistry } from "../../core/application/registry.application";
+import JsonApiController from "../../core/controllers/json-api.controller";
 
-@Controller("users")
+@JsonApiControllers("users",User)
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 @RouteMiddleware(DeserializeMiddleware, UserSerializer)
 @RouteMiddleware(SecurityMiddleware)
 @autoInjectable()
-export default class UserController {
-    private repository: UserRepository;
-
-    public constructor( private serializer?: UserSerializer ) {
-        this.repository = getCustomRepository(UserRepository);
-    }
-
+export default class UserController extends JsonApiController<User> {
     @Get("/profile")
     @MethodMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
     public profile(req: Request): Promise<any> {

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { Type } from "../types/global";
+import { BaseModel } from "../models/base.model";
 
 /**
  *
@@ -9,6 +10,21 @@ import { Type } from "../types/global";
 export function Controller(routeName: string): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
         Reflect.defineMetadata("routeName", routeName, target);
+
+        if (! Reflect.hasMetadata("routes", target)) {
+            Reflect.defineMetadata("routes", [], target);
+        }
+    };
+}
+
+/**
+ *
+ * @param routeName
+ */
+export function JsonApiControllers(routeName: string,entity: Type<any>): ClassDecorator {
+    return function <TFunction extends Function>(target: TFunction): void {
+        Reflect.defineMetadata("routeName", routeName, target);
+        Reflect.defineMetadata("entity", entity, target.prototype);
 
         if (! Reflect.hasMetadata("routes", target)) {
             Reflect.defineMetadata("routes", [], target);

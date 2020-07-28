@@ -20,7 +20,6 @@ import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 
-
 @Entity()
 export class User extends BaseModel {
 
