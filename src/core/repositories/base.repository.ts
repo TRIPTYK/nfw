@@ -6,14 +6,13 @@ import * as dashify from "dashify";
 import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import { BaseSerializer } from "../../api/serializers/base.serializer";
-import RepositoryInterface from "../interfaces/repository.interface";
 import PaginationQueryParams from "../types/jsonapi";
 
 /**
  * Base Repository class , inherited for all current repositories
  */
 @EntityRepository()
-class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> {
+class BaseRepository<T> extends Repository<T> {
 
     /**
      * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.
@@ -221,7 +220,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      * @param req
      * @param serializer
      */
-    public async fetchRelated(req: Request, serializer: BaseSerializer): Promise<any> {
+    public async fetchRelated(req: Request, serializer: BaseSerializer<T>): Promise<any> {
         const { id , relation } = req.params;
         let type = serializer.getSchemaData()["relationships"];
 
@@ -363,7 +362,7 @@ class BaseRepository<T> extends Repository<T> implements RepositoryInterface<T> 
      * @param req
      * @param serializer
      */
-    public async fetchRelationshipsFromRequest(req: Request, serializer: BaseSerializer): Promise<any> {
+    public async fetchRelationshipsFromRequest(req: Request, serializer: BaseSerializer<T>): Promise<any> {
         const {id, relation} = req.params;
 
         const user = await this.createQueryBuilder("relationQb")

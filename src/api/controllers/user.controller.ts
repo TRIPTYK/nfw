@@ -16,6 +16,7 @@ import UserSchema from "../serializers/schemas/user.serializer.schema";
 import { autoInjectable } from "tsyringe";
 import { getCustomRepository } from "typeorm";
 import PaginationQueryParams from "../../core/types/jsonapi";
+import { User } from "../models/user.model";
 
 @Controller("users")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
@@ -32,7 +33,7 @@ export default class UserController {
     @Get("/profile")
     @MethodMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
     public profile(req: Request): Promise<any> {
-        return this.serializer.serialize(req.user);
+        return this.serializer.serialize(req.user as User);
     }
 
     @Get("/:id")

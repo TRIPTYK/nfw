@@ -1,67 +1,66 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import {Request} from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
 import SerializerInterface from "../../core/interfaces/serializer.interface";
 
 export type SerializerParams = {
-    pagination?: PaginationParams
+    pagination?: PaginationParams;
 };
 
 export type PaginationParams = {
-    total: number
-    url: string
-    page: number
-    size: number
+    total: number;
+    url: string;
+    page: number;
+    size: number;
 };
 
 export type JSONAPISerializerSchema = {
-    id?: string
-    type: string
-    blacklist?: string[]
-    whitelist?: string[]
-    jsonapiObject?: boolean
-    links?: JSONAPISerializerCustom
-    topLevelMeta?: any
-    topLevelLinks?: JSONAPISerializerCustom
-    meta?: JSONAPISerializerCustom
-    relationships?: { [key: string]: JSONAPISerializerSchema }
-    convertCase?: "kebab-case" | "snake_case" | "camelCase"
-    unconvertCase?: "kebab-case" | "snake_case" | "camelCase"
-    blacklistOnDeserialize?: string[]
-    whitelistOnDeserialize?: string[]
+    id?: string;
+    type: string;
+    blacklist?: string[];
+    whitelist?: string[];
+    jsonapiObject?: boolean;
+    links?: JSONAPISerializerCustom;
+    topLevelMeta?: any;
+    topLevelLinks?: JSONAPISerializerCustom;
+    meta?: JSONAPISerializerCustom;
+    relationships?: { [key: string]: JSONAPISerializerSchema };
+    convertCase?: "kebab-case" | "snake_case" | "camelCase";
+    unconvertCase?: "kebab-case" | "snake_case" | "camelCase";
+    blacklistOnDeserialize?: string[];
+    whitelistOnDeserialize?: string[];
 };
 
 export type JSONAPISerializerCustom = string | ((arg1?: object, arg2?: object) => object | string);
 
 export type JSONAPISerializerRelation = {
-    type: JSONAPISerializerCustom
-    alternativeKey?: string
-    schema?: string
-    links?: JSONAPISerializerCustom
-    meta?: JSONAPISerializerCustom
-    deserialize?: JSONAPISerializerCustom
+    type: JSONAPISerializerCustom;
+    alternativeKey?: string;
+    schema?: string;
+    links?: JSONAPISerializerCustom;
+    meta?: JSONAPISerializerCustom;
+    deserialize?: JSONAPISerializerCustom;
 };
 
 export type JSONAPISerializerOptions = {
-    id?: string
-    blacklist?: string[]
-    whitelist?: string[]
-    jsonapiObject?: boolean
-    links?: JSONAPISerializerCustom
-    topLevelMeta?: JSONAPISerializerCustom
-    topLevelLinks?: JSONAPISerializerCustom
-    meta?: JSONAPISerializerCustom
-    relationships?: { [key: string]: JSONAPISerializerRelation }
-    convertCase?: "kebab-case" | "snake_case" | "camelCase"
+    id?: string;
+    blacklist?: string[];
+    whitelist?: string[];
+    jsonapiObject?: boolean;
+    links?: JSONAPISerializerCustom;
+    topLevelMeta?: JSONAPISerializerCustom;
+    topLevelLinks?: JSONAPISerializerCustom;
+    meta?: JSONAPISerializerCustom;
+    relationships?: { [key: string]: JSONAPISerializerRelation };
+    convertCase?: "kebab-case" | "snake_case" | "camelCase";
     // unconvert
-    unconvertCase?: "kebab-case" | "snake_case" | "camelCase"
-    blacklistOnDeserialize?: string[]
-    whitelistOnDeserialize?: string[]
+    unconvertCase?: "kebab-case" | "snake_case" | "camelCase";
+    blacklistOnDeserialize?: string[];
+    whitelistOnDeserialize?: string[];
 };
 
-export abstract class BaseSerializer implements SerializerInterface {
+export abstract class BaseSerializer<T> implements SerializerInterface<T> {
     public static whitelist: string[] = [];
     public type: string;
     public serializer: JSONAPISerializer;
@@ -75,6 +74,22 @@ export abstract class BaseSerializer implements SerializerInterface {
         this.type = schema.type;
 
         this.registerFromSchema(schema);
+    }
+
+    public serializeAsync(payload: T | T[], meta?: object): any {
+        return this.serializer.serializeAsync(this.type, payload, meta);
+    }
+
+    public deserializeAsync(payload: any): T | T[] {
+        return this.serializer.deserializeAsync(this.type, payload);
+    }
+
+    public serialize(payload: T | T[], meta?: object): any {
+        return this.serializer.serialize(this.type, payload, meta);
+    }
+
+    public deserialize(payload: any): T | T[] {
+        return this.serializer.deserialize(this.type, payload);
     }
 
     public registerFromSchema(schema: JSONAPISerializerSchema): void {
@@ -117,25 +132,6 @@ export abstract class BaseSerializer implements SerializerInterface {
 
         return this;
     }
-
-
-    /**
-     * Serialize a payload to json-api format
-     *
-     * @param payload Payload
-     * @param schema
-     * @param params
-     */
-    public serialize = (payload: any, schema = null, params = {}): any =>
-        this.serializer.serialize(this.type, payload, schema, params);
-
-    /**
-     * Deserialize a payload from json-api format
-     *
-     * @param req
-     */
-    public deserialize = (req: Request): any =>
-        this.serializer.deserialize(this.type, req.body);
 
     /**
      *

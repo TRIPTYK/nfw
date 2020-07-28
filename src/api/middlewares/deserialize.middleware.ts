@@ -6,12 +6,13 @@ import { Type } from "../../core/types/global";
 
 @injectable()
 export default class DeserializeMiddleware extends BaseMiddleware {
-    public use(req: Request, response: Response, next: NextFunction, args: Type<BaseSerializer>): any {
+    public async use(req: Request, response: Response, next: NextFunction, args: Type<BaseSerializer<any>>): Promise<any> {
         if (!req.body.data || !req.body.data.attributes) {
             return next();
         }
 
-        const fields = (container.resolve(args)).deserialize(req);
+        const fields = await (container.resolve(args)).deserializeAsync(req.body);
+
         req.body = {};
 
         for (const key in fields) {

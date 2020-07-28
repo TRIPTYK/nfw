@@ -35,6 +35,7 @@ describe("Authentification", function() {
                 .set("Accept", "application/vnd.api+json")
                 .set("Content-Type", "application/vnd.api+json")
                 .end(function(err, res) {
+                    console.log(res.body);
                     expect(res.statusCode).to.equal(201);
                     done();
                 });

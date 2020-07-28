@@ -6,7 +6,7 @@ import SerializerInterface from "../../core/interfaces/serializer.interface";
 /**
  * This is a 'fake' serializer for non json-api auth response
  */
-export class AuthTokenSerializer implements SerializerInterface {
+export class AuthTokenSerializer {
     public deserialize(payload): any {
         return payload;
     }
