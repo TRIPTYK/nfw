@@ -6,14 +6,14 @@ import EnvironmentConfiguration from "../../config/environment.config";
 
 // tslint:disable-next-line: interface-over-type-literal
 type MailGunData = {
-    attachment?: string
-    from?: string
-    subject?: string
-    template?: string
-    text?: string
-    to?: string
-    variables?: object
-    filename?: string
+    attachment?: string;
+    from?: string;
+    subject?: string;
+    template?: string;
+    text?: string;
+    to?: string;
+    variables?: object;
+    filename?: string;
 };
 
 @singleton()

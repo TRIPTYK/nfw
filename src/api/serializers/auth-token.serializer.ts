@@ -1,6 +1,5 @@
 import { User } from "../models/user.model";
 import { injectable } from "tsyringe";
-import SerializerInterface from "../../core/interfaces/serializer.interface";
 
 @injectable()
 /**

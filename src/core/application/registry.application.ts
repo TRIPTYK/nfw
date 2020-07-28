@@ -4,9 +4,9 @@ import { BaseRepository } from "../repositories/base.repository";
 import { BaseSerializer } from "../../api/serializers/base.serializer";
 
 interface EntityRegistry<T> {
-    entity: Type<T>
-    serializer?: Type<BaseSerializer<T>>
-    repository?: Type<BaseRepository<T>>
+    entity: Type<T>;
+    serializer?: Type<BaseSerializer<T>>;
+    repository?: Type<BaseRepository<T>>;
 }
 
 export class JsonApiRegistry {
