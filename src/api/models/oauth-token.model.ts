@@ -1,13 +1,11 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, OneToMany} from "typeorm";
 import {User} from "./user.model";
 import { OAuthTypes } from "../enums/oauth-type.enum";
+import { JsonApiModel } from "../../core/models/json-api.model";
 
 @Entity()
 @Unique(["user", "type"])
-export class OAuthToken {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
+export class OAuthToken extends JsonApiModel<OAuthToken> {
     @Column({
         nullable : false,
         type : "text"
@@ -34,8 +32,4 @@ export class OAuthToken {
         type: "enum"
     })
     public type: OAuthTypes;
-
-    public constructor(payload: Partial<OAuthToken> = {}) {
-        Object.assign(this, payload);
-    }
 }

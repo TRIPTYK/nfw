@@ -19,6 +19,7 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
 import { injectable } from "tsyringe";
 import { User } from "../models/user.model";
+import ControllerInterface from "../../core/interfaces/controller.interface";
 
 /**
  * Authentification Controller!
@@ -26,7 +27,7 @@ import { User } from "../models/user.model";
  */
 @Controller("auth")
 @injectable()
-export default class AuthController {
+export default class AuthController implements ControllerInterface {
     // can't inject repositories
     private repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;

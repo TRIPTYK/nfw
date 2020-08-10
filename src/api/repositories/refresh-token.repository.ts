@@ -2,11 +2,11 @@ import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
-import {EntityRepository} from "typeorm";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { BaseRepository } from "../../core/repositories/base.repository";
+import { JsonApiRepository } from "../../core/decorators/repository.decorator";
 
-@EntityRepository(RefreshToken)
+@JsonApiRepository(RefreshToken)
 export class RefreshTokenRepository extends BaseRepository<RefreshToken> {
     /**
      *

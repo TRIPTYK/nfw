@@ -5,21 +5,21 @@ import {
     Entity,
     ManyToOne,
     OneToOne,
-    PrimaryGeneratedColumn,
+    JoinColumn,
+    OneToMany,
+    ManyToMany,
 } from "typeorm";
 
 import {User} from "./user.model";
 import {promises as Fs} from "fs";
-import {BaseModel} from "../../core/models/base.model";
 import * as Path from "path";
 import {MimeTypes, ImageMimeTypes} from "../enums/mime-type.enum";
 import {DocumentTypes} from "../enums/document-type.enum";
+import { JsonApiModel } from "../../core/models/json-api.model";
+import { OAuthToken } from "./oauth-token.model";
 
 @Entity()
-export class Document extends BaseModel {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
+export class Document extends JsonApiModel<Document> {
     @Column({
         enum: DocumentTypes,
         nullable: false,
@@ -54,10 +54,10 @@ export class Document extends BaseModel {
     })
     public size: number;
 
-    @ManyToOne(() => User, (user) => user.documents, {
+    @ManyToMany(() => User, (user) => user.documents, {
         onDelete: "CASCADE" // Remove all documents when user is deleted
     })
-    public user: User;
+    public users: User[];
 
     @OneToOne(() => User, (avatar) => avatar.avatar)
     public user_avatar: User;
@@ -66,11 +66,6 @@ export class Document extends BaseModel {
         default: null
     })
     public deleted_at: Date;
-
-    public constructor(payload: Partial<Document> = {}) {
-        super();
-        Object.assign(this, payload);
-    }
 
     @BeforeInsert()
     @BeforeUpdate()

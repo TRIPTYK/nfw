@@ -15,11 +15,12 @@ import { updateDocument } from "../validations/document.validation";
 import { autoInjectable } from "tsyringe";
 import { getCustomRepository } from "typeorm";
 import PaginationQueryParams from "../../core/types/jsonapi";
+import ControllerInterface from "../../core/interfaces/controller.interface";
 
 @Controller("documents")
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 @autoInjectable()
-export default class DocumentController {
+export default class DocumentController implements ControllerInterface {
     private repository: DocumentRepository;
 
     public constructor( private serializer?: DocumentSerializer ) {

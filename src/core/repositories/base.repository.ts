@@ -1,4 +1,4 @@
-import {Brackets, EntityRepository, Repository, SelectQueryBuilder} from "typeorm";
+import {Brackets, EntityRepository, Repository, ObjectLiteral, EntityMetadata, SelectQueryBuilder} from "typeorm";
 import * as SqlString from "sqlstring";
 import {Request} from "express";
 import * as Boom from "@hapi/boom";
@@ -7,30 +7,39 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
 import { BaseSerializer } from "../../api/serializers/base.serializer";
 import PaginationQueryParams from "../types/jsonapi";
+import { ApplicationRegistry } from "../application/registry.application";
+
+interface JsonApiRequestParams {
+    includes?: string[];
+    sort?: string[];
+    fields?: ObjectLiteral;
+    page?: PaginationQueryParams;
+    filter?: any;
+}
 
 /**
  * Base Repository class , inherited for all current repositories
  */
 @EntityRepository()
 class BaseRepository<T> extends Repository<T> {
-
     /**
      * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.
      * <br> You can filter the features you want to use by using the named parameters.
      *
      */
-    public jsonApiRequest(query: any, allowedIncludes: string[] = [],
+    public jsonApiRequest(
+        params: JsonApiRequestParams,
         {allowIncludes = true, allowSorting = true, allowPagination = true, allowFields = true, allowFilters = false}:
-        {allowIncludes?: boolean ;allowSorting?: boolean ;allowPagination?: boolean ;allowFields?: boolean; allowFilters?: boolean } = {}
+        {allowIncludes?: boolean ;allowSorting?: boolean ;allowPagination?: boolean ;allowFields?: boolean; allowFilters?: boolean } = {},
+        parentQueryBuilder?: SelectQueryBuilder<T>
     ): SelectQueryBuilder<T> {
         const currentTable = this.metadata.tableName;
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const splitAndFilter = (string: string, symbol: string) => string
             .split(symbol)
             .map((e) => e.trim()).filter((str) => str !== "");  // split parameters and filter empty strings
 
-        const queryBuilder = this.createQueryBuilder(currentTable);
-        const select: string[] = [`${currentTable}.id`];
+        const queryBuilder = parentQueryBuilder ? parentQueryBuilder : this.createQueryBuilder(currentTable);
+        const select: string[] = [];
 
         /**
          * Check if include parameter exists
@@ -38,72 +47,9 @@ class BaseRepository<T> extends Repository<T> {
          * to allow the client to customize which related resources should be returned.
          * @ref https://jsonapi.org/format/#fetching-includes
          */
-        if (allowIncludes && query.include) {
-            const includes = splitAndFilter(query.include, ",");
-            const noDashDotIncludes = allowedIncludes.map((i) => i.replace(/-|\./g, ""));
-
-            for (const include of includes) {
-                select.push(`${include}.id`); // push to select include , because id is always included
-
-                const noDashDotInclude = include.replace(/-|\./g, "");
-
-                // insensitive check of dash-dot includes for aliases
-                if (noDashDotIncludes.includes(noDashDotInclude)) {
-
-                    let property: string;
-
-                    if (include.includes(".")) {
-                        property = include;
-                    } else {
-                        property = `${currentTable}.${include}`;
-                    }
-
-                    const alias = dashify(include);
-
-                    queryBuilder.leftJoinAndSelect(property, alias);
-                } else {
-                    throw Boom.expectationFailed(`Relation with ${include} not authorized`);
-                }
-            }
+        if (allowIncludes && params.includes) {
+            this.handleIncludes(queryBuilder, params.includes, currentTable , this.metadata, "");
         }
-
-
-        /**
-         * Check if fields parameter exists
-         * A client MAY request that an endpoint return only specific fields
-         * in the response on a per-type basis by including a fields[TYPE] parameter.
-         * @ref https://jsonapi.org/format/#fetching-sparse-fieldsets
-         */
-        if (allowFields && query.fields) {
-            /**
-             * Recursive function to populate select statement with fields array
-             */
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            const fillFields = (props: object | string, parents: string[] = []) => {
-                if (typeof props === "string") {
-                    if (!parents.length) {
-                        parents = [currentTable];
-                    }
-
-                    for (const elem of splitAndFilter(props, ",")) {
-                        select.push(`${parents.join(".")}.${elem}`);
-                    }
-                } else {
-                    for (const index in props) {
-                        const property = props[index];
-                        const copy = parents.slice(); // slice makes a copy
-                        if (+index !== +index) {
-                            copy.push(index); // fast way to check if string is number
-                        }
-                        fillFields(property, copy);
-                    }
-                }
-            };
-
-            fillFields(query.fields);
-            queryBuilder.select(select); // select parameters are escaped by default , no need to escape sql string
-        }
-
 
         /**
          * Check if sort parameter exists
@@ -111,17 +57,13 @@ class BaseRepository<T> extends Repository<T> {
          * resource collections according to one or more criteria (“sort fields”).
          * @ref https://jsonapi.org/format/#fetching-sorting
          */
-        if (allowSorting && query.sort) {
-            const sortFields = splitAndFilter(query.sort, ","); // split parameters and filter empty strings
+        if (allowSorting && params.sort) {
+            this.handleSorting(queryBuilder,params.sort);
+        }
 
-            // need to use SqlString.escapeId in order to prevent SQL injection on orderBy()
-            for (const field of sortFields) {
-                if (field.startsWith("-")) {  // JSON-API convention , when sort field starts with '-' order is DESC
-                    queryBuilder.addOrderBy(field.substr(1), "DESC");
-                } else {
-                    queryBuilder.addOrderBy(field, "ASC");
-                }
-            }
+        if (allowFields && params.fields) {
+            this.handleSparseFields(queryBuilder,params.fields,[],select);
+            queryBuilder.select(select);
         }
 
 
@@ -131,19 +73,18 @@ class BaseRepository<T> extends Repository<T> {
          * returned in a response to a subset (“page”) of the whole set available.
          * @ref https://jsonapi.org/format/#fetching-pagination
          */
-        if (allowPagination && query.page && query.page.number && query.page.size) {
-            const {number, size}: PaginationQueryParams = query.page;
-
-            queryBuilder
-                .skip((number - 1) * size)
-                .take(size);
+        if (allowPagination && params.page) {
+            this.handlePagination(queryBuilder,{
+                number : 1,
+                size: 1
+            });
         }
 
-        if (allowFilters && query.filter) {
+        if (allowFilters && params.filter) {
             // put everything into sub brackets to not interfere with more important search params
             const queryBrackets = new Brackets((qb) => {
-                for (const key in query.filter) {
-                    const filtered: string[] = splitAndFilter(query.filter[key], ",");
+                for (const key in params.filter) {
+                    const filtered: string[] = splitAndFilter(params.filter[key], ",");
                     for (const e of filtered) {
                         const [strategy, value] = e.split(":");
                         let sqlExpression: string;
@@ -357,27 +298,114 @@ class BaseRepository<T> extends Repository<T> {
         }
     }
 
+    public handlePagination(qb: SelectQueryBuilder<any>,{number,size}: PaginationQueryParams) {
+        qb
+            .skip((number - 1) * number)
+            .take(size);
+    }
+
+    public handleSorting(qb: SelectQueryBuilder<any>,sort: string[]) {
+        for (const field of sort) {
+            if (field.startsWith("-")) {  // JSON-API convention , when sort field starts with '-' order is DESC
+                qb.addOrderBy(`${qb.alias}.${field}`.substr(1), "DESC");
+            } else {
+                qb.addOrderBy(`${qb.alias}.${field}`, "ASC");
+            }
+        }
+    }
+
+    public handleSparseFields(qb: SelectQueryBuilder<any>,props: ObjectLiteral | string,parents: string[] = [],select: string[]) {
+        if (typeof props === "string") {
+            if (!parents.length) {
+                parents = [this.metadata.tableName];
+            }
+
+            for (const elem of props.split(",")) {
+                const joinAlias = qb.expressionMap.joinAttributes.find((joinAttr) => joinAttr.entityOrProperty === parents.join(".")).alias.name;
+                select.push(`${joinAlias}.${elem}`);
+            }
+        } else {
+            for (const index in props) {
+                const property = props[index];
+                const copy = parents.slice(); // slice makes a copy
+                if (+index !== +index) {
+                    copy.push(index); // fast way to check if string is number
+                }
+                this.handleSparseFields(qb,property, copy, select);
+            }
+        }
+    }
+
+
+    /**
+     * Simplified from TypeORM source code
+     */
+    public handleIncludes(qb: SelectQueryBuilder<any>, allRelations: string[], alias: string, metadata: EntityMetadata, prefix: string,
+        applyJoin?: (relation: string,selection: string,relationAlias: string) => undefined | null) {
+        let matchedBaseRelations: string[] = [];
+
+        if (prefix) {
+            const regexp = new RegExp("^" + prefix.replace(".", "\\.") + "\\.");
+            matchedBaseRelations = allRelations
+                .filter((relation) => regexp.exec(relation))
+                .map((relation) => relation.replace(regexp, ""))
+                .filter((relation) => metadata.findRelationWithPropertyPath(relation));
+        } else {
+            matchedBaseRelations = allRelations.filter((relation) => metadata.findRelationWithPropertyPath(relation));
+        }
+
+        for (const relation of matchedBaseRelations) {
+            const relationAlias: string = this.buildAlias(alias,relation);
+
+            // add a join for the found relation
+            const selection = alias + "." + relation;
+            if (applyJoin) {
+                // if applyJoin returns null , stop executing the applyJoin function
+                if (applyJoin(relation,selection,relationAlias) === null) {
+                    applyJoin = null;
+                }
+            }else{
+                qb.leftJoinAndSelect(selection, relationAlias);
+            }
+
+            // remove added relations from the allRelations array, this is needed to find all not found relations at the end
+            allRelations.splice(allRelations.indexOf(prefix ? prefix + "." + relation : relation), 1);
+
+            const join = qb.expressionMap.joinAttributes.find((joinAttr) => joinAttr.entityOrProperty === selection);
+            this.handleIncludes(qb, allRelations, join.alias.name, join.metadata, prefix ? prefix + "." + relation : relation,applyJoin);
+        }
+    }
+
+    public buildAlias(alias: string,relation: string) {
+        return dashify(alias + "." + relation);
+    }
+
     /**
      *
      * @param req
      * @param serializer
      */
-    public async fetchRelationshipsFromRequest(req: Request, serializer: BaseSerializer<T>): Promise<any> {
-        const {id, relation} = req.params;
+    public async fetchRelationshipsFromRequest(relationName: string,id: string | number,params: JsonApiRequestParams): Promise<any> {
+        const thisRelation = this.metadata.findRelationWithPropertyPath(relationName);
+        const otherEntity = thisRelation.type as any;
+        const otherRepo = ApplicationRegistry.repositoryFor(otherEntity);
+        const alias = otherRepo.metadata.tableName;
+        const aliasRelation = this.buildAlias(alias,thisRelation.inverseSidePropertyPath);
 
-        const user = await this.createQueryBuilder("relationQb")
-            .leftJoin(`relationQb.${relation}`, "relation")
-            .select(["relationQb.id", "relation.id"])
-            .where("relationQb.id = :id", {id})
-            .getOne();
+        const resultQb = otherRepo.createQueryBuilder(otherRepo.metadata.tableName)
+            .select(`${alias}.id`)
+            .leftJoin(`${alias}.${thisRelation.inverseSidePropertyPath}`,aliasRelation)
+            .where(`${aliasRelation}.id = :id`,{id});
 
-        if (!user) {
-            throw Boom.notFound();
-        }
+        otherRepo.jsonApiRequest(params,{},resultQb);
 
-        const serialized = serializer.serialize(user);
+        const result = await (
+            thisRelation.isManyToOne || thisRelation.isOneToOne ?
+                resultQb.getOne() :
+                resultQb.getMany()
+        );
 
-        return serialized["data"]["relationships"][relation];
+        return result;
     }
 }
 

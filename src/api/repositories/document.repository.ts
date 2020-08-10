@@ -1,8 +1,8 @@
 import {Document} from "../models/document.model";
-import {EntityRepository} from "typeorm";
 import {BaseRepository} from "../../core/repositories/base.repository";
+import { JsonApiRepository } from "../../core/decorators/repository.decorator";
 
 
-@EntityRepository(Document)
+@JsonApiRepository(Document)
 export class DocumentRepository extends BaseRepository<Document> {
 }

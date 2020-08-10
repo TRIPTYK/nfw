@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
 import {getCustomRepository, getRepository} from "typeorm";
-import {User} from "../api/models/user.model";
+import {User} from "../models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
 import {Strategy as OutlookStrategy} from "passport-outlook";
 import { Application , Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
-import EnvironmentConfiguration from "./environment.config";
-import { OAuthTokenRepository } from "../api/repositories/oauth.repository";
+import EnvironmentConfiguration from "../../config/environment.config";
+import { OAuthTokenRepository } from "../repositories/oauth.repository";
+import { singleton } from "tsyringe";
 
-class PassportConfig {
+@singleton()
+class PassportService {
     private strategies = [];
 
     /**
@@ -20,9 +22,7 @@ class PassportConfig {
      * @param {Application} app
      * @memberof PassportConfig
      */
-    public init(app: Application): void {
-        app.use(Passport.initialize());
-
+    public init(): void {
         const {config : {
             jwt,
             outlook,
@@ -114,4 +114,4 @@ class PassportConfig {
     }
 }
 
-export {PassportConfig};
+export {PassportService};

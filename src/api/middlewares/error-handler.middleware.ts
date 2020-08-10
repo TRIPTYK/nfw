@@ -14,6 +14,7 @@ export default class ErrorHandlerMiddleware {
     }
 
     public static exit(error: any, req: Request, res: Response, _next: NextFunction): void {
+        console.log(error);
         if (Array.isArray(error)) {
             const errs = error;
             const allErrors = [];

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { Type } from "../types/global";
-import { BaseModel } from "../models/base.model";
+import { JsonApiModel } from "../models/json-api.model";
+import { ApplicationRegistry } from "../application/registry.application";
 
 /**
  *
@@ -21,10 +22,12 @@ export function Controller(routeName: string): ClassDecorator {
  *
  * @param routeName
  */
-export function JsonApiControllers(routeName: string,entity: Type<any>): ClassDecorator {
+export function JsonApiControllers<T extends JsonApiModel<T>>(routeName: string,entity: Type<T>): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
         Reflect.defineMetadata("routeName", routeName, target);
         Reflect.defineMetadata("entity", entity, target.prototype);
+
+        ApplicationRegistry.registerControllerFor(entity,target as any);
 
         if (! Reflect.hasMetadata("routes", target)) {
             Reflect.defineMetadata("routes", [], target);

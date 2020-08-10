@@ -20,6 +20,10 @@ export default class DocumentSerializerSchema {
                 user : {
                     type: UserSerializerSchema.type,
                     whitelist : UserSerializerSchema.serialize
+                },
+                users : {
+                    type: UserSerializerSchema.type,
+                    whitelist : UserSerializerSchema.serialize
                 }
             },
             type: DocumentSerializerSchema.type,

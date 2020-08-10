@@ -3,8 +3,7 @@ import {
     BeforeUpdate,
     Column,
     Entity, JoinColumn,
-    OneToMany, OneToOne,
-    PrimaryGeneratedColumn,
+    OneToMany, OneToOne, ManyToOne, ManyToMany, JoinTable
 } from "typeorm";
 
 
@@ -15,17 +14,14 @@ import * as Moment from "moment-timezone";
 import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "@hapi/boom";
-import {BaseModel} from "../../core/models/base.model";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
+import { JsonApiModel } from "../../core/models/json-api.model";
+import { OAuthToken } from "./oauth-token.model";
 
 @Entity()
-export class User extends BaseModel {
-
-    @PrimaryGeneratedColumn()
-    public id: number;
-
+export class User extends JsonApiModel<User> {
     @Column({
         default: "User",
         length: 32,
@@ -72,7 +68,8 @@ export class User extends BaseModel {
     })
     public deleted_at;
 
-    @OneToMany(() => Document, (document) => document.user)
+    @JoinTable()
+    @ManyToMany(() => Document, (document) => document.users)
     public documents: Document[];
 
     @OneToOne(() => Document, (document) => document.user_avatar)

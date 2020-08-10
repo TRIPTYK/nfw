@@ -3,8 +3,7 @@ import * as Boom from "@hapi/boom";
 import {Request , Response} from "express";
 import {UserSerializer} from "../serializers/user.serializer";
 import {userRelations} from "../enums/json-api/user.enum";
-import { UserRepository } from "../repositories/user.repository";
-import { Controller, Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware, JsonApiControllers } from "../../core/decorators/controller.decorator";
+import { Get, Post, Patch, Put, Delete, RouteMiddleware, MethodMiddleware, JsonApiControllers } from "../../core/decorators/controller.decorator";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import SecurityMiddleware from "../middlewares/security.middleware";
@@ -16,7 +15,6 @@ import UserSchema from "../serializers/schemas/user.serializer.schema";
 import { autoInjectable } from "tsyringe";
 import PaginationQueryParams from "../../core/types/jsonapi";
 import { User } from "../models/user.model";
-import { JsonApiRegistry } from "../../core/application/registry.application";
 import JsonApiController from "../../core/controllers/json-api.controller";
 
 @JsonApiControllers("users",User)
@@ -75,7 +73,12 @@ export default class UserController extends JsonApiController<User> {
 
     @Get("/")
     public async list(req: Request): Promise<any> {
-        const [users, totalUsers] = await this.repository.jsonApiRequest(req.query, userRelations).getManyAndCount();
+        const [users, totalUsers] = await this.repository.jsonApiRequest({
+            includes : req.query.include ? (req.query.include as string).split(",") : null,
+            sort : req.query.sort ? (req.query.sort as string).split(",") : null,
+            fields : req.query.fields as any ?? null,
+            page: req.query.page as any ?? null
+        }).getManyAndCount();
 
         if (req.query.page) {
             const page: PaginationQueryParams = req.query.page as any;
@@ -97,11 +100,6 @@ export default class UserController extends JsonApiController<User> {
     @Get("/:id/:relation")
     public async fetchRelated(req: Request): Promise<any> {
         return this.repository.fetchRelated(req, this.serializer);
-    }
-
-    @Get("/:id/relationships/:relation")
-    public async fetchRelationships(req: Request): Promise<any> {
-        return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
     }
 
     @Post("/:id/relationships/:relation")

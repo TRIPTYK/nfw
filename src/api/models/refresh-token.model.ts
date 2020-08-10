@@ -1,12 +1,11 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, Index} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, Unique, Index} from "typeorm";
 import {User} from "./user.model";
+import { JsonApiModel } from "../../core/models/json-api.model";
+import { OAuthToken } from "./oauth-token.model";
 
 @Entity()
 @Unique(["user"])
-export class RefreshToken {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
+export class RefreshToken extends JsonApiModel<OAuthToken> {
     @Index()
     @Column()
     public refreshToken: string;
@@ -21,8 +20,4 @@ export class RefreshToken {
 
     @Column()
     public expires: Date;
-
-    public constructor(payload: Partial<RefreshToken> = {}) {
-        Object.assign(this, payload);
-    }
 }

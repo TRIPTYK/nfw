@@ -1,12 +1,9 @@
 import "reflect-metadata";
-import * as Fs from "fs";
-import * as HTTPS from "https";
 import {TypeORMConfiguration} from "./config/typeorm.config";
 import {ElasticSearchConfiguration} from "./config/elastic.config";
 import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";
-import { Environments } from "./api/enums/environments.enum";
-import ApplicationFactory from "./core/factory/application.factory";
+import { ApplicationRegistry } from "./core/application/registry.application";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 module.exports = (async () => {
@@ -42,30 +39,12 @@ module.exports = (async () => {
 
     const {Application} = await import("./config/app.config");
 
-    const SetupApp = ApplicationFactory.create(Application);
-    await SetupApp.init();
+    const app = await ApplicationRegistry.registerApplication(Application);
 
-    /**
-     * HTTPS configuration
-     */
-    if (configuration.https.isActive) {
-        const credentials = {
-            ca: [Fs.readFileSync(configuration.https.ca, "utf8")],
-            cert: Fs.readFileSync(configuration.https.cert, "utf8"),
-            key: Fs.readFileSync(configuration.https.key, "utf8")
-        };
+    await app.listen(configuration.port);
 
-        HTTPS
-            .createServer(credentials, SetupApp.App)
-            .listen(configuration.port, () => {
-                LoggerConfiguration.logger.info(`HTTPS server is now running on port ${configuration.port}`);
-            });
-    } else {
-        SetupApp.App.listen( configuration.port, () => {
-            LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port}`);
-        });
-    }
+    LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port}`);
 
-    return SetupApp.App;
+    return ApplicationRegistry;
 })();
 

@@ -7,28 +7,14 @@ import * as Passport from "passport";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 
-import { PassportConfig } from "./passport.config";
 import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
-import UserController from "../api/controllers/user.controller";
-import AuthController from "../api/controllers/auth.controller";
-import DocumentController from "../api/controllers/document.controller";
-import StatusController from "../api/controllers/status.controller";
-import { RegisterApplication } from "../core/decorators/application.decorator";
 import BaseApplication from "../core/application/base.application";
 
-@RegisterApplication({
-    controllers : [
-        UserController,
-        AuthController,
-        DocumentController,
-        StatusController
-    ],
-    providers : []
-})
 export class Application extends BaseApplication {
-    public async setup(): Promise<Express.Application> {
+    public init() {
+        super.init();
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
 
         /**
@@ -85,12 +71,7 @@ export class Application extends BaseApplication {
             windowMs: 60 * 60 * 1000
         });
 
-        const mainRouter = await this.registerRoutes();
-
-        this.app.use(`/api/${api.version}`, apiLimiter , mainRouter );
-
-        const passportConfig = new PassportConfig();
-        passportConfig.init(this.app);
+        this.app.use(`/api/${api.version}`, apiLimiter , this.router );
 
         /**
          * Request logging with Morgan

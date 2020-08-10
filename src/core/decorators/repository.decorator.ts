@@ -1,10 +1,13 @@
 import { getMetadataArgsStorage } from "typeorm"
-import { JsonApiRegistry } from "../application/registry.application";
 import { EntityRepositoryMetadataArgs } from "typeorm/metadata-args/EntityRepositoryMetadataArgs";
+import { JsonApiModel } from "../models/json-api.model";
+import { Type } from "../types/global";
+import { ApplicationRegistry } from "../application/registry.application";
 
-export function JsonApiRepository(entity?: any): any {
+export function JsonApiRepository<T extends JsonApiModel<T>>(entity?: Type<T>): any {
     return function(target: any) {
-        JsonApiRegistry.registerCustomRepositoryFor(entity,target);
+        Reflect.defineMetadata("entity",entity,target);
+        ApplicationRegistry.registerCustomRepositoryFor(entity,target);
         getMetadataArgsStorage().entityRepositories.push({
             target,
             entity,
