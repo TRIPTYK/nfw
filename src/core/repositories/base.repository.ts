@@ -138,10 +138,10 @@ class BaseRepository<T> extends Repository<T> {
     /**
      * Shortcut function to make a JSON-API findOne request on id key
      */
-    public jsonApiFindOne(req: Request, id: any, allowedIncludes: string[] = [], options?:
+    public jsonApiFindOne(req: Request, id: any, options?:
     { allowIncludes?: boolean;allowSorting?: boolean ; allowPagination?: boolean;allowFields?: boolean;allowFilters?: boolean }
     ): Promise<T> {
-        return this.jsonApiRequest(req.query, allowedIncludes, options)
+        return this.jsonApiRequest(req.query, options)
             .where(`${this.metadata.tableName}.id = :id`, {id})
             .getOne();
     }
@@ -149,10 +149,10 @@ class BaseRepository<T> extends Repository<T> {
     /**
      * Shortcut function to make a JSON-API findMany request with data used for pagination
      */
-    public jsonApiFind(req: Request, allowedIncludes: string[] = [], options?:
+    public jsonApiFind(req: Request, options?:
     { allowIncludes?: boolean;allowSorting?: boolean; allowPagination?: boolean;allowFields?: boolean;allowFilters?: boolean }
     ): Promise<[T[], number]> {
-        return this.jsonApiRequest(req.query, allowedIncludes, options)
+        return this.jsonApiRequest(req.query, options)
             .getManyAndCount();
     }
 

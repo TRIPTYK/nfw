@@ -11,7 +11,14 @@ import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware"
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
 import BaseApplication from "../core/application/base.application";
+import { RegisterApplication } from "../core/decorators/controller.decorator";
+import DocumentController from "../api/controllers/document.controller";
+import UserController from "../api/controllers/user.controller";
+import AuthController from "../api/controllers/auth.controller";
+import { container } from "tsyringe";
+import { PassportService } from "../api/services/passport.service";
 
+@RegisterApplication({controllers : [DocumentController,AuthController,UserController]})
 export class Application extends BaseApplication {
     public init() {
         super.init();
@@ -62,6 +69,8 @@ export class Application extends BaseApplication {
          * @inheritdoc http://www.passportjs.org/
          */
         this.app.use(Passport.initialize());
+
+        container.resolve(PassportService).init();
 
         this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 

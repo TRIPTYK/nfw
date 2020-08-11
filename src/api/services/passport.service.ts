@@ -5,7 +5,7 @@ import {User} from "../models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
 import {Strategy as OutlookStrategy} from "passport-outlook";
-import { Application , Request } from "express";
+import { Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
 import EnvironmentConfiguration from "../../config/environment.config";

@@ -31,7 +31,7 @@ export default class UserController extends JsonApiController<User> {
 
     @Get("/:id")
     public async get(req: Request): Promise<void> {
-        const user = await this.repository.jsonApiFindOne(req, req.params.id, userRelations);
+        const user = await this.repository.jsonApiFindOne(req, req.params.id);
 
         if (!user) {
             throw Boom.notFound("User not found");
@@ -95,29 +95,6 @@ export default class UserController extends JsonApiController<User> {
 
         return this.serializer
             .serialize(users);
-    }
-
-    @Get("/:id/:relation")
-    public async fetchRelated(req: Request): Promise<any> {
-        return this.repository.fetchRelated(req, this.serializer);
-    }
-
-    @Post("/:id/relationships/:relation")
-    public async addRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.addRelationshipsFromRequest(req);
-        res.sendStatus(HttpStatus.NO_CONTENT).end();
-    }
-
-    @Patch("/:id/relationships/:relation")
-    public async updateRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.updateRelationshipsFromRequest(req);
-        res.sendStatus(HttpStatus.NO_CONTENT).end();
-    }
-
-    @Delete("/:id/relationships/:relation")
-    public async removeRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.removeRelationshipsFromRequest(req);
-        res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     @Delete("/:id")

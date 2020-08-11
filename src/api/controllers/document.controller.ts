@@ -29,7 +29,7 @@ export default class DocumentController implements ControllerInterface {
 
     @Get("/")
     public async list(req: Request): Promise<any> {
-        const [documents, total] = await this.repository.jsonApiFind(req, documentRelations);
+        const [documents, total] = await this.repository.jsonApiFind(req);
 
         if (req.query.page) {
             const page: PaginationQueryParams = req.query.page as any;
@@ -68,7 +68,7 @@ export default class DocumentController implements ControllerInterface {
      */
     @Get("/:id")
     public async get(req: Request): Promise<any> {
-        const document = await this.repository.jsonApiFindOne(req, req.params.id, documentRelations);
+        const document = await this.repository.jsonApiFindOne(req, req.params.id);
 
         if (!document) {
             throw Boom.notFound("Document not found");
@@ -84,7 +84,7 @@ export default class DocumentController implements ControllerInterface {
 
     @Get("/:id/relationships/:relation")
     public async fetchRelationships(req: Request): Promise<any> {
-        return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
+        //return this.repository.fetchRelationshipsFromRequest();
     }
 
     @Post("/:id/relationships/:relation")
