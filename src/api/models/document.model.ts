@@ -14,7 +14,7 @@ import {MimeTypes, ImageMimeTypes} from "../enums/mime-type.enum";
 import {DocumentTypes} from "../enums/document-type.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
 
-@Entity()
+@Entity("documents")
 export class Document extends JsonApiModel<Document> {
     @Column({
         enum: DocumentTypes,

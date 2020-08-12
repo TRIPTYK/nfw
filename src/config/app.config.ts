@@ -18,7 +18,7 @@ import AuthController from "../api/controllers/auth.controller";
 import { container } from "tsyringe";
 import { PassportService } from "../api/services/passport.service";
 
-@RegisterApplication({controllers : [DocumentController,AuthController,UserController]})
+@RegisterApplication({controllers : [AuthController,UserController,DocumentController]})
 export class Application extends BaseApplication {
     public init() {
         super.init();
