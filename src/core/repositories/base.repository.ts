@@ -75,8 +75,8 @@ class BaseRepository<T> extends Repository<T> {
          */
         if (allowPagination && params.page) {
             this.handlePagination(queryBuilder,{
-                number : 1,
-                size: 1
+                number : params.page.number,
+                size: params.page.size
             });
         }
 

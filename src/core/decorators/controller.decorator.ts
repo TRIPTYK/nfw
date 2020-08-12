@@ -33,9 +33,8 @@ export function RegisterApplication({controllers}: {controllers: Type<any>[]}): 
  *
  * @param routeName
  */
-export function JsonApiControllers<T extends JsonApiModel<T>>(routeName: string,entity: Type<T>): ClassDecorator {
+export function JsonApiController<T extends JsonApiModel<T>>(entity: Type<T>): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
-        Reflect.defineMetadata("routeName", routeName, target);
         Reflect.defineMetadata("entity", entity, target.prototype);
 
         if (! Reflect.hasMetadata("routes", target)) {

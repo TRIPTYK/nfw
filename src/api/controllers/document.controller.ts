@@ -34,14 +34,14 @@ export default class DocumentController implements ControllerInterface {
         if (req.query.page) {
             const page: PaginationQueryParams = req.query.page as any;
 
-            return new DocumentSerializer({
-                pagination : {
+            return this.serializer.serialize(documents,{
+                paginationData : {
                     page: page.number,
                     size: page.size,
                     total,
                     url: req.url
                 }
-            }).serialize(documents);
+            });
         }
 
         return this.serializer.serialize(documents);

@@ -2,7 +2,7 @@ import { JSONAPISerializerSchema } from "../base.serializer";
 import UserSerializerSchema from "./user.serializer.schema";
 
 export default class DocumentSerializerSchema {
-    public static type = "document";
+    public static type = "documents";
 
     /**
      * Allowed serialized elements

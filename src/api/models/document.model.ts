@@ -3,10 +3,7 @@ import {
     BeforeUpdate,
     Column,
     Entity,
-    ManyToOne,
     OneToOne,
-    JoinColumn,
-    OneToMany,
     ManyToMany,
 } from "typeorm";
 
@@ -16,7 +13,6 @@ import * as Path from "path";
 import {MimeTypes, ImageMimeTypes} from "../enums/mime-type.enum";
 import {DocumentTypes} from "../enums/document-type.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
-import { OAuthToken } from "./oauth-token.model";
 
 @Entity()
 export class Document extends JsonApiModel<Document> {
@@ -59,7 +55,9 @@ export class Document extends JsonApiModel<Document> {
     })
     public users: User[];
 
-    @OneToOne(() => User, (avatar) => avatar.avatar)
+    @OneToOne(() => User, (avatar) => avatar.avatar, {
+        onDelete: "CASCADE"
+    })
     public user_avatar: User;
 
     @Column({

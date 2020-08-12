@@ -3,7 +3,7 @@ import {
     BeforeUpdate,
     Column,
     Entity, JoinColumn,
-    OneToMany, OneToOne, ManyToOne, ManyToMany, JoinTable
+    OneToOne, ManyToMany, JoinTable
 } from "typeorm";
 
 
@@ -18,9 +18,8 @@ import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
-import { OAuthToken } from "./oauth-token.model";
 
-@Entity()
+@Entity("user")
 export class User extends JsonApiModel<User> {
     @Column({
         default: "User",

@@ -8,6 +8,14 @@ export type SerializerParams = {
     pagination?: PaginationParams;
 };
 
+export interface SerializeOptions {
+    meta?: object;
+    excludeData?: boolean;
+    schema?: string | "default";
+    overrideSchemaOptions?: JSONAPISerializerOptions;
+    paginationData?: PaginationParams;
+}
+
 export type PaginationParams = {
     total: number;
     url: string;
@@ -23,7 +31,7 @@ export type JSONAPISerializerSchema = {
     jsonapiObject?: boolean;
     links?: JSONAPISerializerCustom;
     topLevelMeta?: any;
-    topLevelLinks?: JSONAPISerializerCustom;
+    topLevelLinks?: any;
     meta?: JSONAPISerializerCustom;
     relationships?: { [key: string]: JSONAPISerializerSchema };
     convertCase?: "kebab-case" | "snake_case" | "camelCase";
@@ -49,8 +57,8 @@ export type JSONAPISerializerOptions = {
     whitelist?: string[];
     jsonapiObject?: boolean;
     links?: JSONAPISerializerCustom;
-    topLevelMeta?: JSONAPISerializerCustom;
-    topLevelLinks?: JSONAPISerializerCustom;
+    topLevelMeta?: any;
+    topLevelLinks?: any;
     meta?: JSONAPISerializerCustom;
     relationships?: { [key: string]: JSONAPISerializerRelation };
     convertCase?: "kebab-case" | "snake_case" | "camelCase";
@@ -63,6 +71,7 @@ export type JSONAPISerializerOptions = {
 export abstract class BaseSerializer<T> implements SerializerInterface<T> {
     public static whitelist: string[] = [];
     public type: string;
+    public schema: JSONAPISerializerSchema;
     public serializer: JSONAPISerializer;
 
     protected constructor(schema: JSONAPISerializerSchema) {
@@ -72,20 +81,71 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         } as JSONAPISerializerSchema);
 
         this.type = schema.type;
+        this.schema = schema;
 
         this.registerFromSchema(schema);
     }
 
-    public serializeAsync(payload: T | T[], meta?: object): any {
-        return this.serializer.serializeAsync(this.type, payload, meta);
+    public serializeAsync(payload: T | T[], options?: SerializeOptions): any {
+        if (options.paginationData) {
+            const { total, url, page , size } = options.paginationData;
+            const { api } = EnvironmentConfiguration.config;
+            const baseUrl = `/api/${api.version}`;
+            const max = Math.ceil(total / size);
+            delete options.paginationData;
+            options.overrideSchemaOptions = {
+                topLevelLinks : {
+                    first: () => `${baseUrl}/${this.type}${this.replacePage(url, 1)}`,
+                    last: () => `${baseUrl}/${this.type}${this.replacePage(url, max)}`,
+                    next: () => `${baseUrl}/${this.type}${this.replacePage(url, page + 1 > max ? max : page + 1)}`,
+                    prev: () => `${baseUrl}/${this.type}${this.replacePage(url, page - 1 < 1 ? page : page - 1)}`,
+                    self: () => `${baseUrl}/${this.type}${url}`
+                },
+                topLevelMeta : {
+                    max,
+                    page,
+                    size,
+                    total
+                }
+            };
+        }
+
+        return this.serializer.serializeAsync(this.type, payload, options?.schema, options?.meta , options?.excludeData, {
+            [this.type] : options?.overrideSchemaOptions
+        });
     }
 
     public deserializeAsync(payload: any): T | T[] {
         return this.serializer.deserializeAsync(this.type, payload);
     }
 
-    public serialize(payload: T | T[], meta?: object): any {
-        return this.serializer.serialize(this.type, payload, meta);
+    public serialize(payload: T | T[], options?: SerializeOptions): any {
+        if (options.paginationData) {
+            const { total, url, page , size } = options.paginationData;
+            const { api } = EnvironmentConfiguration.config;
+            const baseUrl = `/api/${api.version}`;
+            const max = Math.ceil(total / size);
+            delete options.paginationData;
+            options.overrideSchemaOptions = {
+                topLevelLinks : {
+                    first: () => `${baseUrl}/${this.type}${this.replacePage(url, 1)}`,
+                    last: () => `${baseUrl}/${this.type}${this.replacePage(url, max)}`,
+                    next: () => `${baseUrl}/${this.type}${this.replacePage(url, page + 1 > max ? max : page + 1)}`,
+                    prev: () => `${baseUrl}/${this.type}${this.replacePage(url, page - 1 < 1 ? page : page - 1)}`,
+                    self: () => `${baseUrl}/${this.type}${url}`
+                },
+                topLevelMeta : {
+                    max,
+                    page,
+                    size,
+                    total
+                }
+            };
+        }
+
+        return this.serializer.serialize(this.type, payload,options?.schema, options?.meta , options?.excludeData, {
+            [this.type] : options?.overrideSchemaOptions
+        });
     }
 
     public deserialize(payload: any): T | T[] {

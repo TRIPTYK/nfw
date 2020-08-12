@@ -5,6 +5,7 @@ import { Type } from "../types/global";
 import { RouteDefinition } from "../decorators/controller.decorator";
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { container } from "tsyringe";
+import * as pluralize from "pluralize";
 
 export default abstract class BaseApplication implements ApplicationInterface{
     protected app: Express.Application;
@@ -59,8 +60,6 @@ export default abstract class BaseApplication implements ApplicationInterface{
                 }));
             }
 
-            this.router.use(`/${prefix}`, router);
-
             const controllerMiddleware = (methodName) => async (req: Express.Request, res: Express.Response, next) => {
                 try {
                     const response = await instanceController[methodName](req, res);
@@ -72,12 +71,24 @@ export default abstract class BaseApplication implements ApplicationInterface{
                 }
             };
 
-            if (Reflect.getMetadata("entity",instanceController)) {
+            const jsonApiEntity = Reflect.getMetadata("entity",instanceController);
+
+            if (jsonApiEntity) {
+                this.router.use(`/${pluralize.plural(jsonApiEntity.name.toLowerCase())}`, router);
+
+                router.get("/", controllerMiddleware("list"));
+                router.get("/:id", controllerMiddleware("get"));
+                router.post("/", controllerMiddleware("create"));
+                router.patch("/:id", controllerMiddleware("update"));
+                router.delete("/:id", controllerMiddleware("remove"));
+
                 router.get("/:id/:relation", controllerMiddleware("fetchRelated"));
                 router.get("/:id/relationships/:relation", controllerMiddleware("fetchRelationsships"));
                 router.post("/:id/relationships/:relation", controllerMiddleware("addRelationships"));
                 router.patch("/:id/relationships/:relation", controllerMiddleware("updateRelationships"));
                 router.delete("/:id/:relation", controllerMiddleware("removeRelationships"));
+            }else{
+                this.router.use(`/${prefix}`, router);
             }
 
             // Iterate over all routes and register them to our express application
