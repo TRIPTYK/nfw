@@ -1,4 +1,4 @@
-import { BaseSerializer } from "../../api/serializers/base.serializer";
+import { BaseSerializer } from "../serializers/base.serializer";
 import { BaseRepository } from "../repositories/base.repository";
 import { Type } from "../types/global";
 import ControllerInterface from "../interfaces/controller.interface";
@@ -8,6 +8,7 @@ import { ApplicationRegistry } from "../application/registry.application";
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
 import PaginationQueryParams from "../types/jsonapi";
+import { ObjectLiteral } from "typeorm";
 
 export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> implements ControllerInterface {
     protected serializer: BaseSerializer<T>;
@@ -27,33 +28,46 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> i
             await this.repository.fetchRelationshipsFromRequest(
                 relation,
                 req.params.id,
-                {
-                    includes : req.query.include ? (req.query.include as string).split(",") : null,
-                    sort : req.query.sort ? (req.query.sort as string).split(",") : null,
-                    fields : req.query.fields as any ?? null,
-                    page: req.query.page as any ?? null,
-                    filter: null
-                }
+                this.parseJsonApiQueryParams(req.query)
             )
         );
     }
 
     public async fetchRelated(req: Request): Promise<any> {
-        return this.repository.fetchRelated(req, this.serializer);
+        const relation = req.params.relation;
+        const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation)?.inverseEntityMetadata;
+
+        if (!otherEntityMetadata) {
+            throw Boom.notFound();
+        }
+
+        return ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
+            await this.repository.fetchRelated(
+                relation,
+                req.params.id,
+                this.parseJsonApiQueryParams(req.query)
+            )
+        );
     }
 
     public async addRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.addRelationshipsFromRequest(req);
+        const {relation,id} = req.params;
+
+        await this.repository.addRelationshipsFromRequest(relation,id,req.body.data);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     public async updateRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.updateRelationshipsFromRequest(req);
+        const {relation,id} = req.params;
+
+        await this.repository.updateRelationshipsFromRequest(relation,id,req.body.data);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     public async removeRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.removeRelationshipsFromRequest(req);
+        const {relation,id} = req.params;
+
+        await this.repository.removeRelationshipsFromRequest(relation,id,req.body.data);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
@@ -122,5 +136,15 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> i
 
         await this.repository.remove(user);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
+    }
+
+    protected parseJsonApiQueryParams(query: ObjectLiteral) {
+        return {
+            includes : query.include ? (query.include as string).split(",") : null,
+            sort : query.sort ? (query.sort as string).split(",") : null,
+            fields : query.fields ?? null,
+            page: query.page ?? null,
+            filter: query.filter ?? null
+        }
     }
 }

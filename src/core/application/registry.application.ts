@@ -1,6 +1,6 @@
 import { Type } from "../types/global";
 import { BaseRepository } from "../repositories/base.repository";
-import { BaseSerializer } from "../../api/serializers/base.serializer";
+import { BaseSerializer } from "../serializers/base.serializer";
 import { getCustomRepository } from "typeorm";
 import { container } from "tsyringe";
 import { JsonApiModel } from "../models/json-api.model";

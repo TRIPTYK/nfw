@@ -1,4 +1,4 @@
-import { BaseSerializer } from "./base.serializer";
+import { BaseSerializer } from "../../core/serializers/base.serializer";
 import { injectable } from "tsyringe";
 import DocumentSchema from "./schemas/document.serializer.schema";
 import {Document} from "../models/document.model";

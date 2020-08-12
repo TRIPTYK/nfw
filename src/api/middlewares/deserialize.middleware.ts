@@ -1,7 +1,7 @@
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 import { Request , Response, NextFunction } from "express";
 import { container, injectable } from "tsyringe";
-import { BaseSerializer } from "../serializers/base.serializer";
+import { BaseSerializer } from "../../core/serializers/base.serializer";
 import { Type } from "../../core/types/global";
 
 @injectable()

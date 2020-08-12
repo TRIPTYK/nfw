@@ -1,7 +1,7 @@
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 import { Request , Response, NextFunction } from "express";
 import { injectable } from "tsyringe";
-import { JSONAPISerializerSchema } from "../serializers/base.serializer";
+import { JSONAPISerializerSchema } from "../../core/serializers/base.serializer";
 import { getRepository } from "typeorm";
 import * as Boom from "@hapi/boom";
 

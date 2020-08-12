@@ -2,7 +2,7 @@
 import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
-import SerializerInterface from "../../core/interfaces/serializer.interface";
+import SerializerInterface from "../interfaces/serializer.interface";
 
 export type SerializerParams = {
     pagination?: PaginationParams;
@@ -120,7 +120,7 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
     }
 
     public serialize(payload: T | T[], options?: SerializeOptions): any {
-        if (options.paginationData) {
+        if (options?.paginationData) {
             const { total, url, page , size } = options.paginationData;
             const { api } = EnvironmentConfiguration.config;
             const baseUrl = `/api/${api.version}`;

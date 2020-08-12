@@ -1,4 +1,4 @@
-import { BaseSerializer } from "./base.serializer";
+import { BaseSerializer } from "../../core/serializers/base.serializer";
 import UserSchema from "./schemas/user.serializer.schema";
 import {injectable} from "tsyringe";
 import { User } from "../models/user.model";

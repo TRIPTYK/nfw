@@ -1,4 +1,4 @@
-import { JSONAPISerializerSchema } from "../base.serializer";
+import { JSONAPISerializerSchema } from "../../../core/serializers/base.serializer";
 import UserSerializerSchema from "./user.serializer.schema";
 
 export default class DocumentSerializerSchema {

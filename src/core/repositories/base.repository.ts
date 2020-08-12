@@ -3,9 +3,7 @@ import * as SqlString from "sqlstring";
 import {Request} from "express";
 import * as Boom from "@hapi/boom";
 import * as dashify from "dashify";
-import * as JSONAPISerializer from "json-api-serializer";
 import { isPlural } from "pluralize";
-import { BaseSerializer } from "../../api/serializers/base.serializer";
 import PaginationQueryParams from "../types/jsonapi";
 import { ApplicationRegistry } from "../application/registry.application";
 
@@ -161,59 +159,65 @@ class BaseRepository<T> extends Repository<T> {
      * @param req
      * @param serializer
      */
-    public async fetchRelated(req: Request, serializer: BaseSerializer<T>): Promise<any> {
-        const { id , relation } = req.params;
-        let type = serializer.getSchemaData()["relationships"];
+    public async fetchRelated(relationName: string,id: string | number,params: JsonApiRequestParams): Promise<any> {
+        const thisRelation = this.metadata.findRelationWithPropertyPath(relationName);
 
-        if (!type[relation]) {
-            throw Boom.notFound("Relation not found");
-        }
-        type = type[relation]["type"];
-
-        const rel = await this.findOne(id, {relations : [relation]});
-
-        if (!rel) {
+        if (!thisRelation) {
             throw Boom.notFound();
         }
 
-        return serializer.serialize(rel[relation]);
+        const otherEntity = thisRelation.type as any;
+        const otherRepo = ApplicationRegistry.repositoryFor(otherEntity);
+        const alias = otherRepo.metadata.tableName;
+        const aliasRelation = this.buildAlias(alias,thisRelation.inverseSidePropertyPath);
+
+        if ((await this.count({where : {id}})) === 0) {
+            throw Boom.notFound();
+        }
+
+        const resultQb = otherRepo.createQueryBuilder(otherRepo.metadata.tableName)
+            .leftJoin(`${alias}.${thisRelation.inverseSidePropertyPath}`,aliasRelation)
+            .where(`${aliasRelation}.id = :id`,{id});
+
+        otherRepo.jsonApiRequest(params,{},resultQb);
+
+        const result = await (
+            thisRelation.isManyToOne || thisRelation.isOneToOne ?
+                resultQb.getOne() :
+                resultQb.getMany()
+        );
+
+        return result;
     }
 
     /**
      *
      * @param req
      */
-    public async addRelationshipsFromRequest(req: Request): Promise<any>  {
-        const {id, relation} = req.params;
+    public async addRelationshipsFromRequest(relationName: string,id: string | number,body: {id: string}[] | {id: string}): Promise<any>  {
         const user = await this.findOne(id);
+        const thisRelation = this.metadata.findRelationWithPropertyPath(relationName);
 
-        if (!user) {
+        if (!user || !thisRelation) {
             throw Boom.notFound();
         }
 
-        const serializer = new JSONAPISerializer({
-            convertCase: "kebab-case",
-            unconvertCase: "camelCase"
-        });
-        serializer.register(relation, {});
-        req.body = serializer.deserialize(relation, req.body);
-
         let relations = null;
 
-        if (Array.isArray(req.body)) {
+        if (thisRelation.isManyToMany || thisRelation.isOneToMany) {
             relations = [];
-            for (const value of req.body) {
+            for (const value of body as {id: string}[]) {
                 relations.push(value.id);
             }
         } else {
-            relations = req.body.id;
+            relations = (body as {id: string}).id;
         }
 
         const qb =  this.createQueryBuilder()
-            .relation(relation)
+            .relation(relationName)
             .of(user);
 
-        if (isPlural(relation)) {
+        if (isPlural(relationName)) {
             return qb.add(relations);
         } else {
             return qb.set(relations);
@@ -224,33 +228,26 @@ class BaseRepository<T> extends Repository<T> {
      *
      * @param req
      */
-    public async updateRelationshipsFromRequest(req: Request): Promise<any> {
-        const {id, relation} = req.params;
+    public async updateRelationshipsFromRequest(relationName: string,id: string | number,body: {id: string}[] | {id: string}): Promise<any> {
         const user = await this.findOne(id);
+        const thisRelation = this.metadata.findRelationWithPropertyPath(relationName);
 
-        if (!user) {
+        if (!user || !thisRelation) {
             throw Boom.notFound();
         }
 
-        const serializer = new JSONAPISerializer({
-            convertCase: "kebab-case",
-            unconvertCase: "camelCase"
-        });
-        serializer.register(relation, {});
-        req.body = serializer.deserialize(relation, req.body);
-
         let relations = null;
 
-        if (Array.isArray(req.body)) {
+        if (thisRelation.isManyToMany || thisRelation.isOneToMany) {
             relations = [];
-            for (const value of req.body) {
+            for (const value of body as {id: string}[]) {
                 relations.push(value.id);
             }
         } else {
-            relations = req.body.id;
+            relations = (body as {id: string}).id;
         }
 
-        user[relation] = await (isPlural(relation) ?
+        user[relationName] = await (thisRelation.isManyToMany || thisRelation.isOneToMany ?
             this.findByIds(relations) :
             this.findOne(relations));
 
@@ -261,37 +258,30 @@ class BaseRepository<T> extends Repository<T> {
      *
      * @param req
      */
-    public async removeRelationshipsFromRequest(req: Request): Promise<any> {
-        const {id, relation} = req.params;
+    public async removeRelationshipsFromRequest(relationName: string,id: string | number,body: {id: string}[] | {id: string}): Promise<any> {
         const user = await this.findOne(id);
+        const thisRelation = this.metadata.findRelationWithPropertyPath(relationName);
 
-        if (!user) {
+        if (!user || !thisRelation) {
             throw Boom.notFound();
         }
 
-        const serializer = new JSONAPISerializer({
-            convertCase: "kebab-case",
-            unconvertCase: "camelCase"
-        });
-        serializer.register(relation, {});
-        req.body = serializer.deserialize(relation, req.body);
-
         let relations = null;
 
-        if (Array.isArray(req.body)) {
+        if (thisRelation.isManyToMany || thisRelation.isOneToMany) {
             relations = [];
-            for (const value of req.body) {
+            for (const value of body as {id: string}[]) {
                 relations.push(value.id);
             }
         } else {
-            relations = req.body.id;
+            relations = (body as {id: string}).id;
         }
 
         const qb = this.createQueryBuilder()
-            .relation(relation)
+            .relation(relationName)
             .of(user);
 
-        if (isPlural(relation)) {
+        if (thisRelation.isManyToMany || thisRelation.isOneToMany) {
             return qb.remove(relations);
         } else {
             return qb.set(null);
@@ -391,6 +381,10 @@ class BaseRepository<T> extends Repository<T> {
         const otherRepo = ApplicationRegistry.repositoryFor(otherEntity);
         const alias = otherRepo.metadata.tableName;
         const aliasRelation = this.buildAlias(alias,thisRelation.inverseSidePropertyPath);
+
+        if ((await this.count({where : {id}})) === 0) {
+            throw Boom.notFound();
+        }
 
         const resultQb = otherRepo.createQueryBuilder(otherRepo.metadata.tableName)
             .select(`${alias}.id`)

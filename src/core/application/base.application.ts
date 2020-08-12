@@ -83,7 +83,7 @@ export default abstract class BaseApplication implements ApplicationInterface{
                 router.delete("/:id", controllerMiddleware("remove"));
 
                 router.get("/:id/:relation", controllerMiddleware("fetchRelated"));
-                router.get("/:id/relationships/:relation", controllerMiddleware("fetchRelationsships"));
+                router.get("/:id/relationships/:relation", controllerMiddleware("fetchRelationships"));
                 router.post("/:id/relationships/:relation", controllerMiddleware("addRelationships"));
                 router.patch("/:id/relationships/:relation", controllerMiddleware("updateRelationships"));
                 router.delete("/:id/:relation", controllerMiddleware("removeRelationships"));
