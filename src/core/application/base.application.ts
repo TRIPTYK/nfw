@@ -33,7 +33,8 @@ export default abstract class BaseApplication implements ApplicationInterface{
     }
 
     protected setupControllers() {
-        const controllers: Type<any>[] = Reflect.getMetadata("controllers",this)
+        const controllers: Type<any>[] = Reflect.getMetadata("controllers",this);
+
         for (const controller of controllers) {
             const instanceController = new controller();
 

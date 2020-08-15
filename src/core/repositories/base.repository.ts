@@ -18,7 +18,6 @@ interface JsonApiRequestParams {
 /**
  * Base Repository class , inherited for all current repositories
  */
-@EntityRepository()
 class BaseRepository<T> extends Repository<T> {
     /**
      * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.

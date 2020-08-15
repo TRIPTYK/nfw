@@ -3,6 +3,7 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
 import SerializerInterface from "../interfaces/serializer.interface";
+import { SchemaOptions } from "../decorators/serializer.controller";
 
 export type SerializerParams = {
     pagination?: PaginationParams;
@@ -79,6 +80,14 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
             convertCase: "kebab-case",
             unconvertCase: "camelCase"
         } as JSONAPISerializerSchema);
+
+        const schemas: SchemaOptions = Reflect.getMetadata("schemas",this);
+        const def = schemas.schemas.find((sch) => sch.name === "default");
+
+        const serialize = Reflect.getMetadata("serialize",def.schema);
+        const deserialize = Reflect.getMetadata("deserialize",def.schema);
+
+        console.log(def.schema,serialize,deserialize);
 
         this.type = schema.type;
         this.schema = schema;

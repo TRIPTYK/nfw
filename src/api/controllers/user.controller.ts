@@ -35,16 +35,4 @@ export default class UserController extends BaseJsonApiController<User> {
     public async create(req: Request, res: Response): Promise<any> {
         return super.create(req,res);
     }
-
-    public async get(req: Request): Promise<void> {
-        return super.get(req);
-    }
-
-    public async list(req: Request): Promise<any> {
-        return super.list(req);
-    }
-
-    public async remove(req: Request, res: Response): Promise<any> {
-        return super.remove(req,res);
-    }
 }

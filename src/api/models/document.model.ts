@@ -13,8 +13,14 @@ import * as Path from "path";
 import {MimeTypes, ImageMimeTypes} from "../enums/mime-type.enum";
 import {DocumentTypes} from "../enums/document-type.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
+import { DocumentSerializer } from "../serializers/document.serializer";
+import { DocumentRepository } from "../repositories/document.repository";
+import { JsonApiEntity } from "../../core/decorators/model.decorator";
 
-@Entity("documents")
+@JsonApiEntity("documents",{
+    serializer : DocumentSerializer,
+    repository : DocumentRepository
+})
 export class Document extends JsonApiModel<Document> {
     @Column({
         enum: DocumentTypes,

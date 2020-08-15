@@ -1,8 +1,8 @@
 import { OAuthToken } from "../models/oauth-token.model";
-import { JsonApiRepository } from "../../core/decorators/repository.decorator";
 import { BaseRepository } from "../../core/repositories/base.repository";
+import { EntityRepository } from "typeorm";
 
-@JsonApiRepository(OAuthToken)
+@EntityRepository(OAuthToken)
 export class OAuthTokenRepository extends BaseRepository<OAuthToken> {
     /**
      *

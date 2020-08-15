@@ -18,8 +18,14 @@ import {ImageMimeTypes} from "../enums/mime-type.enum";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
+import { UserSerializer } from "../serializers/user.serializer";
+import { UserRepository } from "../repositories/user.repository";
+import { JsonApiEntity } from "../../core/decorators/model.decorator";
 
-@Entity("user")
+@JsonApiEntity("users",{
+    serializer : UserSerializer,
+    repository : UserRepository
+})
 export class User extends JsonApiModel<User> {
     @Column({
         default: "User",

@@ -4,9 +4,9 @@ import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { BaseRepository } from "../../core/repositories/base.repository";
-import { JsonApiRepository } from "../../core/decorators/repository.decorator";
+import { EntityRepository } from "typeorm";
 
-@JsonApiRepository(RefreshToken)
+@EntityRepository(RefreshToken)
 export class RefreshTokenRepository extends BaseRepository<RefreshToken> {
     /**
      *
