@@ -1,7 +1,7 @@
 import { Serialize, Deserialize, SerializerSchema, Relation } from "../../../core/decorators/serializer.decorator";
 import UserSerializerSchema from "./user.serializer.schema";
 
-@SerializerSchema("documents")
+@SerializerSchema()
 export default class DocumentSerializerSchema {
     @Serialize()
     @Deserialize()

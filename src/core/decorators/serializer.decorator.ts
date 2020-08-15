@@ -65,9 +65,8 @@ export function JsonApiSerializer(options: SchemaOptions): ClassDecorator {
     }
 }
 
-export function SerializerSchema(type: string,name = "default"): ClassDecorator {
+export function SerializerSchema(name = "default"): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
         Reflect.defineMetadata("name",name,target.prototype);
-        Reflect.defineMetadata("type",type,target.prototype);
     }
 }
