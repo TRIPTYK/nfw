@@ -28,11 +28,26 @@ export function Deserialize(): PropertyDecorator {
 }
 
 
+export function Relation(type: () => Schema): PropertyDecorator {
+    return function(target: object, propertyKey: string | symbol) {
+        if (!Reflect.hasMetadata("relations",target)) {
+            Reflect.defineMetadata("relations",[],target);
+        }
+
+        const relations: {type;property}[] = Reflect.getMetadata("relations",target);
+
+        relations.push({
+            type,
+            property : propertyKey
+        });
+    }
+}
+
+export type Schema = Type<any>;
+
 export interface SchemaOptions {
-    schemas: {
-        name: string;
-        schema: Type<any>;
-    }[];
+    schemas: Schema[];
+    type: string;
 }
 
 /**
@@ -42,7 +57,17 @@ export interface SchemaOptions {
  */
 export function JsonApiSerializer(options: SchemaOptions): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
+        for (const schema of options.schemas) {
+            Reflect.defineMetadata("type",options.type,schema.prototype);
+        }
+
         Reflect.defineMetadata("schemas",options,target.prototype);
     }
 }
 
+export function SerializerSchema(type: string,name = "default"): ClassDecorator {
+    return function <TFunction extends Function>(target: TFunction) {
+        Reflect.defineMetadata("name",name,target.prototype);
+        Reflect.defineMetadata("type",type,target.prototype);
+    }
+}

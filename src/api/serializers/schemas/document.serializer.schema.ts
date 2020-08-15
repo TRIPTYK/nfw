@@ -1,34 +1,32 @@
-import { JSONAPISerializerSchema } from "../../../core/serializers/base.serializer";
+import { Serialize, Deserialize, SerializerSchema, Relation } from "../../../core/decorators/serializer.decorator";
 import UserSerializerSchema from "./user.serializer.schema";
 
+@SerializerSchema("documents")
 export default class DocumentSerializerSchema {
-    public static type = "documents";
+    @Serialize()
+    @Deserialize()
+    public fieldname;
 
-    /**
-     * Allowed serialized elements
-     */
-    public static serialize: string[] = ["fieldname", "filename", "path", "mimetype", "size", "created_at"];
+    @Serialize()
+    @Deserialize()
+    public filename;
 
-    /**
-     * Allowed deserialize elements
-     */
-    public static deserialize: string[] = [];
+    @Serialize()
+    @Deserialize()
+    public originalname;
 
-    public static get schema(): Readonly<JSONAPISerializerSchema> {
-        return {
-            relationships : {
-                user : {
-                    type: UserSerializerSchema.type,
-                    whitelist : UserSerializerSchema.serialize
-                },
-                users : {
-                    type: UserSerializerSchema.type,
-                    whitelist : UserSerializerSchema.serialize
-                }
-            },
-            type: DocumentSerializerSchema.type,
-            whitelist: DocumentSerializerSchema.serialize,
-            whitelistOnDeserialize : DocumentSerializerSchema.deserialize
-        };
-    }
+    @Serialize()
+    @Deserialize()
+    public size;
+
+    @Serialize()
+    @Deserialize()
+    public mimetype;
+
+    @Serialize()
+    @Deserialize()
+    public path;
+
+    @Relation(() => UserSerializerSchema)
+    public users;
 }

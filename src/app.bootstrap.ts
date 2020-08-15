@@ -17,6 +17,7 @@ module.exports = (async () => {
     /** Connection to Database server before app configuration */
     await TypeORMConfiguration.connect()
         .catch( (error) => {
+            console.log(error);
             LoggerConfiguration.logger.error(`${configuration.typeorm.type} connection error : ${error.message}`);
             process.exit(1);
         });

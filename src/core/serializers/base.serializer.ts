@@ -3,7 +3,8 @@ import * as JSONAPISerializer from "json-api-serializer";
 import { plural } from "pluralize";
 import EnvironmentConfiguration from "../../config/environment.config";
 import SerializerInterface from "../interfaces/serializer.interface";
-import { SchemaOptions } from "../decorators/serializer.controller";
+import { SchemaOptions } from "../decorators/serializer.decorator";
+import { Type } from "../types/global";
 
 export type SerializerParams = {
     pagination?: PaginationParams;
@@ -72,27 +73,18 @@ export type JSONAPISerializerOptions = {
 export abstract class BaseSerializer<T> implements SerializerInterface<T> {
     public static whitelist: string[] = [];
     public type: string;
-    public schema: JSONAPISerializerSchema;
     public serializer: JSONAPISerializer;
 
-    protected constructor(schema: JSONAPISerializerSchema) {
+    public constructor() {
         this.serializer = new JSONAPISerializer({
             convertCase: "kebab-case",
             unconvertCase: "camelCase"
         } as JSONAPISerializerSchema);
 
-        const schemas: SchemaOptions = Reflect.getMetadata("schemas",this);
-        const def = schemas.schemas.find((sch) => sch.name === "default");
+        const schemasData: SchemaOptions = Reflect.getMetadata("schemas",this);
 
-        const serialize = Reflect.getMetadata("serialize",def.schema);
-        const deserialize = Reflect.getMetadata("deserialize",def.schema);
-
-        console.log(def.schema,serialize,deserialize);
-
-        this.type = schema.type;
-        this.schema = schema;
-
-        this.registerFromSchema(schema);
+        this.type = schemasData.type;
+        this.convertSerializerSchemaToObjectSchema(schemasData.schemas[0],schemasData.schemas[0]);
     }
 
     public serializeAsync(payload: T | T[], options?: SerializeOptions): any {
@@ -161,19 +153,31 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         return this.serializer.deserialize(this.type, payload);
     }
 
-    public registerFromSchema(schema: JSONAPISerializerSchema): void {
+    public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema): void {
+        const serialize = Reflect.getMetadata("serialize",schema.prototype);
+        const deserialize = Reflect.getMetadata("deserialize",schema.prototype);
+        const relations = Reflect.getMetadata("relations",schema.prototype) ?? [];
+        const schemaType = Reflect.getMetadata("type",schema.prototype);
+
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
 
-        for (const key in schema.relationships) {
-            if (schema.relationships[key]) {
-                relationShips[key] = {
-                    type : schema.relationships[key].type
-                };
-                this.registerFromSchema(schema.relationships[key]);
+        for (const {type,property} of relations) {
+            const schemaTypeRelation = type();
+            const relationType = Reflect.getMetadata("type",schemaTypeRelation.prototype);
+            relationShips[property] = {
+                type : relationType
+            };
+            if (schemaTypeRelation === rootSchema) {
+                return;
             }
+            this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema);
         }
 
-        this.serializer.register(schema.type, {...schema, ...{relationships : relationShips}});
+        this.serializer.register(schemaType, {
+            whitelist: serialize,
+            whitelistOnDeserialize: deserialize,
+            relationships : relationShips
+        });
     }
 
     public setupPaginationLinks(paginationParams: PaginationParams): this {
