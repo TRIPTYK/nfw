@@ -115,7 +115,7 @@ export default class AuthController implements ControllerInterface {
         });
 
         if (!refreshObject) {
-            throw Boom.forbidden("Invalid refresh token");
+            throw Boom.badRequest("Invalid refresh token");
         }
 
         // Get owner user of the token
