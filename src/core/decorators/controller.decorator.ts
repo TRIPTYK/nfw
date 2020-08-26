@@ -3,6 +3,7 @@ import { BaseMiddleware } from "../middlewares/base.middleware";
 import { Type } from "../types/global";
 import { JsonApiModel } from "../models/json-api.model";
 import { ApplicationRegistry } from "../application/registry.application";
+import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 
 /**
  *
@@ -63,6 +64,29 @@ export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: a
     };
 }
 
+export function DeserializeJsonApi(schema = "default"): MethodDecorator {
+    return function(target: any, propertyKey: string): void {
+        if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
+            Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
+        }
+
+        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
+        middlewares.push({middleware : "deserialize" , schema});
+    };
+}
+
+export function ValidateJsonApi(schema = "default"): MethodDecorator {
+    return function(target: any, propertyKey: string): void {
+        if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
+            Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
+        }
+
+        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
+        middlewares.push({middleware : "validate" , args : propertyKey});
+    };
+}
+
+
 export type RequestMethods = "get" | "post" | "delete" | "options" | "put" | "patch";
 
 export interface RouteDefinition {
@@ -73,12 +97,19 @@ export interface RouteDefinition {
 
 const registerMethod = (path: string = null , method: RequestMethods) =>
     function(target: any, propertyKey: string): void {
+
         if (! Reflect.hasMetadata("routes", target.constructor)) {
             Reflect.defineMetadata("routes", [], target.constructor);
         }
 
         // Get the routes stored so far, extend it by the new route and re-set the metadata.
         const routes = Reflect.getMetadata("routes", target.constructor) as RouteDefinition[];
+
+        const alreadyExists = routes.findIndex((route) => route.methodName === propertyKey);
+
+        if (alreadyExists >= 0) {
+            routes.splice(alreadyExists,1);
+        }
 
         routes.push({
             methodName: propertyKey,

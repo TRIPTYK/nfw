@@ -13,13 +13,13 @@ import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
 import { Controller, Post, MethodMiddleware } from "../../core/decorators/controller.decorator";
 import SecurityMiddleware from "../middlewares/security.middleware";
-import DeserializeMiddleware from "../middlewares/deserialize.middleware";
+import DeserializeMiddleware from "../../core/middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
-import ValidationMiddleware from "../middlewares/validation.middleware";
 import { register } from "../validations/auth.validation";
 import { injectable } from "tsyringe";
 import { User } from "../models/user.model";
 import ControllerInterface from "../../core/interfaces/controller.interface";
+import ValidationMiddleware from "../../core/middlewares/validation.middleware";
 
 /**
  * Authentification Controller!

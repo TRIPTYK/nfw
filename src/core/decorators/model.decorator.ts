@@ -11,6 +11,7 @@ import { ApplicationRegistry } from "../application/registry.application";
 export interface EntityOptionsExtended<T = any> extends EntityOptions {
     repository: Type<BaseRepository<T>>;
     serializer: Type<BaseSerializer<T>>;
+    validator: Type<T>;
 }
 
 
@@ -47,8 +48,13 @@ export function JsonApiEntity(nameOrOptions?: string|any, maybeOptions?: any): C
             withoutRowid: options.withoutRowid
         } as TableMetadataArgs);
 
+        if (!options.repository || !options.serializer || !options.validator) {
+            throw new Error("Please provide arguments for json-api entity");
+        }
+
         Reflect.defineMetadata("repository",options.repository,target);
         Reflect.defineMetadata("serializer",options.serializer,target);
+        Reflect.defineMetadata("validator",options.validator,target);
 
         getMetadataArgsStorage().entityRepositories.push({
             target : options.repository,

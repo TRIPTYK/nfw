@@ -16,10 +16,13 @@ import { JsonApiModel } from "../../core/models/json-api.model";
 import { DocumentSerializer } from "../serializers/document.serializer";
 import { DocumentRepository } from "../repositories/document.repository";
 import { JsonApiEntity } from "../../core/decorators/model.decorator";
+import * as DocumentValidator from "../validations/document.validation";
+
 
 @JsonApiEntity("documents",{
     serializer : DocumentSerializer,
-    repository : DocumentRepository
+    repository : DocumentRepository,
+    validator : DocumentValidator
 })
 export class Document extends JsonApiModel<Document> {
     @Column({

@@ -21,10 +21,12 @@ import { JsonApiModel } from "../../core/models/json-api.model";
 import { UserSerializer } from "../serializers/user.serializer";
 import { UserRepository } from "../repositories/user.repository";
 import { JsonApiEntity } from "../../core/decorators/model.decorator";
+import * as UserValidator from "../validations/user.validation";
 
 @JsonApiEntity("users",{
     serializer : UserSerializer,
-    repository : UserRepository
+    repository : UserRepository,
+    validator: UserValidator
 })
 export class User extends JsonApiModel<User> {
     @Column({

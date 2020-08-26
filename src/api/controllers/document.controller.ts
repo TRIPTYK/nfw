@@ -7,12 +7,12 @@ import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
 import FileUploadMiddleware from "../middlewares/file-upload.middleware";
-import ValidationMiddleware from "../middlewares/validation.middleware";
 import { updateDocument } from "../validations/document.validation";
 import { autoInjectable } from "tsyringe";
 import PaginationQueryParams from "../../core/types/jsonapi";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import { Document } from "../models/document.model";
+import ValidationMiddleware from "../../core/middlewares/validation.middleware";
 
 @JsonApiController(Document)
 @RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])

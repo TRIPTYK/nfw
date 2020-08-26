@@ -6,6 +6,8 @@ import { RouteDefinition } from "../decorators/controller.decorator";
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { container } from "tsyringe";
 import * as pluralize from "pluralize";
+import DeserializeMiddleware from "../middlewares/deserialize.middleware";
+import ValidationMiddleware from "../middlewares/validation.middleware";
 
 export default abstract class BaseApplication implements ApplicationInterface{
     protected app: Express.Application;
@@ -74,53 +76,89 @@ export default abstract class BaseApplication implements ApplicationInterface{
 
             const jsonApiEntity = Reflect.getMetadata("entity",instanceController);
 
-            if (jsonApiEntity) {
-                this.router.use(`/${pluralize.plural(jsonApiEntity.name.toLowerCase())}`, router);
+            if (jsonApiEntity) { // is json-api controller
+                const jsonApiEntityName = pluralize.plural(jsonApiEntity.name.toLowerCase());
+                this.router.use(`/${jsonApiEntityName}`, router);
 
-                router.get("/", controllerMiddleware("list"));
-                router.get("/:id", controllerMiddleware("get"));
-                router.post("/", controllerMiddleware("create"));
-                router.patch("/:id", controllerMiddleware("update"));
-                router.delete("/:id", controllerMiddleware("remove"));
+                for (const route of routes) {
+                    let middlewaresWithArgs =
+                            Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any ; args: any }[];
 
-                router.get("/:id/:relation", controllerMiddleware("fetchRelated"));
-                router.get("/:id/relationships/:relation", controllerMiddleware("fetchRelationships"));
-                router.post("/:id/relationships/:relation", controllerMiddleware("addRelationships"));
-                router.patch("/:id/relationships/:relation", controllerMiddleware("updateRelationships"));
-                router.delete("/:id/:relation", controllerMiddleware("removeRelationships"));
+                    if (!middlewaresWithArgs) {
+                        middlewaresWithArgs = [];
+                    }
+
+                    middlewaresWithArgs.reverse();
+
+                    const middlewares = [];
+
+                    for (const middleware of middlewaresWithArgs) {
+                        let middlewareClass;
+                        let args;
+
+                        if (middleware.middleware === "deserialize") {
+                            middlewareClass = container.resolve(DeserializeMiddleware);
+                            const serializerClass = Reflect.getMetadata("serializer",jsonApiEntity);
+                            args = {
+                                serializer: serializerClass
+                            };
+                        }else if (middleware.middleware === "validate") {
+                            middlewareClass = container.resolve(ValidationMiddleware);
+                            const validationSchema = Reflect.getMetadata("validator",jsonApiEntity);
+                            args = {
+                                schema : validationSchema [ middleware.args ]
+                            };
+                        }else {
+                            middlewareClass = container.resolve(middleware.middleware);
+                            args = middleware.args;
+                        }
+
+                        middlewares.push((req, res, next) => {
+                            try {
+                                return middlewareClass.use(req, res, next, args);
+                            } catch (e) {
+                                return next(e);
+                            }
+                        });
+                    }
+
+                    console.log(`[${route.requestMethod}] /${jsonApiEntityName}${route.path}`);
+                    middlewares.push(controllerMiddleware(route.methodName));
+                    router[route.requestMethod](`${route.path}`, middlewares);
+                }
             }else{
                 this.router.use(`/${prefix}`, router);
-            }
 
-            // Iterate over all routes and register them to our express application
-            for (const route of routes) {
-                let middlewaresWithArgs =
-                    Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any ; args: object }[];
+                // Iterate over all routes and register them to our express application
+                for (const route of routes) {
+                    let middlewaresWithArgs =
+                        Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any ; args: object }[];
 
-                if (!middlewaresWithArgs) {
-                    middlewaresWithArgs = [];
+                    if (!middlewaresWithArgs) {
+                        middlewaresWithArgs = [];
+                    }
+
+                    middlewaresWithArgs.reverse();
+
+                    const middlewares = [];
+
+                    for (const iterator of middlewaresWithArgs) {
+                        const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
+
+                        // need to arrow function to keep "this" context in method
+                        middlewares.push((req, res, next) => {
+                            try {
+                                return realMiddleware.use(req, res, next, iterator.args);
+                            } catch (e) {
+                                return next(e);
+                            }
+                        });
+                    }
+
+                    middlewares.push(controllerMiddleware(route.methodName));
+
+                    router[route.requestMethod](`${route.path}`, middlewares);
                 }
-
-                middlewaresWithArgs.reverse();
-
-                const middlewares = [];
-
-                for (const iterator of middlewaresWithArgs) {
-                    const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
-
-                    // need to arrow function to keep "this" context in method
-                    middlewares.push((req, res, next) => {
-                        try {
-                            return realMiddleware.use(req, res, next, iterator.args);
-                        } catch (e) {
-                            return next(e);
-                        }
-                    });
-                }
-
-                middlewares.push(controllerMiddleware(route.methodName));
-
-                router[route.requestMethod](`${route.path}`, middlewares);
             }
         }
     }

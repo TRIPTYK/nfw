@@ -15,7 +15,7 @@ export const changePassword: ValidationSchema<any> = {
 };
 
 // GET /v1/users/id
-export const getUser: ValidationSchema<User> = {
+export const get: ValidationSchema<User> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
@@ -25,7 +25,7 @@ export const getUser: ValidationSchema<User> = {
 };
 
 // POST /v1/users
-export const createUser: ValidationSchema<User> = {
+export const create: ValidationSchema<User> = {
     email: {
         custom: {
             options: async (value) => {
@@ -70,7 +70,7 @@ export const createUser: ValidationSchema<User> = {
 };
 
 // PATCH /v1/users/:id
-export const updateUser: ValidationSchema<User> = {
+export const update: ValidationSchema<User> = {
     email: {
         isEmail: true,
         optional: true

@@ -1,17 +1,22 @@
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
+import { BaseMiddleware } from "./base.middleware";
 import { Request , Response, NextFunction } from "express";
 import { container, injectable } from "tsyringe";
-import { BaseSerializer } from "../../core/serializers/base.serializer";
-import { Type } from "../../core/types/global";
+import { BaseSerializer } from "../serializers/base.serializer";
+import { Type } from "../types/global";
 
 @injectable()
 export default class DeserializeMiddleware extends BaseMiddleware {
-    public async use(req: Request, response: Response, next: NextFunction, args: Type<BaseSerializer<any>>): Promise<any> {
+    public async use(req: Request, response: Response, next: NextFunction, args: {
+        serializer: Type<BaseSerializer<any>>;
+        schema?: string;
+    }): Promise<any> {
         if (!req.body.data || !req.body.data.attributes) {
             return next();
         }
 
-        const fields = await (container.resolve(args)).deserializeAsync(req.body);
+        console.log(args);
+
+        const fields = await (container.resolve(args.serializer)).deserializeAsync(req.body);
 
         req.body = {};
 
