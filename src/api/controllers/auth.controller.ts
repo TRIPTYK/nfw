@@ -18,8 +18,8 @@ import { UserSerializer } from "../serializers/user.serializer";
 import { register } from "../validations/auth.validation";
 import { injectable } from "tsyringe";
 import { User } from "../models/user.model";
-import ControllerInterface from "../../core/interfaces/controller.interface";
 import ValidationMiddleware from "../../core/middlewares/validation.middleware";
+import BaseController from "../../core/controllers/base.controller";
 
 /**
  * Authentification Controller!
@@ -27,12 +27,13 @@ import ValidationMiddleware from "../../core/middlewares/validation.middleware";
  */
 @Controller("auth")
 @injectable()
-export default class AuthController implements ControllerInterface {
+export default class AuthController extends BaseController {
     // can't inject repositories
     private repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;
 
     public constructor() {
+        super();
         this.repository = getCustomRepository(UserRepository);
         this.refreshRepository = getCustomRepository(RefreshTokenRepository);
     }

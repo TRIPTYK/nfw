@@ -17,12 +17,15 @@ import UserController from "../api/controllers/user.controller";
 import AuthController from "../api/controllers/auth.controller";
 import { container } from "tsyringe";
 import { PassportService } from "../api/services/passport.service";
+import BaseJsonApiController from "../core/controllers/json-api.controller";
 
 @RegisterApplication({controllers : [AuthController,UserController,DocumentController]})
 export class Application extends BaseApplication {
     public init() {
         super.init();
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
+
+        console.log(Reflect.getOwnMetadataKeys(BaseJsonApiController));
 
         /**
          * Expose body on req.body

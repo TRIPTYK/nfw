@@ -2,8 +2,6 @@
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { Type } from "../types/global";
 import { JsonApiModel } from "../models/json-api.model";
-import { ApplicationRegistry } from "../application/registry.application";
-import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 
 /**
  *
@@ -39,8 +37,47 @@ export function JsonApiController<T extends JsonApiModel<T>>(entity: Type<T>): C
         Reflect.defineMetadata("entity", entity, target.prototype);
 
         if (! Reflect.hasMetadata("routes", target)) {
-            Reflect.defineMetadata("routes", [], target);
+            const routes: RouteDefinition[] = [
+                {
+                    methodName : "get",
+                    requestMethod : "get",
+                    path: "/:id",
+                },{
+                    methodName : "list",
+                    requestMethod : "get",
+                    path: "/",
+                },
+                {
+                    methodName : "fetchRelated",
+                    requestMethod : "get",
+                    path: "/:id",
+                },{
+                    methodName : "fetchRelationships",
+                    requestMethod : "get",
+                    path: "/",
+                },
+                {
+                    methodName : "create",
+                    requestMethod : "get",
+                    path: "/:id",
+                },{
+                    methodName : "update",
+                    requestMethod : "get",
+                    path: "/",
+                },
+                {
+                    methodName : "delete",
+                    requestMethod : "get",
+                    path: "/",
+                },
+                {
+                    methodName : "update",
+                    requestMethod : "get",
+                    path: "/",
+                }];
+            Reflect.defineMetadata("routes", routes, target);
         }
+
     };
 }
 
