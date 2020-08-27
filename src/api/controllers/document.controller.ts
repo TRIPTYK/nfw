@@ -2,24 +2,20 @@ import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
 
 import { Request, Response } from "express";
-import { Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware, JsonApiController } from "../../core/decorators/controller.decorator";
-import AuthMiddleware from "../middlewares/auth.middleware";
-import { Roles } from "../enums/role.enum";
+import { Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware, JsonApiController, JsonApiMethodMiddleware, OverrideSerializer, OverrideValidator } from "../../core/decorators/controller.decorator";
 import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
 import FileUploadMiddleware from "../middlewares/file-upload.middleware";
-import { updateDocument } from "../validations/document.validation";
 import { autoInjectable } from "tsyringe";
-import PaginationQueryParams from "../../core/types/jsonapi";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import { Document } from "../models/document.model";
-import ValidationMiddleware from "../../core/middlewares/validation.middleware";
 
 @JsonApiController(Document)
-@RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
 @autoInjectable()
 export default class DocumentController extends BaseJsonApiController<Document> {
-    @MethodMiddleware(FileUploadMiddleware)
-    @MethodMiddleware(DocumentResizeMiddleware)
+    @OverrideSerializer(null)
+    @OverrideValidator(null)
+    @JsonApiMethodMiddleware(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
+    @JsonApiMethodMiddleware(DocumentResizeMiddleware)
     public async create(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as object);
@@ -27,8 +23,10 @@ export default class DocumentController extends BaseJsonApiController<Document> 
         return document;
     }
 
-    @MethodMiddleware(FileUploadMiddleware)
-    @MethodMiddleware(DocumentResizeMiddleware)
+    @OverrideSerializer(null)
+    @OverrideValidator(null)
+    @JsonApiMethodMiddleware(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
+    @JsonApiMethodMiddleware(DocumentResizeMiddleware)
     public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
 

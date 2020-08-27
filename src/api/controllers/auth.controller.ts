@@ -14,7 +14,7 @@ import { OAuthToken } from "../models/oauth-token.model";
 import { Controller, Post, MethodMiddleware } from "../../core/decorators/controller.decorator";
 import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../../core/middlewares/deserialize.middleware";
-import { UserSerializer } from "../serializers/user.serializer";
+import { UserSerializer, UserSerializer } from "../serializers/user.serializer";
 import { register } from "../validations/auth.validation";
 import { injectable } from "tsyringe";
 import { User } from "../models/user.model";
@@ -39,7 +39,7 @@ export default class AuthController extends BaseController {
     }
 
     @Post()
-    @MethodMiddleware(DeserializeMiddleware, UserSerializer)
+    @MethodMiddleware(DeserializeMiddleware, {serializer: UserSerializer,schema:"default" })
     @MethodMiddleware(ValidationMiddleware, {schema : register})
     @MethodMiddleware(SecurityMiddleware)
     public async register(req: Request, res: Response): Promise<any> {

@@ -7,7 +7,6 @@ import EnvironmentConfiguration from "../../config/environment.config";
 export class DocumentResizeMiddleware extends BaseMiddleware {
     public use(req: Request, res: Response, next: NextFunction) {
         const { jimp } = EnvironmentConfiguration.config;
-
         try {
             // If image optimization is activated and is image mime type
             if (jimp.isActive && Object.values(ImageMimeTypes).includes(req.file.mimetype as any)) {

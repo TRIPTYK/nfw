@@ -35,7 +35,6 @@ describe("Authentification", function() {
                 .set("Accept", "application/vnd.api+json")
                 .set("Content-Type", "application/vnd.api+json")
                 .end(function(err, res) {
-                    console.log(res.body);
                     expect(res.statusCode).to.equal(201);
                     done();
                 });
@@ -114,90 +113,6 @@ describe("Authentification", function() {
                     expect(res.statusCode).to.equal(200);
                     done();
                 });
-        });
-
-    });
-
-    describe("Unauthorized without token", function() {
-
-        describe("Users", function() {
-
-            it("GET /api/v1/users rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/users")
-                    .expect(403, done);
-            });
-
-            it("GET /api/v1/users/1 rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-            it("GET /api/v1/users/profile rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/users/profile")
-                    .expect(403, done);
-            });
-
-            it("POST /api/v1/users rejected with 403", function(done) {
-                agent
-                    .post("/api/v1/users")
-                    .expect(403, done);
-            });
-
-            it("PUT /api/v1/users/1 rejected with 403", function(done) {
-                agent
-                    .put("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-            it("PATCH /api/v1/users/1 rejected with 403", function(done) {
-                agent
-                    .patch("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-            it("DELETE /api/v1/users/1 rejected as 403", function(done) {
-                agent
-                    .delete("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-        });
-
-        describe("Documents", function() {
-
-            it("GET /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/documents")
-                    .expect(403, done);
-            });
-
-            it("POST /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .post("/api/v1/documents")
-                    .expect(403, done);
-            });
-
-            it("PUT /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .put("/api/v1/documents/1")
-                    .expect(403, done);
-            });
-
-            it("PATCH /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .patch("/api/v1/documents/1")
-                    .expect(403, done);
-            });
-
-            it("DELETE /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .delete("/api/v1/documents/1")
-                    .expect(403, done);
-            });
-
         });
 
     });

@@ -49,7 +49,7 @@ describe("User CRUD", () => {
             .end((err, res) => {
                 const status = res.status;
                 expect(status).to.equal(201);
-                expect(res.body.data.type).to.equal("user");
+                expect(res.body.data.type).to.equal("users");
                 expect(res.body.data.id).to.be.a("string");
                 expect(res.body.data.attributes).to.include.all.keys(
                     "username",
@@ -72,7 +72,7 @@ describe("User CRUD", () => {
             .end((err, res) => {
                 const status = res.status;
                 expect(status).to.equal(200);
-                expect(res.body.data.type).to.equal("user");
+                expect(res.body.data.type).to.equal("users");
                 expect(res.body.data.id).to.be.a("string");
                 expect(res.body.data.attributes).to.include.all.keys(
                     "username",
@@ -94,7 +94,7 @@ describe("User CRUD", () => {
             .end((err, res) => {
                 const status = res.status;
                 expect(status).to.equal(200);
-                expect(res.body.data.type).to.equal("user");
+                expect(res.body.data.type).to.equal("users");
                 expect(res.body.data.id).to.be.a("string");
                 expect(res.body.data.attributes).to.include.all.keys(
                     "username",
@@ -116,7 +116,7 @@ describe("User CRUD", () => {
             .end((err, res) => {
                 const status = res.status;
                 expect(status).to.equal(200);
-                expect(res.body.data.type).to.equal("user");
+                expect(res.body.data.type).to.equal("users");
                 expect(res.body.data.id).to.be.a("string");
                 expect(res.body.data.attributes).to.include.all.keys(
                     "username"
@@ -125,39 +125,24 @@ describe("User CRUD", () => {
             });
     });
 
-    it("PUT /api/v1/users/n succeed with 200", (done) => {
+    it("GET related" , (done) => {
         agent
-            .put("/api/v1/users/" + id)
+            .get(`/api/v1/users/${id}/documents`)
             .set("Authorization", "Bearer " + token)
-            .set("Accept", "application/vnd.api+json")
-            .set("Content-Type", "application/vnd.api+json")
-            .send({
-                data : {
-                    attributes : fixtures.user({
-                        email: faker.internet.email(),
-                        firstname: faker.name.firstName(),
-                        lastname: faker.name.lastName(),
-                        password: faker.internet.password(8, true),
-                        role: "admin",
-                        services: {},
-                        username: faker.internet.userName(),
-                    })
-                }
-            })
             .end((err, res) => {
                 const status = res.status;
                 expect(status).to.equal(200);
-                expect(res.body.data.type).to.equal("user");
-                expect(res.body.data.id).to.be.a("string");
-                expect(res.body.data.attributes).to.include.all.keys(
-                    "username",
-                    "email",
-                    "updated-at",
-                    "firstname",
-                    "lastname",
-                    "role",
-                    "created-at"
-                );
+                done();
+            });
+    });
+
+    it("GET relationships" , (done) => {
+        agent
+            .get(`/api/v1/users/${id}/relationships/documents`)
+            .set("Authorization", "Bearer " + token)
+            .end((err, res) => {
+                const status = res.status;
+                expect(status).to.equal(200);
                 done();
             });
     });
@@ -180,7 +165,7 @@ describe("User CRUD", () => {
             .end((err, res) => {
                 const status = res.status;
                 expect(status).to.equal(200);
-                expect(res.body.data.type).to.equal("user");
+                expect(res.body.data.type).to.equal("users");
                 expect(res.body.data.id).to.be.a("string");
                 expect(res.body.data.attributes).to.include.all.keys(
                     "username",

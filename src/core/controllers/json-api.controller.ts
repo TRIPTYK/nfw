@@ -6,10 +6,12 @@ import { Request , Response, } from "express";
 import { ApplicationRegistry } from "../application/registry.application";
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
-import PaginationQueryParams from "../types/jsonapi";
 import { ObjectLiteral } from "typeorm";
-import { Get, Patch, Delete, Post, DeserializeJsonApi, ValidateJsonApi } from "../decorators/controller.decorator";
 import BaseController from "./base.controller";
+import PaginationResponse from "../responses/pagination.response";
+import ApiResponse from "../responses/response.response";
+import { ApiResponse } from "@elastic/elasticsearch";
+
 
 export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> extends BaseController {
     protected serializer: BaseSerializer<T>;
@@ -28,11 +30,30 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                 const response = await this[methodName](req, res);
                 if (!res.headersSent) {
                     const useSchema = Reflect.getMetadata("schema-use",this,methodName) ?? "default";
-                    res.send(
-                        this.serializer.serialize(response,{
+
+                    if (response instanceof PaginationResponse) {
+                        const serialized = this.serializer.serialize(response.body,{
+                            schema: useSchema,
+                            paginationData: response.paginationData
+                        });
+                        res.status(response.status);
+                        res.type(response.type);
+                        res.send(serialized);
+                    }else if (response instanceof ApiResponse) {
+                        const serialized = this.serializer.serialize(response.body,{
                             schema: useSchema
-                        })
-                    );
+                        });
+                        res.status(response.status);
+                        res.type(response.type);
+                        res.send(serialized);
+                    }else{
+                        const serialized = this.serializer.serialize(response,{
+                            schema: useSchema
+                        });
+                        res.status(200);
+                        res.type("json");
+                        res.send(serialized);
+                    }
                 }
             } catch (e) {
                 return next(e);
@@ -41,14 +62,16 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
     }
 
     public async list(req: Request,res: Response): Promise<any> {
-        const [users, totalUsers] = await this.repository.jsonApiRequest({
-            includes : req.query.include ? (req.query.include as string).split(",") : null,
-            sort : req.query.sort ? (req.query.sort as string).split(",") : null,
-            fields : req.query.fields as any ?? null,
-            page: req.query.page as any ?? null
-        }).getManyAndCount();
+        const params = this.parseJsonApiQueryParams(req.query);
 
-        return users;
+        const [entities,count] = await this.repository.jsonApiRequest(params).getManyAndCount();
+
+        return new PaginationResponse(entities,{
+            total: count,
+            url: req.url,
+            page: params.page.number,
+            size: params.page.size
+        });
     }
 
     public async get(req: Request,res: Response): Promise<any> {
@@ -65,7 +88,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         const user = this.repository.create(req.body as object);
         const saved = await this.repository.save(user as any);
         res.status(HttpStatus.CREATED);
-        return saved;
+        return new ApiResponse(saved,{status : 201,type: "json"});
     }
 
     public async update(req: Request,res: Response): Promise<any> {

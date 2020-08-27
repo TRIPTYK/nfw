@@ -4,7 +4,7 @@ import * as Boom from "@hapi/boom";
 import { Document } from "../models/document.model";
 import { ValidationSchema } from "../../core/types/validation";
 
-export const getDocument: ValidationSchema<Document> = {
+export const get: ValidationSchema<Document> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
@@ -14,7 +14,7 @@ export const getDocument: ValidationSchema<Document> = {
 };
 
 // PATCH /v1/documents/:id
-export const updateDocument: ValidationSchema<Document> = {
+export const update: ValidationSchema<Document> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
@@ -24,7 +24,7 @@ export const updateDocument: ValidationSchema<Document> = {
 };
 
 // DELETE /v1/documents/:id
-export const deleteDocument: ValidationSchema<Document> = {
+export const remove: ValidationSchema<Document> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],

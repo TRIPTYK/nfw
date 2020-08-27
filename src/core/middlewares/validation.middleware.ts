@@ -6,7 +6,7 @@ import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 @injectable()
 export default class ValidationMiddleware extends BaseMiddleware {
     public async use(req: Request, response: Response, next: NextFunction, args: any): Promise<any> {
-        const { schema , location = ["body"] } = args;
+        const { schema , location = [] } = args;
 
         const validationChain: ValidationChain[] = checkSchema(schema, location);
 

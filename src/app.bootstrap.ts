@@ -17,7 +17,6 @@ module.exports = (async () => {
     /** Connection to Database server before app configuration */
     await TypeORMConfiguration.connect()
         .catch( (error) => {
-            console.log(error);
             LoggerConfiguration.logger.error(`${configuration.typeorm.type} connection error : ${error.message}`);
             process.exit(1);
         });
@@ -46,6 +45,6 @@ module.exports = (async () => {
 
     LoggerConfiguration.logger.info(`HTTP server is now running on port ${configuration.port}`);
 
-    return ApplicationRegistry;
+    return app.App;
 })();
 

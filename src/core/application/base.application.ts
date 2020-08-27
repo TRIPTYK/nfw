@@ -114,11 +114,65 @@ export default abstract class BaseApplication implements ApplicationInterface{
                         methodType: "delete",
                         method: "remove",
                         middlewares: ["validation"]
+                    },
+                    {
+                        path: "/:id/:relation",
+                        methodType: "get",
+                        method: "fetchRelated",
+                        middlewares: ["validation"]
+                    },
+                    {
+                        path: "/:id/relationships/:relation",
+                        methodType: "get",
+                        method: "fetchRelationships",
+                        middlewares: ["validation"]
+                    },
+                    {
+                        path: "/:id/relationships/:relation",
+                        methodType: "post",
+                        method: "addRelationships",
+                        middlewares: ["validation"]
+                    },
+                    {
+                        path: "/:id/relationships/:relation",
+                        methodType: "patch",
+                        method: "updateRelationships",
+                        middlewares: ["validation"]
+                    },
+                    {
+                        path: "/:id/:relation",
+                        methodType: "delete",
+                        method: "removeRelationships",
+                        middlewares: ["validation"]
                     }
                 ];
 
                 const deserializeMiddleware = container.resolve(DeserializeMiddleware);
                 const validationMiddleware = container.resolve(ValidationMiddleware);
+
+                for (const route of routes) {
+                    let middlewaresWithArgs =
+                        Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any ; args: object }[];
+
+                    if (!middlewaresWithArgs) {
+                        middlewaresWithArgs = [];
+                    }
+
+                    middlewaresWithArgs.reverse();
+
+                    const middlewares = [];
+
+                    for (const iterator of middlewaresWithArgs) {
+                        const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
+
+                        // need to arrow function to keep "this" context in method
+                        middlewares.push(useMiddleware(realMiddleware,iterator.args));
+                    }
+
+                    middlewares.push(instanceController.callMethod(route.methodName));
+
+                    router[route.requestMethod](`${route.path}`, middlewares);
+                }
 
                 for (const {path,methodType,method,middlewares} of jsonApiRoutes) {
                     console.log(jsonApiEntityName,`[${methodType}] /${jsonApiEntityName}${path}`,middlewares);
@@ -141,13 +195,13 @@ export default abstract class BaseApplication implements ApplicationInterface{
                         middlewaresByOrder[middleware.order ?? "afterAll"].push(middleware);
                     }
 
-                    for (const beforeAllMiddleware of middlewaresByOrder["beforeAll"]) {
+                    for (const beforeAllMiddleware of middlewaresByOrder["beforeAll"].reverse()) {
                         applyMiddlewares.push(useMiddleware(container.resolve(beforeAllMiddleware.middleware),beforeAllMiddleware.args));
                     }
 
                     for (const middleware of middlewares) {
                         if (middleware === "deserialize") {
-                            for (const beforeDeserializationMiddleware of middlewaresByOrder["beforeDeserialization"]) {
+                            for (const beforeDeserializationMiddleware of middlewaresByOrder["beforeDeserialization"].reverse()) {
                                 applyMiddlewares.push(useMiddleware(container.resolve(beforeDeserializationMiddleware.middleware),beforeDeserializationMiddleware.args));
                             }
 
@@ -160,13 +214,13 @@ export default abstract class BaseApplication implements ApplicationInterface{
                                 }));
                             }
 
-                            for (const afterDeserializationMiddleware of middlewaresByOrder["afterDeserialization"]) {
+                            for (const afterDeserializationMiddleware of middlewaresByOrder["afterDeserialization"].reverse()) {
                                 applyMiddlewares.push(useMiddleware(container.resolve(afterDeserializationMiddleware.middleware),afterDeserializationMiddleware.args));
                             }
                         }
 
                         if (middleware === "validation") {
-                            for (const beforeValidationMiddleware of middlewaresByOrder["beforeValidation"]) {
+                            for (const beforeValidationMiddleware of middlewaresByOrder["beforeValidation"].reverse()) {
                                 applyMiddlewares.push(useMiddleware(container.resolve(beforeValidationMiddleware.middleware),beforeValidationMiddleware.args));
                             }
 
@@ -179,13 +233,13 @@ export default abstract class BaseApplication implements ApplicationInterface{
                                 }));
                             }
 
-                            for (const afterValidationMiddleware of middlewaresByOrder["afterValidation"]) {
+                            for (const afterValidationMiddleware of middlewaresByOrder["afterValidation"].reverse()) {
                                 applyMiddlewares.push(useMiddleware(container.resolve(afterValidationMiddleware.middleware),afterValidationMiddleware.args));
                             }
                         }
                     }
 
-                    for (const afterAllMiddleware of middlewaresByOrder["afterAll"]) {
+                    for (const afterAllMiddleware of middlewaresByOrder["afterAll"].reverse()) {
                         applyMiddlewares.push(useMiddleware(container.resolve(afterAllMiddleware.middleware),afterAllMiddleware.args));
                     }
 
@@ -193,12 +247,6 @@ export default abstract class BaseApplication implements ApplicationInterface{
 
                     router[methodType](path,applyMiddlewares);
                 }
-
-                // router.get("/:id/:relation", controllerMiddleware("fetchRelated"));
-                // router.get("/:id/relationships/:relation", controllerMiddleware("fetchRelationsships"));
-                // router.post("/:id/relationships/:relation", controllerMiddleware("addRelationships"));
-                // router.patch("/:id/relationships/:relation", controllerMiddleware("updateRelationships"));
-                // router.delete("/:id/:relation", controllerMiddleware("removeRelationships"));
             }else{
                 this.router.use(`/${prefix}`, router);
 

@@ -11,6 +11,26 @@ export default class UserSerializerSchema {
     @Deserialize()
     public email;
 
+    @Serialize()
+    @Deserialize()
+    public firstname;
+
+    @Serialize()
+    public updated_at;
+
+    @Serialize()
+    public created_at;
+
+    @Serialize()
+    public role;
+
+    @Serialize()
+    @Deserialize()
+    public lastname;
+
+    @Deserialize()
+    public password;
+
     @Relation(() => DocumentSerializerSchema)
     public documents;
 }

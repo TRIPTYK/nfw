@@ -7,7 +7,8 @@ export enum MimeTypes  {
     GIF = "image/gif",
     JPEG = "image/jpeg",
     PNG = "image/png",
-    CSV = "text/csv"
+    CSV = "text/csv",
+    TEXT = "text/plain"
 }
 
 export enum ImageMimeTypes {

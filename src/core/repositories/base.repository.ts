@@ -36,7 +36,7 @@ class BaseRepository<T> extends Repository<T> {
             .map((e) => e.trim()).filter((str) => str !== "");  // split parameters and filter empty strings
 
         const queryBuilder = parentQueryBuilder ? parentQueryBuilder : this.createQueryBuilder(currentTable);
-        const select: string[] = [];
+        const select: string[] = [`${currentTable}.id`];
 
         /**
          * Check if include parameter exists
@@ -310,8 +310,7 @@ class BaseRepository<T> extends Repository<T> {
             }
 
             for (const elem of props.split(",")) {
-                const joinAlias = qb.expressionMap.joinAttributes.find((joinAttr) => joinAttr.entityOrProperty === parents.join(".")).alias.name;
-                select.push(`${joinAlias}.${elem}`);
+                select.push(`${parents.join(".")}.${elem}`);
             }
         } else {
             for (const index in props) {

@@ -5,15 +5,12 @@ const isObject = (element: any): boolean => typeof element === "object";
 const isObjectOrString = (element: any): boolean => typeof element === "object" || typeof element === "string";
 
 export const jsonApiQuery: Schema = {
-    page: {
+    "page.*": {
         in: ["query"],
-        errorMessage: "Must be an object",
-        optional : true,
-        custom: {
-            options : isObject
-        }
+        isInt: true,
+        toInt: true
     },
-    fields: {
+    "fields": {
         in: ["query"],
         optional : true,
         errorMessage: "Must be a string or object",
@@ -21,19 +18,19 @@ export const jsonApiQuery: Schema = {
             options : isObjectOrString
         }
     },
-    include: {
+    "include": {
         in: ["query"],
         errorMessage: "Must be a string",
         optional : true,
         isString : true
     },
-    sort: {
+    "sort": {
         in: ["query"],
         errorMessage: "Must be a string",
         optional : true,
         isString : true
     },
-    filter: {
+    "filter": {
         in: ["query"],
         errorMessage: "Must be an object",
         optional : true,
@@ -59,6 +56,70 @@ export const list: ValidationSchema<any> = {
 
 export const create: ValidationSchema<any> = {
 
+};
+
+export const remove: ValidationSchema<any> = {
+    id: {
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
+        isInt: true,
+        toInt : true
+    },
+    relation: {
+        isString : true
+    }
+};
+
+export const fetchRelated: ValidationSchema<any> = {
+    id: {
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
+        isInt: true,
+        toInt : true
+    },
+    relation: {
+        in: ["params"],
+        isString : true
+    }
+};
+
+export const fetchRelationships: ValidationSchema<any> = {
+    id: {
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
+        isInt: true,
+        toInt : true
+    },
+    relation: {
+        in: ["params"],
+        isString : true
+    }
+};
+
+export const addRelationships: ValidationSchema<any> = {
+    id: {
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
+        isInt: true,
+        toInt : true
+    },
+    relation: {
+        in: ["params"],
+        isString : true
+    }
+};
+
+export const removeRelationships: ValidationSchema<any> = {
+    id: {
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
+        isInt: true,
+        toInt : true
+    },
+    relation: {
+        in: ["params"],
+        isString : true
+    }
 };
 
 export const update: ValidationSchema<any> = {

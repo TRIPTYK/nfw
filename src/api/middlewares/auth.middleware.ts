@@ -19,8 +19,6 @@ export default class AuthMiddleware extends BaseMiddleware {
         const error = err || info;
         const logIn = promisify(req.logIn);
 
-        return next();
-
         try {
             if (error || !user) {
                 throw error;

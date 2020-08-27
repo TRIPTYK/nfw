@@ -34,7 +34,7 @@ describe("Document CRUD", function() {
     it("POST failed with wrong file format", function(done) {
         agent
             .post("/api/v1/documents")
-            .attach("document", "test/fixtures/documents/text.txt")
+            .attach("document", "test/fixtures/documents/text.exe")
             .set("Accept", "application/vnd.api+json")
             .set("Content-Type", "application/vnd.api+json")
             .set("Authorization", `Bearer ${accessToken}`)
@@ -56,9 +56,9 @@ describe("Document CRUD", function() {
             });
     });
 
-    it("PUT succeed as 200 on /api/v1/documents/n", function(done) {
+    it("PATCH succeed as 200 on /api/v1/documents/n", function(done) {
         agent
-            .put(`/api/v1/documents/${id}`)
+            .patch(`/api/v1/documents/${id}`)
             .set("Accept", "application/vnd.api+json")
             .set("Authorization", `Bearer ${accessToken}`)
             .attach("document", "test/fixtures/documents/img_2.png")
