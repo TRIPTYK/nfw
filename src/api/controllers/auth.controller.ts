@@ -23,7 +23,7 @@ import BaseController from "../../core/controllers/base.controller";
 
 /**
  * Authentification Controller!
- * @module controllers/auth.controller.ts
+ * Not a JSON-API controller
  */
 @Controller("auth")
 @injectable()

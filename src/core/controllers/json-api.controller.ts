@@ -53,7 +53,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                             url : req.originalUrl
                         });
                         res.status(200);
-                        res.type("json");
+                        res.type("application/vnd.api+json");
                         res.send(serialized);
                     }
                 }
