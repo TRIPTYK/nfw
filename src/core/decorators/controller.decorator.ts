@@ -2,6 +2,17 @@
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { Type } from "../types/global";
 import { JsonApiModel } from "../models/json-api.model";
+import { ValidationSchema } from "../types/validation";
+
+export type RequestMethods = "get" | "post" | "delete" | "options" | "put" | "patch";
+
+export interface RouteDefinition {
+    path: string;
+    requestMethod: RequestMethods;
+    methodName: string;
+}
+
+export type MiddlewareOrder = "afterValidation" | "beforeValidation" | "afterDeserialization" | "beforeDeserialization" | "beforeAll" | "afterAll";
 
 /**
  *
@@ -37,47 +48,8 @@ export function JsonApiController<T extends JsonApiModel<T>>(entity: Type<T>): C
         Reflect.defineMetadata("entity", entity, target.prototype);
 
         if (! Reflect.hasMetadata("routes", target)) {
-            const routes: RouteDefinition[] = [
-                {
-                    methodName : "get",
-                    requestMethod : "get",
-                    path: "/:id",
-                },{
-                    methodName : "list",
-                    requestMethod : "get",
-                    path: "/",
-                },
-                {
-                    methodName : "fetchRelated",
-                    requestMethod : "get",
-                    path: "/:id",
-                },{
-                    methodName : "fetchRelationships",
-                    requestMethod : "get",
-                    path: "/",
-                },
-                {
-                    methodName : "create",
-                    requestMethod : "get",
-                    path: "/:id",
-                },{
-                    methodName : "update",
-                    requestMethod : "get",
-                    path: "/",
-                },
-                {
-                    methodName : "delete",
-                    requestMethod : "get",
-                    path: "/",
-                },
-                {
-                    methodName : "update",
-                    requestMethod : "get",
-                    path: "/",
-                }];
-            Reflect.defineMetadata("routes", routes, target);
+            Reflect.defineMetadata("routes", [], target);
         }
-
     };
 }
 
@@ -101,35 +73,27 @@ export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: a
     };
 }
 
-export function DeserializeJsonApi(schema = "default"): MethodDecorator {
+export function JsonApiMethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any,order: MiddlewareOrder = "afterAll"): MethodDecorator {
     return function(target: any, propertyKey: string): void {
         if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
             Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
         }
-
         const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
-        middlewares.push({middleware : "deserialize" , schema});
+        middlewares.push({middleware : middlewareClass , args, order});
     };
 }
 
-export function ValidateJsonApi(schema = "default"): MethodDecorator {
+export function OverrideSerializer(schema = "default"): MethodDecorator {
     return function(target: any, propertyKey: string): void {
-        if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
-            Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
-        }
-
-        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
-        middlewares.push({middleware : "validate" , args : propertyKey});
+        Reflect.defineMetadata("deserializer", schema, target.constructor , propertyKey);
+        Reflect.defineMetadata("schema-use", schema, target , propertyKey);
     };
 }
 
-
-export type RequestMethods = "get" | "post" | "delete" | "options" | "put" | "patch";
-
-export interface RouteDefinition {
-    path: string;
-    requestMethod: RequestMethods;
-    methodName: string;
+export function OverrideValidator<T>(schema: ValidationSchema<T>): MethodDecorator {
+    return function(target: any, propertyKey: string): void {
+        Reflect.defineMetadata("validator", schema, target.constructor , propertyKey);
+    };
 }
 
 const registerMethod = (path: string = null , method: RequestMethods) =>

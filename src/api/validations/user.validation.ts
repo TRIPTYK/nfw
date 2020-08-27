@@ -14,16 +14,6 @@ export const changePassword: ValidationSchema<any> = {
     }
 };
 
-// GET /v1/users/id
-export const get: ValidationSchema<User> = {
-    id: {
-        errorMessage: "Please provide a valid id",
-        in: ["params"],
-        isInt: true,
-        toInt : true
-    }
-};
-
 // POST /v1/users
 export const create: ValidationSchema<User> = {
     email: {

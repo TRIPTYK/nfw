@@ -84,7 +84,10 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         const schemasData: SchemaOptions = Reflect.getMetadata("schemas",this);
 
         this.type = schemasData.type;
-        this.convertSerializerSchemaToObjectSchema(schemasData.schemas[0],schemasData.schemas[0]);
+
+        for (const schema of schemasData.schemas) {
+            this.convertSerializerSchemaToObjectSchema(schema,schema,Reflect.getMetadata("name",schema));
+        }
     }
 
     public serializeAsync(payload: T | T[], options?: SerializeOptions): any {
@@ -153,7 +156,7 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         return this.serializer.deserialize(this.type, payload);
     }
 
-    public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema): void {
+    public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema,schemaName: string): void {
         const serialize = Reflect.getMetadata("serialize",schema.prototype);
         const deserialize = Reflect.getMetadata("deserialize",schema.prototype);
         const relations = Reflect.getMetadata("relations",schema.prototype) ?? [];
@@ -168,50 +171,16 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
                 type : relationType
             };
             if (schemaTypeRelation === rootSchema) {
-                return;
+                continue;
             }
-            this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema);
+            this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema,schemaName);
         }
 
-        this.serializer.register(schemaType, {
+        this.serializer.register(schemaType, schemaName , {
             whitelist: serialize,
             whitelistOnDeserialize: deserialize,
             relationships : relationShips
         });
-    }
-
-    public setupPaginationLinks(paginationParams: PaginationParams): this {
-        const { api } = EnvironmentConfiguration.config;
-        const { total, url, page , size } = paginationParams;
-        const baseUrl = `/api/${api}`;
-        const max = Math.ceil(total / size);
-        const schema = this.getSchemaData();
-
-
-        schema["topLevelMeta"] = {
-            max,
-            page,
-            size,
-            total
-        };
-
-        schema["topLevelLinks"] = {
-            first: () => `${baseUrl}/${this.type}${this.replacePage(url, 1)}`,
-            last: () => `${baseUrl}/${this.type}${this.replacePage(url, max)}`,
-            next: () => `${baseUrl}/${this.type}${this.replacePage(url, page + 1 > max ? max : page + 1)}`,
-            prev: () => `${baseUrl}/${this.type}${this.replacePage(url, page - 1 < 1 ? page : page - 1)}`,
-            self: () => `${baseUrl}/${this.type}${url}`
-        };
-
-        return this;
-    }
-
-    /**
-     *
-     * @param schema
-     */
-    public getSchemaData(schema = "default"): any {
-        return this.serializer.schemas[this.type][schema];
     }
 
     /**

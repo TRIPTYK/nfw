@@ -22,7 +22,25 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         this.repository = ApplicationRegistry.repositoryFor(entity);
     }
 
-    public async list(req: Request): Promise<any> {
+    public callMethod(methodName: string): any {
+        return async (req: Request, res: Response, next: (arg0: any) => any) => {
+            try {
+                const response = await this[methodName](req, res);
+                if (!res.headersSent) {
+                    const useSchema = Reflect.getMetadata("schema-use",this,methodName) ?? "default";
+                    res.send(
+                        this.serializer.serialize(response,{
+                            schema: useSchema
+                        })
+                    );
+                }
+            } catch (e) {
+                return next(e);
+            }
+        }
+    }
+
+    public async list(req: Request,res: Response): Promise<any> {
         const [users, totalUsers] = await this.repository.jsonApiRequest({
             includes : req.query.include ? (req.query.include as string).split(",") : null,
             sort : req.query.sort ? (req.query.sort as string).split(",") : null,
@@ -30,41 +48,27 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             page: req.query.page as any ?? null
         }).getManyAndCount();
 
-        if (req.query.page) {
-            const page: PaginationQueryParams = req.query.page as any;
-
-            return this.serializer.serialize(users,{
-                paginationData: {
-                    page: page.number,
-                    size: page.size,
-                    total: totalUsers,
-                    url: req.url
-                }
-            });
-        }
-
-        return this.serializer
-            .serialize(users);
+        return users;
     }
 
-    public async get(req: Request): Promise<void> {
+    public async get(req: Request,res: Response): Promise<any> {
         const user = await this.repository.jsonApiFindOne(req, req.params.id);
 
         if (!user) {
             throw Boom.notFound("User not found");
         }
 
-        return this.serializer.serialize(user);
+        return user;
     }
 
     public async create(req: Request, res: Response): Promise<any> {
         const user = this.repository.create(req.body as object);
         const saved = await this.repository.save(user as any);
         res.status(HttpStatus.CREATED);
-        return this.serializer.serialize(saved);
+        return saved;
     }
 
-    public async update(req: Request): Promise<any> {
+    public async update(req: Request,res: Response): Promise<any> {
         let saved = await this.repository.preload({
             ...req.body, ...{id : req.params.id}
         });
@@ -75,7 +79,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
 
         saved = await this.repository.save(saved as any);
 
-        return this.serializer.serialize(saved);
+        return saved;
     }
 
     public async remove(req: Request, res: Response): Promise<any> {
@@ -89,20 +93,20 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    public async fetchRelationships(req: Request) {
+    public async fetchRelationships(req: Request,res: Response) {
         const relation = req.params.relation;
         const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation).inverseEntityMetadata;
 
-        return ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
+        return res.send(ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
             await this.repository.fetchRelationshipsFromRequest(
                 relation,
                 req.params.id,
                 this.parseJsonApiQueryParams(req.query)
             )
-        );
+        ));
     }
 
-    public async fetchRelated(req: Request): Promise<any> {
+    public async fetchRelated(req: Request,res: Response): Promise<any> {
         const relation = req.params.relation;
         const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation)?.inverseEntityMetadata;
 
@@ -110,13 +114,13 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             throw Boom.notFound();
         }
 
-        return ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
+        return res.send(ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
             await this.repository.fetchRelated(
                 relation,
                 req.params.id,
                 this.parseJsonApiQueryParams(req.query)
             )
-        );
+        ));
     }
 
     public async addRelationships(req: Request, res: Response): Promise<any> {

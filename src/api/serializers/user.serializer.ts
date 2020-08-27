@@ -10,7 +10,4 @@ import UserSerializerSchema from "./schemas/user.serializer.schema";
     schemas : [UserSerializerSchema]
 })
 export class UserSerializer extends BaseSerializer<User> {
-    public constructor() {
-        super();
-    }
 }
