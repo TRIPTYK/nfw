@@ -109,6 +109,20 @@ export const addRelationships: ValidationSchema<any> = {
     }
 };
 
+export const updateRelationships: ValidationSchema<any> = {
+    id: {
+        errorMessage: "Please provide a valid id",
+        in: ["params"],
+        isInt: true,
+        toInt : true
+    },
+    relation: {
+        in: ["params"],
+        isString : true
+    }
+};
+
+
 export const removeRelationships: ValidationSchema<any> = {
     id: {
         errorMessage: "Please provide a valid id",

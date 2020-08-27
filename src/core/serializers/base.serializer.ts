@@ -12,6 +12,7 @@ export type SerializerParams = {
 
 export interface SerializeOptions {
     meta?: object;
+    url: string;
     excludeData?: boolean;
     schema?: string | "default";
     overrideSchemaOptions?: JSONAPISerializerOptions;
@@ -20,7 +21,6 @@ export interface SerializeOptions {
 
 export type PaginationParams = {
     total: number;
-    url: string;
     page: number;
     size: number;
 };
@@ -31,7 +31,7 @@ export type JSONAPISerializerSchema = {
     blacklist?: string[];
     whitelist?: string[];
     jsonapiObject?: boolean;
-    links?: JSONAPISerializerCustom;
+    links?: any;
     topLevelMeta?: any;
     topLevelLinks?: any;
     meta?: JSONAPISerializerCustom;
@@ -48,7 +48,7 @@ export type JSONAPISerializerRelation = {
     type: JSONAPISerializerCustom;
     alternativeKey?: string;
     schema?: string;
-    links?: JSONAPISerializerCustom;
+    links?: any;
     meta?: JSONAPISerializerCustom;
     deserialize?: JSONAPISerializerCustom;
 };
@@ -58,7 +58,7 @@ export type JSONAPISerializerOptions = {
     blacklist?: string[];
     whitelist?: string[];
     jsonapiObject?: boolean;
-    links?: JSONAPISerializerCustom;
+    links?: any;
     topLevelMeta?: any;
     topLevelLinks?: any;
     meta?: JSONAPISerializerCustom;
@@ -90,20 +90,21 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         }
     }
 
-    public serializeAsync(payload: T | T[], options?: SerializeOptions): any {
-        if (options.paginationData) {
-            const { total, url, page , size } = options.paginationData;
-            const { api } = EnvironmentConfiguration.config;
+    public serializeAsync(payload: T | T[], options: SerializeOptions): any {
+        const { api } = EnvironmentConfiguration.config;
+
+        if (options?.paginationData) {
+            const { total, page , size } = options.paginationData;
             const baseUrl = `/api/${api.version}`;
             const max = Math.ceil(total / size);
             delete options.paginationData;
             options.overrideSchemaOptions = {
                 topLevelLinks : {
-                    first: () => `${baseUrl}/${this.type}${this.replacePage(url, 1)}`,
-                    last: () => `${baseUrl}/${this.type}${this.replacePage(url, max)}`,
-                    next: () => `${baseUrl}/${this.type}${this.replacePage(url, page + 1 > max ? max : page + 1)}`,
-                    prev: () => `${baseUrl}/${this.type}${this.replacePage(url, page - 1 < 1 ? page : page - 1)}`,
-                    self: () => `${baseUrl}/${this.type}${url}`
+                    first: () => `${baseUrl}/${this.type}${this.replacePage(options.url, 1)}`,
+                    last: () => `${baseUrl}/${this.type}${this.replacePage(options.url, max)}`,
+                    next: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page + 1 > max ? max : page + 1)}`,
+                    prev: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page - 1 < 1 ? page : page - 1)}`,
+                    self: () => `${baseUrl}/${this.type}${options.url}`
                 },
                 topLevelMeta : {
                     max,
@@ -114,7 +115,13 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
             };
         }
 
-        return this.serializer.serializeAsync(this.type, payload, options?.schema, options?.meta , options?.excludeData, {
+        options.overrideSchemaOptions = {...options.overrideSchemaOptions,
+            topLevelLinks: {
+                self: options.url
+            }
+        };
+
+        return this.serializer.serializeAsync(this.type, payload,options?.schema, options?.meta , options?.excludeData, {
             [this.type] : options?.overrideSchemaOptions
         });
     }
@@ -123,20 +130,21 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         return this.serializer.deserializeAsync(this.type, payload);
     }
 
-    public serialize(payload: T | T[], options?: SerializeOptions): any {
+    public serialize(payload: T | T[], options: SerializeOptions): any {
+        const { api } = EnvironmentConfiguration.config;
+
         if (options?.paginationData) {
-            const { total, url, page , size } = options.paginationData;
-            const { api } = EnvironmentConfiguration.config;
+            const { total, page , size } = options.paginationData;
             const baseUrl = `/api/${api.version}`;
             const max = Math.ceil(total / size);
             delete options.paginationData;
             options.overrideSchemaOptions = {
                 topLevelLinks : {
-                    first: () => `${baseUrl}/${this.type}${this.replacePage(url, 1)}`,
-                    last: () => `${baseUrl}/${this.type}${this.replacePage(url, max)}`,
-                    next: () => `${baseUrl}/${this.type}${this.replacePage(url, page + 1 > max ? max : page + 1)}`,
-                    prev: () => `${baseUrl}/${this.type}${this.replacePage(url, page - 1 < 1 ? page : page - 1)}`,
-                    self: () => `${baseUrl}/${this.type}${url}`
+                    first: () => `${baseUrl}/${this.type}${this.replacePage(options.url, 1)}`,
+                    last: () => `${baseUrl}/${this.type}${this.replacePage(options.url, max)}`,
+                    next: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page + 1 > max ? max : page + 1)}`,
+                    prev: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page - 1 < 1 ? page : page - 1)}`,
+                    self: () => `${baseUrl}/${this.type}${options.url}`
                 },
                 topLevelMeta : {
                     max,
@@ -146,6 +154,12 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
                 }
             };
         }
+
+        options.overrideSchemaOptions = {...options.overrideSchemaOptions,
+            topLevelLinks: {
+                self: () => options.url
+            }
+        };
 
         return this.serializer.serialize(this.type, payload,options?.schema, options?.meta , options?.excludeData, {
             [this.type] : options?.overrideSchemaOptions
@@ -161,6 +175,7 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         const deserialize = Reflect.getMetadata("deserialize",schema.prototype);
         const relations = Reflect.getMetadata("relations",schema.prototype) ?? [];
         const schemaType = Reflect.getMetadata("type",schema.prototype);
+        const { api } = EnvironmentConfiguration.config;
 
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
 
@@ -168,7 +183,11 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
             const schemaTypeRelation = type();
             const relationType = Reflect.getMetadata("type",schemaTypeRelation.prototype);
             relationShips[property] = {
-                type : relationType
+                type : relationType,
+                links: {
+                    related: (d) => `/api/${api.version}/${schemaType}/${d.id}/${property}`,
+                    self: (d) => `/api/${api.version}/${schemaType}/${d.id}/relationships/${property}`
+                }
             };
             if (schemaTypeRelation === rootSchema) {
                 continue;
@@ -179,7 +198,10 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         this.serializer.register(schemaType, schemaName , {
             whitelist: serialize,
             whitelistOnDeserialize: deserialize,
-            relationships : relationShips
+            relationships : relationShips,
+            links : {
+                self: (data,_a) => `/api/${api.version}/${schemaType}/${data.id}`
+            }
         });
     }
 
@@ -188,21 +210,4 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
      */
     protected replacePage = (url: string, newPage: number): string =>
         url.replace(/(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i, `$1${newPage}$3`);
-
-    protected setupLinks = (data: object): void => {
-        const { api } = EnvironmentConfiguration.config;
-
-        // link for entity
-        data["links"] = {
-            self: (d) => `/api/${api}/${this.type}s/${d.id}`
-        };
-
-        // link for relationship
-        for (const key in data["relationships"]) {
-            data["relationships"][key]["links"] = {
-                related: (d) => `/api/${api}/${plural(this.type)}/${d.id}/${key}`,
-                self: (d) => `/api/${api}/${plural(this.type)}/${d.id}/relationships/${key}`
-            };
-        }
-    }
 }

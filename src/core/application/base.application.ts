@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 import * as Express from "express";
 import ApplicationInterface from "../interfaces/application.interface";
-import { ApplicationRegistry } from "./registry.application";
 import { Type } from "../types/global";
 import { RouteDefinition, MiddlewareOrder } from "../decorators/controller.decorator";
 import { BaseMiddleware } from "../middlewares/base.middleware";
@@ -51,21 +50,6 @@ export default abstract class BaseApplication implements ApplicationInterface{
             const middlewaresForController: { middleware: any ; args: object }[] = Reflect.getMetadata("middlewares", controller);
             const router = Express.Router();
 
-            if (middlewaresForController && middlewaresForController.length > 0) {
-                middlewaresForController.reverse();
-                router.use(middlewaresForController.map((e) => {
-                    const realMiddleware: BaseMiddleware = container.resolve(e.middleware);
-
-                    return (req, res, next) => {
-                        try {
-                            return realMiddleware.use(req, res, next, e.args);
-                        } catch (error) {
-                            return next(error);
-                        }
-                    };
-                }));
-            }
-
             const useMiddleware = (middleware: BaseMiddleware,args: any) => (req, res, next) => {
                 try {
                     return middleware.use(req, res, next, args);
@@ -73,6 +57,14 @@ export default abstract class BaseApplication implements ApplicationInterface{
                     return next(e);
                 }
             };
+
+            if (middlewaresForController && middlewaresForController.length > 0) {
+                middlewaresForController.reverse();
+                router.use(middlewaresForController.map((e) => {
+                    const realMiddleware: BaseMiddleware = container.resolve(e.middleware);
+                    return useMiddleware(realMiddleware,e.args);
+                }));
+            }
 
             const jsonApiEntity = Reflect.getMetadata("entity",instanceController);
 
@@ -140,7 +132,7 @@ export default abstract class BaseApplication implements ApplicationInterface{
                         middlewares: ["validation"]
                     },
                     {
-                        path: "/:id/:relation",
+                        path: "/:id/relationships/:relation",
                         methodType: "delete",
                         method: "removeRelationships",
                         middlewares: ["validation"]

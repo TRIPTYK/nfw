@@ -18,13 +18,24 @@ import { DocumentRepository } from "../repositories/document.repository";
 import { JsonApiEntity } from "../../core/decorators/model.decorator";
 import * as DocumentValidator from "../validations/document.validation";
 
+export interface DocumentInterface {
+    fieldname: DocumentTypes;
+    filename: string;
+    originalname: string;
+    path: string;
+    mimetype: MimeTypes;
+    size: number;
+    users: User[];
+    user_avatar: User;
+    deleted_at: Date;
+}
 
 @JsonApiEntity("documents",{
     serializer : DocumentSerializer,
     repository : DocumentRepository,
     validator : DocumentValidator
 })
-export class Document extends JsonApiModel<Document> {
+export class Document extends JsonApiModel<Document> implements DocumentInterface {
     @Column({
         enum: DocumentTypes,
         nullable: false,

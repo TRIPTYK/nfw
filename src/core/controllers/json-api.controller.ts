@@ -10,7 +10,6 @@ import { ObjectLiteral } from "typeorm";
 import BaseController from "./base.controller";
 import PaginationResponse from "../responses/pagination.response";
 import ApiResponse from "../responses/response.response";
-import { ApiResponse } from "@elastic/elasticsearch";
 
 
 export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> extends BaseController {
@@ -34,21 +33,24 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                     if (response instanceof PaginationResponse) {
                         const serialized = this.serializer.serialize(response.body,{
                             schema: useSchema,
-                            paginationData: response.paginationData
+                            paginationData: response.paginationData,
+                            url : req.originalUrl
                         });
                         res.status(response.status);
                         res.type(response.type);
                         res.send(serialized);
                     }else if (response instanceof ApiResponse) {
                         const serialized = this.serializer.serialize(response.body,{
-                            schema: useSchema
+                            schema: useSchema,
+                            url : req.originalUrl
                         });
                         res.status(response.status);
                         res.type(response.type);
                         res.send(serialized);
                     }else{
                         const serialized = this.serializer.serialize(response,{
-                            schema: useSchema
+                            schema: useSchema,
+                            url : req.originalUrl
                         });
                         res.status(200);
                         res.type("json");
@@ -66,12 +68,12 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
 
         const [entities,count] = await this.repository.jsonApiRequest(params).getManyAndCount();
 
-        return new PaginationResponse(entities,{
-            total: count,
-            url: req.url,
-            page: params.page.number,
-            size: params.page.size
-        });
+        return req.query.page ?
+            new PaginationResponse(entities,{
+                total: count,
+                page: params.page.number,
+                size: params.page.size
+            }) : entities;
     }
 
     public async get(req: Request,res: Response): Promise<any> {
@@ -125,7 +127,8 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                 relation,
                 req.params.id,
                 this.parseJsonApiQueryParams(req.query)
-            )
+            ),
+            {url : req.originalUrl}
         ));
     }
 
@@ -142,7 +145,8 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                 relation,
                 req.params.id,
                 this.parseJsonApiQueryParams(req.query)
-            )
+            ),
+            {url : req.originalUrl}
         ));
     }
 

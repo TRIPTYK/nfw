@@ -23,12 +23,24 @@ import { UserRepository } from "../repositories/user.repository";
 import { JsonApiEntity } from "../../core/decorators/model.decorator";
 import * as UserValidator from "../validations/user.validation";
 
+export interface UserInterface {
+    password: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    username: string;
+    role: Roles;
+    deleted_at: any;
+    documents: Document[];
+    avatar: Document;
+}
+
 @JsonApiEntity("users",{
     serializer : UserSerializer,
     repository : UserRepository,
     validator: UserValidator
 })
-export class User extends JsonApiModel<User> {
+export class User extends JsonApiModel<User> implements UserInterface {
     @Column({
         default: "User",
         length: 32,

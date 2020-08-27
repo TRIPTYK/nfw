@@ -14,7 +14,7 @@ import { OAuthToken } from "../models/oauth-token.model";
 import { Controller, Post, MethodMiddleware } from "../../core/decorators/controller.decorator";
 import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../../core/middlewares/deserialize.middleware";
-import { UserSerializer, UserSerializer } from "../serializers/user.serializer";
+import { UserSerializer } from "../serializers/user.serializer";
 import { register } from "../validations/auth.validation";
 import { injectable } from "tsyringe";
 import { User } from "../models/user.model";

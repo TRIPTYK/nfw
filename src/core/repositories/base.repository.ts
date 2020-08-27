@@ -216,7 +216,7 @@ class BaseRepository<T> extends Repository<T> {
             .relation(relationName)
             .of(user);
 
-        if (isPlural(relationName)) {
+        if (thisRelation.isManyToMany || thisRelation.isOneToMany) {
             return qb.add(relations);
         } else {
             return qb.set(relations);
@@ -236,8 +236,9 @@ class BaseRepository<T> extends Repository<T> {
         }
 
         let relations = null;
+        const isMany = thisRelation.isManyToMany || thisRelation.isOneToMany;
 
-        if (thisRelation.isManyToMany || thisRelation.isOneToMany) {
+        if (isMany) {
             relations = [];
             for (const value of body as {id: string}[]) {
                 relations.push(value.id);
@@ -246,11 +247,18 @@ class BaseRepository<T> extends Repository<T> {
             relations = (body as {id: string}).id;
         }
 
-        user[relationName] = await (thisRelation.isManyToMany || thisRelation.isOneToMany ?
-            this.findByIds(relations) :
-            this.findOne(relations));
+        user[relationName] = isMany ? [] : null;
+        await this.save(user);
 
-        return this.save(user);
+        const qb = this.createQueryBuilder()
+            .relation(relationName)
+            .of(user);
+
+        if (isMany) {
+            return qb.add(relations);
+        } else {
+            return qb.set(relations);
+        }
     }
 
     /**
