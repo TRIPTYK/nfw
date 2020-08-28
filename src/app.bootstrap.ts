@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {TypeORMConfiguration} from "./config/typeorm.config";
+import {TypeORMConfiguration} from "./core/services/typeorm.service";
 import {ElasticSearchConfiguration} from "./config/elastic.config";
 import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";

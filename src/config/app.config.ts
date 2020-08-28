@@ -18,8 +18,9 @@ import AuthController from "../api/controllers/auth.controller";
 import { container } from "tsyringe";
 import { PassportService } from "../api/services/passport.service";
 import StatusController from "../api/controllers/status.controller";
+import MetadataController from "../core/controllers/prefab/metadata.controller";
 
-@RegisterApplication({controllers : [AuthController,UserController,DocumentController,StatusController]})
+@RegisterApplication({controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController]})
 export class Application extends BaseApplication {
     public init() {
         super.init();

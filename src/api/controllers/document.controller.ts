@@ -2,7 +2,7 @@ import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
 
 import { Request, Response } from "express";
-import { Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware, JsonApiController, JsonApiMethodMiddleware, OverrideSerializer, OverrideValidator } from "../../core/decorators/controller.decorator";
+import { JsonApiController, JsonApiMethodMiddleware, OverrideSerializer, OverrideValidator } from "../../core/decorators/controller.decorator";
 import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
 import FileUploadMiddleware from "../middlewares/file-upload.middleware";
 import { autoInjectable } from "tsyringe";

@@ -1,7 +1,12 @@
 import ControllerInterface from "../interfaces/controller.interface";
 import { Request , Response, NextFunction } from "express";
+import { ApplicationRegistry } from "../application/registry.application";
 
 export default class BaseController implements ControllerInterface {
+    public constructor() {
+        ApplicationRegistry.registerController(this);
+    }
+
     public init() {
 
     }

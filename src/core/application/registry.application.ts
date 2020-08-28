@@ -6,11 +6,14 @@ import { container } from "tsyringe";
 import { JsonApiModel } from "../models/json-api.model";
 import BaseApplication from "./base.application";
 import Constructor from "../types/constructor";
+import BaseController from "../controllers/base.controller";
 
 export class ApplicationRegistry {
     public static application: BaseApplication;
+    public static entities: Type<JsonApiModel<any>>[] = [];
     public static repositories: {[key: string]: Type<BaseRepository<any>>} = {};
     public static serializers: {[key: string]: Type<BaseSerializer<any>>} = {};
+    public static controllers: BaseController[] = [];
 
     public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
         const instance = ApplicationRegistry.application = new app();
@@ -19,12 +22,20 @@ export class ApplicationRegistry {
         return instance;
     }
 
+    public static registerEntity<T extends JsonApiModel<T>>(entity: Type<T>) {
+        ApplicationRegistry.entities.push(entity);
+    }
+
     public static repositoryFor<T extends JsonApiModel<T>>(entity: Type<T>): BaseRepository<T> {
         return getCustomRepository(ApplicationRegistry.repositories[entity.name]);
     }
 
     public static serializerFor<T extends JsonApiModel<T>>(entity: Type<T>): BaseSerializer<T> {
         return container.resolve(ApplicationRegistry.serializers[entity.name]);
+    }
+
+    public static registerController(controller: BaseController) {
+        ApplicationRegistry.controllers.push(controller);
     }
 
     public static registerCustomRepositoryFor<T extends JsonApiModel<T>>(entity: Type<T>,repository: Type<BaseRepository<T>>) {

@@ -10,6 +10,7 @@ import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
+import { ApplicationRegistry } from "./registry.application";
 
 export default abstract class BaseApplication implements ApplicationInterface{
     protected app: Express.Application;

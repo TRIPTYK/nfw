@@ -61,6 +61,7 @@ export function JsonApiEntity(nameOrOptions?: string|any, maybeOptions?: any): C
             entity: target,
         } as EntityRepositoryMetadataArgs);
 
+        ApplicationRegistry.registerEntity(target as any);
         ApplicationRegistry.registerCustomRepositoryFor(target as any,options.repository);
         ApplicationRegistry.registerSerializerFor(target as any,options.serializer);
     };
