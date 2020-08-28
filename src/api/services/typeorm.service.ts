@@ -1,20 +1,30 @@
 import "reflect-metadata";
 import {Connection, createConnection, ConnectionOptions} from "typeorm";
-import EnvironmentConfiguration from "./environment.config";
+import EnvironmentConfiguration from "../../config/environment.config";
+import BaseService from "../../core/services/base.service";
+import { singleton } from "tsyringe";
 
 /**
  * Define TypeORM default configuration
  *
  * @inheritdoc https://http://typeorm.io
  */
-class TypeORMConfiguration {
-    private static connection: Connection;
+@singleton()
+export default class TypeORMService extends BaseService {
+    private _connection: Connection;
 
-    public static get ConfigurationObject(): ConnectionOptions {
+    public async init() {
+        this._connection = await createConnection(this.ConfigurationObject);
+    }
+
+    public get connection() {
+        return this._connection;
+    }
+
+    public get ConfigurationObject(): ConnectionOptions {
         const {config : {typeorm}} = EnvironmentConfiguration;
 
         return  {
-            authSource: "admin",
             database: typeorm.database,
             entities : typeorm.entities,
             synchronize : typeorm.synchronize,
@@ -24,8 +34,6 @@ class TypeORMConfiguration {
             port: typeorm.port,
             type: typeorm.type,
             migrations : typeorm.migrations,
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
             username: typeorm.user,
             cli : {
                 entitiesDir: typeorm.entitiesDir,
@@ -33,15 +41,4 @@ class TypeORMConfiguration {
             }
         };
     }
-
-    public static async connect(): Promise<Connection> {
-        /** Singleton pattern */
-        if (TypeORMConfiguration.connection) {
-            return TypeORMConfiguration.connection;
-        }
-
-        return TypeORMConfiguration.connection = await createConnection(TypeORMConfiguration.ConfigurationObject);
-    }
 }
-
-export {TypeORMConfiguration};

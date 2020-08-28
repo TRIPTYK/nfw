@@ -7,6 +7,13 @@ import { JsonApiModel } from "../models/json-api.model";
 import BaseApplication from "./base.application";
 import Constructor from "../types/constructor";
 import BaseController from "../controllers/base.controller";
+import BaseService from "../services/base.service";
+
+/**
+ * Init order :
+ *  Services
+ *  Controllers
+ */
 
 export class ApplicationRegistry {
     public static application: BaseApplication;
@@ -16,8 +23,12 @@ export class ApplicationRegistry {
     public static controllers: BaseController[] = [];
 
     public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
+        const services: Type<BaseService>[] = Reflect.getMetadata("services",app);
+
+        // services before all
+        await Promise.all(services.map((service) => container.resolve(service).init()));
+
         const instance = ApplicationRegistry.application = new app();
-        // eslint-disable-next-line @typescript-eslint/await-thenable
         await instance.init();
         return instance;
     }

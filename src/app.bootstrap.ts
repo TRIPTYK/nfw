@@ -3,7 +3,6 @@ import {ElasticSearchConfiguration} from "./config/elastic.config";
 import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";
 import { ApplicationRegistry } from "./core/application/registry.application";
-import { TypeORMConfiguration } from "./config/typeorm.config";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 module.exports = (async () => {
@@ -13,15 +12,6 @@ module.exports = (async () => {
     LoggerConfiguration.setup();
 
     LoggerConfiguration.logger.info(`Starting in ${env} environment`);
-
-    /** Connection to Database server before app configuration */
-    await TypeORMConfiguration.connect()
-        .catch( (error) => {
-            LoggerConfiguration.logger.error(`${configuration.typeorm.type} connection error : ${error.message}`);
-            process.exit(1);
-        });
-
-    LoggerConfiguration.logger.info(`Connection to ${configuration.typeorm.type} server established on port ${configuration.typeorm.port}`);
 
     /**
      * ELASTIC support , might change in future releases

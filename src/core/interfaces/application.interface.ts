@@ -1,4 +1,4 @@
 export default interface ApplicationInterface {
-    init();
+    init(): Promise<any>;
     listen(port: number);
 }

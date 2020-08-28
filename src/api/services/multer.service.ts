@@ -2,6 +2,7 @@ import * as Multer from "multer";
 import { Request } from "express";
 import {singleton} from "tsyringe";
 import {sync as mkdirpSync} from "mkdirp";
+import BaseService from "../../core/services/base.service";
 
 enum StorageType {
     MEMORY,
@@ -9,11 +10,15 @@ enum StorageType {
 }
 
 @singleton()
-class MulterService {
+class MulterService extends BaseService {
     private multers: object = {
         [StorageType.MEMORY] : {},
         [StorageType.DISK] : {}
     };
+
+    public init() {
+        return true;
+    }
 
     public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number): any {
         if (this.multers[type][destinationOrName]) {

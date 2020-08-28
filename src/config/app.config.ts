@@ -11,7 +11,6 @@ import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware"
 import EnvironmentConfiguration from "./environment.config";
 import { Environments } from "../api/enums/environments.enum";
 import BaseApplication from "../core/application/base.application";
-import { RegisterApplication } from "../core/decorators/controller.decorator";
 import DocumentController from "../api/controllers/document.controller";
 import UserController from "../api/controllers/user.controller";
 import AuthController from "../api/controllers/auth.controller";
@@ -19,10 +18,18 @@ import { container } from "tsyringe";
 import { PassportService } from "../api/services/passport.service";
 import StatusController from "../api/controllers/status.controller";
 import MetadataController from "../core/controllers/prefab/metadata.controller";
+import { RegisterApplication } from "../core/decorators/application.decorator";
+import { MailService } from "../api/services/mail-sender.service";
+import TypeORMService from "../api/services/typeorm.service";
+import { MulterService } from "../api/services/multer.service";
 
-@RegisterApplication({controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController]})
+@RegisterApplication({
+    controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController],
+    services:[MailService,TypeORMService,MulterService,PassportService]
+})
 export class Application extends BaseApplication {
-    public init() {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public async init() {
         super.init();
         const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
 

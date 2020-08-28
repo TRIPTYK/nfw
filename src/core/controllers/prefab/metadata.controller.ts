@@ -2,23 +2,29 @@
 import BaseController from "../base.controller";
 import { Controller, Get } from "../../decorators/controller.decorator";
 import { ApplicationRegistry } from "../../application/registry.application";
-import { TypeORMConfiguration } from "../../../config/typeorm.config";
+import TypeORMService from "../../../api/services/typeorm.service";
+import { autoInjectable } from "tsyringe";
 
 /**
  * Use or inherit this controller in your app if you want to get api metadata
  */
 @Controller("meta")
+@autoInjectable()
 export default class MetadataController extends BaseController {
+    public constructor(private typeormConnection: TypeORMService) {
+        super();
+    }
+
     @Get("/types")
-    public async getSupportedTypes() {
-        const connection = await TypeORMConfiguration.connect();
+    public getSupportedTypes() {
+        const connection = this.typeormConnection.connection;
 
         return connection.driver.supportedDataTypes;
     }
 
     @Get("/")
-    public async getEntities() {
-        const connection = await TypeORMConfiguration.connect();
+    public getEntities() {
+        const connection = this.typeormConnection.connection;
 
         return connection.entityMetadatas.filter((table) => ApplicationRegistry.entities.includes(table.target as any)).map((table) => {
             return {

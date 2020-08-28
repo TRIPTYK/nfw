@@ -3,6 +3,7 @@ import { default as Axios } from "axios";
 import * as Mailgun from "mailgun-js";
 import { singleton } from "tsyringe";
 import EnvironmentConfiguration from "../../config/environment.config";
+import BaseService from "../../core/services/base.service";
 
 // tslint:disable-next-line: interface-over-type-literal
 type MailGunData = {
@@ -17,7 +18,10 @@ type MailGunData = {
 };
 
 @singleton()
-export class MailService {
+export class MailService extends BaseService {
+    public init() {
+        return true;
+    }
     /**
      * Sparkpost API
      */
