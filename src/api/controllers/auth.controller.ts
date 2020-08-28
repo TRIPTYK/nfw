@@ -16,7 +16,7 @@ import SecurityMiddleware from "../middlewares/security.middleware";
 import DeserializeMiddleware from "../../core/middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import { register } from "../validations/auth.validation";
-import { injectable } from "tsyringe";
+import { singleton, autoInjectable } from "tsyringe";
 import { User } from "../models/user.model";
 import ValidationMiddleware from "../../core/middlewares/validation.middleware";
 import BaseController from "../../core/controllers/base.controller";
@@ -26,7 +26,8 @@ import BaseController from "../../core/controllers/base.controller";
  * Not a JSON-API controller
  */
 @Controller("auth")
-@injectable()
+@singleton()
+@autoInjectable()
 export default class AuthController extends BaseController {
     // can't inject repositories
     private repository: UserRepository;

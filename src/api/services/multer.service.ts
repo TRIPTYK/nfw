@@ -2,12 +2,15 @@ import * as Multer from "multer";
 import { Request } from "express";
 import {sync as mkdirpSync} from "mkdirp";
 import BaseService from "../../core/services/base.service";
+import { singleton, autoInjectable } from "tsyringe";
 
 enum StorageType {
     MEMORY,
     DISK
 }
 
+@singleton()
+@autoInjectable()
 class MulterService extends BaseService {
     private multers: object = {
         [StorageType.MEMORY] : {},

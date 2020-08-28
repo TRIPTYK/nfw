@@ -9,7 +9,7 @@ import BaseService from "../services/base.service";
  */
 export function RegisterApplication({controllers,services}: {controllers: Type<any>[];services: Type<BaseService>[]}): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
-        Reflect.defineMetadata("controllers", controllers, target.prototype);
+        Reflect.defineMetadata("controllers", controllers, target);
         Reflect.defineMetadata("services", services, target);
     };
 }

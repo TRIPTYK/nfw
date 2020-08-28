@@ -6,8 +6,8 @@ import { container } from "tsyringe";
 import { JsonApiModel } from "../models/json-api.model";
 import BaseApplication from "./base.application";
 import Constructor from "../types/constructor";
-import BaseController from "../controllers/base.controller";
 import BaseService from "../services/base.service";
+import BaseController from "../controllers/base.controller";
 
 /**
  * Init order :
@@ -24,16 +24,28 @@ export class ApplicationRegistry {
 
     public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
         const services: Type<BaseService>[] = Reflect.getMetadata("services",app);
-
+        const controllers: Type<BaseController>[] = Reflect.getMetadata("controllers",app);
 
         // services before all
         await Promise.all(services.map((service) => {
-            container.registerSingleton(service);
+            container.registerSingleton(service);  // services are singletons
             return container.resolve(service).init();
         }));
 
+        // app constructor
         const instance = ApplicationRegistry.application = new app();
+
+        // init app
         await instance.init();
+
+        // controllers
+        await Promise.all(controllers.map((controller) => {
+            return container.resolve(controller).init();
+        }));
+
+        // setup routes etc ...
+        await instance.setupControllers(controllers);
+
         return instance;
     }
 

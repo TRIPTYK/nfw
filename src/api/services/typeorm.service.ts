@@ -2,12 +2,15 @@ import "reflect-metadata";
 import {Connection, createConnection, ConnectionOptions} from "typeorm";
 import EnvironmentConfiguration from "../../config/environment.config";
 import BaseService from "../../core/services/base.service";
+import { singleton, autoInjectable } from "tsyringe";
 
 /**
  * Define TypeORM default configuration
  *
  * @inheritdoc https://http://typeorm.io
  */
+@singleton()
+@autoInjectable()
 export default class TypeORMService extends BaseService {
     private _connection: Connection;
 

@@ -22,7 +22,7 @@ export default abstract class BaseApplication implements ApplicationInterface{
 
     // eslint-disable-next-line @typescript-eslint/require-await
     public async init(): Promise<any> {
-        this.setupControllers();
+
     }
 
     public get App() {
@@ -37,9 +37,7 @@ export default abstract class BaseApplication implements ApplicationInterface{
         })
     }
 
-    protected setupControllers() {
-        const controllers: Type<BaseController>[] = Reflect.getMetadata("controllers",this);
-
+    public setupControllers(controllers: Type<BaseController>[]) {
         for (const controller of controllers) {
             const instanceController = new controller();
 

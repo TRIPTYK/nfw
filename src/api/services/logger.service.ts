@@ -9,7 +9,10 @@ import * as Moment from "moment-timezone";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import BaseService from "../../core/services/base.service";
+import { singleton, autoInjectable } from "tsyringe";
 
+@singleton()
+@autoInjectable()
 export class LoggerService extends BaseService {
     private _logger: Winston.Logger;
 

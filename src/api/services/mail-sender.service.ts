@@ -1,9 +1,8 @@
 import Boom from "@hapi/boom";
-import { default as Axios } from "axios";
 import * as Mailgun from "mailgun-js";
-import { singleton } from "tsyringe";
 import EnvironmentConfiguration from "../../config/environment.config";
 import BaseService from "../../core/services/base.service";
+import { singleton, autoInjectable } from "tsyringe";
 
 // tslint:disable-next-line: interface-over-type-literal
 type MailGunData = {
@@ -17,55 +16,11 @@ type MailGunData = {
     filename?: string;
 };
 
+@singleton()
+@autoInjectable()
 export class MailService extends BaseService {
     public init() {
         return true;
-    }
-    /**
-     * Sparkpost API
-     */
-    public async sendmailSparkpost(emailData: object): Promise<any> {
-
-        const data = JSON.stringify(emailData);
-        // 2. Send email to user with request_token, with a link to the "new password page [FRONT]"
-        const options = {
-            headers: {
-                "Accept": "application/json",
-                "Authorization": process.env.SPARKPOST_API_KEY,
-                "Content-Length": Buffer.byteLength( data ),
-                "Content-Type": "application/json"
-            },
-            host: "api.sparkpost.com",
-            method: "POST",
-            path: "/api/v1/transmissions",
-            port: "443"
-        };
-
-        const axios = Axios.create(options as any);
-
-        return new Promise((resolve, reject) => {
-            axios.request({
-                data,
-                url: "https://" + options.host + options.path
-            })
-                .then((response) => {
-                    const object =  {
-                        data: response.data,
-                        error: response.data.error || "",
-                        message: response.data.message,
-                        status: response.status
-                    };
-                    resolve(object);
-                })
-                .catch( ( error ) => {
-                    const object =  {
-                        error: error.message,
-                        message: error.message,
-                        status: 500,
-                    };
-                    reject(object);
-                });
-        });
     }
 
     /**

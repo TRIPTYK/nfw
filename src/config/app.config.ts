@@ -80,8 +80,6 @@ export class Application extends BaseApplication {
          */
         this.app.use(Passport.initialize());
 
-        container.resolve(PassportService).init();
-
         this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
         const apiLimiter = new RateLimit({

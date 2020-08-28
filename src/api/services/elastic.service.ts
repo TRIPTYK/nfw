@@ -2,11 +2,13 @@ import "reflect-metadata";
 import { Client } from "@elastic/elasticsearch";
 import BaseService from "../../core/services/base.service";
 import EnvironmentConfiguration from "../../config/environment.config";
-import { singleton } from "tsyringe";
+import { singleton, autoInjectable } from "tsyringe";
 
 /**
  * Elastic search
  */
+@singleton()
+@autoInjectable()
 export default class ElasticSearchConnectionService extends BaseService {
     private _connection: Client;
 

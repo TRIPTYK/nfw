@@ -11,7 +11,10 @@ import * as Refresh from "passport-oauth2-refresh";
 import EnvironmentConfiguration from "../../config/environment.config";
 import { OAuthTokenRepository } from "../repositories/oauth.repository";
 import BaseService from "../../core/services/base.service";
+import { singleton, autoInjectable } from "tsyringe";
 
+@singleton()
+@autoInjectable()
 class PassportService extends BaseService {
     private strategies = [];
 

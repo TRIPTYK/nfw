@@ -5,11 +5,12 @@ import { Request, Response } from "express";
 import { JsonApiController, JsonApiMethodMiddleware, OverrideSerializer, OverrideValidator } from "../../core/decorators/controller.decorator";
 import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
 import FileUploadMiddleware from "../middlewares/file-upload.middleware";
-import { autoInjectable } from "tsyringe";
+import { autoInjectable, singleton } from "tsyringe";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import { Document } from "../models/document.model";
 
 @JsonApiController(Document)
+@singleton()
 @autoInjectable()
 export default class DocumentController extends BaseJsonApiController<Document> {
     @OverrideSerializer(null)
