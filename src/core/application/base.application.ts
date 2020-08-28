@@ -37,7 +37,8 @@ export default abstract class BaseApplication implements ApplicationInterface{
         })
     }
 
-    public setupControllers(controllers: Type<BaseController>[]) {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public async setupControllers(controllers: Type<BaseController>[]) {
         for (const controller of controllers) {
             const instanceController = container.resolve(controller);
 
