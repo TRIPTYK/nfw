@@ -39,7 +39,7 @@ export default abstract class BaseApplication implements ApplicationInterface{
 
     public setupControllers(controllers: Type<BaseController>[]) {
         for (const controller of controllers) {
-            const instanceController = new controller();
+            const instanceController = container.resolve(controller);
 
             // The prefix saved to our controller
             const prefix = Reflect.getMetadata("routeName", controller);
