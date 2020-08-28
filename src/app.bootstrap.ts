@@ -1,9 +1,9 @@
 import "reflect-metadata";
-import {TypeORMConfiguration} from "./core/services/typeorm.service";
 import {ElasticSearchConfiguration} from "./config/elastic.config";
 import EnvironmentConfiguration from "./config/environment.config";
 import { LoggerConfiguration } from "./config/logger.config";
 import { ApplicationRegistry } from "./core/application/registry.application";
+import { TypeORMConfiguration } from "./config/typeorm.config";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 module.exports = (async () => {

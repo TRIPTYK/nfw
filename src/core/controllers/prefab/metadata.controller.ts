@@ -1,8 +1,8 @@
 /* eslint-disable arrow-body-style */
 import BaseController from "../base.controller";
 import { Controller, Get } from "../../decorators/controller.decorator";
-import { TypeORMConfiguration } from "../../services/typeorm.service";
 import { ApplicationRegistry } from "../../application/registry.application";
+import { TypeORMConfiguration } from "../../../config/typeorm.config";
 
 /**
  * Use or inherit this controller in your app if you want to get api metadata
