@@ -7,83 +7,83 @@ import * as yargs from "yargs";
 
 // tslint:disable-next-line: interface-over-type-literal
 type Configuration = {
-    env?: Environments
-    port?: number
-    url?: string
-    authorized?: string | string[]
+    env?: Environments;
+    port?: number;
+    url?: string;
+    authorized?: string | string[];
     api?: {
-        name: string
-        version: string
-    }
-    caching_enabled?: boolean
-    auth_mode?: AuthModes
+        name: string;
+        version: string;
+    };
+    caching_enabled?: boolean;
+    auth_mode?: AuthModes;
     jwt?: {
-        refresh_expires: number
-        access_expires: number
-        secret: string
-    }
+        refresh_expires: number;
+        access_expires: number;
+        secret: string;
+    };
     elastic?: {
-        enabled: boolean
-        url: string
-    }
+        enabled: boolean;
+        url: string;
+    };
     facebook?: {
-        id: string
-        redirect: string
-        secret: string
-    }
+        id: string;
+        redirect: string;
+        secret: string;
+    };
     outlook?: {
-        id: string
-        redirect: string
-        secret: string
-    }
+        id: string;
+        redirect: string;
+        secret: string;
+    };
     google?: {
-        id: string
-        redirect: string
-        secret: string
-    }
+        id: string;
+        redirect: string;
+        secret: string;
+    };
     typeorm?: {
-        database: string
-        host: string
-        name: string
-        synchronize: boolean
-        entities: string[]
-        port: number
-        pwd: string
-        type: SupportedDatabasesTypes
-        user: string
-        tableName: string
-        migrationsDir: string
-        entitiesDir: string
-        migrations: string[]
-        seeds: string
-        factories: string
-    }
+        database: string;
+        host: string;
+        name: string;
+        synchronize: boolean;
+        entities: string[];
+        port: number;
+        pwd: string;
+        type: SupportedDatabasesTypes;
+        user: string;
+        tableName: string;
+        migrationsDir: string;
+        entitiesDir: string;
+        migrations: string[];
+        seeds: string;
+        factories: string;
+    };
     deploy?: {
-        ip: string
-        user: string
-        path: string
-        key: string
-        repo: string
-        ref: string
-    }
+        ip: string;
+        user: string;
+        path: string;
+        key: string;
+        repo: string;
+        ref: string;
+    };
     jimp?: {
-        isActive: boolean
-        md: number
-        xl: number
-        xs: number
-    }
+        isActive: boolean;
+        md: number;
+        xl: number;
+        xs: number;
+    };
     mailgun?: {
-        privateKey: string
-        publicKey: string
-        domain: string
-        host: string
-    }
+        privateKey: string;
+        publicKey: string;
+        domain: string;
+        host: string;
+    };
     https?: {
-        ca: string
-        cert: string
-        isActive: boolean
-        key: string
-    }
+        ca: string;
+        cert: string;
+        isActive: boolean;
+        key: string;
+    };
 };
 
 type SupportedDatabasesTypes = "mysql" | "oracle" | "mariadb" | "mongodb";

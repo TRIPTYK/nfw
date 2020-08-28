@@ -25,8 +25,12 @@ export class ApplicationRegistry {
     public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
         const services: Type<BaseService>[] = Reflect.getMetadata("services",app);
 
+
         // services before all
-        await Promise.all(services.map((service) => container.resolve(service).init()));
+        await Promise.all(services.map((service) => {
+            container.registerSingleton(service);
+            return container.resolve(service).init();
+        }));
 
         const instance = ApplicationRegistry.application = new app();
         await instance.init();

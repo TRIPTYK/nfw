@@ -1,6 +1,5 @@
 import * as Multer from "multer";
 import { Request } from "express";
-import {singleton} from "tsyringe";
 import {sync as mkdirpSync} from "mkdirp";
 import BaseService from "../../core/services/base.service";
 
@@ -9,7 +8,6 @@ enum StorageType {
     DISK
 }
 
-@singleton()
 class MulterService extends BaseService {
     private multers: object = {
         [StorageType.MEMORY] : {},

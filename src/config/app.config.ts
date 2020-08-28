@@ -22,10 +22,11 @@ import { RegisterApplication } from "../core/decorators/application.decorator";
 import { MailService } from "../api/services/mail-sender.service";
 import TypeORMService from "../api/services/typeorm.service";
 import { MulterService } from "../api/services/multer.service";
+import { LoggerService } from "../api/services/logger.service";
 
 @RegisterApplication({
     controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController],
-    services:[MailService,TypeORMService,MulterService,PassportService]
+    services:[MailService,TypeORMService,MulterService,PassportService,LoggerService]
 })
 export class Application extends BaseApplication {
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -103,19 +104,21 @@ export class Application extends BaseApplication {
             ));
         }
 
+        const errorHandlerMiddleware = container.resolve(ErrorHandlerMiddleware);
+
         if (env === Environments.Production || env === Environments.Test) {
             this.app.use(
-                (err, req, res, next) => ErrorHandlerMiddleware.exit(err, req, res, next) // need to call like this do not loose references
+                (err, req, res, next) => errorHandlerMiddleware.exit(err, req, res, next) // need to call like this do not loose references
             );
         } else {
             this.app.use(
-                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => ErrorHandlerMiddleware.log(err, req, res, next),
-                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => ErrorHandlerMiddleware.exit(err, req, res, next)
+                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => errorHandlerMiddleware.log(err, req, res, next),
+                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => errorHandlerMiddleware.exit(err, req, res, next)
             );
         }
 
         this.app.use(
-            (req: Express.Request, res: Express.Response, next: Express.NextFunction) => ErrorHandlerMiddleware.notFound(req, res, next)
+            (req: Express.Request, res: Express.Response, next: Express.NextFunction) => errorHandlerMiddleware.notFound(req, res, next)
         );
 
         return this.app;

@@ -5,14 +5,19 @@
  */
 
 import * as Winston from "winston";
-import EnvironmentConfiguration from "./environment.config";
-import { Environments } from "../api/enums/environments.enum";
 import * as Moment from "moment-timezone";
+import EnvironmentConfiguration from "../../config/environment.config";
+import { Environments } from "../enums/environments.enum";
+import BaseService from "../../core/services/base.service";
 
-export class LoggerConfiguration {
-    public static logger: Winston.Logger;
+export class LoggerService extends BaseService {
+    private _logger: Winston.Logger;
 
-    public static setup(): void {
+    public get logger() {
+        return this._logger;
+    }
+
+    public init(): void {
         const {env} = EnvironmentConfiguration.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
@@ -32,7 +37,7 @@ export class LoggerConfiguration {
             `${timestampFnc()} [${label}] ${level}: ${message}`
         );
 
-        LoggerConfiguration.logger = Winston.createLogger({
+        this._logger = Winston.createLogger({
             format: timestampFormatJSON,
             level: "info",
             transports: [
@@ -50,15 +55,15 @@ export class LoggerConfiguration {
         // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
         //
         if (env !== Environments.Production) {
-            LoggerConfiguration.logger.add(new Winston.transports.Console({format: Winston.format.combine(
+            this.logger.add(new Winston.transports.Console({format: Winston.format.combine(
                 Winston.format.label({ label: env }),
                 timestampFormatText
             )}));
         }
 
-        LoggerConfiguration.logger.stream({
+        this.logger.stream({
             write: (message) => {
-                LoggerConfiguration.logger.info(message.trim());
+                this.logger.info(message.trim());
             }
         });
     }

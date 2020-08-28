@@ -1,19 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Boom from "@hapi/boom";
 import * as JSONAPISerializer from "json-api-serializer";
-import { LoggerConfiguration } from "../../config/logger.config";
 import { NextFunction , Request , Response } from "express";
+import { LoggerService } from "../services/logger.service";
+import { singleton } from "tsyringe";
 
+@singleton()
 export default class ErrorHandlerMiddleware {
     private static serializer = new JSONAPISerializer();
 
-    public static log(err: any, req: Request, res: Response, next: NextFunction): void {
+    public constructor(private loggerService: LoggerService) {}
+
+    public log(err: any, req: Request, res: Response, next: NextFunction): void {
         const message = `${req.method} ${req.url} : ${err.message}`;
-        LoggerConfiguration.logger.error(message);
+        this.loggerService.logger.error(message);
         next(err);
     }
 
-    public static exit(error: any, req: Request, res: Response, _next: NextFunction): void {
+    public exit(error: any, req: Request, res: Response, _next: NextFunction): void {
         if (Array.isArray(error)) {
             const errs = error;
             const allErrors = [];
@@ -44,7 +48,7 @@ export default class ErrorHandlerMiddleware {
         }));
     }
 
-    public static notFound(req: Request, res: Response, _next: NextFunction): void {
+    public notFound(req: Request, res: Response, _next: NextFunction): void {
         res.status(404);
         res.json(ErrorHandlerMiddleware.serializer.serializeError({
             detail: "Not found",

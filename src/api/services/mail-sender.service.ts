@@ -17,7 +17,6 @@ type MailGunData = {
     filename?: string;
 };
 
-@singleton()
 export class MailService extends BaseService {
     public init() {
         return true;
