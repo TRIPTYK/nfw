@@ -80,7 +80,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         const user = await this.repository.jsonApiFindOne(req, req.params.id);
 
         if (!user) {
-            throw Boom.notFound("User not found");
+            throw Boom.notFound();
         }
 
         return user;
@@ -99,7 +99,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         });
 
         if (saved === undefined) {
-            throw Boom.notFound("User not found");
+            throw Boom.notFound();
         }
 
         saved = await this.repository.save(saved as any);
