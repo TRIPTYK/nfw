@@ -16,7 +16,7 @@ export default function createRepositoryTemplate({fileTemplateInfo,classPrefixNa
     });
 
     repoClass.setIsExported(true);
-    repoClass.setExtends(`BaseRepository<${classPrefixName}>`);
+    repoClass.setExtends(`BaseJsonApiRepository<${classPrefixName}>`);
 
     repoClass.addConstructor({
         statements : "super();"

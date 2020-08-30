@@ -1,9 +1,8 @@
-import {Brackets, EntityRepository, Repository, ObjectLiteral, EntityMetadata, SelectQueryBuilder} from "typeorm";
+import {Brackets, Repository, ObjectLiteral, EntityMetadata, SelectQueryBuilder} from "typeorm";
 import * as SqlString from "sqlstring";
 import {Request} from "express";
 import * as Boom from "@hapi/boom";
 import * as dashify from "dashify";
-import { isPlural } from "pluralize";
 import PaginationQueryParams from "../types/jsonapi";
 import { ApplicationRegistry } from "../application/registry.application";
 
@@ -18,7 +17,7 @@ interface JsonApiRequestParams {
 /**
  * Base Repository class , inherited for all current repositories
  */
-class BaseRepository<T> extends Repository<T> {
+export default class BaseJsonApiRepository<T> extends Repository<T> {
     /**
      * Handle request and transform to SelectQuery , conform to JSON-API specification : https://jsonapi.org/format/.
      * <br> You can filter the features you want to use by using the named parameters.
@@ -408,5 +407,3 @@ class BaseRepository<T> extends Repository<T> {
         return result;
     }
 }
-
-export {BaseRepository};

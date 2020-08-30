@@ -1,13 +1,13 @@
 import { BaseMiddleware } from "./base.middleware";
 import { Request , Response, NextFunction } from "express";
 import { container, injectable } from "tsyringe";
-import { BaseSerializer } from "../serializers/base.serializer";
+import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { Type } from "../types/global";
 
 @injectable()
 export default class DeserializeMiddleware extends BaseMiddleware {
     public async use(req: Request, response: Response, next: NextFunction, args: {
-        serializer: Type<BaseSerializer<any>>;
+        serializer: Type<BaseJsonApiSerializer<any>>;
         schema?: string;
     }): Promise<any> {
         if (!req.body.data || !req.body.data.attributes) {

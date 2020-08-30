@@ -70,7 +70,7 @@ export type JSONAPISerializerOptions = {
     whitelistOnDeserialize?: string[];
 };
 
-export abstract class BaseSerializer<T> implements SerializerInterface<T> {
+export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T> {
     public static whitelist: string[] = [];
     public type: string;
     public serializer: JSONAPISerializer;

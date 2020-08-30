@@ -1,5 +1,5 @@
-import { BaseSerializer } from "../../core/serializers/base.serializer";
-import { singleton, injectable, autoInjectable } from "tsyringe";
+import { BaseJsonApiSerializer } from "../../core/serializers/base.serializer";
+import { singleton, autoInjectable } from "tsyringe";
 import {Document} from "../models/document.model";
 import { JsonApiSerializer } from "../../core/decorators/serializer.decorator";
 import DocumentSerializerSchema from "./schemas/document.serializer.schema";
@@ -10,6 +10,6 @@ import DocumentSerializerSchema from "./schemas/document.serializer.schema";
     schemas : [DocumentSerializerSchema],
     type : "documents"
 })
-export class DocumentSerializer extends BaseSerializer<Document> {
+export class DocumentSerializer extends BaseJsonApiSerializer<Document> {
 
 }

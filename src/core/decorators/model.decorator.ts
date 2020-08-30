@@ -3,14 +3,14 @@
 import { EntityOptions, getMetadataArgsStorage } from "typeorm";
 import { TableMetadataArgs } from "typeorm/metadata-args/TableMetadataArgs";
 import { EntityRepositoryMetadataArgs } from "typeorm/metadata-args/EntityRepositoryMetadataArgs";
-import { BaseRepository } from "../repositories/base.repository";
+import BaseJsonApiRepository from "../repositories/base.repository";
 import { Type } from "../types/global";
-import { BaseSerializer } from "../serializers/base.serializer";
+import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { ApplicationRegistry } from "../application/registry.application";
 
 export interface EntityOptionsExtended<T> extends EntityOptions {
-    repository: Type<BaseRepository<T>>;
-    serializer: Type<BaseSerializer<T>>;
+    repository: Type<BaseJsonApiRepository<T>>;
+    serializer: Type<BaseJsonApiSerializer<T>>;
     validator: any;
 }
 

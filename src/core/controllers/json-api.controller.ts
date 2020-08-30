@@ -1,5 +1,5 @@
-import { BaseSerializer } from "../serializers/base.serializer";
-import { BaseRepository } from "../repositories/base.repository";
+import { BaseJsonApiSerializer } from "../serializers/base.serializer";
+import BaseJsonApiRepository from "../repositories/base.repository";
 import { Type } from "../types/global";
 import { JsonApiModel } from "../models/json-api.model";
 import { Request , Response, } from "express";
@@ -13,8 +13,8 @@ import ApiResponse from "../responses/response.response";
 
 
 export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> extends BaseController {
-    protected serializer: BaseSerializer<T>;
-    protected repository: BaseRepository<T>;
+    protected serializer: BaseJsonApiSerializer<T>;
+    protected repository: BaseJsonApiRepository<T>;
 
     public constructor() {
         super();

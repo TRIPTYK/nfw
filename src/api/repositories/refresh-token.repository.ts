@@ -2,14 +2,14 @@ import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
-import { BaseRepository } from "../../core/repositories/base.repository";
+import BaseJsonApiRepository from "../../core/repositories/base.repository";
 import { EntityRepository } from "typeorm";
 import {autoInjectable } from "tsyringe";
 import ConfigurationService from "../../core/services/configuration.service";
 
 @EntityRepository(RefreshToken)
 @autoInjectable()
-export class RefreshTokenRepository extends BaseRepository<RefreshToken> {
+export class RefreshTokenRepository extends BaseJsonApiRepository<RefreshToken> {
     public constructor(private configurationService: ConfigurationService) {
         super();
     }

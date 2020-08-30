@@ -2,9 +2,9 @@ import {User} from "../models/user.model";
 import * as Moment from "moment-timezone";
 import * as Boom from "@hapi/boom";
 import {RefreshToken} from "../models/refresh-token.model";
-import {BaseRepository} from "../../core/repositories/base.repository";
+import BaseJsonApiRepository from "../../core/repositories/base.repository";
 
-export class UserRepository extends BaseRepository<User> {
+export class UserRepository extends BaseJsonApiRepository<User> {
     /**
      * Find user by email and tries to generate a JWT token
      *
