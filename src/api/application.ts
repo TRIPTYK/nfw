@@ -13,7 +13,7 @@ import BaseApplication from "../core/application/base.application";
 import DocumentController from "./controllers/document.controller";
 import UserController from "./controllers/user.controller";
 import AuthController from "./controllers/auth.controller";
-import { container } from "tsyringe";
+import { container, autoInjectable } from "tsyringe";
 import { PassportService } from "./services/passport.service";
 import StatusController from "./controllers/status.controller";
 import MetadataController from "../core/controllers/prefab/metadata.controller";
@@ -23,17 +23,28 @@ import TypeORMService from "./services/typeorm.service";
 import { MulterService } from "./services/multer.service";
 import { LoggerService } from "./services/logger.service";
 import GeneratorController from "../core/controllers/prefab/generator.controller";
-import EnvironmentConfiguration from "../config/environment.config";
+import ConfigurationService from "../core/services/configuration.service";
 
 @RegisterApplication({
-    controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController],
-    services:[MailService,TypeORMService,MulterService,PassportService,LoggerService]
+    controllers: [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController],
+    services:[MailService,TypeORMService,MulterService,PassportService,LoggerService,ConfigurationService]
 })
+@autoInjectable()
 export class Application extends BaseApplication {
+    public constructor(private loggerService: LoggerService,private configurationService: ConfigurationService) {
+        super();
+    }
+
+    public listen(port: number) {
+        return super.listen(port).then(() => {
+            this.loggerService.logger.info(`HTTP server is now running on port ${port}`);
+        });
+    }
+
     // eslint-disable-next-line @typescript-eslint/require-await
     public async init() {
         super.init();
-        const { config : { authorized , api , env ,  } } = EnvironmentConfiguration;
+        const  { authorized , api , env  } = this.configurationService.config;
 
         /**
          * Expose body on req.body

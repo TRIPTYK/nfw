@@ -15,13 +15,14 @@ import * as Jwt from "jwt-simple";
 import * as Bcrypt from "bcrypt";
 import * as Boom from "@hapi/boom";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
-import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
 import { UserSerializer } from "../serializers/user.serializer";
 import { UserRepository } from "../repositories/user.repository";
 import { JsonApiEntity } from "../../core/decorators/model.decorator";
 import * as UserValidator from "../validations/user.validation";
+import ConfigurationService from "../../core/services/configuration.service";
+import { container } from "tsyringe";
 
 export interface UserInterface {
     password: string;
@@ -114,7 +115,7 @@ export class User extends JsonApiModel<User> implements UserInterface {
     @BeforeUpdate()
     public async hashPassword(): Promise<boolean> {
         try {
-            const rounds = EnvironmentConfiguration.config.env === Environments.Test ? 1 : 10;
+            const rounds = container.resolve<ConfigurationService>(ConfigurationService).config.env === Environments.Test ? 1 : 10;
             this.password = await Bcrypt.hash(this.password, rounds);
             return true;
         } catch (error) {
@@ -127,10 +128,10 @@ export class User extends JsonApiModel<User> implements UserInterface {
      */
     public generateAccessToken(): string {
         // eslint-disable-next-line @typescript-eslint/camelcase
-        const { jwt : { access_expires , secret } } = EnvironmentConfiguration.config;
+        const { jwt : { accessExpires , secret } } = container.resolve<ConfigurationService>(ConfigurationService).config;
 
         const payload = {
-            exp: Moment().add(access_expires, "minutes").unix(),
+            exp: Moment().add(accessExpires, "minutes").unix(),
             iat: Moment().unix(),
             sub: this.id
         };

@@ -2,11 +2,18 @@ import * as Jimp from "jimp";
 import {BaseMiddleware} from "../../core/middlewares/base.middleware";
 import { Request , Response, NextFunction } from "express";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
-import EnvironmentConfiguration from "../../config/environment.config";
+import { injectable, autoInjectable } from "tsyringe";
+import ConfigurationService from "../../core/services/configuration.service";
 
+@injectable()
+@autoInjectable()
 export class DocumentResizeMiddleware extends BaseMiddleware {
+    public constructor(private configurationService: ConfigurationService) {
+        super();
+    }
+
     public use(req: Request, res: Response, next: NextFunction) {
-        const { jimp } = EnvironmentConfiguration.config;
+        const { jimp } = this.configurationService.config;
         try {
             // If image optimization is activated and is image mime type
             if (jimp.isActive && Object.values(ImageMimeTypes).includes(req.file.mimetype as any)) {

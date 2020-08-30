@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Type } from "../types/global";
 import { BaseRepository } from "../repositories/base.repository";
 import { BaseSerializer } from "../serializers/base.serializer";
@@ -8,12 +9,6 @@ import BaseApplication from "./base.application";
 import Constructor from "../types/constructor";
 import BaseService from "../services/base.service";
 import BaseController from "../controllers/base.controller";
-
-/**
- * Init order :
- *  Services
- *  Controllers
- */
 
 export class ApplicationRegistry {
     public static application: BaseApplication;

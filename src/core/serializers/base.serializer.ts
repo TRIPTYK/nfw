@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as JSONAPISerializer from "json-api-serializer";
-import { plural } from "pluralize";
-import EnvironmentConfiguration from "../../config/environment.config";
 import SerializerInterface from "../interfaces/serializer.interface";
 import { SchemaOptions } from "../decorators/serializer.decorator";
 import { Type } from "../types/global";
+import ConfigurationService from "../services/configuration.service";
+import { inject, container } from "tsyringe";
 
 export type SerializerParams = {
     pagination?: PaginationParams;
@@ -74,12 +74,15 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
     public static whitelist: string[] = [];
     public type: string;
     public serializer: JSONAPISerializer;
+    private configurationService: ConfigurationService;
 
     public constructor() {
         this.serializer = new JSONAPISerializer({
             convertCase: "kebab-case",
             unconvertCase: "camelCase"
         } as JSONAPISerializerSchema);
+
+        this.configurationService = container.resolve<ConfigurationService>(ConfigurationService);
 
         const schemasData: SchemaOptions = Reflect.getMetadata("schemas",this);
 
@@ -91,7 +94,7 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
     }
 
     public serializeAsync(payload: T | T[], options: SerializeOptions): any {
-        const { api } = EnvironmentConfiguration.config;
+        const { api } = this.configurationService.config;
 
         if (options?.paginationData) {
             const { total, page , size } = options.paginationData;
@@ -131,7 +134,7 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
     }
 
     public serialize(payload: T | T[], options: SerializeOptions): any {
-        const { api } = EnvironmentConfiguration.config;
+        const { api } = this.configurationService.config;
 
         if (options?.paginationData) {
             const { total, page , size } = options.paginationData;
@@ -175,7 +178,7 @@ export abstract class BaseSerializer<T> implements SerializerInterface<T> {
         const deserialize = Reflect.getMetadata("deserialize",schema.prototype);
         const relations = Reflect.getMetadata("relations",schema.prototype) ?? [];
         const schemaType = Reflect.getMetadata("type",schema.prototype);
-        const { api } = EnvironmentConfiguration.config;
+        const { api } = this.configurationService.config;
 
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
 

@@ -2,12 +2,19 @@ import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
 import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
-import EnvironmentConfiguration from "../../config/environment.config";
 import { BaseRepository } from "../../core/repositories/base.repository";
 import { EntityRepository } from "typeorm";
+import {autoInjectable } from "tsyringe";
+import ConfigurationService from "../../core/services/configuration.service";
 
 @EntityRepository(RefreshToken)
+@autoInjectable()
 export class RefreshTokenRepository extends BaseRepository<RefreshToken> {
+    public constructor(private configurationService: ConfigurationService) {
+        super();
+    }
+
+
     /**
      *
      * @param user
@@ -15,7 +22,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken> {
      */
     public generate(user: User): Promise<RefreshToken> {
         const token = `${user.id}.${Crypto.randomBytes(40).toString("hex")}`;
-        const expires = Moment().add(EnvironmentConfiguration.config.jwt.refresh_expires, "minutes").toDate();
+        const expires = Moment().add(this.configurationService.config.jwt.refreshExpires, "minutes").toDate();
 
         const tokenObject = this.create({refreshToken : token, user, expires});
 

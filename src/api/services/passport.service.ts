@@ -8,15 +8,19 @@ import {Strategy as OutlookStrategy} from "passport-outlook";
 import { Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
-import EnvironmentConfiguration from "../../config/environment.config";
 import { OAuthTokenRepository } from "../repositories/oauth.repository";
 import BaseService from "../../core/services/base.service";
 import { singleton, autoInjectable } from "tsyringe";
+import ConfigurationService from "../../core/services/configuration.service";
 
 @singleton()
 @autoInjectable()
 class PassportService extends BaseService {
     private strategies = [];
+
+    public constructor(private configurationService: ConfigurationService) {
+        super();
+    }
 
     /**
      *
@@ -25,12 +29,12 @@ class PassportService extends BaseService {
      * @memberof PassportConfig
      */
     public init(): void {
-        const {config : {
+        const {
             jwt,
             outlook,
             google,
             facebook
-        }} = EnvironmentConfiguration;
+        } = this.configurationService.config;
 
         this.registerStrategy("jwt", new JwtStrategy({
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),

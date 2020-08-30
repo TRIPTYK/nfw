@@ -11,7 +11,7 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
 
-export default abstract class BaseApplication implements ApplicationInterface{
+export default abstract class BaseApplication implements ApplicationInterface {
     protected app: Express.Application;
     protected router: Express.Router;
 
@@ -22,7 +22,7 @@ export default abstract class BaseApplication implements ApplicationInterface{
 
     // eslint-disable-next-line @typescript-eslint/require-await
     public async init(): Promise<any> {
-
+        return;
     }
 
     public get App() {

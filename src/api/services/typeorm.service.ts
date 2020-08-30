@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import {Connection, createConnection, ConnectionOptions} from "typeorm";
-import EnvironmentConfiguration from "../../config/environment.config";
 import BaseService from "../../core/services/base.service";
 import { singleton, autoInjectable } from "tsyringe";
 import { LoggerService } from "./logger.service";
+import ConfigurationService from "../../core/services/configuration.service";
 
 /**
  * Define TypeORM default configuration
@@ -15,7 +15,7 @@ import { LoggerService } from "./logger.service";
 export default class TypeORMService extends BaseService {
     private _connection: Connection;
 
-    public constructor(public loggerService: LoggerService) {
+    public constructor(public loggerService: LoggerService,private configurationService: ConfigurationService) {
         super();
     }
 
@@ -29,7 +29,7 @@ export default class TypeORMService extends BaseService {
     }
 
     public get ConfigurationObject(): ConnectionOptions {
-        const {config : {typeorm}} = EnvironmentConfiguration;
+        const {typeorm} = this.configurationService.config;
 
         return  {
             database: typeorm.database,
@@ -39,7 +39,7 @@ export default class TypeORMService extends BaseService {
             name: typeorm.name,
             password: typeorm.pwd,
             port: typeorm.port,
-            type: typeorm.type,
+            type: typeorm.type as any,
             migrations : typeorm.migrations,
             username: typeorm.user,
             cli : {

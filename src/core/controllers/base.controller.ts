@@ -1,5 +1,5 @@
 import ControllerInterface from "../interfaces/controller.interface";
-import { Request , Response, NextFunction } from "express";
+import { Request , Response } from "express";
 import { ApplicationRegistry } from "../application/registry.application";
 
 export default class BaseController implements ControllerInterface {
@@ -8,7 +8,7 @@ export default class BaseController implements ControllerInterface {
     }
 
     public init() {
-
+        return;
     }
 
     public callMethod(methodName: string | number): any {

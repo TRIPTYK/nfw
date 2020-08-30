@@ -6,19 +6,19 @@
 
 import * as Winston from "winston";
 import * as Moment from "moment-timezone";
-import EnvironmentConfiguration from "../../config/environment.config";
 import { Environments } from "../enums/environments.enum";
 import BaseService from "../../core/services/base.service";
 import { singleton, autoInjectable } from "tsyringe";
+import ConfigurationService from "../../core/services/configuration.service";
 
 @singleton()
 @autoInjectable()
 export class LoggerService extends BaseService {
     private _logger: Winston.Logger;
 
-    public constructor() {
+    public constructor(private configurationService: ConfigurationService) {
         super();
-        const {env} = EnvironmentConfiguration.config;
+        const {env} = configurationService.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

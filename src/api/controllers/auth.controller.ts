@@ -3,12 +3,9 @@ import {RefreshToken} from "../models/refresh-token.model";
 import {Request, Response} from "express";
 import {getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
-import {Roles} from "../enums/role.enum";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import Refresh from "passport-oauth2-refresh";
 import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
-import EnvironmentConfiguration from "../../config/environment.config";
-import { Environments } from "../enums/environments.enum";
 import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
 import { Controller, Post, MethodMiddleware } from "../../core/decorators/controller.decorator";
@@ -45,10 +42,6 @@ export default class AuthController extends BaseController {
     @MethodMiddleware(SecurityMiddleware)
     public async register(req: Request, res: Response): Promise<any> {
         let user = this.repository.create(req.body as object);
-
-        const {config : {env}} = EnvironmentConfiguration; // load env
-
-        user.role = [Environments.Test, Environments.Development].includes(env) ? Roles.Admin : Roles.User;
         user = await this.repository.save(user);
         const accessToken = user.generateAccessToken();
         const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
