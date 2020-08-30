@@ -1,10 +1,10 @@
 import { BaseSerializer } from "../../core/serializers/base.serializer";
-import { injectable } from "tsyringe";
+import { singleton } from "tsyringe";
 import {Document} from "../models/document.model";
 import { JsonApiSerializer } from "../../core/decorators/serializer.decorator";
 import DocumentSerializerSchema from "./schemas/document.serializer.schema";
 
-@injectable()
+@singleton()
 @JsonApiSerializer({
     schemas : [DocumentSerializerSchema],
     type : "documents"

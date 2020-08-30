@@ -1,7 +1,7 @@
 import project = require ("../utils/project");
 import { GeneratorParameters } from "../interfaces/generator.interface";
 
-export default function createSerializerSchema({modelName,fileTemplateInfo,classPrefixName}: GeneratorParameters) {
+export default function createSerializerSchema({modelName,fileTemplateInfo,classPrefixName,tableColumns,filePrefixName}: GeneratorParameters) {
     const file = project.createSourceFile(`${fileTemplateInfo.path}/${fileTemplateInfo.name}`,null,{
         overwrite : true
     });
@@ -11,43 +11,35 @@ export default function createSerializerSchema({modelName,fileTemplateInfo,class
         isDefaultExport : true
     });
 
-    addedClass.addProperty({
-        isStatic : true,
-        type : "string",
-        name : "type",
-        initializer : `"${modelName}"`
-    })
-        .toggleModifier("public");
+    file.addImportDeclaration({
+        namedImports : [`${classPrefixName}Interface`],
+        moduleSpecifier : `../../models/${filePrefixName}.model`
+    });
 
-    addedClass.addProperty({
-        isStatic : true,
-        type : "string[]",
-        name : "serialize",
-        initializer : "[]"
-    })
-        .toggleModifier("public");
+    file.addImportDeclaration({
+        namedImports : ["Serialize", "Deserialize", "SerializerSchema", "Relation"],
+        moduleSpecifier:  "../../../core/decorators/serializer.decorator"
+    });
 
-    addedClass.addProperty({
-        isStatic : true,
-        type : "string[]",
-        name : "deserialize",
-        initializer : "[]"
-    })
-        .toggleModifier("public");
+    addedClass.addImplements(`${classPrefixName}Interface`);
 
-    addedClass.addGetAccessor({
-        isStatic : true,
-        returnType : "Readonly<JSONAPISerializerSchema>",
-        name : "schema"
-    }).setBodyText(`
-return {
-    relationships : {},
-    type: ${classPrefixName}SerializerSchema.type,
-    whitelist: ${classPrefixName}SerializerSchema.serialize,
-    whitelistOnDeserialize : ${classPrefixName}SerializerSchema.deserialize
-};
-    `)
-        .toggleModifier("public");
+    addedClass.addDecorator({
+        name : "SerializerSchema"
+    }).setIsDecoratorFactory(true);
+
+    tableColumns.columns.forEach((entity) => {
+        const prop = addedClass.addProperty({
+            name : entity.name
+        }).toggleModifier("public");
+
+        prop.addDecorator({
+            name : "Serialize"
+        }).setIsDecoratorFactory(true);
+
+        prop.addDecorator({
+            name : "Deserialize"
+        }).setIsDecoratorFactory(true);
+    });
 
     return file;
 }

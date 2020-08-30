@@ -16,11 +16,8 @@ import { singleton, autoInjectable } from "tsyringe";
 export class LoggerService extends BaseService {
     private _logger: Winston.Logger;
 
-    public get logger() {
-        return this._logger;
-    }
-
-    public init(): void {
+    public constructor() {
+        super();
         const {env} = EnvironmentConfiguration.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
@@ -69,5 +66,13 @@ export class LoggerService extends BaseService {
                 this.logger.info(message.trim());
             }
         });
+    }
+
+    public get logger() {
+        return this._logger;
+    }
+
+    public init(): void {
+        return;
     }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable arrow-body-style */
 import BaseController from "../base.controller";
-import { Controller, Post } from "../../decorators/controller.decorator";
-import { generateJsonApiEntity } from "../../cli";
+import { Controller, Post, Delete } from "../../decorators/controller.decorator";
+import { generateJsonApiEntity, deleteJsonApiEntity } from "../../cli";
 import { Request , Response } from "express";
 import { Column } from "../../cli/interfaces/generator.interface";
 
@@ -10,19 +10,27 @@ import { Column } from "../../cli/interfaces/generator.interface";
  */
 @Controller("generate")
 export default class GeneratorController extends BaseController {
-    @Post("entity/:name")
+    @Post("/entity/:name")
     public generateEntity(req: Request, _res: Response) {
-        const columns: Column[] = [];
+        const columns: Column[] = [{
+            name: "testColumn",
+            type: "varchar",
+            length: 255,
+            nullable: false,
+            default: undefined,
+            isPrimary: false,
+            isUnique: false
+        }];
 
         return generateJsonApiEntity(req.params.name,{
-            create : true,
-            update : true,
-            delete : true,
-            read : true
-        },{
             columns,
             relations : []
         });
+    }
+
+    @Delete("/entity/:name")
+    public deleteEntity(req: Request, _res: Response) {
+        return deleteJsonApiEntity(req.params.name);
     }
 
     private restartServer() {

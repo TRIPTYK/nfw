@@ -9,12 +9,12 @@
 // node modules
 import project = require("./utils/project");
 import resources, { getEntityNaming } from "./static/resources";
-import { EntityColumns, Column, CrudOptions } from "./interfaces/generator.interface";
+import { EntityColumns, Column } from "./interfaces/generator.interface";
 import { SourceFile, SyntaxKind } from "ts-morph";
 import * as stringifyObject from "stringify-object";
 
 // Check entity existence, and write file or not according to the context
-export async function generateJsonApiEntity(modelName: string, crudOptions: CrudOptions, data: EntityColumns = null): Promise<void> {
+export async function generateJsonApiEntity(modelName: string, data: EntityColumns = null): Promise<void> {
 
     if (!modelName.length) {
         return;
@@ -34,8 +34,7 @@ export async function generateJsonApiEntity(modelName: string, crudOptions: Crud
             classPrefixName,
             filePrefixName,
             fileTemplateInfo : file,
-            tableColumns,
-            crudOptions
+            tableColumns
         });
         files.push(createdFile);
     }

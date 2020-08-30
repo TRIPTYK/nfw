@@ -63,7 +63,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         }
     }
 
-    public async list(req: Request,res: Response): Promise<any> {
+    public async list(req: Request,_res: Response): Promise<any> {
         const params = this.parseJsonApiQueryParams(req.query);
 
         const [entities,count] = await this.repository.jsonApiRequest(params).getManyAndCount();
@@ -76,7 +76,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             }) : entities;
     }
 
-    public async get(req: Request,res: Response): Promise<any> {
+    public async get(req: Request,_res: Response): Promise<any> {
         const user = await this.repository.jsonApiFindOne(req, req.params.id);
 
         if (!user) {
@@ -89,11 +89,10 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
     public async create(req: Request, res: Response): Promise<any> {
         const user = this.repository.create(req.body as object);
         const saved = await this.repository.save(user as any);
-        res.status(HttpStatus.CREATED);
-        return new ApiResponse(saved,{status : 201,type: "json"});
+        return new ApiResponse(saved,{status : 201,type: "application/vnd.api+json"});
     }
 
-    public async update(req: Request,res: Response): Promise<any> {
+    public async update(req: Request,_res: Response): Promise<any> {
         let saved = await this.repository.preload({
             ...req.body, ...{id : req.params.id}
         });

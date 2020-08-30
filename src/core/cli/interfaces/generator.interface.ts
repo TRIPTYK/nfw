@@ -1,27 +1,21 @@
 import { TemplateStructureInterface } from "../static/resources";
 
-export interface CrudOptions {
-    create: boolean;
-    read: boolean;
-    update: boolean;
-    delete: boolean;
-}
-
 export interface GeneratorParameters {
     modelName: string;
     filePrefixName: string;
     fileTemplateInfo: TemplateStructureInterface;
     tableColumns: EntityColumns;
     classPrefixName: string;
-    crudOptions: CrudOptions;
 }
 
 export interface Column {
     name: string;
     type: string;
     length: number;
+    nullable: boolean;
     isPrimary: boolean;
     isUnique: boolean;
+    default: any;
 }
 
 export interface Relation {

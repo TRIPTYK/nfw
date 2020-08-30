@@ -23,9 +23,10 @@ import { MailService } from "../api/services/mail-sender.service";
 import TypeORMService from "../api/services/typeorm.service";
 import { MulterService } from "../api/services/multer.service";
 import { LoggerService } from "../api/services/logger.service";
+import GeneratorController from "../core/controllers/prefab/generator.controller";
 
 @RegisterApplication({
-    controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController],
+    controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController],
     services:[MailService,TypeORMService,MulterService,PassportService,LoggerService]
 })
 export class Application extends BaseApplication {

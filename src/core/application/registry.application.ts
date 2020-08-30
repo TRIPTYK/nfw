@@ -27,24 +27,24 @@ export class ApplicationRegistry {
         const controllers: Type<BaseController>[] = Reflect.getMetadata("controllers",app);
 
         // services before all
-        await Promise.all(services.map((service) => {
-            container.registerSingleton(service);  // services are singletons
-            return container.resolve(service).init();
-        }));
+        await Promise.all(services.map((service) => container.resolve(service).init()));
+        console.log("initialized services");
 
         // app constructor
         const instance = ApplicationRegistry.application = new app();
+        console.log("construct app");
 
         // init app
         await instance.init();
+        console.log("initialized app");
 
         // controllers
-        await Promise.all(controllers.map((controller) => {
-            return container.resolve(controller).init();
-        }));
+        await Promise.all(controllers.map((controller) => container.resolve(controller).init()));
+        console.log("initialized controllers");
 
         // setup routes etc ...
         await instance.setupControllers(controllers);
+        console.log("setup controllers");
 
         return instance;
     }

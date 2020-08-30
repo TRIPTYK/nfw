@@ -3,6 +3,7 @@ import {Connection, createConnection, ConnectionOptions} from "typeorm";
 import EnvironmentConfiguration from "../../config/environment.config";
 import BaseService from "../../core/services/base.service";
 import { singleton, autoInjectable } from "tsyringe";
+import { LoggerService } from "./logger.service";
 
 /**
  * Define TypeORM default configuration
@@ -14,8 +15,13 @@ import { singleton, autoInjectable } from "tsyringe";
 export default class TypeORMService extends BaseService {
     private _connection: Connection;
 
+    public constructor(public loggerService: LoggerService) {
+        super();
+    }
+
     public async init() {
         this._connection = await createConnection(this.ConfigurationObject);
+        this.loggerService.logger.info("Connection to mysql server established");
     }
 
     public get connection() {

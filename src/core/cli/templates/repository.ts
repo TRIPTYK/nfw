@@ -6,8 +6,10 @@ export default function createRepositoryTemplate({fileTemplateInfo,classPrefixNa
         overwrite : true
     });
 
-    file.addStatements((writer) => writer.writeLine("import Boom from '@hapi/boom';"));
-    file.addStatements((writer) => writer.writeLine(`import { ${classPrefixName} } from "../models/${filePrefixName}.model";`));
+    file.addImportDeclaration({
+        namedImports : [classPrefixName],
+        moduleSpecifier : `../models/${filePrefixName}.model`
+    });
 
     const repoClass = file.addClass({
         name: `${classPrefixName}Repository`
@@ -16,15 +18,9 @@ export default function createRepositoryTemplate({fileTemplateInfo,classPrefixNa
     repoClass.setIsExported(true);
     repoClass.setExtends(`BaseRepository<${classPrefixName}>`);
 
-    repoClass.addDecorator({
-        name : "EntityRepository",
-        arguments : `${classPrefixName}` as any
-    }).setIsDecoratorFactory(true);
-
     repoClass.addConstructor({
         statements : "super();"
-    })
-        .toggleModifier("public");
+    }).toggleModifier("public");
 
     return file;
 };

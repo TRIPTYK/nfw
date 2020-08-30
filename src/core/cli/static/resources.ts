@@ -24,7 +24,6 @@ export default (entity: string): TemplateStructureInterface[] => {
         {template: "serializer-schema", path: "src/api/serializers/schemas",name : `${filePrefixName}.serializer.schema.ts`},
         {template: "test",  path :"test",name : `${filePrefixName}.test.ts`},
         {template: "serializer", path :"src/api/serializers",name : `${filePrefixName}.serializer.ts` },
-        {template: "relations",  path :"src/api/enums/json-api",name : `${filePrefixName}.enum.ts`},
         {template: "model",  path :"src/api/models",name : `${filePrefixName}.model.ts`},
     ]
 }
