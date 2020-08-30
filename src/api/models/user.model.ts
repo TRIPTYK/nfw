@@ -2,7 +2,7 @@ import {
     BeforeInsert,
     BeforeUpdate,
     Column,
-    Entity, JoinColumn,
+    JoinColumn,
     OneToOne, ManyToMany, JoinTable
 } from "typeorm";
 

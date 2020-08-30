@@ -7,23 +7,23 @@ import * as Passport from "passport";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 
-import ErrorHandlerMiddleware from "../api/middlewares/error-handler.middleware";
-import EnvironmentConfiguration from "./environment.config";
-import { Environments } from "../api/enums/environments.enum";
+import ErrorHandlerMiddleware from "./middlewares/error-handler.middleware";
+import { Environments } from "./enums/environments.enum";
 import BaseApplication from "../core/application/base.application";
-import DocumentController from "../api/controllers/document.controller";
-import UserController from "../api/controllers/user.controller";
-import AuthController from "../api/controllers/auth.controller";
+import DocumentController from "./controllers/document.controller";
+import UserController from "./controllers/user.controller";
+import AuthController from "./controllers/auth.controller";
 import { container } from "tsyringe";
-import { PassportService } from "../api/services/passport.service";
-import StatusController from "../api/controllers/status.controller";
+import { PassportService } from "./services/passport.service";
+import StatusController from "./controllers/status.controller";
 import MetadataController from "../core/controllers/prefab/metadata.controller";
 import { RegisterApplication } from "../core/decorators/application.decorator";
-import { MailService } from "../api/services/mail-sender.service";
-import TypeORMService from "../api/services/typeorm.service";
-import { MulterService } from "../api/services/multer.service";
-import { LoggerService } from "../api/services/logger.service";
+import { MailService } from "./services/mail-sender.service";
+import TypeORMService from "./services/typeorm.service";
+import { MulterService } from "./services/multer.service";
+import { LoggerService } from "./services/logger.service";
 import GeneratorController from "../core/controllers/prefab/generator.controller";
+import EnvironmentConfiguration from "../config/environment.config";
 
 @RegisterApplication({
     controllers : [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController],

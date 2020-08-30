@@ -8,7 +8,7 @@ import { Type } from "../types/global";
 import { BaseSerializer } from "../serializers/base.serializer";
 import { ApplicationRegistry } from "../application/registry.application";
 
-export interface EntityOptionsExtended<T = any> extends EntityOptions {
+export interface EntityOptionsExtended<T> extends EntityOptions {
     repository: Type<BaseRepository<T>>;
     serializer: Type<BaseSerializer<T>>;
     validator: any;
@@ -19,19 +19,19 @@ export interface EntityOptionsExtended<T = any> extends EntityOptions {
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).
  * Database schema will be created for all classes decorated with it, and Repository can be retrieved and used for it.
  */
-export function JsonApiEntity(options?: EntityOptionsExtended): ClassDecorator;
+export function JsonApiEntity<T>(options?: EntityOptionsExtended<T>): ClassDecorator;
 
 /**
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).
  * Database schema will be created for all classes decorated with it, and Repository can be retrieved and used for it.
  */
-export function JsonApiEntity(name?: string, options?: EntityOptionsExtended): ClassDecorator;
+export function JsonApiEntity<T>(name?: string, options?: EntityOptionsExtended<T>): ClassDecorator;
 
 /**
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).
  * Database schema will be created for all classes decorated with it, and Repository can be retrieved and used for it.
  */
-export function JsonApiEntity(nameOrOptions?: string|any, maybeOptions?: EntityOptionsExtended): ClassDecorator {
+export function JsonApiEntity<T>(nameOrOptions?: string|any, maybeOptions?: EntityOptionsExtended<T>): ClassDecorator {
     const options = (typeof nameOrOptions === "object" ? nameOrOptions : maybeOptions) || {};
     const name = typeof nameOrOptions === "string" ? nameOrOptions : options.name;
 

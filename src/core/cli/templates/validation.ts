@@ -73,7 +73,7 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
 
     objectsToInsert = {};
 
-    for (const entity of tableColumns.columns) {objectsToInsert[entity.name] = buildValidationArgumentsFromObject(entity,true);}
+    for (const entity of tableColumns.columns) {objectsToInsert[entity.name] = buildValidationArgumentsFromObject(entity);}
 
     variableStatement = file.addVariableStatement({
         declarationKind: TsMorph.VariableDeclarationKind.Const,

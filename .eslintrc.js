@@ -199,7 +199,7 @@ module.exports = {
         "no-unsafe-finally": "error",
         "no-unused-expressions": "error",
         "no-unused-labels": "error",
-        "no-useless-constructor": "error",
+        "no-useless-constructor": "warn",
         "no-var": "error",
         "object-shorthand": "error",
         "one-var": [
