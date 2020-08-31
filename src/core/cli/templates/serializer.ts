@@ -18,7 +18,7 @@ export default function createSerializer({modelName,fileTemplateInfo,classPrefix
     });
 
     serializerClass.setIsExported(true);
-    serializerClass.setExtends(`BaseSerializer<${classPrefixName}>`);
+    serializerClass.setExtends(`BaseJsonApiSerializer<${classPrefixName}>`);
 
     serializerClass.addDecorator({
         name: "singleton",

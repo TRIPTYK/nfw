@@ -2,7 +2,6 @@ import {
     BeforeInsert,
     BeforeUpdate,
     Column,
-    Entity,
     OneToOne,
     ManyToMany,
 } from "typeorm";

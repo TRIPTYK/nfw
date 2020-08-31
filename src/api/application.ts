@@ -1,34 +1,38 @@
 import * as Express from "express";
 import * as BodyParser from "body-parser";
-import * as Morgan from "morgan";
 import * as Cors from "cors";
 import * as Compression from "compression";
 import * as Passport from "passport";
 import * as Helmet from "helmet";
 import * as RateLimit from "express-rate-limit";
 
-import ErrorHandlerMiddleware from "./middlewares/error-handler.middleware";
-import { Environments } from "./enums/environments.enum";
 import BaseApplication from "../core/application/base.application";
 import DocumentController from "./controllers/document.controller";
 import UserController from "./controllers/user.controller";
 import AuthController from "./controllers/auth.controller";
-import { container, autoInjectable } from "tsyringe";
+import { autoInjectable } from "tsyringe";
 import { PassportService } from "./services/passport.service";
 import StatusController from "./controllers/status.controller";
 import MetadataController from "../core/controllers/prefab/metadata.controller";
-import { RegisterApplication } from "../core/decorators/application.decorator";
+import { RegisterApplication, GlobalMiddleware } from "../core/decorators/application.decorator";
 import { MailService } from "./services/mail-sender.service";
 import TypeORMService from "./services/typeorm.service";
 import { MulterService } from "./services/multer.service";
 import { LoggerService } from "./services/logger.service";
 import GeneratorController from "../core/controllers/prefab/generator.controller";
 import ConfigurationService from "../core/services/configuration.service";
+import NotFoundMiddleware from "../core/middlewares/not-found.middleware";
+import ErrorMiddleware from "../core/middlewares/error.middleware";
+import RateLimitMiddleware from "./middlewares/rate-limit.middleware";
+import PatateController from "./controllers/patate.controller";
 
 @RegisterApplication({
-    controllers: [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController],
+    controllers: [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController,PatateController],
     services:[MailService,TypeORMService,MulterService,PassportService,LoggerService,ConfigurationService]
 })
+@GlobalMiddleware(RateLimitMiddleware)
+@GlobalMiddleware(NotFoundMiddleware,null,"after")
+@GlobalMiddleware(ErrorMiddleware,null,"after")
 @autoInjectable()
 export class Application extends BaseApplication {
     public constructor(private loggerService: LoggerService,private configurationService: ConfigurationService) {
@@ -94,42 +98,7 @@ export class Application extends BaseApplication {
 
         this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
-        const apiLimiter = new RateLimit({
-            max: 1000,
-            message: "Too many requests from this IP, please try again after an hour",
-            windowMs: 60 * 60 * 1000
-        });
-
-        this.app.use(`/api/${api.version}`, apiLimiter , this.router );
-
-        /**
-         * Request logging with Morgan
-         * dev : console | production : file
-         *
-         * @inheritdoc https://github.com/expressjs/morgan
-         */
-        if (env !== Environments.Test) {
-            this.app.use(Morgan(
-                env === Environments.Production ? "production" : "dev"
-            ));
-        }
-
-        const errorHandlerMiddleware = container.resolve(ErrorHandlerMiddleware);
-
-        if (env === Environments.Production || env === Environments.Test) {
-            this.app.use(
-                (err, req, res, next) => errorHandlerMiddleware.exit(err, req, res, next) // need to call like this do not loose references
-            );
-        } else {
-            this.app.use(
-                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => errorHandlerMiddleware.log(err, req, res, next),
-                (err, req: Express.Request, res: Express.Response, next: Express.NextFunction) => errorHandlerMiddleware.exit(err, req, res, next)
-            );
-        }
-
-        this.app.use(
-            (req: Express.Request, res: Express.Response, next: Express.NextFunction) => errorHandlerMiddleware.notFound(req, res, next)
-        );
+        this.app.use(`/api/${api.version}` , this.router );
 
         return this.app;
     }

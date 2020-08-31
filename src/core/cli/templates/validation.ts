@@ -48,10 +48,6 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
     });
     variableStatement.setIsExported(true);
 
-    variableStatement.addJsDoc({
-        description : `Get validation for ${modelName}`
-    });
-
     let objectsToInsert = {};
 
     for (const entity of tableColumns.columns) {objectsToInsert[entity.name] = buildValidationArgumentsFromObject(entity);}
@@ -60,16 +56,13 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
         declarationKind: TsMorph.VariableDeclarationKind.Const,
         declarations: [
             {
-                name: `create${classPrefixName}`,
+                name: "create",
                 type: `ValidationSchema<${classPrefixName}>`,
                 initializer: stringifyObject(objectsToInsert)
             }
         ]
     });
     variableStatement.setIsExported(true);
-    variableStatement.addJsDoc({
-        description : `Create validation for ${modelName}`
-    });
 
     objectsToInsert = {};
 
@@ -91,9 +84,18 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
         ]
     });
     variableStatement.setIsExported(true);
-    variableStatement.addJsDoc({
-        description : `Update validation for ${modelName}`
+
+    variableStatement = file.addVariableStatement({
+        declarationKind: TsMorph.VariableDeclarationKind.Const,
+        declarations: [
+            {
+                name: "remove",
+                type: `ValidationSchema<${classPrefixName}>`,
+                initializer: stringifyObject(objectsToInsert)
+            }
+        ]
     });
+    variableStatement.setIsExported(true);
 
     return file;
 };

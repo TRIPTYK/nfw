@@ -20,6 +20,7 @@ export class ApplicationRegistry {
     public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
         const services: Type<BaseService>[] = Reflect.getMetadata("services",app);
         const controllers: Type<BaseController>[] = Reflect.getMetadata("controllers",app);
+        const middlewares: { middleware: any ; args: object ; order: "before" | "after" }[] = Reflect.getMetadata("middlewares",app) ?? [];
 
         // services before all
         await Promise.all(services.map((service) => container.resolve(service).init()));
@@ -37,9 +38,19 @@ export class ApplicationRegistry {
         await Promise.all(controllers.map((controller) => container.resolve(controller).init()));
         console.log("initialized controllers");
 
+        // setup global middlewares
+        await instance.setupMiddlewares(middlewares.filter(({order}) => order === "before"));
+
         // setup routes etc ...
         await instance.setupControllers(controllers);
         console.log("setup controllers");
+
+        // setup global middlewares
+        await instance.setupMiddlewares(middlewares.filter(({order}) => order === "after"));
+
+        // afterInit hook
+        await instance.afterInit();
+        console.log("after init");
 
         return instance;
     }

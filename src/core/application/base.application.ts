@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable complexity */
 import * as Express from "express";
 import ApplicationInterface from "../interfaces/application.interface";
@@ -10,6 +11,7 @@ import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
 import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
+import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
 
 export default abstract class BaseApplication implements ApplicationInterface {
     protected app: Express.Application;
@@ -18,6 +20,27 @@ export default abstract class BaseApplication implements ApplicationInterface {
     public constructor() {
         this.app = Express();
         this.router = Express.Router();
+    }
+
+    public async setupMiddlewares(middlewaresForApp: { middleware: any ; args: object }[]): Promise<any> {
+        const middlewaresToApply = middlewaresForApp.map((e) => {
+            const realMiddleware: BaseMiddleware | BaseErrorMiddleware = container.resolve(e.middleware);
+            if (realMiddleware instanceof BaseErrorMiddleware) {
+                return this.useErrorMiddleware(realMiddleware,e.args);
+            }else{
+                return this.useMiddleware(realMiddleware,e.args);
+            }
+        })
+
+        if (middlewaresToApply.length) {
+            this.router.use(middlewaresToApply.reverse());
+        }
+
+        return;
+    }
+
+    public async afterInit(): Promise<any> {
+        return;
     }
 
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -37,6 +60,9 @@ export default abstract class BaseApplication implements ApplicationInterface {
         })
     }
 
+    /**
+     * Setup controllers routing
+     */
     // eslint-disable-next-line @typescript-eslint/require-await
     public async setupControllers(controllers: Type<BaseController>[]) {
         for (const controller of controllers) {
@@ -50,19 +76,11 @@ export default abstract class BaseApplication implements ApplicationInterface {
             const middlewaresForController: { middleware: any ; args: object }[] = Reflect.getMetadata("middlewares", controller);
             const router = Express.Router();
 
-            const useMiddleware = (middleware: BaseMiddleware,args: any) => (req, res, next) => {
-                try {
-                    return middleware.use(req, res, next, args);
-                } catch (e) {
-                    return next(e);
-                }
-            };
-
             if (middlewaresForController && middlewaresForController.length > 0) {
                 middlewaresForController.reverse();
                 router.use(middlewaresForController.map((e) => {
                     const realMiddleware: BaseMiddleware = container.resolve(e.middleware);
-                    return useMiddleware(realMiddleware,e.args);
+                    return this.useMiddleware(realMiddleware,e.args);
                 }));
             }
 
@@ -158,7 +176,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
 
                         // need to arrow function to keep "this" context in method
-                        middlewares.push(useMiddleware(realMiddleware,iterator.args));
+                        middlewares.push(this.useMiddleware(realMiddleware,iterator.args));
                     }
 
                     middlewares.push(instanceController.callMethod(route.methodName));
@@ -167,8 +185,6 @@ export default abstract class BaseApplication implements ApplicationInterface {
                 }
 
                 for (const {path,methodType,method,middlewares} of jsonApiRoutes) {
-                    console.log(jsonApiEntityName,`[${methodType}] /${jsonApiEntityName}${path}`,middlewares);
-
                     const applyMiddlewares = [];
                     const middlewaresWithArgs: { middleware: any ; args: object ; order: MiddlewareOrder }[] = Reflect.getMetadata("middlewares", controller , method) ?? [];
                     const serializerOverride = Reflect.getMetadata("deserializer",controller , method);
@@ -188,51 +204,51 @@ export default abstract class BaseApplication implements ApplicationInterface {
                     }
 
                     for (const beforeAllMiddleware of middlewaresByOrder["beforeAll"].reverse()) {
-                        applyMiddlewares.push(useMiddleware(container.resolve(beforeAllMiddleware.middleware),beforeAllMiddleware.args));
+                        applyMiddlewares.push(this.useMiddleware(container.resolve(beforeAllMiddleware.middleware),beforeAllMiddleware.args));
                     }
 
                     for (const middleware of middlewares) {
                         if (middleware === "deserialize") {
                             for (const beforeDeserializationMiddleware of middlewaresByOrder["beforeDeserialization"].reverse()) {
-                                applyMiddlewares.push(useMiddleware(container.resolve(beforeDeserializationMiddleware.middleware),beforeDeserializationMiddleware.args));
+                                applyMiddlewares.push(this.useMiddleware(container.resolve(beforeDeserializationMiddleware.middleware),beforeDeserializationMiddleware.args));
                             }
 
                             const schema = serializerOverride ? serializerOverride : "default";
 
                             if (serializerOverride !== null) {
-                                applyMiddlewares.push(useMiddleware(deserializeMiddleware,{
+                                applyMiddlewares.push(this.useMiddleware(deserializeMiddleware,{
                                     serializer,
                                     schema
                                 }));
                             }
 
                             for (const afterDeserializationMiddleware of middlewaresByOrder["afterDeserialization"].reverse()) {
-                                applyMiddlewares.push(useMiddleware(container.resolve(afterDeserializationMiddleware.middleware),afterDeserializationMiddleware.args));
+                                applyMiddlewares.push(this.useMiddleware(container.resolve(afterDeserializationMiddleware.middleware),afterDeserializationMiddleware.args));
                             }
                         }
 
                         if (middleware === "validation") {
                             for (const beforeValidationMiddleware of middlewaresByOrder["beforeValidation"].reverse()) {
-                                applyMiddlewares.push(useMiddleware(container.resolve(beforeValidationMiddleware.middleware),beforeValidationMiddleware.args));
+                                applyMiddlewares.push(this.useMiddleware(container.resolve(beforeValidationMiddleware.middleware),beforeValidationMiddleware.args));
                             }
 
                             const validationSchema = validatorOverride ? validatorOverride : validation[method] ?? BaseValidation[method];
 
                             if (validatorOverride !== null) {
-                                applyMiddlewares.push(useMiddleware(validationMiddleware,{
+                                applyMiddlewares.push(this.useMiddleware(validationMiddleware,{
                                     serializer,
                                     schema : validationSchema
                                 }));
                             }
 
                             for (const afterValidationMiddleware of middlewaresByOrder["afterValidation"].reverse()) {
-                                applyMiddlewares.push(useMiddleware(container.resolve(afterValidationMiddleware.middleware),afterValidationMiddleware.args));
+                                applyMiddlewares.push(this.useMiddleware(container.resolve(afterValidationMiddleware.middleware),afterValidationMiddleware.args));
                             }
                         }
                     }
 
                     for (const afterAllMiddleware of middlewaresByOrder["afterAll"].reverse()) {
-                        applyMiddlewares.push(useMiddleware(container.resolve(afterAllMiddleware.middleware),afterAllMiddleware.args));
+                        applyMiddlewares.push(this.useMiddleware(container.resolve(afterAllMiddleware.middleware),afterAllMiddleware.args));
                     }
 
                     applyMiddlewares.push(instanceController.callMethod(method));
@@ -259,7 +275,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         const realMiddleware: BaseMiddleware = container.resolve(iterator.middleware);
 
                         // need to arrow function to keep "this" context in method
-                        middlewares.push(useMiddleware(realMiddleware,iterator.args));
+                        middlewares.push(this.useMiddleware(realMiddleware,iterator.args));
                     }
 
                     middlewares.push(instanceController.callMethod(route.methodName));
@@ -269,4 +285,20 @@ export default abstract class BaseApplication implements ApplicationInterface {
             }
         }
     }
+
+    private useMiddleware = (middleware: BaseMiddleware,args: any) => (req, res, next) => {
+        try {
+            return middleware.use(req, res, next, args);
+        } catch (e) {
+            return next(e);
+        }
+    };
+
+    private useErrorMiddleware = (middleware: BaseErrorMiddleware,args: any) => (err,req, res, next) => {
+        try {
+            return middleware.use(err,req, res, next, args);
+        } catch (e) {
+            return next(e);
+        }
+    };
 }
