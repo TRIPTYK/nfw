@@ -24,10 +24,9 @@ import ConfigurationService from "../core/services/configuration.service";
 import NotFoundMiddleware from "../core/middlewares/not-found.middleware";
 import ErrorMiddleware from "../core/middlewares/error.middleware";
 import RateLimitMiddleware from "./middlewares/rate-limit.middleware";
-import PatateController from "./controllers/patate.controller";
 
 @RegisterApplication({
-    controllers: [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController,PatateController],
+    controllers: [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController],
     services:[MailService,TypeORMService,MulterService,PassportService,LoggerService,ConfigurationService]
 })
 @GlobalMiddleware(RateLimitMiddleware)
@@ -82,12 +81,15 @@ export class Application extends BaseApplication {
          *
          * @inheritdoc https://www.npmjs.com/package/cors
          */
+        console.log(authorized);
+
         const CORSOptions = {
             allowedHeaders: ["Content-Type", "Authorization"],
             methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
             origin: authorized
         };
         this.app.use(Cors(CORSOptions));
+
 
         /**
          * Passport configuration
