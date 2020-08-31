@@ -10,7 +10,7 @@
 import project = require("./utils/project");
 import resources, { getEntityNaming } from "./static/resources";
 import { EntityColumns, Column } from "./interfaces/generator.interface";
-import { SourceFile, SyntaxKind } from "ts-morph";
+import { SourceFile, SyntaxKind, ObjectLiteralExpression, ArrayLiteralExpression } from "ts-morph";
 import * as stringifyObject from "stringify-object";
 
 // Check entity existence, and write file or not according to the context
@@ -24,7 +24,7 @@ export async function generateJsonApiEntity(modelName: string, data: EntityColum
         columns:[],
         relations:[]
     };
-    const files = [];
+    const files: SourceFile[] = [];
     const {filePrefixName,classPrefixName} = getEntityNaming(modelName);
 
     for (const file of resources(filePrefixName)) {
@@ -39,8 +39,20 @@ export async function generateJsonApiEntity(modelName: string, data: EntityColum
         files.push(createdFile);
     }
 
+    const applicationFile = project.getSourceFile("src/api/application.ts");
+    const applicationClass = applicationFile.getClasses()[0];
+    const importControllerName = `${classPrefixName}Controller`;
+
+    const objectArgs = applicationClass.getDecorator("RegisterApplication").getArguments()[0] as ObjectLiteralExpression;
+    const controllersArray = objectArgs.getProperty("controllers").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
+    const exists = controllersArray.getElements().find((elem) => elem.getText() === importControllerName);
+
+    if (!exists) {
+        controllersArray.addElement(importControllerName);
+    }
+
     // auto generate imports
-    for (const file of files) {
+    for (const file of files.concat(applicationFile)) {
         file.fixMissingImports();
     }
 
@@ -54,7 +66,7 @@ export async function deleteJsonApiEntity(modelName: string): Promise<void> {
     }
 
     const files: SourceFile[] = [];
-    const {filePrefixName} = getEntityNaming(modelName);
+    const {filePrefixName,classPrefixName} = getEntityNaming(modelName);
 
     for (const file of resources(filePrefixName)) {
         files.push(project.getSourceFile(`${file.path}/${file.name}`));
@@ -65,6 +77,19 @@ export async function deleteJsonApiEntity(modelName: string): Promise<void> {
     for (const file of files) {
         file.delete();
     }
+
+    const applicationFile = project.getSourceFile("src/api/application.ts");
+
+    const applicationClass = applicationFile.getClasses()[0];
+    const importControllerName = `${classPrefixName}Controller`;
+
+    const objectArgs = applicationClass.getDecorator("RegisterApplication").getArguments()[0] as ObjectLiteralExpression;
+    const controllersArray = objectArgs.getProperty("controllers").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
+    const exists = controllersArray.getElements().find((elem) => elem.getText() === importControllerName);
+
+    controllersArray.removeElement(exists);
+
+    applicationFile.fixUnusedIdentifiers();
 
     await project.save();
 }

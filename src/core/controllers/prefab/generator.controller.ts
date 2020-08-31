@@ -17,6 +17,14 @@ export default class GeneratorController extends BaseController {
         return generateJsonApiEntity(req.params.name,{
             columns : req.body.columns,
             relations : []
+        }).then((e) => {
+            process.send({
+                type : "process:msg",
+                data : {
+                    type : "recompile",
+                    data: {}
+                }
+            });
         });
     }
 

@@ -4,7 +4,6 @@ import * as Cors from "cors";
 import * as Compression from "compression";
 import * as Passport from "passport";
 import * as Helmet from "helmet";
-import * as RateLimit from "express-rate-limit";
 
 import BaseApplication from "../core/application/base.application";
 import DocumentController from "./controllers/document.controller";
@@ -47,7 +46,7 @@ export class Application extends BaseApplication {
     // eslint-disable-next-line @typescript-eslint/require-await
     public async init() {
         super.init();
-        const  { authorized , api , env  } = this.configurationService.config;
+        const  { authorized , api  } = this.configurationService.config;
 
         /**
          * Expose body on req.body

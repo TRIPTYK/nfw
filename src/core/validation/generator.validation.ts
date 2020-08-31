@@ -16,7 +16,7 @@ export const createEntity: ValidationSchema<any> = {
                     nullable : Joi.boolean()
                 });
                 const services = Joi.array().items(service);
-                return services.validate(value).errors;
+                return services.validate(value).errors ?? true;
             }
         }
     }
