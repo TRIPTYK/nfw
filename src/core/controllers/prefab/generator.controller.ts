@@ -1,9 +1,10 @@
 /* eslint-disable arrow-body-style */
 import BaseController from "../base.controller";
-import { Controller, Post, Delete } from "../../decorators/controller.decorator";
+import { Controller, Post, Delete, MethodMiddleware } from "../../decorators/controller.decorator";
 import { generateJsonApiEntity, deleteJsonApiEntity } from "../../cli";
 import { Request , Response } from "express";
-import { Column } from "../../cli/interfaces/generator.interface";
+import ValidationMiddleware from "../../middlewares/validation.middleware";
+import { createEntity } from "../../validation/generator.validation";
 
 /**
  * Use or inherit this controller in your app if you want to get api metadata
@@ -11,19 +12,10 @@ import { Column } from "../../cli/interfaces/generator.interface";
 @Controller("generate")
 export default class GeneratorController extends BaseController {
     @Post("/entity/:name")
+    @MethodMiddleware(ValidationMiddleware,{schema : createEntity, location: ["body"]})
     public generateEntity(req: Request, _res: Response) {
-        const columns: Column[] = [{
-            name: "testColumn",
-            type: "varchar",
-            length: 255,
-            nullable: false,
-            default: undefined,
-            isPrimary: false,
-            isUnique: false
-        }];
-
         return generateJsonApiEntity(req.params.name,{
-            columns,
+            columns : req.body.columns,
             relations : []
         });
     }
