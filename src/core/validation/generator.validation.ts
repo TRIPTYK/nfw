@@ -1,23 +1,31 @@
 import { ValidationSchema } from "../types/validation";
-import * as Joi from "joi";
 
 export const createEntity: ValidationSchema<any> = {
-    columns : {
-        exists : true,
-        custom: {
-            options: (value) => {
-                const service = Joi.object().keys({
-                    name : Joi.string(),
-                    type: Joi.string(),
-                    default: Joi.any(),
-                    length: Joi.number(),
-                    isPrimary: Joi.boolean(),
-                    isUnique: Joi.boolean(),
-                    nullable : Joi.boolean()
-                });
-                const services = Joi.array().items(service);
-                return services.validate(value).errors ?? true;
-            }
-        }
+    "columns.*.name": {
+        exists: true,
+        isString: true
+    },
+    "columns.*.type": {
+        exists: true,
+        isString: true
+    },
+    "columns.*.default": {
+        exists: true
+    },
+    "columns.*.length": {
+        exists: true,
+        isInt: true
+    },
+    "columns.*.isPrimary": {
+        exists: true,
+        isBoolean: true
+    },
+    "columns.*.isUnique": {
+        exists: true,
+        isBoolean: true
+    },
+    "columns.*.isNullable": {
+        exists: true,
+        isBoolean: true
     }
 };

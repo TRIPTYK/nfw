@@ -12,7 +12,7 @@ export interface Column {
     name: string;
     type: string;
     length: number;
-    nullable: boolean;
+    isNullable: boolean;
     isPrimary: boolean;
     isUnique: boolean;
     default: any;

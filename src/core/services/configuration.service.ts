@@ -95,6 +95,10 @@ export default class ConfigurationService<T = Configuration> extends BaseService
 
     public constructor() {
         super();
+        this._config = this.loadConfiguration();
+    }
+
+    public loadConfiguration(): T {
         const {parsed : loaded} = dotenv.config({path : join(process.cwd(),`${process.env.NODE_ENV ?? "development"}.env`)});
         const applyObj: any = {};
 
@@ -186,7 +190,7 @@ export default class ConfigurationService<T = Configuration> extends BaseService
             publicKey : loaded.MAILGUN_PUBLIC_KEY
         };
 
-        this._config = {...loaded,...applyObj};
+        return {...loaded,...applyObj};
     }
 
     public getKey(key: string): any {

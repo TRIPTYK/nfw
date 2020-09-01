@@ -1,32 +1,41 @@
 import { Column } from "../interfaces/generator.interface";
+import { ColumnOptions, ColumnType } from "typeorm";
+import { ValidationSchema } from "../../types/validation";
 
-export function buildModelColumnArgumentsFromObject(dbColumnaData: Column) {
+export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): ColumnOptions {
 
-    const columnArgument = {};
+    const columnArgument: ColumnOptions = {};
 
-    columnArgument["type"] = dbColumnaData.type;
-    columnArgument["default"] = dbColumnaData.default;
+    columnArgument.type = dbColumnaData.type as ColumnType;
+
+    if (dbColumnaData.default !== undefined) {
+        if (!dbColumnaData.isNullable && dbColumnaData.default === null) {
+            columnArgument.default = undefined;
+        }else{
+            columnArgument.default = dbColumnaData.default;
+        }
+    }
 
     // handle nullable
     if (!dbColumnaData.isUnique && !dbColumnaData.isPrimary) {
-        columnArgument["nullable"] = dbColumnaData.nullable;
+        columnArgument.nullable = dbColumnaData.isNullable;
     }else if (dbColumnaData.isUnique) {
-        columnArgument["unique"] = true;
+        columnArgument.unique = true;
     }
     else if (dbColumnaData.isPrimary) {
-        columnArgument["primary"] = true;
+        columnArgument.primary = true;
     }
 
-    columnArgument["length"] = dbColumnaData.length;
+    columnArgument.length = dbColumnaData.length;
 
     return columnArgument;
 };
 
-export function buildValidationArgumentsFromObject(dbColumnaData: Column) {
+export function buildValidationArgumentsFromObject(dbColumnaData: Column): ValidationSchema<any> {
 
     const validationArguments = {};
 
-    if (!dbColumnaData.nullable) {
+    if (!dbColumnaData.isNullable) {
         validationArguments["exists"] = true;
     }
     else

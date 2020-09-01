@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
-
-import { container } from "tsyringe";
-import ConfigurationService from "./src/core/services/configuration.service";
-
-const envVariables = container.resolve<ConfigurationService>(ConfigurationService).config;
-
-module.exports = {
+export default {
     apps : [{
-        name: envVariables.api.name,
+        name: "NFW",
         script: "./dist/src/app.bootstrap.js",
         args: "",
         exec_mode: "fork",
@@ -19,21 +13,15 @@ module.exports = {
         watch: false,
         max_memory_restart: "500M",
         env: {
-            NODE_ENV: "development"
+            NODE_ENV: process.env.NODE_ENV
         },
-        env_staging: {
-            NODE_ENV: "staging"
-        },
-        env_production: {
-            NODE_ENV: "production"
-        }
     }],
     deploy : {
         production : {
             "user" : "nodejs",
-            "host" : envVariables.api.name,
-            "ssh_options" : ["PasswordAuthentication=no","IdentityFile=<SSH_KEY>"],
-            "ref"  : "origin/develop",
+            "host" : "localhost",
+            "ssh_options" : ["PasswordAuthentication=no"],
+            "ref"  : "origin/uniting",
             "repo" : "git@github:TRIPTYK/nfw.git",
             "path" : "/var/www/nfw",
             "post-setup": "npm run setup",

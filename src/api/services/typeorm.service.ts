@@ -24,6 +24,11 @@ export default class TypeORMService extends BaseService {
         this.loggerService.logger.info("Connection to mysql server established");
     }
 
+    public async disconnect() {
+        await this._connection.close();
+        this.loggerService.logger.info("Disconnected from mysql server");
+    }
+
     public get connection() {
         return this._connection;
     }
