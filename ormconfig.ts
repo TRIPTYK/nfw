@@ -3,6 +3,6 @@
  */
 import "reflect-metadata";
 import { container } from "tsyringe";
-import TypeORMService from "./src/api/services/typeorm.service";
+import TypeORMService from "./src/core/services/typeorm.service";
 
 module.exports = container.resolve(TypeORMService).ConfigurationObject;

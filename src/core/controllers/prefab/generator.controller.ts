@@ -1,10 +1,10 @@
 /* eslint-disable arrow-body-style */
 import BaseController from "../base.controller";
 import { Controller, Post, Delete, MethodMiddleware } from "../../decorators/controller.decorator";
-import { generateJsonApiEntity, deleteJsonApiEntity } from "../../cli";
+import { generateJsonApiEntity, deleteJsonApiEntity, addColumn } from "../../cli";
 import { Request , Response } from "express";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
-import { createEntity } from "../../validation/generator.validation";
+import { createEntity, createColumn } from "../../validation/generator.validation";
 
 /**
  * Use or inherit this controller in your app if you want to get api metadata
@@ -21,7 +21,21 @@ export default class GeneratorController extends BaseController {
             process.send({
                 type : "process:msg",
                 data : {
-                    type : "recompile",
+                    type : "recompile-sync",
+                    data: {}
+                }
+            });
+        });
+    }
+
+    @Post("/entity/:name/:column")
+    @MethodMiddleware(ValidationMiddleware,{schema : createColumn, location: ["body"]})
+    public generateColumn(req: Request, _res: Response) {
+        return addColumn(req.params.name,req.body).then((e) => {
+            process.send({
+                type : "process:msg",
+                data : {
+                    type : "recompile-sync",
                     data: {}
                 }
             });
@@ -30,7 +44,15 @@ export default class GeneratorController extends BaseController {
 
     @Delete("/entity/:name")
     public deleteEntity(req: Request, _res: Response) {
-        return deleteJsonApiEntity(req.params.name);
+        return deleteJsonApiEntity(req.params.name).then(() => {
+            process.send({
+                type : "process:msg",
+                data : {
+                    type : "recompile",
+                    data: {}
+                }
+            });
+        });
     }
 
     private restartServer() {

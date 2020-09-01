@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import "reflect-metadata";
-import {default as config} from "./ecosystem.config";
+import {default as config} from "../ecosystem.config";
 
 const [firstApp] = config.apps;
 /* eslint-disable @typescript-eslint/camelcase */
 import * as pm2 from "pm2";
 import { container } from "tsyringe";
 import { createConnection } from "typeorm";
-import ConfigurationService from "./src/core/services/configuration.service";
+import ConfigurationService from "./core/services/configuration.service";
 const { execSync } = require("child_process");
 
 process.on("SIGINT", function() {
@@ -31,7 +31,7 @@ pm2.connect(function(err) {
     pm2.launchBus(function(err: any, bus: any) {
         bus.on("process:msg",async function(packet) {
             switch(packet.data.type) {
-                case "recompile": {
+                case "recompile-sync": {
                     execSync("rm -rf ./dist/src");
                     console.log("compiling");
                     execSync("./node_modules/.bin/tsc");
@@ -62,6 +62,20 @@ pm2.connect(function(err) {
                         }
                         console.log("Restarted app " + firstApp.name);
                     });
+                    break;
+                }
+                case "recompile": {
+                    execSync("rm -rf ./dist/src");
+                    console.log("compiling");
+                    execSync("./node_modules/.bin/tsc");
+                    console.log("compiled");
+                    pm2.restart(firstApp.name,() => {
+                        if (err) {
+                            throw err;
+                        }
+                        console.log("Restarted app " + firstApp.name);
+                    });
+                    break;
                 }
             }
         });

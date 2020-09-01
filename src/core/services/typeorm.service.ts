@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import {Connection, createConnection, ConnectionOptions} from "typeorm";
-import BaseService from "../../core/services/base.service";
+import BaseService from "./base.service";
 import { singleton, autoInjectable } from "tsyringe";
-import { LoggerService } from "./logger.service";
-import ConfigurationService from "../../core/services/configuration.service";
+import { LoggerService } from "../../api/services/logger.service";
+import ConfigurationService from "./configuration.service";
 
 /**
  * Define TypeORM default configuration

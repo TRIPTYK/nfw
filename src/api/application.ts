@@ -15,7 +15,7 @@ import StatusController from "./controllers/status.controller";
 import MetadataController from "../core/controllers/prefab/metadata.controller";
 import { RegisterApplication, GlobalMiddleware } from "../core/decorators/application.decorator";
 import { MailService } from "./services/mail-sender.service";
-import TypeORMService from "./services/typeorm.service";
+import TypeORMService from "../core/services/typeorm.service";
 import { MulterService } from "./services/multer.service";
 import { LoggerService } from "./services/logger.service";
 import GeneratorController from "../core/controllers/prefab/generator.controller";

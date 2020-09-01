@@ -10,7 +10,7 @@
 import project = require("./utils/project");
 import resources, { getEntityNaming } from "./static/resources";
 import { EntityColumns, Column } from "./interfaces/generator.interface";
-import { SourceFile, SyntaxKind, ObjectLiteralExpression, ArrayLiteralExpression } from "ts-morph";
+import { SourceFile, SyntaxKind, ObjectLiteralExpression } from "ts-morph";
 import * as stringifyObject from "stringify-object";
 
 // Check entity existence, and write file or not according to the context

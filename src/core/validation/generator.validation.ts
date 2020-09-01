@@ -29,3 +29,33 @@ export const createEntity: ValidationSchema<any> = {
         isBoolean: true
     }
 };
+
+export const createColumn: ValidationSchema<any> = {
+    name: {
+        exists: true,
+        isString: true
+    },
+    type: {
+        exists: true,
+        isString: true
+    },
+    default: {
+        exists: true
+    },
+    length: {
+        exists: true,
+        isInt: true
+    },
+    isPrimary: {
+        exists: true,
+        isBoolean: true
+    },
+    isUnique: {
+        exists: true,
+        isBoolean: true
+    },
+    isNullable: {
+        exists: true,
+        isBoolean: true
+    }
+}

@@ -2,7 +2,7 @@
 import BaseController from "../base.controller";
 import { Controller, Get } from "../../decorators/controller.decorator";
 import { ApplicationRegistry } from "../../application/registry.application";
-import TypeORMService from "../../../api/services/typeorm.service";
+import TypeORMService from "../../services/typeorm.service";
 import { autoInjectable } from "tsyringe";
 import {Request,Response} from "express";
 
