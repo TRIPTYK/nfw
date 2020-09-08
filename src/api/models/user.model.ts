@@ -23,6 +23,8 @@ import { JsonApiEntity } from "../../core/decorators/model.decorator";
 import * as UserValidator from "../validations/user.validation";
 import ConfigurationService from "../../core/services/configuration.service";
 import { container } from "tsyringe";
+import {AccessControl, Permission} from "role-acl";
+import ACLService from "../services/acl.service";
 
 export interface UserInterface {
     password: string;
@@ -144,5 +146,10 @@ export class User extends JsonApiModel<User> implements UserInterface {
      */
     public passwordMatches(password: string): Promise<boolean> {
         return Bcrypt.compare(password, this.password);
+    }
+
+    public can(method: string,context: any,resource: string): Promise<Permission> {
+        const aclService = container.resolve(ACLService);
+        return aclService.can(this,method,context,resource);
     }
 }

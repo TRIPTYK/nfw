@@ -92,6 +92,7 @@
     "pluralize": "^8.0.0",
     "pm2": "^4.4.1",
     "reflect-metadata": "^0.1.13",
+    "role-acl": "^4.5.4",
     "sqlstring": "^2.3.1",
     "stringify-object": "^3.3.0",
     "supertest": "^4.0.2",

@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { Client } from "@elastic/elasticsearch";
 import BaseService from "../../core/services/base.service";
 import { singleton, autoInjectable } from "tsyringe";
