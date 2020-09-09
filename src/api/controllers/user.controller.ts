@@ -1,5 +1,5 @@
-import {Request } from "express";
-import { Get, JsonApiController, JsonApiMethodMiddleware } from "../../core/decorators/controller.decorator";
+import {Request} from "express";
+import { Get, JsonApiController, JsonApiMethodMiddleware, RouteMiddleware } from "../../core/decorators/controller.decorator";
 import { autoInjectable, singleton } from "tsyringe";
 import { User } from "../models/user.model";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
@@ -7,10 +7,13 @@ import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import DeserializeMiddleware from "../../core/middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
+import ACLMiddleware from "../middlewares/acl.middleware";
 
 @JsonApiController(User)
 @singleton()
 @autoInjectable()
+@RouteMiddleware(AuthMiddleware,[Roles.Admin])
+@RouteMiddleware(ACLMiddleware)
 export default class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
     @JsonApiMethodMiddleware(AuthMiddleware,[Roles.Admin])

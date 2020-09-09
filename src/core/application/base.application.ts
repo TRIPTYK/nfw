@@ -12,6 +12,7 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
+import ErrorMiddleware from "../middlewares/error.middleware";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
@@ -28,13 +29,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
     }
 
     public async setupMiddlewares(middlewaresForApp: { middleware: any ; args: object }[]): Promise<any> {
-        const middlewaresToApply = middlewaresForApp.map((e) => {
-            if (e.middleware === BaseErrorMiddleware) {
-                return this.useErrorMiddleware(e.middleware,e.args);
-            }else{
-                return this.useMiddleware(e.middleware,e.args);
-            }
-        })
+        const middlewaresToApply = middlewaresForApp.map((e) => this.useMiddleware(e.middleware,e.args))
 
         if (middlewaresToApply.length) {
             this.router.use(middlewaresToApply.reverse());
@@ -296,24 +291,27 @@ export default abstract class BaseApplication implements ApplicationInterface {
         }
     }
 
-    private useMiddleware = (middleware: Type<BaseMiddleware>,args: any,context?: RouteContext) => {
+    private useMiddleware = (middleware: Type<BaseMiddleware | BaseErrorMiddleware>,args: any,context?: RouteContext) => {
         const instance = new middleware();
         instance.init(context);
         container.registerInstance(middleware,instance);
-        return (req, res, next) => {
-            try {
-                return instance.use(req, res, next, args);
-            } catch (e) {
-                return next(e);
+        if (instance instanceof BaseMiddleware) {
+            return (req, res, next) => {
+                try {
+                    return instance.use(req, res, next, args);
+                } catch (e) {
+                    return next(e);
+                }
             }
         }
-    };
-
-    private useErrorMiddleware = (middleware: BaseErrorMiddleware,args: any) => (err,req, res, next) => {
-        try {
-            return middleware.use(err,req, res, next, args);
-        } catch (e) {
-            return next(e);
+        if (instance instanceof BaseErrorMiddleware) {
+            return (err,req, res, next) => {
+                try {
+                    return instance.use(err,req, res, next, args);
+                } catch (e) {
+                    return next(e);
+                }
+            }
         }
     };
 }

@@ -80,7 +80,6 @@ export class Application extends BaseApplication {
          *
          * @inheritdoc https://www.npmjs.com/package/cors
          */
-        console.log(authorized);
 
         const CORSOptions = {
             allowedHeaders: ["Content-Type", "Authorization"],
