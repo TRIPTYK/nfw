@@ -29,7 +29,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
     }
 
     public async setupMiddlewares(middlewaresForApp: { middleware: any ; args: object }[]): Promise<any> {
-        const middlewaresToApply = middlewaresForApp.map((e) => this.useMiddleware(e.middleware,e.args))
+        const middlewaresToApply = middlewaresForApp.map((e) => this.useMiddleware(e.middleware,e.args,null))
 
         if (middlewaresToApply.length) {
             this.router.use(middlewaresToApply.reverse());
@@ -77,7 +77,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
             if (middlewaresForController && middlewaresForController.length > 0) {
                 middlewaresForController.reverse();
-                router.use(middlewaresForController.map((e) => this.useMiddleware(e.middleware,e.args)));
+                router.use(middlewaresForController.map((e) => this.useMiddleware(e.middleware,e.args,null)));
             }
 
             const jsonApiEntity = Reflect.getMetadata("entity",instanceController);
@@ -222,7 +222,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                                 applyMiddlewares.push(this.useMiddleware(DeserializeMiddleware,{
                                     serializer,
                                     schema
-                                }));
+                                },routeContext));
                             }
 
                             for (const afterDeserializationMiddleware of middlewaresByOrder["afterDeserialization"].reverse()) {
@@ -241,7 +241,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                                 applyMiddlewares.push(this.useMiddleware(ValidationMiddleware,{
                                     serializer,
                                     schema : validationSchema
-                                }));
+                                },routeContext));
                             }
 
                             for (const afterValidationMiddleware of middlewaresByOrder["afterValidation"].reverse()) {
@@ -291,7 +291,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
         }
     }
 
-    private useMiddleware = (middleware: Type<BaseMiddleware | BaseErrorMiddleware>,args: any,context?: RouteContext) => {
+    private useMiddleware = (middleware: Type<BaseMiddleware | BaseErrorMiddleware>,args: any,context: RouteContext) => {
         const instance = new middleware();
         instance.init(context);
         container.registerInstance(middleware,instance);

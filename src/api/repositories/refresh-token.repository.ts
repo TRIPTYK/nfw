@@ -4,17 +4,12 @@ import {User} from "../models/user.model";
 import {RefreshToken} from "../models/refresh-token.model";
 import BaseJsonApiRepository from "../../core/repositories/base.repository";
 import { EntityRepository } from "typeorm";
-import {autoInjectable } from "tsyringe";
+import {autoInjectable, container } from "tsyringe";
 import ConfigurationService from "../../core/services/configuration.service";
 
 @EntityRepository(RefreshToken)
 @autoInjectable()
 export class RefreshTokenRepository extends BaseJsonApiRepository<RefreshToken> {
-    public constructor(private configurationService: ConfigurationService) {
-        super();
-    }
-
-
     /**
      *
      * @param user
@@ -22,7 +17,7 @@ export class RefreshTokenRepository extends BaseJsonApiRepository<RefreshToken> 
      */
     public generate(user: User): Promise<RefreshToken> {
         const token = `${user.id}.${Crypto.randomBytes(40).toString("hex")}`;
-        const expires = Moment().add(this.configurationService.config.jwt.refreshExpires, "minutes").toDate();
+        const expires = Moment().add(container.resolve<ConfigurationService>(ConfigurationService).config.jwt.refreshExpires, "minutes").toDate();
 
         const tokenObject = this.create({refreshToken : token, user, expires});
 
