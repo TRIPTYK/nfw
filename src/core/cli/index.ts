@@ -181,7 +181,10 @@ export async function removeColumn(modelName: string,column: Column | string): P
 
     for (const validationStatement of validations) {
         const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;
-        initializer.getProperty(columnName).remove();
+        const property = initializer.getProperty(columnName);
+        if (property) {
+            property.remove()
+        };
     }
 
 
