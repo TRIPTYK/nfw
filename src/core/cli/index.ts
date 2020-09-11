@@ -129,16 +129,15 @@ export async function addColumn(entity: string,column: Column): Promise<void> {
     const serializerFile = project.getSourceFile(`${serializer.path}/${serializer.name}`);
     const serializerClass = serializerFile.getClass(`${classPrefixName}SerializerSchema`);
 
-    const serializeProperty = serializerClass.getStaticProperty("serialize").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
-    const derializeProperty = serializerClass.getStaticProperty("deserialize").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
+    const serializeProperty = serializerClass.addProperty(column);
 
-    if (!serializeProperty.getElements().find((element) => element.getText() === column.name)) {
-        serializeProperty.addElement(`"${column.name}"`);
-    }
+    serializeProperty.addDecorator({
+        name: "Serialize"
+    }).setIsDecoratorFactory(true);
 
-    if (!derializeProperty.getElements().find((element) => element.getText() === column.name)) {
-        serializeProperty.addElement(`"${column.name}"`);
-    }
+    serializeProperty.addDecorator({
+        name: "Deserialize"
+    }).setIsDecoratorFactory(true);
 
     await project.save();
 }
