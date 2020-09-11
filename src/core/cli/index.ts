@@ -171,20 +171,7 @@ export async function removeColumn(modelName: string,column: Column | string): P
     const serializerFile = project.getSourceFile(`${serializer.path}/${serializer.name}`);
     const serializerClass = serializerFile.getClass(`${classPrefixName}SerializerSchema`);
 
-    const arraySerialize = serializerClass.getStaticProperty("serialize").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
-    const arrayDeserialize =  serializerClass.getStaticProperty("deserialize").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
-
-    for (const elem of arraySerialize.getElements()) {
-        if (elem.getText() === columnName) {
-            arraySerialize.removeElement(elem);
-        }
-    }
-
-    for (const elem of arrayDeserialize.getElements()) {
-        if (elem.getText() === columnName) {
-            arrayDeserialize.removeElement(elem);
-        }
-    }
+    serializerClass.getInstanceProperty(columnName).remove();
 
     await project.save();
 }
