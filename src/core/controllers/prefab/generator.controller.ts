@@ -1,7 +1,7 @@
 /* eslint-disable arrow-body-style */
 import BaseController from "../base.controller";
 import { Controller, Post, Delete, MethodMiddleware } from "../../decorators/controller.decorator";
-import { generateJsonApiEntity, deleteJsonApiEntity, addColumn } from "../../cli";
+import { generateJsonApiEntity, deleteJsonApiEntity, addColumn, removeColumn } from "../../cli";
 import { Request , Response } from "express";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
 import { createEntity, createColumn } from "../../validation/generator.validation";
@@ -36,6 +36,19 @@ export default class GeneratorController extends BaseController {
                 type : "process:msg",
                 data : {
                     type : "recompile-sync",
+                    data: {}
+                }
+            });
+        });
+    }
+
+    @Delete("/entity/:name/:column")
+    public deleteEntityColumn(req: Request, _res: Response) {
+        return removeColumn(req.params.name,req.params.column).then(() => {
+            process.send({
+                type : "process:msg",
+                data : {
+                    type : "recompile",
                     data: {}
                 }
             });
