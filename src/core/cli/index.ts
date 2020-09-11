@@ -10,7 +10,7 @@
 import project = require("./utils/project");
 import resources, { getEntityNaming } from "./static/resources";
 import { EntityColumns, Column } from "./interfaces/generator.interface";
-import { SourceFile, SyntaxKind, ObjectLiteralExpression } from "ts-morph";
+import { SourceFile, SyntaxKind, ObjectLiteralExpression, VariableDeclarationKind } from "ts-morph";
 import * as stringifyObject from "stringify-object";
 
 // Check entity existence, and write file or not according to the context
@@ -172,6 +172,18 @@ export async function removeColumn(modelName: string,column: Column | string): P
     const serializerClass = serializerFile.getClass(`${classPrefixName}SerializerSchema`);
 
     serializerClass.getInstanceProperty(columnName).remove();
+
+    const validation =  resources(modelName).find((r) => r.template === "validation");
+    const validationFile = project.getSourceFile(`${validation.path}/${validation.name}`);
+
+    const validations =  validationFile.getChildrenOfKind(SyntaxKind.VariableStatement)
+        .filter((declaration) => declaration.hasExportKeyword() && declaration.getDeclarationKind() === VariableDeclarationKind.Const);
+
+    for (const validationStatement of validations) {
+        const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;
+        initializer.getProperty(columnName).remove();
+    }
+
 
     await project.save();
 }

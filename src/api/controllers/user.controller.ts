@@ -13,7 +13,6 @@ import ACLMiddleware from "../middlewares/acl.middleware";
 @singleton()
 @autoInjectable()
 @RouteMiddleware(AuthMiddleware,[Roles.Admin])
-//@RouteMiddleware(ACLMiddleware)
 export default class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
     @JsonApiMethodMiddleware(AuthMiddleware,[Roles.Admin])
