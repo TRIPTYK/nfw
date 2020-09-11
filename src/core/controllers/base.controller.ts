@@ -2,7 +2,7 @@ import ControllerInterface from "../interfaces/controller.interface";
 import { Request , Response } from "express";
 import { ApplicationRegistry } from "../application/registry.application";
 
-export default class BaseController implements ControllerInterface {
+export default abstract class BaseController implements ControllerInterface {
     public constructor() {
         ApplicationRegistry.registerController(this);
     }

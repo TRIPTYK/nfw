@@ -12,7 +12,6 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
-import ErrorMiddleware from "../middlewares/error.middleware";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
