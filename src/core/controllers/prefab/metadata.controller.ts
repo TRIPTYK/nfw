@@ -5,7 +5,7 @@ import { ApplicationRegistry } from "../../application/registry.application";
 import TypeORMService from "../../services/typeorm.service";
 import { autoInjectable } from "tsyringe";
 import {Request,Response} from "express";
-import { getRepository } from "typeorm";
+import { EntityMetadata, getRepository } from "typeorm";
 
 /**
  * Use or inherit this controller in your app if you want to get api metadata
@@ -41,7 +41,7 @@ export default class MetadataController extends BaseController {
     @Get("/")
     public getEntities(req: Request, res: Response) {
         return this.getJsonApiEntities()
-            .map((table) => this.entityMetadaBuilder(table));
+            .map((table) => this.entityMetadaBuilder(table))
     }
 
     protected getJsonApiEntities() {
@@ -55,8 +55,9 @@ export default class MetadataController extends BaseController {
         return result.length ? result[0] : null;
     }
 
-    protected entityMetadaBuilder(table) {
+    protected entityMetadaBuilder(table: EntityMetadata) {
         return {
+            id: table.name,
             entityName : table.name,
             table: table.tableName,
             columns: table.ownColumns.filter((c) => !c.relationMetadata).map((column) => {
