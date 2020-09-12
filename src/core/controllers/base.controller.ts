@@ -3,8 +3,11 @@ import { Request , Response } from "express";
 import { ApplicationRegistry } from "../application/registry.application";
 
 export default abstract class BaseController implements ControllerInterface {
+    public name: string;
+
     public constructor() {
         ApplicationRegistry.registerController(this);
+        this.name = Reflect.getMetadata("routeName",this);
     }
 
     public init() {

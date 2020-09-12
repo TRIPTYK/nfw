@@ -3,6 +3,7 @@ import { ApplicationRegistry } from "./core/application/registry.application";
 import { container } from "tsyringe";
 import { Application } from "./api/application";
 import ConfigurationService from "./core/services/configuration.service";
+import { BaseMiddleware } from "./core/middlewares/base.middleware";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 module.exports = (async () => {

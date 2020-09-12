@@ -12,6 +12,7 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
+import ErrorMiddleware from "../middlewares/error.middleware";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
@@ -71,12 +72,11 @@ export default abstract class BaseApplication implements ApplicationInterface {
             // Our `routes` array containing all our routes for this controller
             const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
 
-            const middlewaresForController: { middleware: any ; args: object }[] = Reflect.getMetadata("middlewares", controller);
+            const middlewaresForController: { middleware: any ; args: object }[] = Reflect.getMetadata("middlewares", controller) ?? [];
             const router = Express.Router();
 
             if (middlewaresForController && middlewaresForController.length > 0) {
                 middlewaresForController.reverse();
-                router.use(middlewaresForController.map((e) => this.useMiddleware(e.middleware,e.args,null)));
             }
 
             const jsonApiEntity = Reflect.getMetadata("entity",instanceController);
@@ -168,7 +168,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
                     const middlewares = [];
 
-                    for (const iterator of middlewaresWithArgs) {
+                    for (const iterator of middlewaresForController.concat(middlewaresWithArgs)) {
                         // need to arrow function to keep "this" context in method
                         middlewares.push(this.useMiddleware(iterator.middleware,iterator.args,routeContext));
                     }
@@ -255,7 +255,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
                     applyMiddlewares.push(instanceController.callMethod(method));
 
-                    router[methodType](path,applyMiddlewares);
+                    router[methodType](path,middlewaresForController.map((mid) => this.useMiddleware(mid.middleware,mid.args,routeContext)),applyMiddlewares);
                 }
             }else{
                 this.router.use(`/${prefix}`, router);
