@@ -13,12 +13,12 @@ export default class ACLMiddleware extends BaseMiddleware {
             return next(Boom.expectationFailed("You need to be identified"));
         }
 
-        const can = await user.can(this.context.routeDefinition.methodName,req.body,this.context.controllerInstance.name);
+        const can = await user.can(this.context.routeDefinition.methodName,req,this.context.controllerInstance.name);
 
         if (can.granted) {
             return next();
         }else{
-            return next(Boom.unauthorized("You can't do this"));
+            return next(Boom.forbidden("You can't do this"));
         }
     }
 }

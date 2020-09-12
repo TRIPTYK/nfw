@@ -1,11 +1,13 @@
 import { AccessControl } from "role-acl";
+import { Request } from "express";
+import { User } from "../models/user.model";
 
 const acl = new AccessControl();
 
 acl.grant("user")
-    .execute("create").on("video")
-    .grant("admin")                   // switch to another role without breaking the chain
-    .extend("user")                 // inherit role capabilities. also takes an array
-    .execute("*").on("*");
+    .execute("get").on("*")
+    .execute("list").on("*")
+    .grant("admin")
+    .execute("remove").on("users").condition((context: Request) => context.params.id !== (context["user"] as any).id);
 
 export {acl as UserACL};
