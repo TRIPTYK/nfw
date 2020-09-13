@@ -15,7 +15,6 @@ export default class ACLService extends BaseService {
     }
 
     public can(user: User,method: string,context: any,resource: string): Promise<Permission> {
-        console.log(user.role,method,resource);
         return UserACL.can(user.role)
             .context(context)
             .execute(method)
