@@ -11,10 +11,11 @@ export interface GeneratorParameters {
 export interface Column {
     name: string;
     type: string;
-    length: number;
+    length?: number;
+    width?: number;
     isNullable: boolean;
-    isPrimary: boolean;
-    isUnique: boolean;
+    isPrimary?: boolean;
+    isUnique?: boolean;
     default: any;
 }
 

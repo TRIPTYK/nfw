@@ -18,7 +18,7 @@ export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): Colu
 
     // handle nullable
     if (!dbColumnaData.isUnique && !dbColumnaData.isPrimary) {
-        columnArgument.nullable = dbColumnaData.isNullable;
+        columnArgument.nullable ??= dbColumnaData.isNullable;
     }else if (dbColumnaData.isUnique) {
         columnArgument.unique = true;
     }
@@ -26,7 +26,8 @@ export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): Colu
         columnArgument.primary = true;
     }
 
-    columnArgument.length = dbColumnaData.length;
+    columnArgument.length ??= dbColumnaData.length;
+    columnArgument.width ??= dbColumnaData.width;
 
     return columnArgument;
 };

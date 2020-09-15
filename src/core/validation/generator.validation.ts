@@ -13,15 +13,37 @@ export const createEntity: ValidationSchema<any> = {
         exists: true
     },
     "columns.*.length": {
-        exists: true,
-        isInt: true
+        isInt: true,
+        custom : {
+            options: (value,{req}) => {
+                if (req.body.type.contains("int")) {
+                    return "must use width with number type";
+                }else{
+                    if (req.body.width) {
+                        return "length and width are exclusive";
+                    }
+                }
+            }
+        }
+    },
+    "columns.*.width": {
+        isInt: true,
+        custom : {
+            options: (value,{req}) => {
+                if (!req.body.type.contains("int")) {
+                    return "must use width with number type";
+                }else{
+                    if (req.body.length) {
+                        return "length and width are exclusive";
+                    }
+                }
+            }
+        }
     },
     "columns.*.isPrimary": {
-        exists: true,
         isBoolean: true
     },
     "columns.*.isUnique": {
-        exists: true,
         isBoolean: true
     },
     "columns.*.isNullable": {

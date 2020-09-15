@@ -46,7 +46,7 @@ export default function createModelTemplate({fileTemplateInfo,tableColumns,class
     ]}).setIsDecoratorFactory(true);
     modelClass.setIsExported(true);
 
-    tableColumns.columns.forEach((entity) => {
+    for (const entity of tableColumns.columns) {
         const prop = modelClass.addProperty({
             name : entity.name
         }).toggleModifier("public");
@@ -55,7 +55,7 @@ export default function createModelTemplate({fileTemplateInfo,tableColumns,class
             name : "Column" ,
             arguments : stringifyObject(buildModelColumnArgumentsFromObject(entity)) as any
         }).setIsDecoratorFactory(true);
-    });
+    }
 
     return file;
 };
