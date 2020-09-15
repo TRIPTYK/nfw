@@ -5,6 +5,7 @@ import { generateJsonApiEntity, deleteJsonApiEntity, addColumn, removeColumn } f
 import { Request , Response } from "express";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
 import { createEntity, createColumn } from "../../validation/generator.validation";
+import { removeRelation } from "../../cli/commands/remove-relation";
 const project = require("../../cli/utils/project");
 
 /**
@@ -48,6 +49,12 @@ export default class GeneratorController extends BaseController {
     @Delete("/entity/:name/:column")
     public async deleteEntityColumn(req: Request, _res: Response) {
         await removeColumn(req.params.name,req.params.column);
+        await project.save();
+    }
+
+    @Delete("/entity/:name/relation/:relation")
+    public async deleteEntityRelation(req: Request, _res: Response) {
+        await removeRelation(req.params.name,req.params.relation);
         await project.save();
     }
 

@@ -182,7 +182,7 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
 
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
 
-        for (const {type,property} of relations) {
+        for (const {type,property} of relations.filter((rel) => {rel.type.name !== schema.name})) {
             const schemaTypeRelation = type();
             const relationType = Reflect.getMetadata("type",schemaTypeRelation.prototype);
             relationShips[property] = {
@@ -192,11 +192,11 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
                     self: (d) => `/api/${api.version}/${schemaType}/${d.id}/relationships/${property}`
                 }
             };
-            if (schemaTypeRelation === rootSchema) {
-                continue;
-            }
+
             this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema,schemaName);
         }
+
+        console.log(relationShips);
 
         this.serializer.register(schemaType, schemaName , {
             whitelist: serialize,
