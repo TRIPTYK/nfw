@@ -16,7 +16,6 @@ import { buildModelColumnArgumentsFromObject } from "./utils/template";
 
 // Check entity existence, and write file or not according to the context
 export async function generateJsonApiEntity(modelName: string, data: EntityColumns = null): Promise<void> {
-
     if (!modelName.length) {
         return;
     }
@@ -60,8 +59,6 @@ export async function generateJsonApiEntity(modelName: string, data: EntityColum
     for (const file of files.concat(applicationFile)) {
         file.fixMissingImports();
     }
-
-    await project.save();
 }
 
 // Check entity existence, and write file or not according to the context
@@ -95,8 +92,6 @@ export async function deleteJsonApiEntity(modelName: string): Promise<void> {
     controllersArray.removeElement(exists);
 
     applicationFile.fixUnusedIdentifiers();
-
-    await project.save();
 }
 
 export async function addColumn(entity: string,column: Column,save = false): Promise<void> {
@@ -131,7 +126,9 @@ export async function addColumn(entity: string,column: Column,save = false): Pro
     const serializerFile = project.getSourceFile(`${serializer.path}/${serializer.name}`);
     const serializerClass = serializerFile.getClass(`${classPrefixName}SerializerSchema`);
 
-    const serializeProperty = serializerClass.addProperty(column);
+    const serializeProperty = serializerClass.addProperty({
+        name: column.name
+    });
 
     serializeProperty.addDecorator({
         name: "Serialize"
@@ -185,7 +182,4 @@ export async function removeColumn(modelName: string,column: Column | string): P
             property.remove()
         };
     }
-
-
-    await project.save();
 }
