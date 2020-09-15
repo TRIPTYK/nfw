@@ -53,7 +53,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
     public listen(port: number) {
         return new Promise((resolve) => {
-            this.app.listen(port, (server) => {
+            const server = this.app.listen(port,() => {
                 resolve(server);
             });
         })
