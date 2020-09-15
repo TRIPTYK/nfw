@@ -5,71 +5,63 @@ import { generateJsonApiEntity, deleteJsonApiEntity, addColumn, removeColumn } f
 import { Request , Response } from "express";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
 import { createEntity, createColumn } from "../../validation/generator.validation";
+const project = require("../../cli/utils/project");
 
 /**
- * Use or inherit this controller in your app if you want to get api metadata
+ * Generates app
  */
 @Controller("generate")
 export default class GeneratorController extends BaseController {
     @Post("/entity/:name")
     @MethodMiddleware(ValidationMiddleware,{schema : createEntity, location: ["body"]})
-    public generateEntity(req: Request, _res: Response) {
-        return generateJsonApiEntity(req.params.name,{
+    public async generateEntity(req: Request, _res: Response) {
+        await generateJsonApiEntity(req.params.name,{
             columns : req.body.columns,
             relations : []
-        }).then((e) => {
-            process.send({
-                type : "process:msg",
-                data : {
-                    type : "recompile-sync",
-                    data: {}
-                }
-            });
+        });
+
+        await project.save();
+            
+        process.send({
+            type : "process:msg",
+            data : {
+                type : "recompile-sync",
+                data: {}
+            }
         });
     }
 
     @Post("/entity/:name/:column")
     @MethodMiddleware(ValidationMiddleware,{schema : createColumn, location: ["body"]})
-    public generateColumn(req: Request, _res: Response) {
-        return addColumn(req.params.name,req.body).then((e) => {
-            process.send({
-                type : "process:msg",
-                data : {
-                    type : "recompile-sync",
-                    data: {}
-                }
-            });
+    public async generateColumn(req: Request, _res: Response) {
+        await addColumn(req.params.name,req.body);
+        await project.save();
+        process.send({
+            type : "process:msg",
+            data : {
+                type : "recompile-sync",
+                data: {}
+            }
         });
     }
 
     @Delete("/entity/:name/:column")
-    public deleteEntityColumn(req: Request, _res: Response) {
-        return removeColumn(req.params.name,req.params.column).then(() => {
-            process.send({
-                type : "process:msg",
-                data : {
-                    type : "recompile",
-                    data: {}
-                }
-            });
-        });
+    public async deleteEntityColumn(req: Request, _res: Response) {
+        await removeColumn(req.params.name,req.params.column);
+        await project.save();
     }
 
     @Delete("/entity/:name")
-    public deleteEntity(req: Request, _res: Response) {
-        return deleteJsonApiEntity(req.params.name).then(() => {
-            process.send({
-                type : "process:msg",
-                data : {
-                    type : "recompile",
-                    data: {}
-                }
-            });
+    public async deleteEntity(req: Request, _res: Response) {
+        await deleteJsonApiEntity(req.params.name);
+        await project.save();
+        process.send({
+            type : "process:msg",
+            data : {
+                type : "recompile",
+                data: {}
+            }
         });
-    }
-
-    private restartServer() {
-        process.exit(0);
     }
 }
 
