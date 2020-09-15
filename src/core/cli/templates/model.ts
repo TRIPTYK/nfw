@@ -12,7 +12,7 @@ import  * as pluralize from "pluralize";
  * @param {array} entities
  * @return {SourceFile}
  */
-export default function createModelTemplate({fileTemplateInfo,tableColumns,classPrefixName,modelName,filePrefixName}: GeneratorParameters): SourceFile {
+export default function createModelTemplate({fileTemplateInfo,classPrefixName,modelName,filePrefixName}: GeneratorParameters): SourceFile {
 
     const file = project.createSourceFile(`${fileTemplateInfo.path}/${fileTemplateInfo.name}`,null,{
         overwrite : true
@@ -45,17 +45,6 @@ export default function createModelTemplate({fileTemplateInfo,tableColumns,class
     }
     ]}).setIsDecoratorFactory(true);
     modelClass.setIsExported(true);
-
-    for (const entity of tableColumns.columns) {
-        const prop = modelClass.addProperty({
-            name : entity.name
-        }).toggleModifier("public");
-
-        prop.addDecorator({
-            name : "Column" ,
-            arguments : stringifyObject(buildModelColumnArgumentsFromObject(entity)) as any
-        }).setIsDecoratorFactory(true);
-    }
 
     return file;
 };

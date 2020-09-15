@@ -1,7 +1,7 @@
 import project = require ("../utils/project");
 import { GeneratorParameters } from "../interfaces/generator.interface";
 
-export default function createSerializerSchema({modelName,fileTemplateInfo,classPrefixName,tableColumns,filePrefixName}: GeneratorParameters) {
+export default function createSerializerSchema({fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
     const file = project.createSourceFile(`${fileTemplateInfo.path}/${fileTemplateInfo.name}`,null,{
         overwrite : true
     });
@@ -26,20 +26,6 @@ export default function createSerializerSchema({modelName,fileTemplateInfo,class
     addedClass.addDecorator({
         name : "SerializerSchema"
     }).setIsDecoratorFactory(true);
-
-    tableColumns.columns.forEach((entity) => {
-        const prop = addedClass.addProperty({
-            name : entity.name
-        }).toggleModifier("public");
-
-        prop.addDecorator({
-            name : "Serialize"
-        }).setIsDecoratorFactory(true);
-
-        prop.addDecorator({
-            name : "Deserialize"
-        }).setIsDecoratorFactory(true);
-    });
 
     return file;
 }

@@ -9,10 +9,14 @@ export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): Colu
     columnArgument.type = dbColumnaData.type as ColumnType;
 
     if (dbColumnaData.default !== undefined) {
-        if (!dbColumnaData.isNullable && dbColumnaData.default === null) {
-            columnArgument.default = undefined;
-        }else{
+        if (dbColumnaData.isNullable !== false && dbColumnaData.default !== null) {
             columnArgument.default = dbColumnaData.default;
+        }
+    }
+
+    if (dbColumnaData.type.includes("int")) {
+        if (columnArgument.length) {
+            throw new Error("Length must not be used with int types");
         }
     }
 
@@ -26,8 +30,13 @@ export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): Colu
         columnArgument.primary = true;
     }
 
-    columnArgument.length ??= dbColumnaData.length;
-    columnArgument.width ??= dbColumnaData.width;
+    if (columnArgument.length) {
+        columnArgument.length = dbColumnaData.length;
+    }
+
+    if (columnArgument.width) {
+        columnArgument.width = dbColumnaData.width;
+    }
 
     return columnArgument;
 };

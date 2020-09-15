@@ -1,3 +1,5 @@
+import { container } from "tsyringe";
+import TypeORMService from "../services/typeorm.service";
 import { ValidationSchema } from "../types/validation";
 
 export const createEntity: ValidationSchema<any> = {
@@ -7,43 +9,35 @@ export const createEntity: ValidationSchema<any> = {
     },
     "columns.*.type": {
         exists: true,
-        isString: true
+        isString: true,
+        custom:{
+            options: (value) => {
+                const suported = container.resolve(TypeORMService).connection.driver.supportedDataTypes;
+                if (!Object.values(suported).includes(value)) {
+                    throw "unsupported value";
+                }
+                
+                return true;
+            }
+        }
     },
     "columns.*.default": {
         exists: true
     },
     "columns.*.length": {
+        optional:true,
         isInt: true,
-        custom : {
-            options: (value,{req}) => {
-                if (req.body.type.contains("int")) {
-                    return "must use width with number type";
-                }else{
-                    if (req.body.width) {
-                        return "length and width are exclusive";
-                    }
-                }
-            }
-        }
     },
     "columns.*.width": {
+        optional:true,
         isInt: true,
-        custom : {
-            options: (value,{req}) => {
-                if (!req.body.type.contains("int")) {
-                    return "must use width with number type";
-                }else{
-                    if (req.body.length) {
-                        return "length and width are exclusive";
-                    }
-                }
-            }
-        }
     },
     "columns.*.isPrimary": {
+        optional:true,
         isBoolean: true
     },
     "columns.*.isUnique": {
+        optional:true,
         isBoolean: true
     },
     "columns.*.isNullable": {

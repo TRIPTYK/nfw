@@ -1,10 +1,9 @@
 import project = require("../utils/project");
 import TsMorph = require("ts-morph");
 import stringifyObject = require("stringify-object");
-import { buildValidationArgumentsFromObject } from "../utils/template";
 import { GeneratorParameters } from "../interfaces/generator.interface";
 
-export default function createValidationTemplate({modelName,fileTemplateInfo,classPrefixName,tableColumns,filePrefixName}: GeneratorParameters) {
+export default function createValidationTemplate({modelName,fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
     const file = project.createSourceFile(`${fileTemplateInfo.path}/${fileTemplateInfo.name}`,null,{
         overwrite : true
     });
@@ -40,17 +39,13 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
             {
                 name: "list",
                 type: `ValidationSchema<${classPrefixName}>`,
-                initializer: stringifyObject({
-
-                })
+                initializer: "{}"
             }
         ]
     });
     variableStatement.setIsExported(true);
 
-    let objectsToInsert = {};
 
-    for (const entity of tableColumns.columns) {objectsToInsert[entity.name] = buildValidationArgumentsFromObject(entity);}
 
     variableStatement = file.addVariableStatement({
         declarationKind: TsMorph.VariableDeclarationKind.Const,
@@ -58,15 +53,11 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
             {
                 name: "create",
                 type: `ValidationSchema<${classPrefixName}>`,
-                initializer: stringifyObject(objectsToInsert)
+                initializer: "{}"
             }
         ]
     });
     variableStatement.setIsExported(true);
-
-    objectsToInsert = {};
-
-    for (const entity of tableColumns.columns) {objectsToInsert[entity.name] = buildValidationArgumentsFromObject(entity);}
 
     variableStatement = file.addVariableStatement({
         declarationKind: TsMorph.VariableDeclarationKind.Const,
@@ -77,7 +68,7 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
                 initializer: (writer) => {
                     writer.block(() => {
                         writer.writeLine("...exports.get,");
-                        writer.write(`...${stringifyObject(objectsToInsert)}`)
+                        writer.write("...{}")
                     })
                 }
             }
@@ -91,7 +82,7 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
             {
                 name: "remove",
                 type: `ValidationSchema<${classPrefixName}>`,
-                initializer: stringifyObject(objectsToInsert)
+                initializer: "{}"
             }
         ]
     });

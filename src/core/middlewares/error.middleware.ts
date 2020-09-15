@@ -10,7 +10,6 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
     private serializer = new JSONAPISerializer();
 
     public use(error: any,req: Request, res: Response, next: NextFunction, args: any) {
-        console.log(error);
         if (Array.isArray(error)) {
             const errs = error;
             const allErrors = [];

@@ -12,6 +12,7 @@ import resources, { getEntityNaming } from "./static/resources";
 import { EntityColumns, Column } from "./interfaces/generator.interface";
 import { SourceFile, SyntaxKind, ObjectLiteralExpression, VariableDeclarationKind } from "ts-morph";
 import * as stringifyObject from "stringify-object";
+import { buildModelColumnArgumentsFromObject } from "./utils/template";
 
 // Check entity existence, and write file or not according to the context
 export async function generateJsonApiEntity(modelName: string, data: EntityColumns = null): Promise<void> {
@@ -49,6 +50,10 @@ export async function generateJsonApiEntity(modelName: string, data: EntityColum
 
     if (!exists) {
         controllersArray.addElement(importControllerName);
+    }
+
+    for (const column of tableColumns.columns) {
+        await addColumn(modelName,column);
     }
 
     // auto generate imports
@@ -94,7 +99,7 @@ export async function deleteJsonApiEntity(modelName: string): Promise<void> {
     await project.save();
 }
 
-export async function addColumn(entity: string,column: Column): Promise<void> {
+export async function addColumn(entity: string,column: Column,save = false): Promise<void> {
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);
     const {classPrefixName} = getEntityNaming(entity);
@@ -116,14 +121,11 @@ export async function addColumn(entity: string,column: Column): Promise<void> {
     entityClass.addProperty({name : column.name })
         .toggleModifier("public")
         .addDecorator({
-            name : "Column" , arguments : stringifyObject({
-                length: column.length,
-                type: column.type
-            })
+            name : "Column" , arguments : stringifyObject(
+                buildModelColumnArgumentsFromObject(column)
+            )
         })
-        .setIsDecoratorFactory(true)
-
-    modelFile.fixMissingImports();
+        .setIsDecoratorFactory(true);
 
     const serializer =  resources(entity).find((r) => r.template === "serializer-schema");
     const serializerFile = project.getSourceFile(`${serializer.path}/${serializer.name}`);
@@ -138,8 +140,6 @@ export async function addColumn(entity: string,column: Column): Promise<void> {
     serializeProperty.addDecorator({
         name: "Deserialize"
     }).setIsDecoratorFactory(true);
-
-    await project.save();
 }
 
 export async function removeColumn(modelName: string,column: Column | string): Promise<void> {
