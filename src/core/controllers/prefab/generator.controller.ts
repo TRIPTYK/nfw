@@ -17,7 +17,7 @@ export default class GeneratorController extends BaseController {
     public async generateEntity(req: Request, _res: Response) {
         await generateJsonApiEntity(req.params.name,{
             columns : req.body.columns,
-            relations : []
+            relations : req.body.relations
         });
 
         await project.save();

@@ -19,12 +19,13 @@ export interface Column {
     default: any;
 }
 
+export type RelationTypes = "one-to-one" | "one-to-many" | "many-to-many";
+
 export interface Relation {
     name: string;
-    type: string;
-    length: number;
-    isPrimary: boolean;
-    isUnique: boolean;
+    target: string;
+    type: RelationTypes;
+    inverseRelationName?: string;
 }
 
 export interface EntityColumns {

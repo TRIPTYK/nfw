@@ -15,7 +15,10 @@ import ConfigurationService from "./configuration.service";
 export default class TypeORMService extends BaseService {
     private _connection: Connection;
 
-    public constructor(public loggerService: LoggerService,private configurationService: ConfigurationService) {
+    public constructor(
+        public loggerService: LoggerService,
+        private configurationService: ConfigurationService
+    ) {
         super();
     }
 
