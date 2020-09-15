@@ -1,7 +1,8 @@
 import BaseService from "../../core/services/base.service";
 import { singleton, autoInjectable } from "tsyringe";
 import { User } from "../models/user.model";
-import { Permission, AccessControl } from "role-acl";
+import { Permission } from "role-acl";
+import { UserACL } from "../acls/user.acl";
 
 /**
  * Elastic search
@@ -14,8 +15,7 @@ export default class ACLService extends BaseService {
     }
 
     public can(user: User,method: string,context: any,resource: string): Promise<Permission> {
-        const acl = new AccessControl();
-        return acl.can(user)
+        return UserACL.can(user.role)
             .context(context)
             .execute(method)
             .on(resource) as Promise<Permission>;

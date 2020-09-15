@@ -13,14 +13,16 @@ import ApiResponse from "../responses/response.response";
 
 
 export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> extends BaseController {
+    public entity: Type<T>;
     protected serializer: BaseJsonApiSerializer<T>;
     protected repository: BaseJsonApiRepository<T>;
 
     public constructor() {
         super();
-        const entity: Type<T> = Reflect.getMetadata("entity",this);
-        this.serializer = ApplicationRegistry.serializerFor(entity);
-        this.repository = ApplicationRegistry.repositoryFor(entity);
+        this.entity = Reflect.getMetadata("entity",this);
+        this.name = Reflect.getMetadata("name",this.entity);
+        this.serializer = ApplicationRegistry.serializerFor(this.entity);
+        this.repository = ApplicationRegistry.repositoryFor(this.entity);
     }
 
     public callMethod(methodName: string): any {
@@ -113,7 +115,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             throw Boom.notFound();
         }
 
-        await this.repository.remove(user);
+        //await this.repository.remove(user);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 

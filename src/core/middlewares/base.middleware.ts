@@ -4,6 +4,7 @@ import { RouteContext } from "../application/base.application";
 
 export abstract class BaseMiddleware implements MiddlewareInterface {
     protected context: RouteContext;
+
     public init(context: RouteContext) {
         this.context = context;
     }

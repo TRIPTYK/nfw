@@ -52,6 +52,7 @@ export function JsonApiEntity<T>(nameOrOptions?: string|any, maybeOptions?: Enti
             throw new Error("Please provide arguments for json-api entity");
         }
 
+        Reflect.defineMetadata("name",name,target);
         Reflect.defineMetadata("repository",options.repository,target);
         Reflect.defineMetadata("serializer",options.serializer,target);
         Reflect.defineMetadata("validator",options.validator,target);

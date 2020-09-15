@@ -3,7 +3,7 @@ import {
     BeforeUpdate,
     Column,
     JoinColumn,
-    OneToOne, ManyToMany, JoinTable
+    OneToOne, ManyToMany, JoinTable, DeleteDateColumn
 } from "typeorm";
 
 
@@ -84,12 +84,6 @@ export class User extends JsonApiModel<User> implements UserInterface {
     })
     public role: Roles;
 
-    @Column({
-        default: null,
-        type: Date
-    })
-    public deleted_at;
-
     @JoinTable()
     @ManyToMany(() => Document, (document) => document.users)
     public documents: Document[];
@@ -97,6 +91,9 @@ export class User extends JsonApiModel<User> implements UserInterface {
     @OneToOne(() => Document, (document) => document.user_avatar)
     @JoinColumn()
     public avatar: Document;
+
+    @DeleteDateColumn()
+    public deleted_at;
 
     public constructor(payload: Partial<User> = {}) {
         super();
