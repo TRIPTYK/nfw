@@ -12,7 +12,7 @@ import resources, { getEntityNaming } from "./static/resources";
 import { EntityColumns, Column } from "./interfaces/generator.interface";
 import { SourceFile, SyntaxKind, ObjectLiteralExpression, VariableDeclarationKind } from "ts-morph";
 import * as stringifyObject from "stringify-object";
-import { buildModelColumnArgumentsFromObject } from "./utils/template";
+import { buildModelColumnArgumentsFromObject, buildValidationArgumentsFromObject } from "./utils/template";
 
 // Check entity existence, and write file or not according to the context
 export async function generateJsonApiEntity(modelName: string, data: EntityColumns = null): Promise<void> {
@@ -137,6 +137,23 @@ export async function addColumn(entity: string,column: Column,save = false): Pro
     serializeProperty.addDecorator({
         name: "Deserialize"
     }).setIsDecoratorFactory(true);
+
+    const validation =  resources(entity).find((r) => r.template === "validation");
+    const validationFile = project.getSourceFile(`${validation.path}/${validation.name}`);
+
+    const validations =  validationFile.getChildrenOfKind(SyntaxKind.VariableStatement)
+        .filter((declaration) => declaration.hasExportKeyword() && declaration.getDeclarationKind() === VariableDeclarationKind.Const)
+        .filter((declaration) => ["create","update"].includes(declaration.getDeclarations()[0].getName()));
+
+    
+
+    for (const validationStatement of validations) {
+        const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;
+        initializer.addPropertyAssignment({
+            name: column.name,
+            initializer: stringifyObject(buildValidationArgumentsFromObject(column))
+        });
+    }
 }
 
 export async function removeColumn(modelName: string,column: Column | string): Promise<void> {
