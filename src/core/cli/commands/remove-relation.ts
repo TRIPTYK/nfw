@@ -2,7 +2,7 @@ import { ArrowFunction, Project, PropertyAccessExpression, SyntaxKind } from "ts
 import resources, { getEntityNaming } from "../static/resources";
 
 export async function removeRelation(entity: string,relationName: string) {
-    const project : Project = require("../utils/project");
+    const project: Project = require("../utils/project");
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);
     const naming = getEntityNaming(entity);
@@ -21,7 +21,6 @@ export async function removeRelation(entity: string,relationName: string) {
         throw new Error("Relation property does not exists");
     }
 
-    
     const property = entityClass.getProperty(relationName);
     const relationDecorator = property.getDecorators().find((dec) => ["ManyToOne","ManyToMany","OneToMany","OneToOne"].includes(dec.getName()));
     const callExpression = relationDecorator.getCallExpression();
