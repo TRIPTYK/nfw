@@ -7,13 +7,11 @@ import AuthMiddleware from "../middlewares/auth.middleware";
 import { Roles } from "../enums/role.enum";
 import DeserializeMiddleware from "../../core/middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
-import ACLMiddleware from "../middlewares/acl.middleware";
 
 @JsonApiController(User)
 @singleton()
 @autoInjectable()
 @RouteMiddleware(AuthMiddleware,[Roles.Admin])
-@RouteMiddleware(ACLMiddleware)
 export default class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
     @JsonApiMethodMiddleware(AuthMiddleware,[Roles.Admin])
