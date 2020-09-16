@@ -43,13 +43,6 @@ export const create: ValidationSchema<User> = {
         isString : true,
     },
     username: {
-        custom: {
-            options: async (value) => {
-                if (await (getCustomRepository(UserRepository).exists("username", value))) {
-                    return Promise.reject("username already exists");
-                }
-            }
-        },
         isString : true,
         isUppercase: {
             negated: true,

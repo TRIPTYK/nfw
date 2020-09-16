@@ -47,8 +47,7 @@ export class User extends JsonApiModel<User> implements UserInterface {
     @Column({
         default: "User",
         length: 32,
-        nullable: false,
-        unique : false
+        nullable: false
     })
     public username: string;
 
@@ -122,9 +121,6 @@ export class User extends JsonApiModel<User> implements UserInterface {
         }
     }
 
-    /**
-     *
-     */
     public generateAccessToken(): string {
         const { jwt : { accessExpires , secret } } = container.resolve<ConfigurationService>(ConfigurationService).config;
 
@@ -137,9 +133,6 @@ export class User extends JsonApiModel<User> implements UserInterface {
         return Jwt.encode(payload, secret);
     }
 
-    /**
-     * @param password
-     */
     public passwordMatches(password: string): Promise<boolean> {
         return Bcrypt.compare(password, this.password);
     }

@@ -91,14 +91,72 @@ describe("JSON-API compliance test", () => {
             })
     });
 
-    it("Complex data structures involving JSON objects and arrays are allowed as attribute values. However, any object that constitutes or is contained in an attribute MUST NOT contain a relationships or links member, as those members are reserved by this specification for future use" , (done) => {
+    it("A server MUST support fetching resource data for every URL provided as" , (done) => {
         agent
             .get("/api/v1/users/")
             .set("Content-Type","application/vnd.api+json")
             .set("Authorization", "Bearer " + token)
             .end((err, res) => {
-                expect(res.body.data[0].attributes).to.not.have("object");
+                expect(res.body.links.self).to.be.a("string","a self link as part of the top-level links object");
+                expect(res.body.data[0].links.self).to.be.a("string","a self link as part of a resource-level links object");
+                expect(res.body.data[0].relationships.documents.links.self).to.be.a("string","a related link as part of a relationship-level links object");
                 done();
-            })
+            });
+    });
+
+    it("A server MUST respond to a successful request to fetch an individual resource or resource collection with a 200 OK response.", (done) => {
+        agent
+            .get("/api/v1/users/")
+            .set("Content-Type","application/vnd.api+json")
+            .set("Authorization", "Bearer " + token)
+            .end((err, res) => {
+                expect(res.status).to.eq(200);
+                done();
+            });
+    });
+
+    it("A server MUST respond to a successful request to fetch a resource collection with an array of resource objects or an empty array ([]) as the response document’s primary data.", (done) => {
+        agent
+            .get("/api/v1/users/")
+            .set("Content-Type","application/vnd.api+json")
+            .set("Authorization", "Bearer " + token)
+            .end((err, res) => {
+                expect(res.body.data).to.an("array");
+                done();
+            });
+    });
+
+    it("A server MUST respond to a successful request to fetch an individual resource with a resource object or null provided as the response document’s primary data", (done) => {
+        agent
+            .get("/api/v1/users/1")
+            .set("Content-Type","application/vnd.api+json")
+            .set("Authorization", "Bearer " + token)
+            .end((err, res) => {
+                expect(res.body.data).to.satisfy((data) => typeof data === "object" || data === null);
+                done();
+            });
+    });
+
+    it("A server MUST respond with 404 Not Found when processing a request to fetch a single resource that does not exist, except when the request warrants a 200 OK response with null as the primary data (as described above).", (done) => {
+        agent
+            .get("/api/v1/users/500000000")
+            .set("Content-Type","application/vnd.api+json")
+            .set("Authorization", "Bearer " + token)
+            .end((err, res) => {
+                expect(res.status).to.eq(404);
+                done();
+            });
+    });
+
+
+    it ("A server MUST support fetching relationship data for every relationship URL provided as a self link as part of a relationship’s links object.", (done) => {
+        agent
+            .get("/api/v1/users/?include=documents")
+            .set("Content-Type","application/vnd.api+json")
+            .set("Authorization", "Bearer " + token)
+            .end((err, res) => {
+                expect(res.status).to.eq(404);
+                done();
+            });
     });
 });
