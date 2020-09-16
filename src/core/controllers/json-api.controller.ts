@@ -115,7 +115,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             throw Boom.notFound();
         }
 
-        //await this.repository.remove(user);
+        await this.repository.remove(user);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 

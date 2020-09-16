@@ -6,6 +6,7 @@ import { Request , Response } from "express";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
 import { createEntity, createColumn } from "../../validation/generator.validation";
 import { removeRelation } from "../../cli/commands/remove-relation";
+import addRelation from "../../cli/commands/add-relation";
 const project = require("../../cli/utils/project");
 
 /**
@@ -30,6 +31,12 @@ export default class GeneratorController extends BaseController {
                 data: {}
             }
         });
+    }
+
+    @Post("/entity/:name/relation")
+    public async addEntityRelation(req: Request, _res: Response) {
+        await addRelation(req.params.name,req.body);
+        await project.save();
     }
 
     @Post("/entity/:name/:column")

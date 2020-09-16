@@ -2,6 +2,7 @@ import { Relation } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
 import * as pluralize from "pluralize";
 import { Project } from "ts-morph";
+import * as pascalcase from "pascalcase";
 
 export default async function addRelation(entity: string,relation: Relation) {
     const project: Project = require("../utils/project");
@@ -52,86 +53,46 @@ export default async function addRelation(entity: string,relation: Relation) {
         existing.remove();
     }
 
-    if (existing) {
-        existing.remove();
-    }
-
     const mainRelationProperty =  entityClass.addProperty({name : relation.name })
         .toggleModifier("public");
 
-    switch(relation.type) {
-        case "many-to-many": {
-            relation.inverseRelationName ??= pluralize(relation.target);
-            mainRelationProperty .addDecorator({
-                name : "ManyToMany",
-                arguments : [`() => ${inverseNaming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.inverseRelationName}`]
-            })
-                .setIsDecoratorFactory(true);
+    relation.inverseRelationName ??= relation.type === "many-to-many" ? pluralize(relation.target) : relation.target;
+    const decoratorName = pascalcase(relation.type);
+    const inverseDecoratorName = relation.type === "one-to-many" ? decoratorName : "ManyToOne";
 
-            const existingInverse = inverseEntityClass.getProperty(relation.inverseRelationName);
-
-            if (existingInverse) {
-                existingInverse.remove();
-            }
-
-            const inverseRelationProperty =  inverseEntityClass.addProperty({name : relation.inverseRelationName })
-                .toggleModifier("public");
-
-            inverseRelationProperty.addDecorator({
-                name : "ManyToMany",
-                arguments : [`() => ${naming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.name}`]
-            });
-            break;
-        }
-        case "one-to-many": {
-            relation.inverseRelationName ??= relation.target;
-            mainRelationProperty.addDecorator({
-                name : "OneToMany",
-                arguments : [`() => ${inverseNaming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.inverseRelationName}`]
-            })
-                .setIsDecoratorFactory(true);
-
-            const existingInverse = inverseEntityClass.getProperty(relation.inverseRelationName);
-
-            if (existingInverse) {
-                existingInverse.remove();
-            }
-
-            const inverseRelationProperty =  inverseEntityClass.addProperty({name : relation.inverseRelationName })
-                .toggleModifier("public");
-
-            inverseRelationProperty.addDecorator({
-                name : "ManyToOne",
-                arguments : [`() => ${naming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.name}`]
-            });
-            break;
-        }
-        case "one-to-one": {
-            relation.inverseRelationName ??= relation.target;
-            mainRelationProperty.addDecorator({
-                name : "OneToOne",
-                arguments : [`() => ${inverseNaming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.inverseRelationName}`]
-            })
-                .setIsDecoratorFactory(true);
-
-            const existingInverse = inverseEntityClass.getProperty(relation.inverseRelationName);
-
-            if (existingInverse) {
-                existingInverse.remove();
-            }
-
-            mainRelationProperty.addDecorator({name:"JoinColumn"}).setIsDecoratorFactory(true);
-
-            const inverseRelationProperty =  inverseEntityClass.addProperty({name : relation.inverseRelationName })
-                .toggleModifier("public");
-
-            inverseRelationProperty.addDecorator({
-                name : "OneToOne",
-                arguments : [`() => ${naming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.name}`]
-            });
-            break;
-        }
+    const entityInterface = modelFile.getInterface(`${naming.classPrefixName}Interface`);
+    if (entityInterface) {
+        entityInterface.addProperty({name : relation.name });
     }
+
+    const inverseEntityInterface = inversemodelFile.getInterface(`${inverseNaming.classPrefixName}Interface`);
+    if (inverseEntityInterface) {
+        inverseEntityInterface.addProperty({name : relation.inverseRelationName });
+    }
+
+    mainRelationProperty
+        .addDecorator({
+            name : decoratorName,
+            arguments : [`() => ${inverseNaming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.inverseRelationName}`]
+        })
+        .setIsDecoratorFactory(true);
+
+    const existingInverse = inverseEntityClass.getProperty(relation.inverseRelationName);
+
+    if (existingInverse) {
+        existingInverse.remove();
+    }
+
+    const inverseRelationProperty =  inverseEntityClass
+        .addProperty({name : relation.inverseRelationName })
+        .toggleModifier("public");
+
+    inverseRelationProperty
+        .addDecorator({
+            name : inverseDecoratorName,
+            arguments : [`() => ${naming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.name}`]
+        })
+        .setIsDecoratorFactory(true);
 
     inversemodelFile.fixMissingImports();
     modelFile.fixMissingImports();
@@ -148,8 +109,10 @@ export default async function addRelation(entity: string,relation: Relation) {
         serializerPropertyExists.remove();
     }
 
-    const serializerProperty = serializerClass.addProperty({name: relation.name})
+    const serializerProperty = serializerClass
+        .addProperty({name: relation.name})
         .toggleModifier("public");
+
     serializerProperty.addDecorator({
         name : "Relation",
         arguments: [`() => ${inverseNaming.classPrefixName}SerializerSchema`]
@@ -165,8 +128,10 @@ export default async function addRelation(entity: string,relation: Relation) {
         inverseSerializerPropertyExists.remove();
     }
 
-    const inverseSerializerProperty = inverseSerializerClass.addProperty({name: relation.inverseRelationName})
+    const inverseSerializerProperty = inverseSerializerClass
+        .addProperty({name: relation.inverseRelationName})
         .toggleModifier("public");
+
     inverseSerializerProperty.addDecorator({
         name : "Relation",
         arguments: [`() => ${naming.classPrefixName}SerializerSchema`]

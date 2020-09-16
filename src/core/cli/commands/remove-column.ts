@@ -26,6 +26,11 @@ export default async function removeColumn(modelName: string,column: Column | st
         throw new Error("Entity property does not exists");
     }
 
+    const entityInterface = modelFile.getInterface(`${classPrefixName}Interface`);
+    if (entityInterface) {
+        entityInterface.getProperty(columnName)?.remove();
+    }
+
     columnProperty.remove();
 
     const serializer =  resources(modelName).find((r) => r.template === "serializer-schema");

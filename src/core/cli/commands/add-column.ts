@@ -1,11 +1,10 @@
-import { Project, SyntaxKind, VariableDeclarationKind } from "ts-morph";
-import { ObjectLiteralExpression } from "ts-morph";
+import { Project, SyntaxKind, VariableDeclarationKind, ObjectLiteralExpression } from "ts-morph";
 import { Column } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
 import { buildModelColumnArgumentsFromObject, buildValidationArgumentsFromObject } from "../utils/template";
 import * as stringifyObject from "stringify-object";
 
-export default async function addColumn(entity: string,column: Column,save = false): Promise<void> {
+export default async function addColumn(entity: string,column: Column): Promise<void> {
     const project: Project = require("../utils/project");
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);
@@ -25,6 +24,11 @@ export default async function addColumn(entity: string,column: Column,save = fal
         throw new Error("Class property already exists");
     }
 
+    const entityInterface = modelFile.getInterface(`${classPrefixName}Interface`);
+    if (entityInterface) {
+        entityInterface.addProperty({name : column.name });
+    }
+
     entityClass.addProperty({name : column.name })
         .toggleModifier("public")
         .addDecorator({
@@ -38,9 +42,11 @@ export default async function addColumn(entity: string,column: Column,save = fal
     const serializerFile = project.getSourceFile(`${serializer.path}/${serializer.name}`);
     const serializerClass = serializerFile.getClass(`${classPrefixName}SerializerSchema`);
 
-    const serializeProperty = serializerClass.addProperty({
-        name: column.name
-    });
+    const serializeProperty = serializerClass
+        .addProperty({
+            name: column.name
+        })
+        .toggleModifier("public")
 
     serializeProperty.addDecorator({
         name: "Serialize"
@@ -56,8 +62,6 @@ export default async function addColumn(entity: string,column: Column,save = fal
     const validations =  validationFile.getChildrenOfKind(SyntaxKind.VariableStatement)
         .filter((declaration) => declaration.hasExportKeyword() && declaration.getDeclarationKind() === VariableDeclarationKind.Const)
         .filter((declaration) => ["create","update"].includes(declaration.getDeclarations()[0].getName()));
-
-
 
     for (const validationStatement of validations) {
         const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;
