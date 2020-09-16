@@ -17,7 +17,7 @@ export async function removeRelation(entity: string,relationName: string) {
         throw new Error("Entity class does not exists");
     }
 
-    if(!entityClass.getInstanceProperty(relationName)) {
+    if(!entityClass.getProperty(relationName)) {
         throw new Error("Relation property does not exists");
     }
 
