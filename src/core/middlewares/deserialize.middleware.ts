@@ -10,7 +10,7 @@ export default class DeserializeMiddleware extends BaseMiddleware {
         serializer: Type<BaseJsonApiSerializer<any>>;
         schema?: string;
     }): Promise<any> {
-        if (!req.body.data || !req.body.data.attributes) {
+        if (!req.body.data) {
             return next();
         }
 
