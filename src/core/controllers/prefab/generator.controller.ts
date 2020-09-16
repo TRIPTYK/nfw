@@ -4,7 +4,7 @@ import { Controller, Post, Delete, MethodMiddleware } from "../../decorators/con
 import { generateJsonApiEntity, deleteJsonApiEntity, addColumn, removeColumn } from "../../cli";
 import { Request , Response } from "express";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
-import { createEntity, createColumn } from "../../validation/generator.validation";
+import { createEntity, createColumn, createRelation } from "../../validation/generator.validation";
 import { removeRelation } from "../../cli/commands/remove-relation";
 import addRelation from "../../cli/commands/add-relation";
 const project = require("../../cli/utils/project");
@@ -34,6 +34,7 @@ export default class GeneratorController extends BaseController {
     }
 
     @Post("/entity/:name/relation")
+    @MethodMiddleware(ValidationMiddleware,{schema : createRelation, location: ["body"]})
     public async addEntityRelation(req: Request, _res: Response) {
         await addRelation(req.params.name,req.body);
         await project.save();
