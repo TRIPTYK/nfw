@@ -27,4 +27,6 @@ export async function removeRelation(entity: string,relationName: string) {
     const [,inverseArg] = callExpression.getArguments();
     const arrowFnc = inverseArg as ArrowFunction;
     const perpertyAccess = arrowFnc.getBody() as PropertyAccessExpression;
+
+    
 }

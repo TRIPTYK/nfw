@@ -1,12 +1,13 @@
 import { User } from "../models/user.model";
 import { injectable } from "tsyringe";
+import { ObjectLiteral } from "typeorm";
 
 @injectable()
 /**
  * This is a 'fake' serializer for non json-api auth response
  */
 export class AuthTokenSerializer {
-    public deserialize(payload): any {
+    public deserialize(payload: ObjectLiteral): ObjectLiteral {
         return payload;
     }
 

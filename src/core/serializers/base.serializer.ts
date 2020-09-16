@@ -89,7 +89,8 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
         this.type = schemasData.type;
 
         for (const schema of schemasData.schemas) {
-            this.convertSerializerSchemaToObjectSchema(schema,schema,Reflect.getMetadata("name",schema));
+            const passedBy = [];
+            this.convertSerializerSchemaToObjectSchema(schema,schema,Reflect.getMetadata("name",schema),passedBy);
         }
     }
 
@@ -173,17 +174,20 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
         return this.serializer.deserialize(this.type, payload);
     }
 
-    public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema,schemaName: string): void {
-        const serialize = Reflect.getMetadata("serialize",schema.prototype) ?? [];
-        const deserialize = Reflect.getMetadata("deserialize",schema.prototype) ?? [];
-        const relations = Reflect.getMetadata("relations",schema.prototype) ?? [];
-        const schemaType = Reflect.getMetadata("type",schema.prototype);
+    public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema: Type<any>,schemaName: string,passedBy: string[]): void {
+        const serialize = (Reflect.getMetadata("serialize",schema.prototype) ?? []) as string[];
+        const deserialize = (Reflect.getMetadata("deserialize",schema.prototype) ?? []) as string[];
+        const relations = (Reflect.getMetadata("relations",schema.prototype) ?? []) as {type: () => Type<any>;property: string}[];
+        const schemaType = Reflect.getMetadata("type",schema.prototype) as string;
         const { api } = this.configurationService.config;
 
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
 
-        for (const {type,property} of relations.filter((rel) => {rel.type.name !== schema.name})) {
-            const schemaTypeRelation = type();
+        passedBy.push(schema.name);
+
+
+        for (const {type,property} of relations) {
+            const schemaTypeRelation= type();
             const relationType = Reflect.getMetadata("type",schemaTypeRelation.prototype);
             relationShips[property] = {
                 type : relationType,
@@ -193,10 +197,12 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
                 }
             };
 
-            this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema,schemaName);
-        }
+            if (passedBy.includes(schemaTypeRelation.name)) {
+                continue;
+            }
 
-        console.log(relationShips);
+            this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema,schemaName,passedBy);
+        }
 
         this.serializer.register(schemaType, schemaName , {
             whitelist: serialize,
