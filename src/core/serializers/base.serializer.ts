@@ -183,8 +183,11 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
 
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
 
-        passedBy.push(schema.name);
+        if (passedBy.includes(schema.name)) {
+            return;
+        }
 
+        passedBy.push(schema.name);
 
         for (const {type,property} of relations) {
             const schemaTypeRelation= type();
@@ -196,10 +199,6 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
                     self: (d) => `/api/${api.version}/${schemaType}/${d.id}/relationships/${property}`
                 }
             };
-
-            if (passedBy.includes(schemaTypeRelation.name)) {
-                continue;
-            }
 
             this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema,schemaName,passedBy);
         }
