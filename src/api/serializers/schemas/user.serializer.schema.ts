@@ -24,12 +24,13 @@ export default class UserSerializerSchema implements UserInterface {
     public created_at;
 
     @Serialize()
+    @Deserialize()
     public role;
 
     @Serialize()
     @Deserialize()
     public lastname;
-
+    
     @Deserialize()
     public password;
 
