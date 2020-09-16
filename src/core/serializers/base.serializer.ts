@@ -194,6 +194,9 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
             const schemaTypeRelation= type();
             const relationType = Reflect.getMetadata("type",schemaTypeRelation.prototype);
             relationShips[property] = {
+                deserialize : (data) => {
+                    return {id : data.id};
+                },
                 type : relationType,
                 links: {
                     related: (d) => `/api/${api.version}/${schemaType}/${d.id}/${property}`,
