@@ -12,7 +12,7 @@ enum StorageType {
 @singleton()
 @autoInjectable()
 class MulterService extends BaseService {
-    private multers: object = {
+    private multers = {
         [StorageType.MEMORY] : {},
         [StorageType.DISK] : {}
     };

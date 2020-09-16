@@ -2,6 +2,11 @@
 
 import { Type } from "../types/global";
 
+interface RelationMetadata {
+    type: () => Schema,
+    property: string
+}
+
 /**
  * Comment
  *
@@ -29,12 +34,12 @@ export function Deserialize(): PropertyDecorator {
 
 
 export function Relation(type: () => Schema): PropertyDecorator {
-    return function(target: object, propertyKey: string | symbol) {
+    return function(target: object, propertyKey: string) {
         if (!Reflect.hasMetadata("relations",target)) {
             Reflect.defineMetadata("relations",[],target);
         }
 
-        const relations: {type;property}[] = Reflect.getMetadata("relations",target);
+        const relations: RelationMetadata[] = Reflect.getMetadata("relations",target);
 
         relations.push({
             type,

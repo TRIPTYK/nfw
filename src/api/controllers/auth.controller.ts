@@ -1,7 +1,7 @@
 import * as HttpStatus from "http-status";
 import {RefreshToken} from "../models/refresh-token.model";
 import {Request, Response} from "express";
-import {getCustomRepository, getRepository} from "typeorm";
+import {DeepPartial, getCustomRepository, getRepository} from "typeorm";
 import {UserRepository} from "../repositories/user.repository";
 import {RefreshTokenRepository} from "../repositories/refresh-token.repository";
 import Refresh from "passport-oauth2-refresh";
@@ -41,7 +41,7 @@ export default class AuthController extends BaseController {
     @MethodMiddleware(ValidationMiddleware, {schema : register})
     @MethodMiddleware(SecurityMiddleware)
     public async register(req: Request, res: Response): Promise<any> {
-        let user = this.repository.create(req.body as object);
+        let user = this.repository.create(req.body as DeepPartial<User>);
         user = await this.repository.save(user);
         const accessToken = user.generateAccessToken();
         const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);

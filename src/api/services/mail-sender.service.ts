@@ -3,6 +3,7 @@ import * as Mailgun from "mailgun-js";
 import BaseService from "../../core/services/base.service";
 import { singleton, autoInjectable } from "tsyringe";
 import ConfigurationService from "../../core/services/configuration.service";
+import { ObjectLiteral } from "typeorm";
 
 // tslint:disable-next-line: interface-over-type-literal
 type MailGunData = {
@@ -12,7 +13,7 @@ type MailGunData = {
     template?: string;
     text?: string;
     to?: string;
-    variables?: object;
+    variables?: ObjectLiteral;
     filename?: string;
 };
 

@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, OneToMany} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, Unique} from "typeorm";
 import {User} from "./user.model";
 import { OAuthTypes } from "../enums/oauth-type.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";

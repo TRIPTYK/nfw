@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
-import {getCustomRepository, getRepository} from "typeorm";
+import {getCustomRepository, getRepository, ObjectLiteral} from "typeorm";
 import {User} from "../models/user.model";
 import {Strategy as FacebookStrategy} from "passport-facebook";
 import {Strategy as GoogleStrategy} from "passport-google-oauth20";
@@ -96,7 +95,7 @@ class PassportService extends BaseService {
      * @memberof PassportConfig
      */
     public oAuth = (service: string) =>
-        async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: object, cb): Promise<any> => {
+        async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: ObjectLiteral, cb): Promise<any> => {
             try {
                 const tokenRepo = getCustomRepository(OAuthTokenRepository);
                 await tokenRepo.oAuthLogin(req.user, {service, accessToken, refreshToken});

@@ -3,7 +3,7 @@
 import * as Express from "express";
 import ApplicationInterface from "../interfaces/application.interface";
 import { Type } from "../types/global";
-import { RouteDefinition, MiddlewareOrder, RequestMethods } from "../decorators/controller.decorator";
+import { RouteDefinition, RequestMethods, MiddlewareMetadata, JsonApiMiddlewareMetadata } from "../decorators/controller.decorator";
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { container } from "tsyringe";
 import * as pluralize from "pluralize";
@@ -12,7 +12,6 @@ import ValidationMiddleware from "../middlewares/validation.middleware";
 import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
-import ErrorMiddleware from "../middlewares/error.middleware";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
@@ -28,7 +27,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
         this.router = Express.Router();
     }
 
-    public async setupMiddlewares(middlewaresForApp: { middleware: any ; args: object }[]): Promise<any> {
+    public async setupMiddlewares(middlewaresForApp: MiddlewareMetadata[]): Promise<any> {
         const middlewaresToApply = middlewaresForApp.map((e) => this.useMiddleware(e.middleware,e.args,null))
 
         if (middlewaresToApply.length) {
@@ -72,7 +71,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
             // Our `routes` array containing all our routes for this controller
             const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
 
-            const middlewaresForController: { middleware: any ; args: object }[] = Reflect.getMetadata("middlewares", controller) ?? [];
+            const middlewaresForController: MiddlewareMetadata[] = Reflect.getMetadata("middlewares", controller) ?? [];
             const router = Express.Router();
 
             if (middlewaresForController && middlewaresForController.length > 0) {
@@ -158,7 +157,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         controllerInstance: instanceController
                     };
                     let middlewaresWithArgs =
-                        Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any ; args: object }[];
+                        Reflect.getMetadata("middlewares", controller , route.methodName) as MiddlewareMetadata[];
 
                     if (!middlewaresWithArgs) {
                         middlewaresWithArgs = [];
@@ -188,7 +187,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         controllerInstance: instanceController
                     };
                     const applyMiddlewares = [];
-                    const middlewaresWithArgs: { middleware: any ; args: object ; order: MiddlewareOrder }[] = Reflect.getMetadata("middlewares", controller , method) ?? [];
+                    const middlewaresWithArgs: JsonApiMiddlewareMetadata[] = Reflect.getMetadata("middlewares", controller , method) ?? [];
                     const serializerOverride = Reflect.getMetadata("deserializer",controller , method);
                     const validatorOverride = Reflect.getMetadata("validator",controller , method);
 
@@ -267,7 +266,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         controllerInstance: instanceController
                     };
                     let middlewaresWithArgs =
-                        Reflect.getMetadata("middlewares", controller , route.methodName) as { middleware: any ; args: object }[];
+                        Reflect.getMetadata("middlewares", controller , route.methodName) as MiddlewareMetadata[];
 
                     if (!middlewaresWithArgs) {
                         middlewaresWithArgs = [];

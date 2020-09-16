@@ -12,6 +12,15 @@ export interface RouteDefinition {
     methodName: string;
 }
 
+export interface MiddlewareMetadata {
+    middleware: Type<BaseMiddleware>,
+    args?: any
+}
+
+export interface JsonApiMiddlewareMetadata extends MiddlewareMetadata {
+    order: MiddlewareOrder
+}
+
 export type MiddlewareOrder = "afterValidation" | "beforeValidation" | "afterDeserialization" | "beforeDeserialization" | "beforeAll" | "afterAll";
 
 /**
@@ -48,7 +57,7 @@ export function RouteMiddleware(middlewareClass: Type<BaseMiddleware>, args?: an
         if (! Reflect.hasMetadata("middlewares",  target)) {
             Reflect.defineMetadata("middlewares", [], target);
         }
-        const middlewares = Reflect.getMetadata("middlewares", target);
+        const middlewares = Reflect.getMetadata("middlewares", target) as MiddlewareMetadata[];
         middlewares.push({middleware : middlewareClass , args});
     };
 }
@@ -58,7 +67,7 @@ export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: a
         if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
             Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
         }
-        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
+        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey) as MiddlewareMetadata[];
         middlewares.push({middleware : middlewareClass , args});
     };
 }
@@ -68,7 +77,7 @@ export function JsonApiMethodMiddleware(middlewareClass: Type<BaseMiddleware>, a
         if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
             Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
         }
-        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey);
+        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey) as JsonApiMiddlewareMetadata[];
         middlewares.push({middleware : middlewareClass , args, order});
     };
 }

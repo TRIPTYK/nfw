@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Roles} from "../enums/role.enum";
 import { UserRepository } from "../repositories/user.repository";
 import { getCustomRepository } from "typeorm";

@@ -8,6 +8,7 @@ import FileUploadMiddleware from "../middlewares/file-upload.middleware";
 import { autoInjectable, singleton } from "tsyringe";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import { Document } from "../models/document.model";
+import { DeepPartial } from "typeorm";
 
 @JsonApiController(Document)
 @singleton()
@@ -19,7 +20,7 @@ export default class DocumentController extends BaseJsonApiController<Document> 
     @JsonApiMethodMiddleware(DocumentResizeMiddleware)
     public async create(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
-        const document = this.repository.create(file as object);
+        const document = this.repository.create(file as DeepPartial<Document>);
         await this.repository.save(document);
         return document;
     }

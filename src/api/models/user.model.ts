@@ -23,8 +23,8 @@ import { JsonApiEntity } from "../../core/decorators/model.decorator";
 import * as UserValidator from "../validations/user.validation";
 import ConfigurationService from "../../core/services/configuration.service";
 import { container } from "tsyringe";
-import {AccessControl, Permission} from "role-acl";
 import ACLService from "../services/acl.service";
+import { Permission } from "role-acl";
 
 export interface UserInterface {
     password: string;
@@ -126,7 +126,6 @@ export class User extends JsonApiModel<User> implements UserInterface {
      *
      */
     public generateAccessToken(): string {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         const { jwt : { accessExpires , secret } } = container.resolve<ConfigurationService>(ConfigurationService).config;
 
         const payload = {

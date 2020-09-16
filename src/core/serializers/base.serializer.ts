@@ -4,14 +4,15 @@ import SerializerInterface from "../interfaces/serializer.interface";
 import { SchemaOptions } from "../decorators/serializer.decorator";
 import { Type } from "../types/global";
 import ConfigurationService from "../services/configuration.service";
-import { inject, container } from "tsyringe";
+import { container } from "tsyringe";
+import { ObjectLiteral } from "typeorm";
 
 export type SerializerParams = {
     pagination?: PaginationParams;
 };
 
 export interface SerializeOptions {
-    meta?: object;
+    meta?: ObjectLiteral;
     url: string;
     excludeData?: boolean;
     schema?: string | "default";
@@ -42,7 +43,7 @@ export type JSONAPISerializerSchema = {
     whitelistOnDeserialize?: string[];
 };
 
-export type JSONAPISerializerCustom = string | ((arg1?: object, arg2?: object) => object | string);
+export type JSONAPISerializerCustom = string | ((arg1?: any, arg2?: any) => any | string);
 
 export type JSONAPISerializerRelation = {
     type: JSONAPISerializerCustom;
@@ -208,7 +209,7 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
             whitelistOnDeserialize: deserialize,
             relationships : relationShips,
             links : {
-                self: (data,_a) => `/api/${api.version}/${schemaType}/${data.id}`
+                self: (data) => `/api/${api.version}/${schemaType}/${data.id}`
             }
         });
     }

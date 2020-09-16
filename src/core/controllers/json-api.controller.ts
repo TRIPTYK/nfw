@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import BaseJsonApiRepository from "../repositories/base.repository";
 import { Type } from "../types/global";
@@ -6,7 +7,7 @@ import { Request , Response, } from "express";
 import { ApplicationRegistry } from "../application/registry.application";
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
-import { ObjectLiteral } from "typeorm";
+import { DeepPartial, ObjectLiteral } from "typeorm";
 import BaseController from "./base.controller";
 import PaginationResponse from "../responses/pagination.response";
 import ApiResponse from "../responses/response.response";
@@ -88,9 +89,9 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         return user;
     }
 
-    public async create(req: Request, res: Response): Promise<any> {
-        const user = this.repository.create(req.body as object);
-        const saved = await this.repository.save(user as any);
+    public async create(req: Request, _res: Response): Promise<any> {
+        const entity: T = this.repository.create(req.body as DeepPartial<T>);
+        const saved = await this.repository.save(entity as any);
         return new ApiResponse(saved,{status : 201,type: "application/vnd.api+json"});
     }
 

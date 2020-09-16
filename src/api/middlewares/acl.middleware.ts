@@ -6,7 +6,7 @@ import * as Boom from "@hapi/boom";
 
 @injectable()
 export default class ACLMiddleware extends BaseMiddleware {
-    public async use(req: Request, response: Response, next: NextFunction, args: any): Promise<any> {
+    public async use(req: Request, response: Response, next: NextFunction): Promise<any> {
         const user = req.user as User;
 
         if (!user) {
