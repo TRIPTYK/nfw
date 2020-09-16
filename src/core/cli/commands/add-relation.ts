@@ -91,6 +91,12 @@ export default async function addRelation(entity: string,relation: Relation) {
             })
                 .setIsDecoratorFactory(true);
 
+            const existingInverse = inverseEntityClass.getProperty(relation.inverseRelationName);
+
+            if (existingInverse) {
+                existingInverse.remove();
+            }
+
             const inverseRelationProperty =  inverseEntityClass.addProperty({name : relation.inverseRelationName })
                 .toggleModifier("public");
 
@@ -107,6 +113,12 @@ export default async function addRelation(entity: string,relation: Relation) {
                 arguments : [`() => ${inverseNaming.classPrefixName}`,`(inverseRelation) => inverseRelation.${relation.inverseRelationName}`]
             })
                 .setIsDecoratorFactory(true);
+
+            const existingInverse = inverseEntityClass.getProperty(relation.inverseRelationName);
+
+            if (existingInverse) {
+                existingInverse.remove();
+            }
 
             mainRelationProperty.addDecorator({name:"JoinColumn"}).setIsDecoratorFactory(true);
 
