@@ -80,13 +80,13 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
     }
 
     public async get(req: Request,_res: Response): Promise<any> {
-        const user = await this.repository.jsonApiFindOne(req, req.params.id);
+        const entity = await this.repository.jsonApiFindOne(req, req.params.id);
 
-        if (!user) {
+        if (!entity) {
             throw Boom.notFound();
         }
 
-        return user;
+        return entity;
     }
 
     public async create(req: Request, _res: Response): Promise<any> {
@@ -110,13 +110,13 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
     }
 
     public async remove(req: Request, res: Response): Promise<any> {
-        const user = await this.repository.findOne(req.params.id);
+        const entity : T = await this.repository.findOne(req.params.id);
 
-        if (!user) {
+        if (!entity) {
             throw Boom.notFound();
         }
 
-        await this.repository.remove(user);
+        await this.repository.remove(entity);
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
