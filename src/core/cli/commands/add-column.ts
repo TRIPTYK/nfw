@@ -1,4 +1,4 @@
-import { SyntaxKind, VariableDeclarationKind } from "ts-morph";
+import { Project, SyntaxKind, VariableDeclarationKind } from "ts-morph";
 import { ObjectLiteralExpression } from "ts-morph";
 import { Column } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
@@ -6,7 +6,7 @@ import { buildModelColumnArgumentsFromObject, buildValidationArgumentsFromObject
 import * as stringifyObject from "stringify-object";
 
 export default async function addColumn(entity: string,column: Column,save = false): Promise<void> {
-    const project = require("../utils/project");
+    const project: Project = require("../utils/project");
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);
     const {classPrefixName} = getEntityNaming(entity);
@@ -57,7 +57,7 @@ export default async function addColumn(entity: string,column: Column,save = fal
         .filter((declaration) => declaration.hasExportKeyword() && declaration.getDeclarationKind() === VariableDeclarationKind.Const)
         .filter((declaration) => ["create","update"].includes(declaration.getDeclarations()[0].getName()));
 
-    
+
 
     for (const validationStatement of validations) {
         const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;
