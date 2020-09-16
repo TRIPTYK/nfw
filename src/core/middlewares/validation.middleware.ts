@@ -6,8 +6,7 @@ import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 @injectable()
 export default class ValidationMiddleware extends BaseMiddleware {
     public async use(req: Request, response: Response, next: NextFunction, args: any): Promise<any> {
-        const { schema , location = [] } = args;
-
+        const { schema , location = ["body"] } = args;
         const validationChain: ValidationChain[] = checkSchema(schema, location);
 
         const res = await Promise.all(validationChain.map((validation) => validation.run(req)));
@@ -15,7 +14,7 @@ export default class ValidationMiddleware extends BaseMiddleware {
         const errors = [];
 
         for (const r of res) {
-            if (r.array().length !== 0) {
+            if (r.array().length) {
                 errors.push(r.array());
             }
         }

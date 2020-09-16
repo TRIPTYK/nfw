@@ -38,9 +38,8 @@ export const create: ValidationSchema<User> = {
         }
     },
     password: {
-        isEmpty : {
-            negated : true
-        },
+        errorMessage: "Must have a password",
+        exists: true,
         isString : true,
     },
     username: {
