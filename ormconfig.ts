@@ -5,4 +5,8 @@ import "reflect-metadata";
 import { container } from "tsyringe";
 import TypeORMService from "./src/core/services/typeorm.service";
 
-module.exports = container.resolve(TypeORMService).ConfigurationObject;
+process.env.CLI = "true";
+
+const configObject = container.resolve(TypeORMService).ConfigurationObject;
+
+module.exports = configObject;

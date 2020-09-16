@@ -61,11 +61,13 @@ export class LoggerService extends BaseService {
             )}));
         }
 
-        this.logger.stream({
-            write: (message) => {
-                this.logger.info(message.trim());
-            }
-        });
+        if (!process.env.CLI) {
+            this.logger.stream({
+                write: (message) => {
+                    this.logger.info(message.trim());
+                }
+            });
+        }
     }
 
     public get logger() {
