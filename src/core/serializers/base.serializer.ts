@@ -84,10 +84,16 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
             unconvertCase : "snake_case"
         } as JSONAPISerializerSchema);
 
-        this.configurationService = container.resolve<ConfigurationService>(ConfigurationService);
-
         const schemasData: SchemaOptions = Reflect.getMetadata("schemas",this);
 
+        for (const schema of schemasData.schemas) {
+            Reflect.defineMetadata("type",schemasData.type,schema.prototype);
+        }
+    }
+
+    public init() {
+        this.configurationService = container.resolve<ConfigurationService>(ConfigurationService);
+        const schemasData: SchemaOptions = Reflect.getMetadata("schemas",this);
         this.type = schemasData.type;
 
         for (const schema of schemasData.schemas) {

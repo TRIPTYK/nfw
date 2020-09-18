@@ -26,6 +26,10 @@ export class ApplicationRegistry {
         await Promise.all(services.map((service) => container.resolve(service).init()));
         console.log("initialized services");
 
+        for (const serializer of Object.values(ApplicationRegistry.serializers)) {
+            container.resolve(serializer).init();
+        }
+
         // app constructor
         const instance = ApplicationRegistry.application = new app();
         console.log("construct app");
