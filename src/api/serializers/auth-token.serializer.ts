@@ -17,9 +17,9 @@ export class AuthTokenSerializer {
             refreshToken,
             user : {
                 email : user.email,
-                firstname : user.firstname,
+                firstname : user.first_name,
                 id : user.id,
-                lastname : user.lastname,
+                lastname : user.last_name,
                 role : user.role,
                 username : user.username
             }

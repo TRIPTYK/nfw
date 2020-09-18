@@ -6,6 +6,7 @@ import { Type } from "../types/global";
 import ConfigurationService from "../services/configuration.service";
 import { container } from "tsyringe";
 import { ObjectLiteral } from "typeorm";
+import { toCamelCase, toSnakeCase } from "../utils/case.util";
 
 export type SerializerParams = {
     pagination?: PaginationParams;
@@ -79,8 +80,8 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
 
     public constructor() {
         this.serializer = new JSONAPISerializer({
-            convertCase: "kebab-case",
-            unconvertCase: "camelCase"
+            convertCase: "camelCase",
+            unconvertCase : "snake_case"
         } as JSONAPISerializerSchema);
 
         this.configurationService = container.resolve<ConfigurationService>(ConfigurationService);
@@ -177,7 +178,7 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
 
     public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema: Type<any>,schemaName: string,passedBy: string[]): void {
         const serialize = (Reflect.getMetadata("serialize",schema.prototype) ?? []) as string[];
-        const deserialize = (Reflect.getMetadata("deserialize",schema.prototype) ?? []) as string[];
+        const deserialize = ((Reflect.getMetadata("deserialize",schema.prototype) ?? []) as string[]).map((e) => toCamelCase(e));
         const relations = (Reflect.getMetadata("relations",schema.prototype) ?? []) as {type: () => Type<any>;property: string}[];
         const schemaType = Reflect.getMetadata("type",schema.prototype) as string;
         const { api } = this.configurationService.config;

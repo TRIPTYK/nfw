@@ -15,10 +15,10 @@ const register: ValidationSchema<User> = {
         },
         isEmail: true
     },
-    firstname: {
+    first_name: {
         isString : true
     },
-    lastname: {
+    last_name: {
         isString : true
     },
     password: {

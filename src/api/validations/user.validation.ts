@@ -25,13 +25,13 @@ export const create: ValidationSchema<User> = {
         },
         isEmail: true
     },
-    firstname: {
+    first_name: {
         isString : true,
         isUppercase: {
             negated: true,
         }
     },
-    lastname: {
+    last_name: {
         isString : true,
         isUppercase: {
             negated: true,
@@ -56,11 +56,11 @@ export const update: ValidationSchema<User> = {
         isEmail: true,
         optional: true
     },
-    firstname: {
+    first_name: {
         isString : true,
         optional: true
     },
-    lastname: {
+    last_name: {
         isString : true,
         isUppercase: {
             negated: true,

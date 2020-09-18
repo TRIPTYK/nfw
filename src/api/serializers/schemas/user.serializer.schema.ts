@@ -15,7 +15,7 @@ export default class UserSerializerSchema implements UserInterface {
 
     @Serialize()
     @Deserialize()
-    public firstname;
+    public first_name;
 
     @Serialize()
     public updated_at;
@@ -29,7 +29,7 @@ export default class UserSerializerSchema implements UserInterface {
 
     @Serialize()
     @Deserialize()
-    public lastname;
+    public last_name;
     
     @Deserialize()
     public password;

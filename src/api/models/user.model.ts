@@ -29,8 +29,8 @@ import { Permission } from "role-acl";
 export interface UserInterface {
     password: string;
     email: string;
-    firstname: string;
-    lastname: string;
+    first_name: string;
+    last_name: string;
     username: string;
     role: Roles;
     deleted_at: any;
@@ -68,13 +68,13 @@ export class User extends JsonApiModel<User> implements UserInterface {
         length: 32,
         nullable: false
     })
-    public firstname: string;
+    public first_name: string;
 
     @Column({
         length: 32,
         nullable: false
     })
-    public lastname: string;
+    public last_name: string;
 
     @Column({
         default: Roles.Ghost,
