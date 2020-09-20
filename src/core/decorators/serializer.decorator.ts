@@ -3,8 +3,8 @@
 import { Type } from "../types/global";
 
 interface RelationMetadata {
-    type: () => Schema,
-    property: string
+    type: () => Schema;
+    property: string;
 }
 
 /**
@@ -52,7 +52,7 @@ export type Schema = Type<any>;
 
 export interface SchemaOptions {
     schemas: Schema[];
-    type: string;
+    type: string
 }
 
 /**
@@ -62,16 +62,13 @@ export interface SchemaOptions {
  */
 export function JsonApiSerializer(options: SchemaOptions): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
-        for (const schema of options.schemas) {
-            Reflect.defineMetadata("type",options.type,schema.prototype);
-        }
-
         Reflect.defineMetadata("schemas",options,target.prototype);
     }
 }
 
-export function SerializerSchema(name = "default"): ClassDecorator {
+export function SerializerSchema(type: string,name = "default"): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
-        Reflect.defineMetadata("name",name,target.prototype);
+        Reflect.defineMetadata("name",name,target);
+        Reflect.defineMetadata("type",type,target);
     }
 }

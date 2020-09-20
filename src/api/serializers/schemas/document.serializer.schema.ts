@@ -1,9 +1,8 @@
 import { Serialize, Deserialize, SerializerSchema, Relation } from "../../../core/decorators/serializer.decorator";
 import UserSerializerSchema from "./user.serializer.schema";
 import { DocumentInterface } from "../../models/document.model";
-import { User } from "../../models/user.model";
 
-@SerializerSchema()
+@SerializerSchema("documents")
 export default class DocumentSerializerSchema implements DocumentInterface  {
     @Serialize()
     public deleted_at: Date;
