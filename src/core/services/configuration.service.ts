@@ -83,6 +83,7 @@ export type Configuration = {
         isActive: boolean;
         key: string;
     };
+    oAuthKey: string;
 };
 
 @singleton()
@@ -190,6 +191,8 @@ export default class ConfigurationService<T = Configuration> extends BaseService
             publicKey : loaded.MAILGUN_PUBLIC_KEY
         };
 
+        applyObj.oAuthKey = loaded.OAUTH_KEY;
+        
         return {...loaded,...applyObj};
     }
 
