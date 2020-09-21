@@ -24,11 +24,7 @@ export class ApplicationRegistry {
 
         // services before all
         await Promise.all(services.map((service) => container.resolve(service).init()));
-        console.log("initialized services");
-
-        for (const serializer of Object.values(ApplicationRegistry.serializers)) {
-            container.resolve(serializer).init();
-        }
+        console.log(`initialized ${services.length} services`);
 
         // app constructor
         const instance = ApplicationRegistry.application = new app();
@@ -40,7 +36,13 @@ export class ApplicationRegistry {
 
         // controllers
         await Promise.all(controllers.map((controller) => container.resolve(controller).init()));
-        console.log("initialized controllers");
+        console.log(`initialized ${controllers.length} controllers`);
+
+        // serializers
+        for (const serializer of Object.values(ApplicationRegistry.serializers)) {
+            container.resolve(serializer).init();
+        }
+        console.log("initialized serializers");
 
         // setup global middlewares
         await instance.setupMiddlewares(middlewares.filter(({order}) => order === "before"));
