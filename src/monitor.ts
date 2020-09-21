@@ -7,7 +7,7 @@ import * as pm2 from "pm2";
 import { container } from "tsyringe";
 import { createConnection } from "typeorm";
 import ConfigurationService from "./core/services/configuration.service";
-import tar from "tar";
+import * as tar from "tar";
 import { execSync } from "child_process";
 import * as SocketIO from "socket.io";
 import { createWriteStream } from "fs";
@@ -32,9 +32,12 @@ pm2.connect(function(err) {
 
     const io = SocketIO();
     io.on('connection', client => {
-        client.on('recompile-sync', async (name, fn) => {
+        client.on("app-save",(name, fn) => {
             tar.c({gzip:true},['src/api'])
-                .pipe(createWriteStream(join(process.cwd(),"dist","backup.tar.gz")))
+                .pipe(createWriteStream(join(process.cwd(),"dist","backup.tar.gz")));
+            fn("ok");
+        });
+        client.on('app-recompile-sync', async (name, fn) => {
             console.log("boup");
             execSync("rm -rf ./dist/src");
             console.log("compiling");
@@ -62,7 +65,7 @@ pm2.connect(function(err) {
             await connection.close();
             fn("ok");
         });
-        client.on('restart-app', async (name, fn) => {
+        client.on('app-restart', async (name, fn) => {
             pm2.restart(firstApp.name,() => {
                 if (err) {
                     throw err;

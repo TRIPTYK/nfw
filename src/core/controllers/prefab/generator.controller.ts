@@ -25,63 +25,70 @@ export default class GeneratorController extends BaseController {
             columns : req.body.columns,
             relations : req.body.relations
         });
-
+        await this.sendMessageAndWaitResponse("app-save");
         await project.save();
-        await this.sendMessageAndWaitResponse("recompile-sync");
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
         res.sendStatus(httpStatus.ACCEPTED);
-        await this.sendMessageAndWaitResponse("restart-app");
+        await this.sendMessageAndWaitResponse("app-restart");
     }
 
     @Post("/entity/:name/relation")
     @MethodMiddleware(ValidationMiddleware,{schema : createRelation, location: ["body"]})
     public async addEntityRelation(req: Request, res: Response) {
         await addRelation(req.params.name,req.body);
-        await this.sendMessageAndWaitResponse("recompile-sync");
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
         res.sendStatus(httpStatus.ACCEPTED);
-        await this.sendMessageAndWaitResponse("restart-app");
+        await this.sendMessageAndWaitResponse("app-restart");
     }
 
     @Post("/entity/:name/:column")
     @MethodMiddleware(ValidationMiddleware,{schema : createColumn, location: ["body"]})
     public async generateColumn(req: Request, res: Response) {
         await addColumn(req.params.name,req.body);
+        await this.sendMessageAndWaitResponse("app-save");
         await project.save();
-        await this.sendMessageAndWaitResponse("recompile-sync");
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
         res.sendStatus(httpStatus.ACCEPTED);
-        await this.sendMessageAndWaitResponse("restart-app");
+        await this.sendMessageAndWaitResponse("app-restart");
     }
 
     @Delete("/entity/:name/:column")
     public async deleteEntityColumn(req: Request, res: Response) {
         await removeColumn(req.params.name,req.params.column);
+        await this.sendMessageAndWaitResponse("app-save");
         await project.save();
-        await this.sendMessageAndWaitResponse("recompile-sync");
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
         res.sendStatus(httpStatus.ACCEPTED);
-        await this.sendMessageAndWaitResponse("restart-app");
+        await this.sendMessageAndWaitResponse("app-restart");
     }
 
     @Delete("/entity/:name/relation/:relation")
     public async deleteEntityRelation(req: Request, res: Response) {
         await removeRelation(req.params.name,req.params.relation);
+        await this.sendMessageAndWaitResponse("app-save");
         await project.save();
-        await this.sendMessageAndWaitResponse("recompile-sync");
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
         res.sendStatus(httpStatus.ACCEPTED);
-        await this.sendMessageAndWaitResponse("restart-app");
+        await this.sendMessageAndWaitResponse("app-restart");
     }
 
     @Delete("/entity/:name")
     public async deleteEntity(req: Request, res: Response) {
         await deleteJsonApiEntity(req.params.name);
+        await this.sendMessageAndWaitResponse("app-save");
         await project.save();
-        await this.sendMessageAndWaitResponse("recompile-sync");
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
         res.sendStatus(httpStatus.ACCEPTED);
     }
 
     init() {
         super.init();
         this.socket = SocketIO('http://localhost:3000');
-        this.socket.on("connect",() => {
-            this.sendMessageAndWaitResponse("recompile-sync");
+        this.socket.on("connect",async () => {
+            await this.sendMessageAndWaitResponse("app-save")
+            await this.sendMessageAndWaitResponse("app-recompile-sync");
         })
     }
 
