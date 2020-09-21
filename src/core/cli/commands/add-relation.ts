@@ -139,6 +139,4 @@ export default async function addRelation(entity: string,relation: Relation) {
 
     inverseSerializerFile.fixMissingImports();
     serializerFile.fixMissingImports();
-
-
 }

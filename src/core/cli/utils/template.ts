@@ -39,7 +39,7 @@ export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): Colu
     }
 
     return columnArgument;
-};
+}
 
 export function buildValidationArgumentsFromObject(dbColumnaData: Column): ValidationSchema<any> {
 
@@ -64,12 +64,8 @@ export function buildValidationArgumentsFromObject(dbColumnaData: Column): Valid
             options: { min: 0 , max: dbColumnaData.length }
         };
     }
-    else
-    {
-        validationArguments["optional"] = true;
-    }
 
-    if (dbColumnaData.name === "email")
+    if (["email","mail"].includes(dbColumnaData.name))
     {
         validationArguments["isEmail"] = {
             errorMessage : "Email is not valid"
@@ -95,12 +91,10 @@ export function buildValidationArgumentsFromObject(dbColumnaData: Column): Valid
     }
 
     if (dbColumnaData.type.includes("time")) {
-        delete validationArguments["isLength"];
         validationArguments["isISO8601"] = true;
     }else if (dbColumnaData.type.includes("date")) {
-        delete validationArguments["isLength"];
         validationArguments["isDate"] = true;
     }
 
     return validationArguments;
-};
+}

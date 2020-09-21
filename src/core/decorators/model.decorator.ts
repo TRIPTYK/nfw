@@ -7,6 +7,7 @@ import BaseJsonApiRepository from "../repositories/base.repository";
 import { Type } from "../types/global";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { ApplicationRegistry } from "../application/registry.application";
+import { func } from "joi";
 
 export interface EntityOptionsExtended<T> extends EntityOptions {
     repository: Type<BaseJsonApiRepository<T>>;

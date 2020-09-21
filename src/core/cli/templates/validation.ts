@@ -3,7 +3,7 @@ import TsMorph = require("ts-morph");
 import stringifyObject = require("stringify-object");
 import { GeneratorParameters } from "../interfaces/generator.interface";
 
-export default function createValidationTemplate({modelName,fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
+export default function createValidationTemplate({fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
     const file = project.createSourceFile(`${fileTemplateInfo.path}/${fileTemplateInfo.name}`,null,{
         overwrite : true
     });
@@ -27,7 +27,7 @@ export default function createValidationTemplate({modelName,fileTemplateInfo,cla
                         isInt: true,
                         toInt: true
                     }
-                })
+                },{ singleQuotes: false })
             }
         ]
     });

@@ -26,6 +26,7 @@ export interface Relation {
     target: string;
     type: RelationTypes;
     inverseRelationName?: string;
+    isNullable?: boolean;
 }
 
 export interface EntityColumns {

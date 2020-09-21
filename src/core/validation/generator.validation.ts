@@ -1,4 +1,5 @@
 import { container } from "tsyringe";
+import { Column, Relation } from "../cli/interfaces/generator.interface";
 import TypeORMService from "../services/typeorm.service";
 import { ValidationSchema } from "../types/validation";
 
@@ -63,7 +64,7 @@ export const createEntity: ValidationSchema<any> = {
     }
 };
 
-export const createRelation: ValidationSchema<any> = {
+export const createRelation: ValidationSchema<Relation> = {
     name: {
         exists: true,
         isString: true
@@ -81,10 +82,14 @@ export const createRelation: ValidationSchema<any> = {
     inverseRelationName: {
         optional: true,
         isString: true
+    },
+    isNullable: {
+        optional: true,
+        isBoolean: true
     }
 }
 
-export const createColumn: ValidationSchema<any> = {
+export const createColumn: ValidationSchema<Column> = {
     name: {
         exists: true,
         isString: true

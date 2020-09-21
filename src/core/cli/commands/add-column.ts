@@ -33,7 +33,8 @@ export default async function addColumn(entity: string,column: Column): Promise<
         .toggleModifier("public")
         .addDecorator({
             name : "Column" , arguments : stringifyObject(
-                buildModelColumnArgumentsFromObject(column)
+                buildModelColumnArgumentsFromObject(column),
+                { singleQuotes: false }
             )
         })
         .setIsDecoratorFactory(true);
@@ -67,7 +68,10 @@ export default async function addColumn(entity: string,column: Column): Promise<
         const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;
         initializer.addPropertyAssignment({
             name: column.name,
-            initializer: stringifyObject(buildValidationArgumentsFromObject(column))
+            initializer: stringifyObject(
+                buildValidationArgumentsFromObject(column),
+                { singleQuotes: false }
+            )
         });
     }
 }
