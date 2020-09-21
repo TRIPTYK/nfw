@@ -3,7 +3,7 @@ import DocumentSerializerSchema from "./document.serializer.schema";
 import { UserInterface } from "../../models/user.model";
 import { Document } from "../../models/document.model";
 
-@SerializerSchema("users")
+@SerializerSchema()
 export default class UserSerializerSchema implements UserInterface {
     @Serialize()
     @Deserialize()

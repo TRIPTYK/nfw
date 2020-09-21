@@ -7,7 +7,7 @@ import DocumentSerializerSchema from "./schemas/document.serializer.schema";
 @singleton()
 @autoInjectable()
 @JsonApiSerializer({
-    schemas : [DocumentSerializerSchema],
+    schemas : () => [DocumentSerializerSchema],
     type : "documents"
 })
 export class DocumentSerializer extends BaseJsonApiSerializer<Document> {

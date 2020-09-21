@@ -1,5 +1,5 @@
 import { BaseJsonApiSerializer } from "../../core/serializers/base.serializer";
-import { singleton, injectable, autoInjectable } from "tsyringe";
+import { singleton, autoInjectable } from "tsyringe";
 import { User } from "../models/user.model";
 import { JsonApiSerializer } from "../../core/decorators/serializer.decorator";
 import UserSerializerSchema from "./schemas/user.serializer.schema";
@@ -8,7 +8,7 @@ import UserSerializerSchema from "./schemas/user.serializer.schema";
 @autoInjectable()
 @JsonApiSerializer({
     type : "users",
-    schemas : [UserSerializerSchema]
+    schemas : () => [UserSerializerSchema]
 })
 export class UserSerializer extends BaseJsonApiSerializer<User> {
 }

@@ -51,7 +51,7 @@ export function Relation(type: () => Schema): PropertyDecorator {
 export type Schema = Type<any>;
 
 export interface SchemaOptions {
-    schemas: Schema[];
+    schemas: () => Schema[];
     type: string
 }
 
@@ -66,9 +66,8 @@ export function JsonApiSerializer(options: SchemaOptions): ClassDecorator {
     }
 }
 
-export function SerializerSchema(type: string,name = "default"): ClassDecorator {
+export function SerializerSchema(name = "default"): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
         Reflect.defineMetadata("name",name,target);
-        Reflect.defineMetadata("type",type,target);
     }
 }
