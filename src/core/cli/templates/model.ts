@@ -1,7 +1,5 @@
 import project = require("../utils/project");
-import stringifyObject = require("stringify-object");
 import { SourceFile } from "ts-morph";
-import { buildModelColumnArgumentsFromObject } from "../utils/template";
 import { GeneratorParameters } from "../interfaces/generator.interface";
 import  * as pluralize from "pluralize";
 

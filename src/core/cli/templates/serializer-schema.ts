@@ -1,7 +1,8 @@
 import project = require ("../utils/project");
 import { GeneratorParameters } from "../interfaces/generator.interface";
+import  * as pluralize from "pluralize";
 
-export default function createSerializerSchema({fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
+export default function createSerializerSchema({modelName,fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
     const file = project.createSourceFile(`${fileTemplateInfo.path}/${fileTemplateInfo.name}`,null,{
         overwrite : true
     });
@@ -24,7 +25,8 @@ export default function createSerializerSchema({fileTemplateInfo,classPrefixName
     addedClass.addImplements(`${classPrefixName}Interface`);
 
     addedClass.addDecorator({
-        name : "SerializerSchema"
+        name : "SerializerSchema",
+        arguments : [`"${pluralize(modelName)}"`],
     }).setIsDecoratorFactory(true);
 
     return file;
