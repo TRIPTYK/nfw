@@ -32,7 +32,7 @@ export default function createSerializer({modelName,fileTemplateInfo,classPrefix
                 writer.block(() => {
                     writer.setIndentationLevel(1);
                     writer.writeLine(`type : "${pluralize(modelName)}",`);
-                    writer.writeLine(`schemas : [${classPrefixName}SerializerSchema]`);
+                    writer.writeLine(`schemas : () => [${classPrefixName}SerializerSchema]`);
                 });
             }]
     });
