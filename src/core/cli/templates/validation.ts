@@ -89,4 +89,5 @@ export default function createValidationTemplate({fileTemplateInfo,classPrefixNa
     variableStatement.setIsExported(true);
 
     return file;
-};
+}
+

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as JSONAPISerializer from "json-api-serializer";
 import SerializerInterface from "../interfaces/serializer.interface";
-import { SchemaOptions } from "../decorators/serializer.decorator";
+import { RelationMetadata, SchemaOptions } from "../decorators/serializer.decorator";
 import { Type } from "../types/global";
 import ConfigurationService from "../services/configuration.service";
 import { container } from "tsyringe";
@@ -196,9 +196,9 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
     }
 
     public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema: Type<any>,schemaName: string,passedBy: string[]): void {
-        const serialize = (Reflect.getMetadata("serialize",schema) ?? []) as string[];
-        const deserialize = this.applyDeserializeCase((Reflect.getMetadata("deserialize",schema) ?? []) as string[]);
-        const relations = (Reflect.getMetadata("relations",schema) ?? []) as {type: () => Type<any>;property: string}[];
+        const serialize = (Reflect.getMetadata("serialize",schema.prototype) ?? []) as string[];
+        const deserialize = this.applyDeserializeCase((Reflect.getMetadata("deserialize",schema.prototype) ?? []) as string[]);
+        const relations = (Reflect.getMetadata("relations",schema.prototype) ?? []) as RelationMetadata[];
         const schemaType = Reflect.getMetadata("type",schema) as string;
         const { api } = this.configurationService.config;
 

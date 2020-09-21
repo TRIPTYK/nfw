@@ -2,7 +2,7 @@
 
 import { Type } from "../types/global";
 
-interface RelationMetadata {
+export interface RelationMetadata {
     type: () => Schema;
     property: string;
 }

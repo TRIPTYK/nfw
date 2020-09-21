@@ -1,15 +1,17 @@
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import "reflect-metadata";
 import {default as config} from "../ecosystem.config";
 
 const [firstApp] = config.apps;
-/* eslint-disable @typescript-eslint/camelcase */
 import * as pm2 from "pm2";
 import { container } from "tsyringe";
 import { createConnection } from "typeorm";
 import ConfigurationService from "./core/services/configuration.service";
-const { execSync } = require("child_process");
+import tar from "tar";
+import { execSync } from "child_process";
+import * as SocketIO from "socket.io";
+import { createWriteStream } from "fs";
+import { join } from "path";
 
 process.on("SIGINT", function() {
     pm2.disconnect();
@@ -28,56 +30,48 @@ pm2.connect(function(err) {
         }
     });
 
-    pm2.launchBus(function(err: any, bus: any) {
-        bus.on("process:msg",async function(packet) {
-            switch(packet.data.type) {
-                case "recompile-sync": {
-                    execSync("rm -rf ./dist/src");
-                    console.log("compiling");
-                    execSync("./node_modules/.bin/tsc");
-                    console.log("compiled");
-                    const {typeorm} = container.resolve<ConfigurationService>(ConfigurationService).config;
-                    const connection = await createConnection({
-                        database: typeorm.database,
-                        entities : typeorm.entities,
-                        synchronize : typeorm.synchronize,
-                        host: typeorm.host,
-                        name: typeorm.name,
-                        password: typeorm.pwd,
-                        port: typeorm.port,
-                        type: typeorm.type as any,
-                        migrations : typeorm.migrations,
-                        username: typeorm.user,
-                        cli : {
-                            entitiesDir: typeorm.entitiesDir,
-                            migrationsDir: typeorm.migrationsDir,
-                        }
-                    });
-                    await connection.synchronize();
-                    console.log("Synchronized");
-                    await connection.close();
-                    pm2.restart(firstApp.name,() => {
-                        if (err) {
-                            throw err;
-                        }
-                        console.log("Restarted app " + firstApp.name);
-                    });
-                    break;
+    const io = SocketIO();
+    io.on('connection', client => {
+        client.on('recompile-sync', async (name, fn) => {
+            tar.c({gzip:true},['src/api'])
+                .pipe(createWriteStream(join(process.cwd(),"dist","backup.tar.gz")))
+            console.log("boup");
+            execSync("rm -rf ./dist/src");
+            console.log("compiling");
+            execSync("./node_modules/.bin/tsc");
+            console.log("compiled");
+            const {typeorm} = container.resolve<ConfigurationService>(ConfigurationService).config;
+            const connection = await createConnection({
+                database: typeorm.database,
+                entities : typeorm.entities,
+                synchronize : typeorm.synchronize,
+                host: typeorm.host,
+                name: typeorm.name,
+                password: typeorm.pwd,
+                port: typeorm.port,
+                type: typeorm.type as any,
+                migrations : typeorm.migrations,
+                username: typeorm.user,
+                cli : {
+                    entitiesDir: typeorm.entitiesDir,
+                    migrationsDir: typeorm.migrationsDir,
                 }
-                case "recompile": {
-                    execSync("rm -rf ./dist/src");
-                    console.log("compiling");
-                    execSync("./node_modules/.bin/tsc");
-                    console.log("compiled");
-                    pm2.restart(firstApp.name,() => {
-                        if (err) {
-                            throw err;
-                        }
-                        console.log("Restarted app " + firstApp.name);
-                    });
-                    break;
+            });
+            await connection.synchronize();
+            console.log("Synchronized");
+            await connection.close();
+            fn("ok");
+        });
+        client.on('restart-app', async (name, fn) => {
+            pm2.restart(firstApp.name,() => {
+                if (err) {
+                    throw err;
                 }
-            }
+                console.log("Restarted app " + firstApp.name);
+                fn("ok");
+            });
         });
     });
+    
+    io.listen(3000);
 });
