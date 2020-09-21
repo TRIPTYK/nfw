@@ -37,12 +37,15 @@ export class ApplicationRegistry {
         // controllers
         await Promise.all(controllers.map((controller) => container.resolve(controller).init()));
         console.log(`initialized ${controllers.length} controllers`);
-
+        for (const controller of controllers) {
+            console.log(`- ${Reflect.getMetadata("routeName",controller) ?? Reflect.getMetadata("name",Reflect.getMetadata("entity",controller.prototype))}`);
+        }
         // serializers
-        for (const serializer of Object.values(ApplicationRegistry.serializers)) {
+        const serializers = Object.values(ApplicationRegistry.serializers);
+        for (const serializer of serializers) {
             container.resolve(serializer).init();
         }
-        console.log("initialized serializers");
+        console.log(`initialized ${serializers.length} serializer`);
 
         // setup global middlewares
         await instance.setupMiddlewares(middlewares.filter(({order}) => order === "before"));
