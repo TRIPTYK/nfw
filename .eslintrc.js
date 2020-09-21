@@ -21,6 +21,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
     ],
     rules : {
+        "no-console":"error",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-unsafe-call": "off",
         "@typescript-eslint/no-unsafe-return": "off",
