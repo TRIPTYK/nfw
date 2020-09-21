@@ -1,6 +1,5 @@
 import project = require("../utils/project");
 import { GeneratorParameters } from "../interfaces/generator.interface";
-import stringifyObject = require("stringify-object");
 import * as pluralize from "pluralize";
 
 export default function createSerializer({modelName,fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
@@ -38,4 +37,5 @@ export default function createSerializer({modelName,fileTemplateInfo,classPrefix
     });
 
     return file;
-};
+}
+

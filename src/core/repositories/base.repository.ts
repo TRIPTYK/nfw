@@ -101,11 +101,12 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
                             case "notin" :
                                 sqlExpression = SqlString.format("?? NOT IN (?)", [key, splitAndFilter(value, "+")]);
                                 break ;
-                            case "btw":
+                            case "btw": {
                                 const andvalues = splitAndFilter(value, "+");
                                 if (andvalues.length !== 2) { throw Boom.badRequest("Must have 2 values in between filter"); }
                                 sqlExpression = SqlString.format("?? BETWEEN ? AND ?", [key, andvalues[0], andvalues[1]]);
-                                break ;
+                            }
+                            break;
                             case "orsupeq":
                                 sqlExpression = SqlString.format("?? >= ?", [key, value]);
                                 break;

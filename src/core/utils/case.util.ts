@@ -1,5 +1,5 @@
 // https://github.com/30-seconds/30-seconds-of-code/blob/master/snippets/toKebabCase.md
-export const toKebabCase = (str) =>
+export const toKebabCase = (str: string) =>
   str &&
   str
     .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
@@ -7,7 +7,7 @@ export const toKebabCase = (str) =>
     .join('-');
 
 // https://github.com/30-seconds/30-seconds-of-code/blob/master/snippets/toSnakeCase.md
-export const toSnakeCase = (str) =>
+export const toSnakeCase = (str: string) =>
   str &&
   str
     .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
@@ -15,7 +15,7 @@ export const toSnakeCase = (str) =>
     .join('_');
 
 // https://github.com/30-seconds/30-seconds-of-code/blob/master/snippets/toCamelCase.md
-export const toCamelCase = (str) => {
+export const toCamelCase = (str: string) => {
   const s =
     str &&
     str
