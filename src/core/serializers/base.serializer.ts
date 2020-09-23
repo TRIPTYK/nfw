@@ -7,6 +7,7 @@ import ConfigurationService from "../services/configuration.service";
 import { container } from "tsyringe";
 import { ObjectLiteral } from "typeorm";
 import { toCamelCase, toKebabCase, toSnakeCase } from "../utils/case.util";
+import * as pluralize from "pluralize";
 
 export type SerializerParams = {
     pagination?: PaginationParams;
@@ -102,7 +103,7 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
         }
     }
 
-    public serializeAsync(payload: T | T[], options: SerializeOptions): any {
+    public serialize(payload: T | T[], options: SerializeOptions): any {
         const { api } = this.configurationService.config;
 
         if (options?.paginationData) {
@@ -112,11 +113,11 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
             delete options.paginationData;
             options.overrideSchemaOptions = {
                 topLevelLinks : {
-                    first: () => `${baseUrl}/${this.type}${this.replacePage(options.url, 1)}`,
-                    last: () => `${baseUrl}/${this.type}${this.replacePage(options.url, max)}`,
-                    next: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page + 1 > max ? max : page + 1)}`,
-                    prev: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page - 1 < 1 ? page : page - 1)}`,
-                    self: () => `${baseUrl}/${this.type}${options.url}`
+                    first: () => `${baseUrl}/${pluralize(this.type)}${this.replacePage(options.url, 1)}`,
+                    last: () => `${baseUrl}/${pluralize(this.type)}${this.replacePage(options.url, max)}`,
+                    next: () => `${baseUrl}/${pluralize(this.type)}${this.replacePage(options.url, page + 1 > max ? max : page + 1)}`,
+                    prev: () => `${baseUrl}/${pluralize(this.type)}${this.replacePage(options.url, page - 1 < 1 ? page : page - 1)}`,
+                    self: () => `${baseUrl}/${pluralize(this.type)}${options.url}`
                 },
                 topLevelMeta : {
                     max,
@@ -138,48 +139,8 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
         });
     }
 
-    public deserializeAsync(payload: any): T | T[] {
-        return this.serializer.deserializeAsync(this.type, payload);
-    }
-
-    public serialize(payload: T | T[], options: SerializeOptions): any {
-        const { api } = this.configurationService.config;
-
-        if (options?.paginationData) {
-            const { total, page , size } = options.paginationData;
-            const baseUrl = `/api/${api.version}`;
-            const max = Math.ceil(total / size);
-            delete options.paginationData;
-            options.overrideSchemaOptions = {
-                topLevelLinks : {
-                    first: () => `${baseUrl}/${this.type}${this.replacePage(options.url, 1)}`,
-                    last: () => `${baseUrl}/${this.type}${this.replacePage(options.url, max)}`,
-                    next: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page + 1 > max ? max : page + 1)}`,
-                    prev: () => `${baseUrl}/${this.type}${this.replacePage(options.url, page - 1 < 1 ? page : page - 1)}`,
-                    self: () => `${baseUrl}/${this.type}${options.url}`
-                },
-                topLevelMeta : {
-                    max,
-                    page,
-                    size,
-                    total
-                }
-            };
-        }
-
-        options.overrideSchemaOptions = {...options.overrideSchemaOptions,
-            topLevelLinks: {
-                self: () => options.url
-            }
-        };
-
-        return this.serializer.serialize(this.type, payload,options?.schema, options?.meta , options?.excludeData, {
-            [this.type] : options?.overrideSchemaOptions
-        });
-    }
-
     public deserialize(payload: any): T | T[] {
-        return this.serializer.deserialize(this.type, payload);
+        return this.serializer.deserializeAsync(this.type, payload);
     }
 
     private applyDeserializeCase(deserializeArray: string[]) {
@@ -219,8 +180,8 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
                 },
                 type : relationType,
                 links: {
-                    related: (d) => `/api/${api.version}/${schemaType}/${d.id}/${property}`,
-                    self: (d) => `/api/${api.version}/${schemaType}/${d.id}/relationships/${property}`
+                    related: (d) => `/api/${api.version}/${pluralize(schemaType)}/${d.id}/${property}`,
+                    self: (d) => `/api/${api.version}/${pluralize(schemaType)}/${d.id}/relationships/${property}`
                 }
             };
 
@@ -232,7 +193,7 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
             whitelistOnDeserialize: deserialize,
             relationships : relationShips,
             links : {
-                self: (data) => `/api/${api.version}/${schemaType}/${data.id}`
+                self: (data) => `/api/${api.version}/${pluralize(schemaType)}/${data.id}`
             }
         });
     }

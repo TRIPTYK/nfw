@@ -34,7 +34,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                     const useSchema = Reflect.getMetadata("schema-use",this,methodName) ?? "default";
 
                     if (response instanceof PaginationResponse) {
-                        const serialized = this.serializer.serialize(response.body,{
+                        const serialized = await this.serializer.serialize(response.body,{
                             schema: useSchema,
                             paginationData: response.paginationData,
                             url : req.originalUrl
@@ -43,7 +43,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                         res.type(response.type);
                         res.send(serialized);
                     }else if (response instanceof ApiResponse) {
-                        const serialized = this.serializer.serialize(response.body,{
+                        const serialized = await this.serializer.serialize(response.body,{
                             schema: useSchema,
                             url : req.originalUrl
                         });
@@ -51,7 +51,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
                         res.type(response.type);
                         res.send(serialized);
                     }else{
-                        const serialized = this.serializer.serialize(response,{
+                        const serialized = await this.serializer.serialize(response,{
                             schema: useSchema,
                             url : req.originalUrl
                         });
@@ -124,7 +124,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
         const relation = req.params.relation;
         const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation).inverseEntityMetadata;
 
-        return res.send(ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
+        return res.send(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
             await this.repository.fetchRelationshipsFromRequest(
                 relation,
                 req.params.id,
@@ -142,7 +142,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             throw Boom.notFound();
         }
 
-        return res.send(ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
+        return res.send(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
             await this.repository.fetchRelated(
                 relation,
                 req.params.id,

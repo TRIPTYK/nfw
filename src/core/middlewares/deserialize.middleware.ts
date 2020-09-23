@@ -14,7 +14,7 @@ export default class DeserializeMiddleware extends BaseMiddleware {
             return next();
         }
 
-        const fields = await (container.resolve(args.serializer)).deserializeAsync(req.body);
+        const fields = await (container.resolve(args.serializer)).deserialize(req.body);
         req.body = {};
 
         for (const key in fields) {
