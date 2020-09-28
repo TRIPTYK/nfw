@@ -128,7 +128,8 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             throw Boom.notFound();
         }
 
-        return res.send(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
+        res.type("application/vnd.api+json");
+        return res.json(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
             await this.repository.fetchRelationshipsFromRequest(
                 relation,
                 req.params.id,
@@ -146,7 +147,8 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             throw Boom.notFound();
         }
 
-        return res.send(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
+        res.type("application/vnd.api+json");
+        return res.json(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
             await this.repository.fetchRelated(
                 relation,
                 req.params.id,
