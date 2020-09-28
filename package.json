@@ -50,8 +50,6 @@
     "@hapi/boom": "^9.1.0",
     "@hapi/joi": "^17.1.1",
     "@queso/kebab-case": "^1.1.0",
-    "@types/socket.io": "^2.1.11",
-    "@types/socket.io-client": "^1.4.33",
     "axios": "^0.19.1",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
@@ -111,6 +109,8 @@
     "xss": "^1.0.6"
   },
   "devDependencies": {
+    "@types/socket.io": "^2.1.11",
+    "@types/socket.io-client": "^1.4.33",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/bcrypt": "^3.0.0",
     "@types/body-parser": "^1.17.1",
