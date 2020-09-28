@@ -122,7 +122,11 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
 
     public async fetchRelationships(req: Request,res: Response) {
         const relation = req.params.relation;
-        const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation).inverseEntityMetadata;
+        const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation)?.inverseEntityMetadata;
+
+        if (!otherEntityMetadata) {
+            throw Boom.notFound();
+        }
 
         return res.send(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
             await this.repository.fetchRelationshipsFromRequest(
