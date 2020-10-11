@@ -25,7 +25,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
      */
     public jsonApiRequest(
         params: JsonApiRequestParams,
-        {allowIncludes = true, allowSorting = true, allowPagination = true, allowFields = true, allowFilters = false}:
+        {allowIncludes = true, allowSorting = true, allowPagination = true, allowFields = true, allowFilters = true}:
         {allowIncludes?: boolean ;allowSorting?: boolean ;allowPagination?: boolean ;allowFields?: boolean; allowFilters?: boolean } = {},
         parentQueryBuilder?: SelectQueryBuilder<T>
     ): SelectQueryBuilder<T> {
@@ -80,10 +80,9 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
             // put everything into sub brackets to not interfere with more important search params
             const queryBrackets = new Brackets((qb) => {
                 for (const key in params.filter) {
-                    const filtered: string[] = splitAndFilter(params.filter[key], ",");
-                    for (const e of filtered) {
-                        const [strategy, value] = e.split(":");
+                    for (const strategy in params.filter[key]) {
                         let sqlExpression: string;
+                        const value = params.filter[key][strategy];
 
                         switch (strategy) {
                             case "like" :
