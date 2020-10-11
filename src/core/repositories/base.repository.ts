@@ -80,9 +80,20 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
             // put everything into sub brackets to not interfere with more important search params
             const queryBrackets = new Brackets((qb) => {
                 for (const key in params.filter) {
-                    for (const strategy in params.filter[key]) {
+                    for (let strategy in params.filter[key]) {
                         let sqlExpression: string;
                         const value = params.filter[key][strategy];
+                        let conditionalOperator = "and";
+
+                        // remove "and" or "or"
+                        if (strategy.startsWith("or")) {
+                            strategy = strategy.substring(2);
+                            conditionalOperator = "or";
+
+                        } else if (strategy.startsWith("and")) {
+                            strategy = strategy.substring(3);
+                            conditionalOperator = "and";
+                        }
 
                         switch (strategy) {
                             case "like" :
@@ -116,7 +127,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
                                 throw Boom.badRequest(`Unrecognized filter : ${strategy}`);
                         }
 
-                        if (strategy.startsWith("or")) {
+                        if (conditionalOperator === "or") {
                             qb.orWhere(sqlExpression);
                         } else {
                             qb.andWhere(sqlExpression);
