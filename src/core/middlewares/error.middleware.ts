@@ -16,11 +16,22 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
 
             for (const err of errs) {
                 for (const suberror of err) {
-                    allErrors.push({
+                    const err = {
                         detail: `${suberror.msg} for ${suberror.param} in ${suberror.location}, value is ${suberror.value}`,
-                        source: { pointer: `/data/attributes/${suberror.param}` },
-                        title: "Validation Error"
-                    });
+                        title: "Validation Error",
+                        source: {},
+                        status : "400"
+                    };
+
+                    if (["query","params"].includes(suberror.location)) {
+                        err.source["parameter"] = suberror.param;
+                    }
+
+                    if (suberror.location === "body") {
+                        err.source["pointer"] = `/data/attributes/${suberror.param}`;
+                    }
+
+                    allErrors.push(err);
                 }
             }
 
