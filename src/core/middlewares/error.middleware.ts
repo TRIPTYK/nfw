@@ -30,7 +30,7 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
         }
 
         if (!error.isBoom) {
-            error = Boom.expectationFailed(error.message);
+            error = Boom.internal(error.message);
         }
 
         res.status(error.output.statusCode);
