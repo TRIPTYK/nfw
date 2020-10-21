@@ -4,12 +4,14 @@ import { container, injectable } from "tsyringe";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { Type } from "../types/global";
 
+export type DeserializeMiddlewareArgs = {
+    serializer: Type<BaseJsonApiSerializer<any>>;
+    schema?: string;
+}
+
 @injectable()
 export default class DeserializeMiddleware extends BaseMiddleware {
-    public async use(req: Request, response: Response, next: NextFunction, args: {
-        serializer: Type<BaseJsonApiSerializer<any>>;
-        schema?: string;
-    }): Promise<any> {
+    public async use(req: Request, response: Response, next: NextFunction, args: DeserializeMiddlewareArgs): Promise<any> {
         if (!req.body.data) {
             return next();
         }

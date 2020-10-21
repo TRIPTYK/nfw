@@ -4,6 +4,8 @@ import * as Boom from "@hapi/boom";
 import { injectable } from "tsyringe";
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
+export type SecurityMiddlewareArgs = any;
+
 @injectable()
 export default class SecurityMiddleware extends BaseMiddleware {
     public use(req: Request, res: Response, next: NextFunction) {

@@ -52,7 +52,7 @@ export function JsonApiController<T extends JsonApiModel<T>>(entity: Type<T>): C
     };
 }
 
-export function RouteMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any): ClassDecorator {
+export function RouteMiddleware<T = any>(middlewareClass: Type<BaseMiddleware>, args?: T): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
         if (! Reflect.hasMetadata("middlewares",  target)) {
             Reflect.defineMetadata("middlewares", [], target);
@@ -62,7 +62,7 @@ export function RouteMiddleware(middlewareClass: Type<BaseMiddleware>, args?: an
     };
 }
 
-export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any): MethodDecorator {
+export function MethodMiddleware<T = any>(middlewareClass: Type<BaseMiddleware>, args?: T): MethodDecorator {
     return function(target: any, propertyKey: string): void {
         if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
             Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
@@ -72,7 +72,7 @@ export function MethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: a
     };
 }
 
-export function JsonApiMethodMiddleware(middlewareClass: Type<BaseMiddleware>, args?: any,order: MiddlewareOrder = "afterAll"): MethodDecorator {
+export function JsonApiMethodMiddleware<T = any>(middlewareClass: Type<BaseMiddleware>, args?: T,order: MiddlewareOrder = "afterAll"): MethodDecorator {
     return function(target: any, propertyKey: string): void {
         if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
             Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);

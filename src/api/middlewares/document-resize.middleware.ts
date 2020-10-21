@@ -5,6 +5,8 @@ import {ImageMimeTypes} from "../enums/mime-type.enum";
 import { injectable, autoInjectable } from "tsyringe";
 import ConfigurationService from "../../core/services/configuration.service";
 
+export type DocumentResizeMiddlewareArgs = any;
+
 @injectable()
 @autoInjectable()
 export class DocumentResizeMiddleware extends BaseMiddleware {

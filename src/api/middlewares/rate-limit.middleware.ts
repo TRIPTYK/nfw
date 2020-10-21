@@ -3,6 +3,8 @@ import { injectable } from "tsyringe";
 import { Request , Response } from "express";
 import * as RateLimit from "express-rate-limit";
 
+export type RateLimitMiddlewareArgs = any;
+
 @injectable()
 export default class RateLimitMiddleware extends BaseMiddleware {
     private rateInstance: RateLimit.Instance;
@@ -16,7 +18,7 @@ export default class RateLimitMiddleware extends BaseMiddleware {
         });
     }
 
-    public use(req: Request, res: Response, next: (err?: any) => void, args: any = {}): any {
+    public use(req: Request, res: Response, next: (err?: any) => void): any {
         return this.rateInstance(req,res,next);
     }
 }

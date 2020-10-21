@@ -9,13 +9,13 @@ import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
 import * as Boom from "@hapi/boom";
 import { OAuthToken } from "../models/oauth-token.model";
 import { Controller, Post, MethodMiddleware } from "../../core/decorators/controller.decorator";
-import SecurityMiddleware from "../middlewares/security.middleware";
-import DeserializeMiddleware from "../../core/middlewares/deserialize.middleware";
+import SecurityMiddleware, { SecurityMiddlewareArgs } from "../middlewares/security.middleware";
+import DeserializeMiddleware, { DeserializeMiddlewareArgs } from "../../core/middlewares/deserialize.middleware";
 import { UserSerializer } from "../serializers/user.serializer";
 import { register } from "../validations/auth.validation";
 import { singleton, autoInjectable } from "tsyringe";
 import { User } from "../models/user.model";
-import ValidationMiddleware from "../../core/middlewares/validation.middleware";
+import ValidationMiddleware, { ValidationMiddlewareArgs } from "../../core/middlewares/validation.middleware";
 import BaseController from "../../core/controllers/base.controller";
 
 /**
@@ -37,9 +37,9 @@ export default class AuthController extends BaseController {
     }
 
     @Post()
-    @MethodMiddleware(DeserializeMiddleware, {serializer: UserSerializer,schema:"default" })
-    @MethodMiddleware(ValidationMiddleware, {schema : register})
-    @MethodMiddleware(SecurityMiddleware)
+    @MethodMiddleware<DeserializeMiddlewareArgs>(DeserializeMiddleware, {serializer: UserSerializer,schema:"default" })
+    @MethodMiddleware<ValidationMiddlewareArgs>(ValidationMiddleware, {schema : register})
+    @MethodMiddleware<SecurityMiddlewareArgs>(SecurityMiddleware)
     public async register(req: Request, res: Response): Promise<any> {
         let user = this.repository.create(req.body as DeepPartial<User>);
         user = await this.repository.save(user);

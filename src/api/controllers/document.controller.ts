@@ -3,8 +3,8 @@ import * as Boom from "@hapi/boom";
 
 import { Request, Response } from "express";
 import { JsonApiController, JsonApiMethodMiddleware, OverrideSerializer, OverrideValidator } from "../../core/decorators/controller.decorator";
-import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
-import FileUploadMiddleware from "../middlewares/file-upload.middleware";
+import { DocumentResizeMiddleware, DocumentResizeMiddlewareArgs } from "../middlewares/document-resize.middleware";
+import FileUploadMiddleware, { FileUploadMiddlewareArgs } from "../middlewares/file-upload.middleware";
 import { autoInjectable, singleton } from "tsyringe";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import { Document } from "../models/document.model";
@@ -16,8 +16,8 @@ import { DeepPartial } from "typeorm";
 export default class DocumentController extends BaseJsonApiController<Document> {
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
-    @JsonApiMethodMiddleware(DocumentResizeMiddleware)
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
+    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(DocumentResizeMiddleware)
     public async create(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as DeepPartial<Document>);
@@ -27,8 +27,8 @@ export default class DocumentController extends BaseJsonApiController<Document> 
 
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
-    @JsonApiMethodMiddleware(DocumentResizeMiddleware)
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
+    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(DocumentResizeMiddleware)
     public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
 
