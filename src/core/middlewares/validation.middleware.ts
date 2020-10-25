@@ -11,7 +11,7 @@ export type ValidationMiddlewareArgs = {
 @injectable()
 export default class ValidationMiddleware extends BaseMiddleware {
     public async use(req: Request, response: Response, next: NextFunction, args: ValidationMiddlewareArgs): Promise<any> {
-        const { schema , location = ["body"] } = args;
+        const { schema, location = ["body"] } = args;
         const validationChain: ValidationChain[] = checkSchema(schema, location);
 
         const res = await Promise.all(validationChain.map((validation) => validation.run(req)));

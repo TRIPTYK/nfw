@@ -1,6 +1,6 @@
 import * as Jimp from "jimp";
 import {BaseMiddleware} from "../../core/middlewares/base.middleware";
-import { Request , Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import {ImageMimeTypes} from "../enums/mime-type.enum";
 import { injectable, autoInjectable } from "tsyringe";
 import ConfigurationService from "../../core/services/configuration.service";
@@ -19,7 +19,7 @@ export class DocumentResizeMiddleware extends BaseMiddleware {
         try {
             // If image optimization is activated and is image mime type
             if (jimp.isActive && Object.values(ImageMimeTypes).includes(req.file.mimetype as any)) {
-                const {destination, path , filename} = req.file;
+                const {destination, path, filename} = req.file;
 
                 // Read original file
                 Jimp.read(path).then((image) => {

@@ -25,15 +25,19 @@ import ErrorMiddleware from "../core/middlewares/error.middleware";
 import RateLimitMiddleware from "./middlewares/rate-limit.middleware";
 
 @RegisterApplication({
-    controllers: [AuthController,UserController,DocumentController,StatusController,MetadataController,GeneratorController],
-    services:[MailService,TypeORMService,MulterService,PassportService,LoggerService,ConfigurationService]
+    controllers: [AuthController, UserController, DocumentController, StatusController, MetadataController, GeneratorController],
+    services:[MailService, TypeORMService, MulterService, PassportService, LoggerService, ConfigurationService]
 })
 @GlobalMiddleware(RateLimitMiddleware)
-@GlobalMiddleware(NotFoundMiddleware,null,"after")
-@GlobalMiddleware(ErrorMiddleware,null,"after")
+@GlobalMiddleware(NotFoundMiddleware, null, "after")
+@GlobalMiddleware(ErrorMiddleware, null, "after")
 @autoInjectable()
 export class Application extends BaseApplication {
-    public constructor(private loggerService: LoggerService,private configurationService: ConfigurationService) {
+    public async afterInit(): Promise<any> {
+        return true;
+    }
+
+    public constructor(private loggerService: LoggerService, private configurationService: ConfigurationService) {
         super();
     }
 
@@ -46,7 +50,7 @@ export class Application extends BaseApplication {
     // eslint-disable-next-line @typescript-eslint/require-await
     public async init() {
         super.init();
-        const  { authorized , api  } = this.configurationService.config;
+        const { authorized, api } = this.configurationService.config;
 
         /**
          * Expose body on req.body
@@ -98,7 +102,7 @@ export class Application extends BaseApplication {
 
         this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
-        this.app.use(`/api/${api.version}` , this.router );
+        this.app.use(`/api/${api.version}`, this.router );
 
         return this.app;
     }

@@ -1,4 +1,4 @@
-export enum OAuthTypes  {
+export enum OAuthTypes {
     Google = "google",
     Outlook = "windowslive",
     Facebook = "facebook"

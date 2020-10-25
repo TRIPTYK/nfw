@@ -16,7 +16,7 @@ export class OAuthTokenRepository extends BaseJsonApiRepository<OAuthToken> {
                 accessToken,
                 refreshToken,
                 type: service,
-                user,
+                user
             });
         }
 

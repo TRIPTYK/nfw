@@ -1,5 +1,5 @@
 import { Controller, Get } from "../../core/decorators/controller.decorator";
-import { Request , Response } from "express";
+import { Request, Response } from "express";
 import BaseController from "../../core/controllers/base.controller";
 import { singleton, autoInjectable } from "tsyringe";
 

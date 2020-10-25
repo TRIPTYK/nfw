@@ -37,7 +37,7 @@ class PassportService extends BaseService {
 
         this.registerStrategy("jwt", new JwtStrategy({
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
-            secretOrKey: jwt.secret,
+            secretOrKey: jwt.secret
         }, this.jwt));
 
         this.registerStrategy("windowslive", new OutlookStrategy({
@@ -95,7 +95,7 @@ class PassportService extends BaseService {
      * @memberof PassportConfig
      */
     public oAuth = (service: string) =>
-        async (req: Request, accessToken: string, refreshToken: string, fullToken: string , profile: ObjectLiteral, cb): Promise<any> => {
+        async (req: Request, accessToken: string, refreshToken: string, fullToken: string, profile: ObjectLiteral, cb): Promise<any> => {
             try {
                 const tokenRepo = getCustomRepository(OAuthTokenRepository);
                 await tokenRepo.oAuthLogin(req.user, {service, accessToken, refreshToken});

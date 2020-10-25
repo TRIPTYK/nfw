@@ -39,7 +39,7 @@ export default class TypeORMService extends BaseService {
     public get ConfigurationObject(): ConnectionOptions {
         const {typeorm} = this.configurationService.config;
 
-        return  {
+        return {
             database: typeorm.database,
             entities : typeorm.entities,
             synchronize : typeorm.synchronize,
@@ -52,7 +52,7 @@ export default class TypeORMService extends BaseService {
             username: typeorm.user,
             cli : {
                 entitiesDir: typeorm.entitiesDir,
-                migrationsDir: typeorm.migrationsDir,
+                migrationsDir: typeorm.migrationsDir
             }
         };
     }

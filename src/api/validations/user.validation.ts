@@ -28,24 +28,24 @@ export const create: ValidationSchema<User> = {
     first_name: {
         isString : true,
         isUppercase: {
-            negated: true,
+            negated: true
         }
     },
     last_name: {
         isString : true,
         isUppercase: {
-            negated: true,
+            negated: true
         }
     },
     password: {
         errorMessage: "Must have a password",
         exists: true,
-        isString : true,
+        isString : true
     },
     username: {
         isString : true,
         isUppercase: {
-            negated: true,
+            negated: true
         }
     }
 };
@@ -63,7 +63,7 @@ export const update: ValidationSchema<User> = {
     last_name: {
         isString : true,
         isUppercase: {
-            negated: true,
+            negated: true
         },
         optional: true
     },
@@ -85,6 +85,6 @@ export const update: ValidationSchema<User> = {
     },
     username: {
         isString : true,
-        optional: true,
+        optional: true
     }
 };

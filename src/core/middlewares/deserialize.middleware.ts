@@ -1,5 +1,5 @@
 import { BaseMiddleware } from "./base.middleware";
-import { Request , Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { container, injectable } from "tsyringe";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { Type } from "../types/global";

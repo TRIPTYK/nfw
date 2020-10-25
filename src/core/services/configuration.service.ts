@@ -100,7 +100,7 @@ export default class ConfigurationService<T = Configuration> extends BaseService
     }
 
     public loadConfiguration(): T {
-        const {parsed : loaded} = dotenv.config({path : join(process.cwd(),`${process.env.NODE_ENV ?? "development"}.env`)});
+        const {parsed : loaded} = dotenv.config({path : join(process.cwd(), `${process.env.NODE_ENV ?? "development"}.env`)});
         const applyObj: any = {};
 
         applyObj.env = loaded.NODE_ENV;
@@ -160,7 +160,7 @@ export default class ConfigurationService<T = Configuration> extends BaseService
             pwd: loaded.TYPEORM_PWD,
             synchronize : parseBool(loaded.TYPEORM_SYNCHRONIZE),
             entities : loaded.TYPEORM_ENTITIES.split(","),
-            type: (["mariadb", "mysql", "oracle","postgresql"].includes(loaded.TYPEORM_TYPE) ? loaded.TYPEORM_TYPE : "mysql"),
+            type: (["mariadb", "mysql", "oracle", "postgresql"].includes(loaded.TYPEORM_TYPE) ? loaded.TYPEORM_TYPE : "mysql"),
             user: loaded.TYPEORM_USER,
             tableName : loaded.TYPEORM_MIGRATIONS_TABLE_NAME,
             entitiesDir : loaded.TYPEORM_ENTITIES_DIR,
@@ -193,7 +193,7 @@ export default class ConfigurationService<T = Configuration> extends BaseService
 
         applyObj.oAuthKey = loaded.OAUTH_KEY;
         
-        return {...loaded,...applyObj};
+        return {...loaded, ...applyObj};
     }
 
     public getKey(key: string): any {
@@ -201,6 +201,7 @@ export default class ConfigurationService<T = Configuration> extends BaseService
     }
 
     public init() {
+        // eslint-disable-next-line no-useless-return
         return;
     }
 }

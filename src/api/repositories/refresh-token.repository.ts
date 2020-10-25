@@ -30,7 +30,7 @@ export class RefreshTokenRepository extends BaseJsonApiRepository<RefreshToken> 
      * @param accessToken
      * @param ip
      */
-    public async generateNewRefreshToken(user: User): Promise<RefreshToken>  {
+    public async generateNewRefreshToken(user: User): Promise<RefreshToken> {
         const oldToken = await this.findOne({where: {user}});
 
         if (oldToken) {

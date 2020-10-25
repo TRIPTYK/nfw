@@ -14,32 +14,32 @@ export interface RelationMetadata {
  */
 export function Serialize(): PropertyDecorator {
     return function(target: object, propertyKey: string | symbol) {
-        if (!Reflect.hasMetadata("serialize",target)) {
-            Reflect.defineMetadata("serialize",[],target);
+        if (!Reflect.hasMetadata("serialize", target)) {
+            Reflect.defineMetadata("serialize", [], target);
         }
 
-        Reflect.getMetadata("serialize",target).push(propertyKey);
+        Reflect.getMetadata("serialize", target).push(propertyKey);
     }
 }
 
 export function Deserialize(): PropertyDecorator {
     return function(target: object, propertyKey: string | symbol) {
-        if (!Reflect.hasMetadata("deserialize",target)) {
-            Reflect.defineMetadata("deserialize",[],target);
+        if (!Reflect.hasMetadata("deserialize", target)) {
+            Reflect.defineMetadata("deserialize", [], target);
         }
 
-        Reflect.getMetadata("deserialize",target).push(propertyKey);
+        Reflect.getMetadata("deserialize", target).push(propertyKey);
     }
 }
 
 
 export function Relation(type: () => Schema): PropertyDecorator {
     return function(target: object, propertyKey: string) {
-        if (!Reflect.hasMetadata("relations",target)) {
-            Reflect.defineMetadata("relations",[],target);
+        if (!Reflect.hasMetadata("relations", target)) {
+            Reflect.defineMetadata("relations", [], target);
         }
 
-        const relations: RelationMetadata[] = Reflect.getMetadata("relations",target);
+        const relations: RelationMetadata[] = Reflect.getMetadata("relations", target);
 
         relations.push({
             type,
@@ -62,12 +62,12 @@ export interface SchemaOptions {
  */
 export function JsonApiSerializer(options: SchemaOptions): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
-        Reflect.defineMetadata("schemas",options,target.prototype);
+        Reflect.defineMetadata("schemas", options, target.prototype);
     }
 }
 
 export function SerializerSchema(name = "default"): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
-        Reflect.defineMetadata("name",name,target);
+        Reflect.defineMetadata("name", name, target);
     }
 }

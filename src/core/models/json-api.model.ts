@@ -7,6 +7,6 @@ export abstract class JsonApiModel<T> extends BaseModel {
 
     public constructor(payload: Partial<T> = {}) {
         super();
-        Object.assign(this,payload);
+        Object.assign(this, payload);
     }
 }

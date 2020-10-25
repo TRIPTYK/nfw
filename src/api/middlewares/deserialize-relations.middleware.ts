@@ -1,5 +1,5 @@
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import { Request , Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { injectable } from "tsyringe";
 
 export type DeserializeRelationsMiddlewareArgs = any;

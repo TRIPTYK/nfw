@@ -7,14 +7,12 @@ import BaseJsonApiRepository from "../repositories/base.repository";
 import { Type } from "../types/global";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { ApplicationRegistry } from "../application/registry.application";
-import { func } from "joi";
 
 export interface EntityOptionsExtended<T> extends EntityOptions {
     repository: Type<BaseJsonApiRepository<T>>;
     serializer: Type<BaseJsonApiSerializer<T>>;
     validator: any;
 }
-
 
 /**
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).
@@ -53,18 +51,25 @@ export function JsonApiEntity<T>(nameOrOptions?: string|any, maybeOptions?: Enti
             throw new Error("Please provide arguments for json-api entity");
         }
 
-        Reflect.defineMetadata("name",name,target);
-        Reflect.defineMetadata("repository",options.repository,target);
-        Reflect.defineMetadata("serializer",options.serializer,target);
-        Reflect.defineMetadata("validator",options.validator,target);
+        Reflect.defineMetadata("name", name, target);
+        Reflect.defineMetadata("repository", options.repository, target);
+        Reflect.defineMetadata("serializer", options.serializer, target);
+        Reflect.defineMetadata("validator", options.validator, target);
 
         getMetadataArgsStorage().entityRepositories.push({
             target : options.repository,
-            entity: target,
+            entity: target
         } as EntityRepositoryMetadataArgs);
 
         ApplicationRegistry.registerEntity(target as any);
-        ApplicationRegistry.registerCustomRepositoryFor(target as any,options.repository);
-        ApplicationRegistry.registerSerializerFor(target as any,options.serializer);
+        ApplicationRegistry.registerCustomRepositoryFor(target as any, options.repository);
+        ApplicationRegistry.registerSerializerFor(target as any, options.serializer);
     };
+}
+
+
+export function Filterable(): PropertyDecorator {
+    return function(target: object, propertyKey: string | symbol) {
+        Reflect.defineMetadata("filterable", true, target, propertyKey);
+    }
 }

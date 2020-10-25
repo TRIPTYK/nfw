@@ -46,8 +46,8 @@ export class LoggerService extends BaseService {
                 // - Write all logs error (and below) to `error.log`.
                 //
                 new Winston.transports.File({filename: `${directory}/logs/error.log`, level: "error"}),
-                new Winston.transports.File({filename: `${directory}/logs/combined.log`}),
-            ],
+                new Winston.transports.File({filename: `${directory}/logs/combined.log`})
+            ]
         });
 
         //
@@ -74,7 +74,7 @@ export class LoggerService extends BaseService {
         return this._logger;
     }
 
-    public init(): void {
-        return;
+    public init() {
+        return true;
     }
 }

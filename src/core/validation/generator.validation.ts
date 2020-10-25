@@ -26,11 +26,11 @@ export const createEntity: ValidationSchema<any> = {
     },
     "columns.*.length": {
         optional:true,
-        isInt: true,
+        isInt: true
     },
     "columns.*.width": {
         optional:true,
-        isInt: true,
+        isInt: true
     },
     "columns.*.isPrimary": {
         optional:true,
@@ -55,7 +55,7 @@ export const createEntity: ValidationSchema<any> = {
     "relations.*.type": {
         exists: true,
         isIn : {
-            options : [["many-to-many","one-to-many","one-to-one"]]
+            options : [["many-to-many", "one-to-many", "one-to-one"]]
         }
     },
     "relations.*.inverseRelationName": {
@@ -76,7 +76,7 @@ export const createRelation: ValidationSchema<Relation> = {
     type: {
         exists: true,
         isIn : {
-            options : [["many-to-many","one-to-many","one-to-one"]]
+            options : [["many-to-many", "one-to-many", "one-to-one"]]
         }
     },
     inverseRelationName: {

@@ -4,7 +4,7 @@ export const booleanMap = {
     false : false,
     no : false,
     true : true,
-    yes : true,
+    yes : true
 };
 
 export function parseBool(string: string): boolean {

@@ -19,7 +19,7 @@ import { Environments } from "../enums/environments.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
 import { UserSerializer } from "../serializers/user.serializer";
 import { UserRepository } from "../repositories/user.repository";
-import { JsonApiEntity } from "../../core/decorators/model.decorator";
+import { Filterable, JsonApiEntity } from "../../core/decorators/model.decorator";
 import * as UserValidator from "../validations/user.validation";
 import ConfigurationService from "../../core/services/configuration.service";
 import { container } from "tsyringe";
@@ -38,7 +38,7 @@ export interface UserInterface {
     avatar: Document;
 }
 
-@JsonApiEntity("users",{
+@JsonApiEntity("users", {
     serializer : UserSerializer,
     repository : UserRepository,
     validator: UserValidator
@@ -49,6 +49,7 @@ export class User extends JsonApiModel<User> implements UserInterface {
         length: 32,
         nullable: false
     })
+    @Filterable()
     public username: string;
 
     @Column({
@@ -122,7 +123,7 @@ export class User extends JsonApiModel<User> implements UserInterface {
     }
 
     public generateAccessToken(): string {
-        const { jwt : { accessExpires , secret } } = container.resolve<ConfigurationService>(ConfigurationService).config;
+        const { jwt : { accessExpires, secret } } = container.resolve<ConfigurationService>(ConfigurationService).config;
 
         const payload = {
             exp: Moment().add(accessExpires, "minutes").unix(),
@@ -137,8 +138,8 @@ export class User extends JsonApiModel<User> implements UserInterface {
         return Bcrypt.compare(password, this.password);
     }
 
-    public can(method: string,context: any,resource: string): Promise<Permission> {
+    public can(method: string, context: any, resource: string): Promise<Permission> {
         const aclService = container.resolve(ACLService);
-        return aclService.can(this,method,context,resource);
+        return aclService.can(this, method, context, resource);
     }
 }

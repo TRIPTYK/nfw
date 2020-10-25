@@ -16,7 +16,7 @@ import { DeepPartial } from "typeorm";
 export default class DocumentController extends BaseJsonApiController<Document> {
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, { type : "single", fieldName : "document" })
     @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(DocumentResizeMiddleware)
     public async create(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
@@ -27,7 +27,7 @@ export default class DocumentController extends BaseJsonApiController<Document> 
 
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware,{ type : "single" , fieldName : "document" })
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, { type : "single", fieldName : "document" })
     @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(DocumentResizeMiddleware)
     public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
@@ -40,7 +40,7 @@ export default class DocumentController extends BaseJsonApiController<Document> 
 
         await originalDocument.removeAssociatedFiles();
 
-        const saved = await this.repository.save(this.repository.merge(originalDocument,file as any));
+        const saved = await this.repository.save(this.repository.merge(originalDocument, file as any));
 
         return saved;
     }

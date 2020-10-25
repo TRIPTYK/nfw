@@ -25,7 +25,7 @@ const register: ValidationSchema<User> = {
         isEmpty : {
             negated : true
         },
-        isString : true,
+        isString : true
     },
     username: {
         custom: {

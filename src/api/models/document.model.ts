@@ -3,7 +3,7 @@ import {
     BeforeUpdate,
     Column,
     OneToOne,
-    ManyToMany,
+    ManyToMany
 } from "typeorm";
 
 import {User} from "./user.model";
@@ -29,7 +29,7 @@ export interface DocumentInterface {
     deleted_at: Date;
 }
 
-@JsonApiEntity("documents",{
+@JsonApiEntity("documents", {
     serializer : DocumentSerializer,
     repository : DocumentRepository,
     validator : DocumentValidator

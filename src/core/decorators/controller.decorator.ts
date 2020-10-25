@@ -54,48 +54,48 @@ export function JsonApiController<T extends JsonApiModel<T>>(entity: Type<T>): C
 
 export function RouteMiddleware<T = any>(middlewareClass: Type<BaseMiddleware>, args?: T): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
-        if (! Reflect.hasMetadata("middlewares",  target)) {
+        if (! Reflect.hasMetadata("middlewares", target)) {
             Reflect.defineMetadata("middlewares", [], target);
         }
         const middlewares = Reflect.getMetadata("middlewares", target) as MiddlewareMetadata[];
-        middlewares.push({middleware : middlewareClass , args});
+        middlewares.push({middleware : middlewareClass, args});
     };
 }
 
 export function MethodMiddleware<T = any>(middlewareClass: Type<BaseMiddleware>, args?: T): MethodDecorator {
     return function(target: any, propertyKey: string): void {
-        if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
-            Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
+        if (! Reflect.hasMetadata("middlewares", target.constructor, propertyKey)) {
+            Reflect.defineMetadata("middlewares", [], target.constructor, propertyKey);
         }
-        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey) as MiddlewareMetadata[];
-        middlewares.push({middleware : middlewareClass , args});
+        const middlewares = Reflect.getMetadata("middlewares", target.constructor, propertyKey) as MiddlewareMetadata[];
+        middlewares.push({middleware : middlewareClass, args});
     };
 }
 
-export function JsonApiMethodMiddleware<T = any>(middlewareClass: Type<BaseMiddleware>, args?: T,order: MiddlewareOrder = "afterAll"): MethodDecorator {
+export function JsonApiMethodMiddleware<T = any>(middlewareClass: Type<BaseMiddleware>, args?: T, order: MiddlewareOrder = "afterAll"): MethodDecorator {
     return function(target: any, propertyKey: string): void {
-        if (! Reflect.hasMetadata("middlewares", target.constructor , propertyKey)) {
-            Reflect.defineMetadata("middlewares", [], target.constructor , propertyKey);
+        if (! Reflect.hasMetadata("middlewares", target.constructor, propertyKey)) {
+            Reflect.defineMetadata("middlewares", [], target.constructor, propertyKey);
         }
-        const middlewares = Reflect.getMetadata("middlewares", target.constructor , propertyKey) as JsonApiMiddlewareMetadata[];
-        middlewares.push({middleware : middlewareClass , args, order});
+        const middlewares = Reflect.getMetadata("middlewares", target.constructor, propertyKey) as JsonApiMiddlewareMetadata[];
+        middlewares.push({middleware : middlewareClass, args, order});
     };
 }
 
 export function OverrideSerializer(schema = "default"): MethodDecorator {
     return function(target: any, propertyKey: string): void {
-        Reflect.defineMetadata("deserializer", schema, target.constructor , propertyKey);
-        Reflect.defineMetadata("schema-use", schema, target , propertyKey);
+        Reflect.defineMetadata("deserializer", schema, target.constructor, propertyKey);
+        Reflect.defineMetadata("schema-use", schema, target, propertyKey);
     };
 }
 
 export function OverrideValidator<T>(schema: ValidationSchema<T>): MethodDecorator {
     return function(target: any, propertyKey: string): void {
-        Reflect.defineMetadata("validator", schema, target.constructor , propertyKey);
+        Reflect.defineMetadata("validator", schema, target.constructor, propertyKey);
     };
 }
 
-const registerMethod = (path: string = null , method: RequestMethods) =>
+const registerMethod = (path: string = null, method: RequestMethods) =>
     function(target: any, propertyKey: string): void {
 
         if (! Reflect.hasMetadata("routes", target.constructor)) {
@@ -108,13 +108,13 @@ const registerMethod = (path: string = null , method: RequestMethods) =>
         const alreadyExists = routes.findIndex((route) => route.methodName === propertyKey);
 
         if (alreadyExists >= 0) {
-            routes.splice(alreadyExists,1);
+            routes.splice(alreadyExists, 1);
         }
 
         routes.push({
             methodName: propertyKey,
             path : path ? path : `/${propertyKey}`,
-            requestMethod: method,
+            requestMethod: method
         });
     };
 

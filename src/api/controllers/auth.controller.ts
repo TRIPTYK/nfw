@@ -37,7 +37,7 @@ export default class AuthController extends BaseController {
     }
 
     @Post()
-    @MethodMiddleware<DeserializeMiddlewareArgs>(DeserializeMiddleware, {serializer: UserSerializer,schema:"default" })
+    @MethodMiddleware<DeserializeMiddlewareArgs>(DeserializeMiddleware, {serializer: UserSerializer, schema:"default" })
     @MethodMiddleware<ValidationMiddlewareArgs>(ValidationMiddleware, {schema : register})
     @MethodMiddleware<SecurityMiddlewareArgs>(SecurityMiddleware)
     public async register(req: Request, res: Response): Promise<any> {
@@ -52,7 +52,7 @@ export default class AuthController extends BaseController {
 
     @Post()
     public async login(req: Request): Promise<any> {
-        const { email , password } = req.body;
+        const { email, password } = req.body;
         const { user, accessToken } = await this.repository.findAndGenerateAccessToken(email, password);
         const refreshToken = await this.refreshRepository.generateNewRefreshToken(user);
 

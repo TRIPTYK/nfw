@@ -9,7 +9,7 @@ import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
  *
  * @param routeName
  */
-export function RegisterApplication({controllers,services}: {controllers: Type<any>[];services: Type<BaseService>[]}): ClassDecorator {
+export function RegisterApplication({controllers, services}: {controllers: Type<any>[];services: Type<BaseService>[]}): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
         Reflect.defineMetadata("controllers", controllers, target);
         Reflect.defineMetadata("services", services, target);
@@ -17,13 +17,13 @@ export function RegisterApplication({controllers,services}: {controllers: Type<a
 }
 
 
-export function GlobalMiddleware(middleware: Type<BaseMiddleware | BaseErrorMiddleware>, args?: any,order: "before" | "after" = "before"): ClassDecorator {
+export function GlobalMiddleware(middleware: Type<BaseMiddleware | BaseErrorMiddleware>, args?: any, order: "before" | "after" = "before"): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
-        if (Reflect.hasMetadata("middlewares",target)) {
+        if (Reflect.hasMetadata("middlewares", target)) {
             const middlewares = Reflect.getOwnMetadata("middlewares", target);
-            middlewares.push({middleware,args,order});
+            middlewares.push({middleware, args, order});
         }else{
-            Reflect.defineMetadata("middlewares", [{middleware,args,order}], target);
+            Reflect.defineMetadata("middlewares", [{middleware, args, order}], target);
         }
     };
 }

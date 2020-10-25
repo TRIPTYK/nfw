@@ -85,21 +85,21 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
             unconvertCase : "snake_case"
         } as JSONAPISerializerSchema);
 
-        const schemasData: SchemaOptions = Reflect.getMetadata("schemas",this);
+        const schemasData: SchemaOptions = Reflect.getMetadata("schemas", this);
 
         for (const schema of schemasData.schemas()) {
-            Reflect.defineMetadata("type",schemasData.type,schema);
+            Reflect.defineMetadata("type", schemasData.type, schema);
         }
     }
 
     public init() {
         this.configurationService = container.resolve<ConfigurationService>(ConfigurationService);
-        const schemasData: SchemaOptions = Reflect.getMetadata("schemas",this);
+        const schemasData: SchemaOptions = Reflect.getMetadata("schemas", this);
         this.type = schemasData.type;
 
         for (const schema of schemasData.schemas()) {
             const passedBy = [];
-            this.convertSerializerSchemaToObjectSchema(schema,schema,Reflect.getMetadata("name",schema),passedBy);
+            this.convertSerializerSchemaToObjectSchema(schema, schema, Reflect.getMetadata("name", schema), passedBy);
         }
     }
 
@@ -107,7 +107,7 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
         const { api } = this.configurationService.config;
 
         if (options?.paginationData) {
-            const { total, page , size } = options.paginationData;
+            const { total, page, size } = options.paginationData;
             const baseUrl = `/api/${api.version}`;
             const max = Math.ceil(total / size);
             delete options.paginationData;
@@ -134,7 +134,7 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
             }
         };
 
-        return this.serializer.serializeAsync(this.type, payload,options?.schema, options?.meta , options?.excludeData, {
+        return this.serializer.serializeAsync(this.type, payload, options?.schema, options?.meta, options?.excludeData, {
             [this.type] : options?.overrideSchemaOptions
         });
     }
@@ -146,21 +146,23 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
     private applyDeserializeCase(deserializeArray: string[]) {
         const convertCase = this.serializer.opts.convertCase ?? "camelCase";
         switch(convertCase) {
-            case "camelCase" :
-                return deserializeArray.map((e) => toCamelCase(e));
-            case "snake_case" :
-                return deserializeArray.map((e) => toSnakeCase(e));
-            case "kebab-case" :
-                return deserializeArray.map((e) => toKebabCase(e));
+        case "camelCase" :
+            return deserializeArray.map((e) => toCamelCase(e));
+        case "snake_case" :
+            return deserializeArray.map((e) => toSnakeCase(e));
+        case "kebab-case" :
+            return deserializeArray.map((e) => toKebabCase(e));
+        default: {
+            return deserializeArray;
         }
-        return deserializeArray;
+        }
     }
 
-    public convertSerializerSchemaToObjectSchema(schema: Type<any>,rootSchema: Type<any>,schemaName: string,passedBy: string[]): void {
-        const serialize = (Reflect.getMetadata("serialize",schema.prototype) ?? []) as string[];
-        const deserialize = this.applyDeserializeCase((Reflect.getMetadata("deserialize",schema.prototype) ?? []) as string[]);
-        const relations = (Reflect.getMetadata("relations",schema.prototype) ?? []) as RelationMetadata[];
-        const schemaType = Reflect.getMetadata("type",schema) as string;
+    public convertSerializerSchemaToObjectSchema(schema: Type<any>, rootSchema: Type<any>, schemaName: string, passedBy: string[]): void {
+        const serialize = (Reflect.getMetadata("serialize", schema.prototype) ?? []) as string[];
+        const deserialize = this.applyDeserializeCase((Reflect.getMetadata("deserialize", schema.prototype) ?? []) as string[]);
+        const relations = (Reflect.getMetadata("relations", schema.prototype) ?? []) as RelationMetadata[];
+        const schemaType = Reflect.getMetadata("type", schema) as string;
         const { api } = this.configurationService.config;
 
         const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
@@ -171,9 +173,9 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
 
         passedBy.push(schema.name);
 
-        for (const {type,property} of relations) {
+        for (const {type, property} of relations) {
             const schemaTypeRelation= type();
-            const relationType = Reflect.getMetadata("type",schemaTypeRelation);
+            const relationType = Reflect.getMetadata("type", schemaTypeRelation);
             relationShips[property] = {
                 deserialize : (data) => {
                     return {id : data.id};
@@ -185,10 +187,10 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
                 }
             };
 
-            this.convertSerializerSchemaToObjectSchema(schemaTypeRelation,rootSchema,schemaName,passedBy);
+            this.convertSerializerSchemaToObjectSchema(schemaTypeRelation, rootSchema, schemaName, passedBy);
         }
 
-        this.serializer.register(schemaType, schemaName , {
+        this.serializer.register(schemaType, schemaName, {
             whitelist: serialize,
             whitelistOnDeserialize: deserialize,
             relationships : relationShips,

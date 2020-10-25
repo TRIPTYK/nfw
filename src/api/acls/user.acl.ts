@@ -8,6 +8,6 @@ acl.grant("user")
     .execute("list").on("*")
     .grant("admin")
     .extend("user")
-    .execute("remove").on("users").condition((context: Request) => context.params.id !== (context["user"] as any).id);
+    .execute("remove").on("users").condition((context: Request) => context.params.id !== (context.user as any).id);
 
 export {acl as UserACL};

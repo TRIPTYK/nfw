@@ -1,4 +1,4 @@
-export enum MimeTypes  {
+export enum MimeTypes {
     EXCEL = "application/vnd.ms-excel",
     MSWORD = "application/msword",
     ZIP = "application/zip",
