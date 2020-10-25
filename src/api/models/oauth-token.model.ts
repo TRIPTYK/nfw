@@ -44,7 +44,7 @@ export class OAuthToken extends JsonApiModel<OAuthToken> {
         const cipher = createCipheriv("aes-256-cbc", Buffer.from(configurationService.config.oAuthKey), iv);
 
         const encrypted = Buffer.concat([cipher.update(this.refreshToken), cipher.final()]); 
-        const encryptedString = iv.toString('hex') + ':' + encrypted.toString('hex');
+        const encryptedString = `${iv.toString('hex')}:${encrypted.toString('hex')}`;
         this.refreshToken = encryptedString;
     }
 

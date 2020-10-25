@@ -349,7 +349,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
         let matchedBaseRelations: string[] = [];
 
         if (prefix) {
-            const regexp = new RegExp("^" + prefix.replace(".", "\\.") + "\\.");
+            const regexp = new RegExp(`^${ prefix.replace(".", "\\.") }\\.`);
             matchedBaseRelations = allRelations
                 .filter((relation) => regexp.exec(relation))
                 .map((relation) => relation.replace(regexp, ""))
@@ -362,7 +362,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
             const relationAlias: string = this.buildAlias(alias, relation);
 
             // add a join for the found relation
-            const selection = alias + "." + relation;
+            const selection = `${alias}.${ relation}`;
             if (applyJoin) {
                 // if applyJoin returns null , stop executing the applyJoin function
                 if (applyJoin(relation, selection, relationAlias) === null) {
@@ -373,15 +373,15 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
             }
 
             // remove added relations from the allRelations array, this is needed to find all not found relations at the end
-            allRelations.splice(allRelations.indexOf(prefix ? prefix + "." + relation : relation), 1);
+            allRelations.splice(allRelations.indexOf(prefix ? `${prefix}.${relation}` : relation), 1);
 
             const join = qb.expressionMap.joinAttributes.find((joinAttr) => joinAttr.entityOrProperty === selection);
-            this.handleIncludes(qb, allRelations, join.alias.name, join.metadata, prefix ? prefix + "." + relation : relation, applyJoin);
+            this.handleIncludes(qb, allRelations, join.alias.name, join.metadata, prefix ? `${prefix }.${ relation}` : relation, applyJoin);
         }
     }
 
     public buildAlias(alias: string, relation: string) {
-        return dashify(alias + "." + relation);
+        return dashify(`${alias }.${ relation}`);
     }
 
     /**

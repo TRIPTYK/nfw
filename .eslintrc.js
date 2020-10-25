@@ -15,11 +15,11 @@ module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
     plugins: [
-        '@typescript-eslint',
+        '@typescript-eslint'
     ],
     extends: [
         "eslint:recommended",
-        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended'
     ],
     rules : {
         "no-console":"error",
@@ -82,6 +82,13 @@ module.exports = {
         "no-new-object":"error",
         "no-unneeded-ternary":"error",
         "prefer-object-spread":"error",
-        "no-confusing-arrow":"warn"
+        "no-confusing-arrow":"warn",
+        "no-var":"error",
+        "object-shorthand":"warn",
+        "prefer-arrow-callback":"error",
+        "prefer-const":"error",
+        "prefer-rest-params":"error",
+        "prefer-spread":"error",
+        "prefer-template":"error"
     }
 };
