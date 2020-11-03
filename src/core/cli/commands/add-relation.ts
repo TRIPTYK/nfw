@@ -58,7 +58,20 @@ export default async function addRelation(entity: string,relation: Relation) {
 
     relation.inverseRelationName ??= relation.type === "many-to-many" ? pluralize(relation.target) : relation.target;
     const decoratorName = pascalcase(relation.type);
-    const inverseDecoratorName = relation.type === "one-to-many" ? decoratorName : "ManyToOne";
+
+    let inverseDecoratorName;
+
+    switch(relation.type) {
+        case "one-to-many": 
+            inverseDecoratorName = "ManyToOne";
+            break;  
+        case "many-to-many":
+            inverseDecoratorName = "ManyToMany";
+            break;
+        default: // oneToOne
+            inverseDecoratorName = "OneToOne";
+            break;
+    }
 
     const entityInterface = modelFile.getInterface(`${naming.classPrefixName}Interface`);
     if (entityInterface) {

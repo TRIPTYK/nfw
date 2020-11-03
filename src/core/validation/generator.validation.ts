@@ -22,7 +22,7 @@ export const createEntity: ValidationSchema<any> = {
         }
     },
     "columns.*.default": {
-        exists: true
+        optional:true,
     },
     "columns.*.length": {
         optional:true,

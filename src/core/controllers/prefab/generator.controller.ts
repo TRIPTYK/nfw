@@ -8,7 +8,7 @@ import { createEntity, createColumn, createRelation } from "../../validation/gen
 import { removeRelation } from "../../cli/commands/remove-relation";
 import addRelation from "../../cli/commands/add-relation";
 import * as SocketIO from "socket.io-client";
-import httpStatus from "http-status";
+import * as HttpStatus from "http-status";
 const project = require("../../cli/utils/project");
 
 /**
@@ -28,7 +28,7 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
-        res.sendStatus(httpStatus.ACCEPTED);
+        res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
@@ -39,7 +39,7 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
-        res.sendStatus(httpStatus.ACCEPTED);
+        res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
@@ -50,7 +50,7 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
-        res.sendStatus(httpStatus.ACCEPTED);
+        res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
@@ -60,7 +60,7 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
-        res.sendStatus(httpStatus.ACCEPTED);
+        res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
@@ -70,7 +70,7 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
-        res.sendStatus(httpStatus.ACCEPTED);
+        res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
@@ -80,22 +80,22 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
-        res.sendStatus(httpStatus.ACCEPTED);
+        res.sendStatus(HttpStatus.ACCEPTED);
     }
 
     init() {
         super.init();
-        this.socket = SocketIO('http://localhost:3000');
-        this.socket.on("connect",async () => {
-            await this.sendMessageAndWaitResponse("app-save")
-            await this.sendMessageAndWaitResponse("app-recompile-sync");
-        })
+        // this.socket = SocketIO('http://localhost:3000');
+        // this.socket.on("connect",async () => {
+        //     await this.sendMessageAndWaitResponse("app-save")
+        //     await this.sendMessageAndWaitResponse("app-recompile-sync");
+        // })
     }
 
     private async sendMessageAndWaitResponse(type: string,data?: any) {
-        return new Promise((res,rej) => {
-            this.socket.emit(type,data,res);
-        }) 
+        // return new Promise((res,rej) => {
+        //     // this.socket.emit(type,data,res);
+        // }) 
     }
 }
 
