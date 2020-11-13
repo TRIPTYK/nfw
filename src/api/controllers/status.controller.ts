@@ -2,6 +2,7 @@ import { Controller, Get } from "../../core/decorators/controller.decorator";
 import { Request, Response } from "express";
 import BaseController from "../../core/controllers/base.controller";
 import { singleton, autoInjectable } from "tsyringe";
+import { ApplicationRegistry } from "../../core/application/registry.application";
 
 @Controller("status")
 @singleton()
@@ -9,6 +10,9 @@ import { singleton, autoInjectable } from "tsyringe";
 export default class StatusController extends BaseController {
     @Get("/")
     public status(req: Request, res: Response): void {
-        res.sendStatus(200);
+        res.json({
+            status : ApplicationRegistry.status,
+            guid : ApplicationRegistry.guid
+        });
     }
 }

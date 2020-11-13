@@ -10,6 +10,13 @@ import Constructor from "../types/constructor";
 import BaseService from "../services/base.service";
 import BaseController from "../controllers/base.controller";
 import { mesure } from "../utils/mesure.util";
+import {v4} from "uuid";
+
+export enum ApplicationStatus {
+    Booting = "BOOTING",
+    Running = "RUNNING",
+    None = "NONE"
+}
 
 export class ApplicationRegistry {
     public static application: BaseApplication;
@@ -17,8 +24,11 @@ export class ApplicationRegistry {
     public static repositories: {[key: string]: Type<BaseJsonApiRepository<any>>} = {};
     public static serializers: {[key: string]: Type<BaseJsonApiSerializer<any>>} = {};
     public static controllers: BaseController[] = [];
+    public static status: ApplicationStatus = ApplicationStatus.None;
+    public static guid = v4();
 
     public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
+        ApplicationRegistry.status = ApplicationStatus.Booting;
         const services: Type<BaseService>[] = Reflect.getMetadata("services", app);
         const controllers: Type<BaseController>[] = Reflect.getMetadata("controllers", app);
         const middlewares: { middleware: any ; args: any ; order: "before" | "after" }[] = Reflect.getMetadata("middlewares", app) ?? [];
@@ -76,6 +86,9 @@ export class ApplicationRegistry {
         time = await mesure(async () => {
             await instance.afterInit();
         });
+
+        ApplicationRegistry.status = ApplicationStatus.Running;
+
         console.log(`[${time}ms] after init`);
 
         console.log("Server initialized and ready in", Date.now() - startTime, "ms");

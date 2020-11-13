@@ -11,6 +11,7 @@ import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
 import { autoInjectable } from "tsyringe";
 import project = require("../../cli/utils/project");
+import { rejects } from "assert";
 
 /**
  * Generates app
@@ -83,17 +84,23 @@ export default class GeneratorController extends BaseController {
         await project.save();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
         res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-restart");
     }
 
     constructor() {
         super();
         this.socket = SocketIO('http://localhost:3000');
     }
-    
+
     private async sendMessageAndWaitResponse(type: string, data?: any) {
-        return new Promise((res, rej) => {
-            console.log(this);
-            this.socket.emit(type, data, res);
+        return new Promise((resolve, rej) => {
+            this.socket.emit(type, data, (response) => {
+                if (response !== "ok") {
+                    rej(response);
+                }else{
+                    resolve(response);
+                }
+            });
         }) 
     }
 }

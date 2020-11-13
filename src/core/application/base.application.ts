@@ -14,7 +14,6 @@ import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
 import { toKebabCase } from "../utils/case.util";
 import DeserializeRelationsMiddleware from "../../api/middlewares/deserialize-relations.middleware";
-import { AsyncFunc } from "mocha";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;

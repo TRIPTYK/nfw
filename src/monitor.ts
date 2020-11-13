@@ -48,7 +48,11 @@ pm2.connect((err) => {
         client.on('app-recompile-sync', async (name, fn) => {
             execSync("rm -rf ./dist/src");
             console.log("compiling");
-            execSync("./node_modules/.bin/tsc");
+            try {
+                execSync("./node_modules/.bin/tsc/tsc");
+            }catch(e) {
+                fn("error", "compiling");
+            }
             console.log("compiled");
             const {typeorm} = container.resolve<ConfigurationService>(ConfigurationService).config;
             const connection = await createConnection({
@@ -67,7 +71,11 @@ pm2.connect((err) => {
                     migrationsDir: typeorm.migrationsDir
                 }
             });
-            await connection.synchronize();
+            try {
+                await connection.synchronize();
+            }catch(e) {
+                fn("error", "synchronize");
+            }
             console.log("Synchronized");
             await connection.close();
             fn("ok");
