@@ -9,14 +9,14 @@ import { removeRelation } from "../../cli/commands/remove-relation";
 import addRelation from "../../cli/commands/add-relation";
 import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
-import ConfigurationService from "../../services/configuration.service";
-import { Environments } from "../../../api/enums/environments.enum";
-const project = require("../../cli/utils/project");
+import { autoInjectable } from "tsyringe";
+import project from "../../cli/utils/project";
 
 /**
  * Generates app
  */
 @Controller("generate")
+@autoInjectable()
 export default class GeneratorController extends BaseController {
     private socket: SocketIOClient.Socket;
 

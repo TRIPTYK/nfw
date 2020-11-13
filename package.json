@@ -16,7 +16,7 @@
     "start": "NODE_ENV=production ./node_modules/.bin/tsc && node ./dist/src/app.bootstrap",
     "test": "NODE_ENV=test && NODE_ENV=test npm run schema-drop && NODE_ENV=test npm run schema-sync && NODE_ENV=test npm run seed-run && mkdir -p ./dist/uploads/documents && ./node_modules/.bin/nyc ./node_modules/.bin/ts-mocha ./test/json-api.test.ts --require ./test/hooks.ts --reporter spec --timeout 10000 --colors --exit",
     "start-dev": "NODE_ENV=development ./node_modules/.bin/ts-node-dev --respawn --transpile-only ./src/app.bootstrap.ts",
-    "monitor": "NODE_ENV=production ./node_modules/.bin/ts-node ./src/monitor.ts"
+    "monitor": "tsc && NODE_ENV=production ./node_modules/.bin/ts-node ./src/monitor.ts"
   },
   "engines": {
     "node": ">=10.16"
@@ -100,7 +100,7 @@
     "supertest": "^4.0.2",
     "tar": "^6.0.5",
     "ts-morph": "^8.1.0",
-    "tsyringe": "^4.1.0",
+    "tsyringe": "^4.4.0",
     "typeorm": "^0.2.22",
     "typeorm-seeding": "^1.6.1",
     "typescript": "^4.0.2",
@@ -109,8 +109,6 @@
     "xss": "^1.0.6"
   },
   "devDependencies": {
-    "@types/socket.io": "^2.1.11",
-    "@types/socket.io-client": "^1.4.33",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/bcrypt": "^3.0.0",
     "@types/body-parser": "^1.17.1",
@@ -124,6 +122,8 @@
     "@types/multer": "^1.3.10",
     "@types/node": "^12.7.7",
     "@types/passport": "^1.0.2",
+    "@types/socket.io": "^2.1.11",
+    "@types/socket.io-client": "^1.4.33",
     "@types/supertest": "^2.0.8",
     "@types/tar": "^4.0.3",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
