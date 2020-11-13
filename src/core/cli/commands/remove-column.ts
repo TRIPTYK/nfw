@@ -23,7 +23,7 @@ export default async function removeColumn(modelName: string,column: Column | st
     const columnProperty = entityClass.getInstanceProperty(columnName);
 
     if(!columnProperty) {
-        throw new Error("Entity property does not exists");
+        throw new Error(`Entity property ${columnProperty} does not exists`);
     }
 
     const entityInterface = modelFile.getInterface(`${classPrefixName}Interface`);

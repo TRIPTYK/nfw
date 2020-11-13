@@ -10,7 +10,7 @@ import addRelation from "../../cli/commands/add-relation";
 import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
 import { autoInjectable } from "tsyringe";
-import project from "../../cli/utils/project";
+import project = require("../../cli/utils/project");
 
 /**
  * Generates app
@@ -18,7 +18,7 @@ import project from "../../cli/utils/project";
 @Controller("generate")
 @autoInjectable()
 export default class GeneratorController extends BaseController {
-    private socket: SocketIOClient.Socket;
+    public socket: SocketIOClient.Socket = null;
 
     @Post("/entity/:name")
     @MethodMiddleware(ValidationMiddleware, {schema : createEntity, location: ["body"]})
@@ -78,7 +78,6 @@ export default class GeneratorController extends BaseController {
 
     @Delete("/entity/:name")
     public async deleteEntity(req: Request, res: Response) {
-        console.log("context",this);
         await deleteJsonApiEntity(req.params.name);
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
@@ -86,16 +85,20 @@ export default class GeneratorController extends BaseController {
         res.sendStatus(HttpStatus.ACCEPTED);
     }
 
-    async init() {
-        await super.init();
+    constructor() {
+        super();
         this.socket = SocketIO('http://localhost:3000');
     }
-
+    
     private async sendMessageAndWaitResponse(type: string, data?: any) {
-        // return new Promise((res, rej) => {
-        //     console.log(this.socket);
-        //     this.socket.emit(type, data, res);
-        // }) 
+        return new Promise((res, rej) => {
+            console.log(this);
+            this.socket.emit(type, data, res);
+        }) 
     }
 }
+
+
+
+
 
