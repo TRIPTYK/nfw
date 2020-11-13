@@ -26,7 +26,7 @@ export default class DeserializeMiddleware extends BaseMiddleware {
                 delete req.body[key];
             }
         }
-
+        
         return next();
     }
 }

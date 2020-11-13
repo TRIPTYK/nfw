@@ -158,6 +158,11 @@ export abstract class BaseJsonApiSerializer<T> implements SerializerInterface<T>
         }
     }
 
+    public getSchema(name: string) {
+        const schemasData: SchemaOptions = Reflect.getMetadata("schemas", this);
+        return schemasData.schemas().find((schema) => Reflect.getMetadata("name", schema) === name);
+    }
+
     public convertSerializerSchemaToObjectSchema(schema: Type<any>, rootSchema: Type<any>, schemaName: string, passedBy: string[]): void {
         const serialize = (Reflect.getMetadata("serialize", schema.prototype) ?? []) as string[];
         const deserialize = this.applyDeserializeCase((Reflect.getMetadata("deserialize", schema.prototype) ?? []) as string[]);

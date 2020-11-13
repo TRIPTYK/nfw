@@ -13,18 +13,18 @@ import * as SocketIO from "socket.io";
 import { createWriteStream } from "fs";
 import { join } from "path";
 
-process.on("SIGINT", function() {
+process.on("SIGINT", () => {
     pm2.disconnect();
     process.exit(0);
 });
 
-pm2.connect(function(err) {
+pm2.connect((err) => {
     if (err) {
         console.error(err);
         process.exit(2);
     }
 
-    pm2.start(firstApp,(err) => {
+    pm2.start(firstApp, (err) => {
         if (err) {
             throw err;
         }
@@ -32,9 +32,9 @@ pm2.connect(function(err) {
 
     const io = SocketIO();
     io.on('connection', client => {
-        client.on("app-save",(name, fn) => {
-            tar.c({gzip:true},['src/api'])
-                .pipe(createWriteStream(join(process.cwd(),"dist","backup.tar.gz")));
+        client.on("app-save", (name, fn) => {
+            tar.c({gzip:true}, ['src/api'])
+                .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")));
             fn("ok");
         });
         client.on('app-recompile-sync', async (name, fn) => {
@@ -57,7 +57,7 @@ pm2.connect(function(err) {
                 username: typeorm.user,
                 cli : {
                     entitiesDir: typeorm.entitiesDir,
-                    migrationsDir: typeorm.migrationsDir,
+                    migrationsDir: typeorm.migrationsDir
                 }
             });
             await connection.synchronize();
@@ -66,11 +66,11 @@ pm2.connect(function(err) {
             fn("ok");
         });
         client.on('app-restart', async (name, fn) => {
-            pm2.restart(firstApp.name,() => {
+            pm2.restart(firstApp.name, () => {
                 if (err) {
                     throw err;
                 }
-                console.log("Restarted app " + firstApp.name);
+                console.log(`Restarted app ${ firstApp.name}`);
                 fn("ok");
             });
         });

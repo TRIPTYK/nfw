@@ -4,6 +4,7 @@ import { singleton } from "tsyringe";
 import { BaseErrorMiddleware } from "./base.error-middleware";
 import {Request, Response, NextFunction} from "express";
 import * as Boom from "@hapi/boom";
+import { toCamelCase } from "../utils/case.util";
 
 interface JsonApiErrorObject {
     detail: string;
@@ -12,7 +13,8 @@ interface JsonApiErrorObject {
         parameter?: string,
         pointer?: string
     };
-    status : string
+    meta: any;
+    status : string;
 }
 
 @singleton()
@@ -30,15 +32,20 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
                         detail: `${suberror.msg} for ${suberror.param} in ${suberror.location}, value is ${suberror.value}`,
                         title: "Validation Error",
                         source: {},
+                        meta : {
+                            param : toCamelCase(suberror.param),
+                            msg : suberror.msg,
+                            location : suberror.location
+                        },
                         status : "400"
                     };
 
                     if (["query", "params"].includes(suberror.location)) {
-                        err.source.parameter = suberror.param;
+                        err.source.parameter = toCamelCase(suberror.param);
                     }
 
                     if (suberror.location === "body") {
-                        err.source.pointer = `/data/attributes/${suberror.param}`;
+                        err.source.pointer = `/data/attributes/${toCamelCase(suberror.param)}`;
                     }
 
                     allErrors.push(err);

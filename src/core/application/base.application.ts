@@ -13,6 +13,7 @@ import BaseController from "../controllers/base.controller";
 import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
 import { toKebabCase } from "../utils/case.util";
+import DeserializeRelationsMiddleware from "../../api/middlewares/deserialize-relations.middleware";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
@@ -215,6 +216,10 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
                             if (serializerOverride !== null) {
                                 applyMiddlewares.push(this.useMiddleware(DeserializeMiddleware, {
+                                    serializer,
+                                    schema
+                                }, routeContext));
+                                applyMiddlewares.push(this.useMiddleware(DeserializeRelationsMiddleware, {
                                     serializer,
                                     schema
                                 }, routeContext));

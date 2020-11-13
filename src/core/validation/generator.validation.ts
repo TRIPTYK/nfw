@@ -99,7 +99,7 @@ export const createColumn: ValidationSchema<Column> = {
         isString: true
     },
     default: {
-        exists: true
+        optional: true
     },
     length: {
         exists: true,

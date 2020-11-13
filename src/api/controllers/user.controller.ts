@@ -18,8 +18,4 @@ export default class UserController extends BaseJsonApiController<User> {
     public profile(req: Request): any {
         return req.user;
     }
-
-    public async remove(req: Request, res: Response) {
-        return super.remove(req, res);
-    }
 }
