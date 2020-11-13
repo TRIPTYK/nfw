@@ -2,7 +2,7 @@
 /* eslint-disable complexity */
 import * as Express from "express";
 import ApplicationInterface from "../interfaces/application.interface";
-import { Type } from "../types/global";
+import { AnyFunction, Type } from "../types/global";
 import { RouteDefinition, RequestMethods, MiddlewareMetadata, JsonApiMiddlewareMetadata } from "../decorators/controller.decorator";
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { container } from "tsyringe";
@@ -14,6 +14,7 @@ import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
 import { toKebabCase } from "../utils/case.util";
 import DeserializeRelationsMiddleware from "../../api/middlewares/deserialize-relations.middleware";
+import { AsyncFunc } from "mocha";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
@@ -54,6 +55,20 @@ export default abstract class BaseApplication implements ApplicationInterface {
                 resolve(server);
             });
         })
+    }
+
+    private callMethod<T extends BaseController>(methodName: string, context: T) {
+        const middlewareFunction = async (req: Express.Request, res: Express.Response, next: (arg0: any) => any) => {
+            try {
+                const response = await (context[methodName] as AnyFunction)(req, res);
+                if (!res.headersSent) {
+                    res.send(response);
+                }
+            } catch (e) {
+                return next(e);
+            }
+        }
+        return middlewareFunction.bind(context);
     }
 
     /**
@@ -170,7 +185,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         middlewares.push(this.useMiddleware(iterator.middleware, iterator.args, routeContext));
                     }
 
-                    middlewares.push(instanceController.callMethod(route.methodName));
+                    middlewares.push(this.callMethod(route.methodName, instanceController));
 
                     router[route.requestMethod](`${route.path}`, middlewares);
                 }
@@ -254,7 +269,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         applyMiddlewares.push(this.useMiddleware(afterAllMiddleware.middleware, afterAllMiddleware.args, routeContext));
                     }
 
-                    applyMiddlewares.push(instanceController.callMethod(method));
+                    applyMiddlewares.push(this.callMethod(method, instanceController));
 
                     router[methodType](path, middlewaresForController.map((mid) => this.useMiddleware(mid.middleware, mid.args, routeContext)), applyMiddlewares);
                 }
@@ -283,7 +298,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         middlewares.push(this.useMiddleware(iterator.middleware, iterator.args, routeContext));
                     }
 
-                    middlewares.push(instanceController.callMethod(route.methodName));
+                    middlewares.push(this.callMethod(route.methodName, instanceController));
 
                     router[route.requestMethod](`${route.path}`, middlewares);
                 }

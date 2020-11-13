@@ -13,7 +13,10 @@ import * as SocketIO from "socket.io";
 import { createWriteStream } from "fs";
 import { join } from "path";
 
+
+
 process.on("SIGINT", () => {
+    console.log("terminated");
     pm2.disconnect();
     process.exit(0);
 });
@@ -24,10 +27,15 @@ pm2.connect((err) => {
         process.exit(2);
     }
 
-    pm2.start(firstApp, (err) => {
+    pm2.stop(firstApp.name, (err) => {
         if (err) {
             throw err;
         }
+        pm2.start(firstApp, (err) => {
+            if (err) {
+                throw err;
+            }
+        });
     });
 
     const io = SocketIO();
@@ -38,7 +46,6 @@ pm2.connect((err) => {
             fn("ok");
         });
         client.on('app-recompile-sync', async (name, fn) => {
-            console.log("boup");
             execSync("rm -rf ./dist/src");
             console.log("compiling");
             execSync("./node_modules/.bin/tsc");
