@@ -11,7 +11,6 @@ import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
 import { autoInjectable } from "tsyringe";
 import project = require("../../cli/utils/project");
-import { rejects } from "assert";
 
 /**
  * Generates app

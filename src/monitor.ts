@@ -9,11 +9,12 @@ import { createConnection } from "typeorm";
 import ConfigurationService from "./core/services/configuration.service";
 import * as tar from "tar";
 import { execSync } from "child_process";
-import * as SocketIO from "socket.io";
+import { Server, Socket } from "socket.io";
 import { createWriteStream } from "fs";
 import { join } from "path";
-
-
+import * as Cors from "cors";
+import * as Http from "http";
+import * as Express from "express";
 
 process.on("SIGINT", () => {
     console.log("terminated");
@@ -37,9 +38,29 @@ pm2.connect((err) => {
             }
         });
     });
+    
+    const app = Express();
+    const server = Http.createServer(app);
 
-    const io = SocketIO();
+    const {typeorm, authorized} = container.resolve<ConfigurationService>(ConfigurationService).config;
+
+    const CORSOptions = {
+        allowedHeaders: ["Content-Type", "Authorization"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+        origin: authorized
+    };
+
+    app.use(Cors(CORSOptions)); 
+
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
+        }
+    });
+
     io.on('connection', client => {
+        console.log("client connected", client.id);
         client.on("app-save", (name, fn) => {
             tar.c({gzip:true}, ['src/api'])
                 .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")));
@@ -54,7 +75,6 @@ pm2.connect((err) => {
                 fn("compiling-error");
             }
             console.log("compiled");
-            const {typeorm} = container.resolve<ConfigurationService>(ConfigurationService).config;
             const connection = await createConnection({
                 database: typeorm.database,
                 entities : typeorm.entities,
@@ -78,18 +98,21 @@ pm2.connect((err) => {
             }
             console.log("Synchronized");
             await connection.close();
+            io.emit("synchronized");
             fn("ok");
         });
         client.on('app-restart', async (name, fn) => {
+            io.emit("app-restarting");
             pm2.restart(firstApp.name, () => {
                 if (err) {
                     throw err;
                 }
                 console.log(`Restarted app ${ firstApp.name}`);
+                io.emit("app-restarted");
                 fn("ok");
             });
         });
     });
-    
+
     io.listen(3000);
 });
