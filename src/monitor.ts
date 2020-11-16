@@ -49,9 +49,9 @@ pm2.connect((err) => {
             execSync("rm -rf ./dist/src");
             console.log("compiling");
             try {
-                execSync("./node_modules/.bin/tsc/tsc");
+                execSync("./node_modules/.bin/tsc");
             }catch(e) {
-                fn("error", "compiling");
+                fn("compiling-error");
             }
             console.log("compiled");
             const {typeorm} = container.resolve<ConfigurationService>(ConfigurationService).config;
@@ -74,7 +74,7 @@ pm2.connect((err) => {
             try {
                 await connection.synchronize();
             }catch(e) {
-                fn("error", "synchronize");
+                fn("synchronize-error");
             }
             console.log("Synchronized");
             await connection.close();
