@@ -16,7 +16,7 @@
     "start": "NODE_ENV=production ./node_modules/.bin/tsc && node ./dist/src/app.bootstrap",
     "test": "NODE_ENV=test && NODE_ENV=test npm run schema-drop && NODE_ENV=test npm run schema-sync && NODE_ENV=test npm run seed-run && mkdir -p ./dist/uploads/documents && ./node_modules/.bin/nyc ./node_modules/.bin/ts-mocha ./test/json-api.test.ts --require ./test/hooks.ts --reporter spec --timeout 10000 --colors --exit",
     "start-dev": "NODE_ENV=development ./node_modules/.bin/ts-node-dev --respawn --transpile-only ./src/app.bootstrap.ts",
-    "monitor": "tsc && NODE_ENV=production node ./dist/src/monitor.js"
+    "monitor": "tsc && DEBUG=socket.io* NODE_ENV=production ./node_modules/.bin/ts-node ./src/monitor.ts"
   },
   "engines": {
     "node": ">=10.16"
@@ -51,7 +51,6 @@
     "@hapi/boom": "^9.1.0",
     "@hapi/joi": "^17.1.1",
     "@queso/kebab-case": "^1.1.0",
-    "@types/socket.io": "^2.1.11",
     "@types/socket.io-client": "^1.4.34",
     "@types/uuid": "^8.3.0",
     "axios": "^0.19.1",
@@ -97,7 +96,7 @@
     "reflect-metadata": "^0.1.13",
     "role-acl": "^4.5.4",
     "socket.io": "^3.0.1",
-    "socket.io-client": "^3.0.1",
+    "socket.io-client": "^3.0.0",
     "sqlstring": "^2.3.1",
     "stringify-object": "^3.3.0",
     "supertest": "^4.0.2",

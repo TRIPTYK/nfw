@@ -9,12 +9,10 @@ import { createConnection } from "typeorm";
 import ConfigurationService from "./core/services/configuration.service";
 import * as tar from "tar";
 import { execSync } from "child_process";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import { createWriteStream } from "fs";
 import { join } from "path";
-import * as Cors from "cors";
 import * as Http from "http";
-import * as Express from "express";
 
 process.on("SIGINT", () => {
     console.log("terminated");
@@ -39,28 +37,29 @@ pm2.connect((err) => {
         });
     });
     
-    const app = Express();
-    const server = Http.createServer(app);
 
-    const {typeorm, authorized} = container.resolve<ConfigurationService>(ConfigurationService).config;
+    const server = Http.createServer();
+
+    const {typeorm} = container.resolve<ConfigurationService>(ConfigurationService).config;
 
     const CORSOptions = {
         allowedHeaders: ["Content-Type", "Authorization"],
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-        origin: authorized
+        origin: "http://localhost:4200",
+        credentials: true
     };
 
-    app.use(Cors(CORSOptions)); 
-
     const io = new Server(server, {
-        cors: {
-            origin: "*",
-            methods: ["GET", "POST"]
+        cors: CORSOptions,
+        allowRequest: (req, callback) => {
+            console.log(req.headers);
+            callback(null, true);
         }
     });
-
+    
     io.on('connection', client => {
         console.log("client connected", client.id);
+        client.emit(client.id);
         client.on("app-save", (name, fn) => {
             tar.c({gzip:true}, ['src/api'])
                 .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")));
@@ -96,7 +95,6 @@ pm2.connect((err) => {
             }catch(e) {
                 fn("synchronize-error");
             }
-            console.log("Synchronized");
             await connection.close();
             io.emit("synchronized");
             fn("ok");
