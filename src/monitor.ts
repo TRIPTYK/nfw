@@ -56,7 +56,9 @@ pm2.connect((err) => {
     
     io.on('connection', client => {
         console.log("client connected", client.id);
-        client.emit("hello", client.id);
+        client.on("hello", () => {
+            io.emit("hello");
+        });
         client.on("app-save", (name, fn) => {
             tar.c({gzip:true}, ['src/api'])
                 .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")));
@@ -69,6 +71,7 @@ pm2.connect((err) => {
                 execSync("./node_modules/.bin/tsc");
             }catch(e) {
                 fn("compiling-error");
+                io.emit("error", "compiling-error");
             }
             io.emit("event", "compiled");
             const connection = await createConnection({
@@ -91,6 +94,7 @@ pm2.connect((err) => {
                 await connection.synchronize();
             }catch(e) {
                 fn("synchronize-error");
+                io.emit("error", "synchronize-error");
             }
             await connection.close();
             io.emit("event", "synchronized");

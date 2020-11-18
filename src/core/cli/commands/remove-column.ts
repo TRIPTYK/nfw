@@ -46,10 +46,12 @@ export default async function removeColumn(modelName: string, column: Column | s
         .filter((declaration) => declaration.hasExportKeyword() && declaration.getDeclarationKind() === VariableDeclarationKind.Const);
 
     for (const validationStatement of validations) {
-        const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;
-        const property = initializer.getProperty(columnName);
-        if (property) {
-            property.remove()
+        const initializer = validationStatement.getDeclarations()[0].getFirstChildByKind(SyntaxKind.ObjectLiteralExpression);
+        if (initializer) {
+            const property = initializer.getProperty(columnName);
+            if (property) {
+                property.remove()
+            }
         }
     }
 }

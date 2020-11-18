@@ -65,6 +65,7 @@ export default class MetadataController extends BaseController {
                     property : column.propertyName,
                     type: this.typeormConnection.connection.driver.normalizeType(column),
                     default: this.typeormConnection.connection.driver.normalizeDefault(column),
+                    length: column.length,
                     isPrimary: column.isPrimary,
                     isNullable : column.isNullable,
                     enumValues : column.enum

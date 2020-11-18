@@ -22,7 +22,7 @@ export const createEntity: ValidationSchema<any> = {
         }
     },
     "columns.*.default": {
-        optional:true,
+        optional:true
     },
     "columns.*.length": {
         optional:true,
@@ -126,3 +126,55 @@ export const createColumn: ValidationSchema<Column> = {
         isBoolean: true
     }
 }
+
+export const columnsActions: ValidationSchema<any> = {
+    "columns.*.action":{
+        exists : true,
+        isIn : {
+            options : [["ADD", "REMOVE"]]
+        }
+    },
+    "columns.*.name": {
+        exists: true,
+        isString: true
+    },
+    "columns.*.type": {
+        exists: true,
+        isString: true,
+        custom:{
+            options: (value) => {
+                const suported = container.resolve(TypeORMService).connection.driver.supportedDataTypes;
+                if (!Object.values(suported).includes(value)) {
+                    throw new Error("unsupported value");
+                }
+                return true;
+            }
+        }
+    },
+    "columns.*.default": {
+        optional:true,
+    },
+    "columns.*.length": {
+        optional:true,
+        isInt: true,
+        toInt:true
+    },
+    "columns.*.width": {
+        optional:true,
+        isInt: true,
+        toInt:true
+    },
+    "columns.*.isPrimary": {
+        optional:true,
+        isBoolean: true
+    },
+    "columns.*.isUnique": {
+        optional:true,
+        isBoolean: true
+    },
+    "columns.*.isNullable": {
+        exists: true,
+        isBoolean: true
+    }
+}
+
