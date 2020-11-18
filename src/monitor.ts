@@ -27,9 +27,6 @@ pm2.connect((err) => {
     }
 
     pm2.stop(firstApp.name, (err) => {
-        if (err) {
-            throw err;
-        }
         pm2.start(firstApp, (err) => {
             if (err) {
                 throw err;
@@ -59,7 +56,7 @@ pm2.connect((err) => {
     
     io.on('connection', client => {
         console.log("client connected", client.id);
-        client.emit(client.id);
+        client.emit("hello", client.id);
         client.on("app-save", (name, fn) => {
             tar.c({gzip:true}, ['src/api'])
                 .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")));
@@ -67,13 +64,13 @@ pm2.connect((err) => {
         });
         client.on('app-recompile-sync', async (name, fn) => {
             execSync("rm -rf ./dist/src");
-            console.log("compiling");
+            io.emit("event", "compiling");
             try {
                 execSync("./node_modules/.bin/tsc");
             }catch(e) {
                 fn("compiling-error");
             }
-            console.log("compiled");
+            io.emit("event", "compiled");
             const connection = await createConnection({
                 database: typeorm.database,
                 entities : typeorm.entities,
@@ -96,17 +93,17 @@ pm2.connect((err) => {
                 fn("synchronize-error");
             }
             await connection.close();
-            io.emit("synchronized");
+            io.emit("event", "synchronized");
             fn("ok");
         });
         client.on('app-restart', async (name, fn) => {
-            io.emit("app-restarting");
+            io.emit("event", "app-restarting");
             pm2.restart(firstApp.name, () => {
                 if (err) {
                     throw err;
                 }
                 console.log(`Restarted app ${ firstApp.name}`);
-                io.emit("app-restarted");
+                io.emit("event", "app-restarted");
                 fn("ok");
             });
         });
