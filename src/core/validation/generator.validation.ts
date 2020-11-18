@@ -26,11 +26,13 @@ export const createEntity: ValidationSchema<any> = {
     },
     "columns.*.length": {
         optional:true,
-        isInt: true
+        isInt: true,
+        toInt:true
     },
     "columns.*.width": {
         optional:true,
-        isInt: true
+        isInt: true,
+        toInt:true
     },
     "columns.*.isPrimary": {
         optional:true,
@@ -103,11 +105,17 @@ export const createColumn: ValidationSchema<Column> = {
     },
     length: {
         exists: true,
-        isInt: true
+        isInt: true,
+        toInt:true
     },
     isPrimary: {
         exists: true,
         isBoolean: true
+    },
+    width: {
+        optional:true,
+        isInt: true,
+        toInt:true
     },
     isUnique: {
         exists: true,
