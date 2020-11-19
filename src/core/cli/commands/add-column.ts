@@ -3,9 +3,9 @@ import { Column } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
 import { buildModelColumnArgumentsFromObject, buildValidationArgumentsFromObject } from "../utils/template";
 import * as stringifyObject from "stringify-object";
+import project = require("../utils/project");
 
-export default async function addColumn(entity: string,column: Column): Promise<void> {
-    const project: Project = require("../utils/project");
+export default async function addColumn(entity: string, column: Column): Promise<void> {
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);
     const {classPrefixName} = getEntityNaming(entity);
@@ -32,14 +32,14 @@ export default async function addColumn(entity: string,column: Column): Promise<
     entityClass.addProperty({name : column.name })
         .toggleModifier("public")
         .addDecorator({
-            name : "Column" , arguments : stringifyObject(
+            name : "Column", arguments : stringifyObject(
                 buildModelColumnArgumentsFromObject(column),
                 { singleQuotes: false }
             )
         })
         .setIsDecoratorFactory(true);
 
-    const serializer =  resources(entity).find((r) => r.template === "serializer-schema");
+    const serializer = resources(entity).find((r) => r.template === "serializer-schema");
     const serializerFile = project.getSourceFile(`${serializer.path}/${serializer.name}`);
     const serializerClass = serializerFile.getClass(`${classPrefixName}SerializerSchema`);
 
@@ -57,12 +57,12 @@ export default async function addColumn(entity: string,column: Column): Promise<
         name: "Deserialize"
     }).setIsDecoratorFactory(true);
 
-    const validation =  resources(entity).find((r) => r.template === "validation");
+    const validation = resources(entity).find((r) => r.template === "validation");
     const validationFile = project.getSourceFile(`${validation.path}/${validation.name}`);
 
-    const validations =  validationFile.getChildrenOfKind(SyntaxKind.VariableStatement)
+    const validations = validationFile.getChildrenOfKind(SyntaxKind.VariableStatement)
         .filter((declaration) => declaration.hasExportKeyword() && declaration.getDeclarationKind() === VariableDeclarationKind.Const)
-        .filter((declaration) => ["create","update"].includes(declaration.getDeclarations()[0].getName()));
+        .filter((declaration) => ["create", "update"].includes(declaration.getDeclarations()[0].getName()));
 
     for (const validationStatement of validations) {
         const initializer = validationStatement.getDeclarations()[0].getInitializer() as ObjectLiteralExpression;

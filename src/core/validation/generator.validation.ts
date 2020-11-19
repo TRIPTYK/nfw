@@ -10,7 +10,8 @@ export const createEntity: ValidationSchema<any> = {
     },
     "columns.*.name": {
         exists: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     "columns.*.type": {
         exists: true,
@@ -40,11 +41,13 @@ export const createEntity: ValidationSchema<any> = {
     },
     "columns.*.isUnique": {
         optional:true,
-        isBoolean: true
+        isBoolean: true,
+        toBoolean: true
     },
     "columns.*.isNullable": {
         exists: true,
-        isBoolean: true
+        isBoolean: true,
+        toBoolean: true
     },
     relations:{
         exists: true,
@@ -52,11 +55,13 @@ export const createEntity: ValidationSchema<any> = {
     },
     "relations.*.name": {
         exists: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     "relations.*.target": {
         exists: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     "relations.*.type": {
         exists: true,
@@ -66,18 +71,21 @@ export const createEntity: ValidationSchema<any> = {
     },
     "relations.*.inverseRelationName": {
         optional: true,
-        isString: true
+        isString: true,
+        isAscii : true
     }
 };
 
 export const createRelation: ValidationSchema<Relation> = {
     name: {
         exists: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     target: {
         exists: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     type: {
         exists: true,
@@ -87,22 +95,34 @@ export const createRelation: ValidationSchema<Relation> = {
     },
     inverseRelationName: {
         optional: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     isNullable: {
         optional: true,
-        isBoolean: true
+        isBoolean: true,
+        toBoolean: true
     }
 }
 
 export const createColumn: ValidationSchema<Column> = {
     name: {
         exists: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     type: {
         exists: true,
-        isString: true
+        isString: true,
+        custom:{
+            options: (value) => {
+                const suported = container.resolve(TypeORMService).connection.driver.supportedDataTypes;
+                if (!Object.values(suported).includes(value)) {
+                    throw new Error("unsupported value");
+                }
+                return true;
+            }
+        }
     },
     default: {
         optional: true
@@ -112,10 +132,6 @@ export const createColumn: ValidationSchema<Column> = {
         isInt: true,
         toInt:true
     },
-    isPrimary: {
-        exists: true,
-        isBoolean: true
-    },
     width: {
         optional:true,
         isInt: true,
@@ -123,11 +139,13 @@ export const createColumn: ValidationSchema<Column> = {
     },
     isUnique: {
         exists: true,
-        isBoolean: true
+        isBoolean: true,
+        toBoolean: true
     },
     isNullable: {
         exists: true,
-        isBoolean: true
+        isBoolean: true,
+        toBoolean: true
     }
 }
 
@@ -144,7 +162,8 @@ export const columnsActions: ValidationSchema<any> = {
     },
     "columns.*.name": {
         exists: true,
-        isString: true
+        isString: true,
+        isAscii : true
     },
     "columns.*.type": {
         exists: true,
@@ -160,7 +179,7 @@ export const columnsActions: ValidationSchema<any> = {
         }
     },
     "columns.*.default": {
-        optional:true,
+        optional:true
     },
     "columns.*.length": {
         optional:true,
@@ -172,13 +191,10 @@ export const columnsActions: ValidationSchema<any> = {
         isInt: true,
         toInt:true
     },
-    "columns.*.isUnique": {
-        optional:true,
-        isBoolean: true
-    },
     "columns.*.isNullable": {
         exists: true,
-        isBoolean: true
+        isBoolean: true,
+        toBoolean : true
     }
 }
 

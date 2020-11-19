@@ -10,7 +10,7 @@ import addRelation from "../../cli/commands/add-relation";
 import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
 import project = require("../../cli/utils/project");
-import { ApplicationLifeCycleEvent, ApplicationRegistry, ApplicationStatus } from "../../application/registry.application";
+import { ApplicationLifeCycleEvent, ApplicationRegistry } from "../../application/registry.application";
 import { singleton } from "tsyringe";
 
 /**
@@ -58,7 +58,7 @@ export default class GeneratorController extends BaseController {
     }
 
     
-    @Post("/entity/:name/columns-actions")
+    @Post("/entity/:name/entity-actions")
     @MethodMiddleware(ValidationMiddleware, {schema : columnsActions, location: ["body"]})
     public async do(req: Request, res: Response) {
         for (const column of req.body.columns) {
@@ -67,6 +67,14 @@ export default class GeneratorController extends BaseController {
             }
             if (column.action === "REMOVE") {
                 await removeColumn(req.params.name, column);
+            }
+        }
+        for (const column of req.body.relations) {
+            if (column.action === "ADD") {
+                await addRelation(req.params.name, column);
+            }
+            if (column.action === "REMOVE") {
+                await removeRelation(req.params.name, column.propertyName);
             }
         }
         res.sendStatus(HttpStatus.ACCEPTED);
@@ -98,7 +106,13 @@ export default class GeneratorController extends BaseController {
 
     @Delete("/entity/:name")
     public async deleteEntity(req: Request, res: Response) {
-        await deleteJsonApiEntity(req.params.name);
+        try {
+            await deleteJsonApiEntity(req.params.name);
+        }catch(e) {
+            await this.sendMessageAndWaitResponse("app-recompile-sync");
+            await this.sendMessageAndWaitResponse("app-restart");
+            throw e;
+        }
         res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
@@ -115,7 +129,6 @@ export default class GeneratorController extends BaseController {
         });
         ApplicationRegistry.on(ApplicationLifeCycleEvent.Running, () => {
             this.socket.on("connect", () => {
-                    console.log("readyyy");
                 this.socket.emit("hello"); 
             });
         });

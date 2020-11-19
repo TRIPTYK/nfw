@@ -51,8 +51,10 @@ pm2.connect((err) => {
     });
     
     io.on('connection', client => {
-        
+        console.log("Client connected", client.id);
+
         client.on("hello", () => {
+            console.log("hello");
             io.emit("hello");
         });
 
@@ -69,6 +71,7 @@ pm2.connect((err) => {
                 execSync("rm -rf ./dist/src");
                 execSync("./node_modules/.bin/tsc");
             }catch(e) {
+                console.log(e);
                 fn("compiling-error");
                 io.emit("error", "compiling-error");
             }
@@ -92,6 +95,7 @@ pm2.connect((err) => {
             try {
                 await connection.synchronize();
             }catch(e) {
+                console.log(e);
                 fn("synchronize-error");
                 io.emit("error", "synchronize-error");
             }

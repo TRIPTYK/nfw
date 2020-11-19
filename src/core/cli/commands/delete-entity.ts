@@ -1,10 +1,9 @@
-import { Project, SyntaxKind } from "ts-morph";
+import { SyntaxKind } from "ts-morph";
 import { SourceFile, ObjectLiteralExpression } from "ts-morph";
 import resources, { getEntityNaming } from "../static/resources";
+import project = require("../utils/project");
 
 export default async function deleteJsonApiEntity(modelName: string): Promise<void> {
-    const project: Project = require("../utils/project");
-
     if (!modelName.length) {
         return;
     }
@@ -13,13 +12,17 @@ export default async function deleteJsonApiEntity(modelName: string): Promise<vo
     const {filePrefixName, classPrefixName} = getEntityNaming(modelName);
 
     for (const file of resources(filePrefixName)) {
-        files.push(project.getSourceFile(`${file.path}/${file.name}`));
+        const fileObj = project.getSourceFile(`${file.path}/${file.name}`);
+        if (!fileObj) {
+            throw new Error(`Entity file ${file.name} does not seems to exists`);
+        }
+        files.push(fileObj);
     }
 
     // do something
 
     for (const file of files) {
-        file.delete();
+        file?.delete();
     }
 
     const applicationFile = project.getSourceFile("src/api/application.ts");
