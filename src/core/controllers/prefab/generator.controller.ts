@@ -74,7 +74,7 @@ export default class GeneratorController extends BaseController {
                 await addRelation(req.params.name, column);
             }
             if (column.action === "REMOVE") {
-                await removeRelation(req.params.name, column.propertyName);
+                await removeRelation(req.params.name, column);
             }
         }
         res.sendStatus(HttpStatus.ACCEPTED);
@@ -131,6 +131,8 @@ export default class GeneratorController extends BaseController {
             this.socket.on("connect", () => {
                 this.socket.emit("hello"); 
             });
+
+            // removeRelation("user", "documents").then(() => project.save());
         });
     }
 

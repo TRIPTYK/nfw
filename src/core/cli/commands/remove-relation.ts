@@ -1,11 +1,13 @@
 import { ArrowFunction, PropertyAccessExpression, SyntaxKind } from "ts-morph";
+import { Relation } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
 import project = require("../utils/project");
 
-export async function removeRelation(entity: string, relationName: string) {
+export async function removeRelation(entity: string, relationName: string | Relation) {
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);
     const naming = getEntityNaming(entity);
+    relationName = typeof relationName === "string" ? relationName : relationName.name;
 
     if (!modelFile) {
         throw new Error("Entity does not exists");
