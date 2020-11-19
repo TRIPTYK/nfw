@@ -101,7 +101,7 @@
     "stringify-object": "^3.3.0",
     "supertest": "^4.0.2",
     "tar": "^6.0.5",
-    "ts-morph": "^8.1.0",
+    "ts-morph": "^8.2.0",
     "tsyringe": "^4.4.0",
     "typeorm": "^0.2.22",
     "typeorm-seeding": "^1.6.1",
