@@ -10,7 +10,7 @@ export default async function deleteJsonApiEntity(modelName: string): Promise<vo
     }
 
     const files: SourceFile[] = [];
-    const {filePrefixName,classPrefixName} = getEntityNaming(modelName);
+    const {filePrefixName, classPrefixName} = getEntityNaming(modelName);
 
     for (const file of resources(filePrefixName)) {
         files.push(project.getSourceFile(`${file.path}/${file.name}`));

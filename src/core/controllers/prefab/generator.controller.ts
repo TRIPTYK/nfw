@@ -11,6 +11,7 @@ import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
 import { autoInjectable } from "tsyringe";
 import project = require("../../cli/utils/project");
+import { ApplicationRegistry, ApplicationStatus } from "../../application/registry.application";
 
 /**
  * Generates app
@@ -61,10 +62,10 @@ export default class GeneratorController extends BaseController {
     @MethodMiddleware(ValidationMiddleware, {schema : columnsActions, location: ["body"]})
     public async do(req: Request, res: Response) {
         for (const column of req.body.columns) {
-            if (column.action === "add") {
+            if (column.action === "ADD") {
                 await addColumn(req.params.name, column);
             }
-            if (column.action === "remove") {
+            if (column.action === "REMOVE") {
                 await removeColumn(req.params.name, column);
             }
         }
@@ -107,11 +108,17 @@ export default class GeneratorController extends BaseController {
 
     constructor() {
         super();
-        this.socket = SocketIO('http://localhost:3000');
+        this.socket = SocketIO('http://localhost:3000',{
+            query: {
+                app : false
+            }
+        });
     }
 
     public async init() {
-        this.socket.on("connection", () => {
+        this.socket.on("connect", () => {
+            while(ApplicationRegistry.status !== ApplicationStatus.Running);
+            console.log("ready");
             this.socket.emit("hello"); 
         });
     }

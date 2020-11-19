@@ -4,6 +4,10 @@ import TypeORMService from "../services/typeorm.service";
 import { ValidationSchema } from "../types/validation";
 
 export const createEntity: ValidationSchema<any> = {
+    columns:{
+        exists: true,
+        isArray: true
+    },
     "columns.*.name": {
         exists: true,
         isString: true
@@ -45,6 +49,10 @@ export const createEntity: ValidationSchema<any> = {
     "columns.*.isNullable": {
         exists: true,
         isBoolean: true
+    },
+    relations:{
+        exists: true,
+        isArray: true
     },
     "relations.*.name": {
         exists: true,
@@ -128,6 +136,10 @@ export const createColumn: ValidationSchema<Column> = {
 }
 
 export const columnsActions: ValidationSchema<any> = {
+    columns:{
+        exists: true,
+        isArray: true
+    },
     "columns.*.action":{
         exists : true,
         isIn : {
