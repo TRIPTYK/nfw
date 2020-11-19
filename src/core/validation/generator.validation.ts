@@ -38,10 +38,6 @@ export const createEntity: ValidationSchema<any> = {
         isInt: true,
         toInt:true
     },
-    "columns.*.isPrimary": {
-        optional:true,
-        isBoolean: true
-    },
     "columns.*.isUnique": {
         optional:true,
         isBoolean: true
@@ -175,10 +171,6 @@ export const columnsActions: ValidationSchema<any> = {
         optional:true,
         isInt: true,
         toInt:true
-    },
-    "columns.*.isPrimary": {
-        optional:true,
-        isBoolean: true
     },
     "columns.*.isUnique": {
         optional:true,

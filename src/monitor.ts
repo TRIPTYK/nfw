@@ -51,9 +51,11 @@ pm2.connect((err) => {
     });
     
     io.on('connection', client => {
+        
         client.on("hello", () => {
             io.emit("hello");
         });
+
         client.on("app-save", (name, fn) => {
             tar.c({gzip:true}, ['src/api'])
                 .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")))

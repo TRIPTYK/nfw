@@ -9,15 +9,15 @@ import { removeRelation } from "../../cli/commands/remove-relation";
 import addRelation from "../../cli/commands/add-relation";
 import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
-import { autoInjectable } from "tsyringe";
 import project = require("../../cli/utils/project");
-import { ApplicationRegistry, ApplicationStatus } from "../../application/registry.application";
+import { ApplicationLifeCycleEvent, ApplicationRegistry, ApplicationStatus } from "../../application/registry.application";
+import { singleton } from "tsyringe";
 
 /**
  * Generates app
  */
 @Controller("generate")
-@autoInjectable()
+@singleton()
 export default class GeneratorController extends BaseController {
     public socket: SocketIOClient.Socket = null;
 
@@ -108,18 +108,16 @@ export default class GeneratorController extends BaseController {
 
     constructor() {
         super();
-        this.socket = SocketIO('http://localhost:3000',{
+        this.socket = SocketIO('http://localhost:3000', {
             query: {
                 app : false
             }
         });
-    }
-
-    public async init() {
-        this.socket.on("connect", () => {
-            while(ApplicationRegistry.status !== ApplicationStatus.Running);
-            console.log("ready");
-            this.socket.emit("hello"); 
+        ApplicationRegistry.on(ApplicationLifeCycleEvent.Running, () => {
+            this.socket.on("connect", () => {
+                    console.log("readyyy");
+                this.socket.emit("hello"); 
+            });
         });
     }
 

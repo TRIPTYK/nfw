@@ -3,15 +3,15 @@ import BaseController from "../base.controller";
 import { Controller, Get } from "../../decorators/controller.decorator";
 import { ApplicationRegistry } from "../../application/registry.application";
 import TypeORMService from "../../services/typeorm.service";
-import { autoInjectable } from "tsyringe";
-import {Request,Response} from "express";
+import {Request, Response} from "express";
 import { EntityMetadata, getRepository } from "typeorm";
+import { singleton } from "tsyringe";
 
 /**
  * Use or inherit this controller in your app if you want to get api metadata
  */
 @Controller("meta")
-@autoInjectable()
+@singleton()
 export default class MetadataController extends BaseController {
     public constructor(private typeormConnection: TypeORMService) {
         super();
@@ -65,6 +65,7 @@ export default class MetadataController extends BaseController {
                     property : column.propertyName,
                     type: this.typeormConnection.connection.driver.normalizeType(column),
                     default: this.typeormConnection.connection.driver.normalizeDefault(column),
+                    width : column.width,
                     length: column.length,
                     isPrimary: column.isPrimary,
                     isNullable : column.isNullable,
@@ -76,7 +77,8 @@ export default class MetadataController extends BaseController {
                     propertyName : rel.propertyName,
                     inverseEntityName : rel.inverseEntityMetadata.name,
                     inversePropertyName : rel.inverseRelation.propertyName,
-                    relationType : rel.relationType
+                    relationType : rel.relationType,
+                    isNullable : rel.isNullable
                 }
             })
         }

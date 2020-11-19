@@ -11,11 +11,17 @@ import BaseService from "../services/base.service";
 import BaseController from "../controllers/base.controller";
 import { mesure } from "../utils/mesure.util";
 import {v4} from "uuid";
+import { EventEmitter } from "events";
 
 export enum ApplicationStatus {
     Booting = "BOOTING",
     Running = "RUNNING",
     None = "NONE"
+}
+
+export enum ApplicationLifeCycleEvent {
+    Boot = "BOOT",
+    Running = "RUNNING"
 }
 
 export class ApplicationRegistry {
@@ -26,8 +32,14 @@ export class ApplicationRegistry {
     public static controllers: BaseController[] = [];
     public static status: ApplicationStatus = ApplicationStatus.None;
     public static guid = v4();
+    private static eventEmitter: EventEmitter = new EventEmitter();
+
+    public static on(event: ApplicationLifeCycleEvent, callback) {
+        ApplicationRegistry.eventEmitter.on(event, callback);
+    }
 
     public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
+        ApplicationRegistry.eventEmitter.emit(ApplicationLifeCycleEvent.Boot);
         ApplicationRegistry.status = ApplicationStatus.Booting;
         const services: Type<BaseService>[] = Reflect.getMetadata("services", app);
         const controllers: Type<BaseController>[] = Reflect.getMetadata("controllers", app);
@@ -88,6 +100,7 @@ export class ApplicationRegistry {
         });
 
         ApplicationRegistry.status = ApplicationStatus.Running;
+        ApplicationRegistry.eventEmitter.emit(ApplicationLifeCycleEvent.Running);
 
         console.log(`[${time}ms] after init`);
 
