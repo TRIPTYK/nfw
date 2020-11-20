@@ -20,7 +20,7 @@ process.on("SIGINT", () => {
     process.exit(0);
 });
 
-pm2.connect((err) => {
+pm2.connect(async (err) => {
     if (err) {
         console.error(err);
         process.exit(2);
@@ -49,34 +49,24 @@ pm2.connect((err) => {
     const io = new Server(server, {
         cors: CORSOptions
     });
+
+    let connection;
+    let status = "";
+
+    const changeStatus = (newStatus: string) => {
+        status = newStatus;
+        console.log(status)
+        io.emit("status", newStatus);
+    };
     
     io.on('connection', client => {
         console.log("Client connected", client.id);
 
-        client.on("hello", () => {
-            console.log("hello");
-            io.emit("hello");
-        });
+        client.emit("status", status);
 
-        client.on("app-save", (name, fn) => {
-            tar.c({gzip:true}, ['src/api'])
-                .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")))
-                .on("finish", () => {
-                    fn("ok");
-                })
-        });
-        client.on('app-recompile-sync', async (name, fn) => {
-            io.emit("event", "compiling");
-            try {
-                execSync("rm -rf ./dist/src");
-                execSync("./node_modules/.bin/tsc");
-            }catch(e) {
-                console.log(e);
-                fn("compiling-error");
-                io.emit("error", "compiling-error");
-            }
-            io.emit("event", "compiled");
-            const connection = await createConnection({
+        client.on("hello", async () => {
+            await connection?.close();
+            connection = await createConnection({
                 database: typeorm.database,
                 entities : typeorm.entities,
                 synchronize : typeorm.synchronize,
@@ -92,25 +82,42 @@ pm2.connect((err) => {
                     migrationsDir: typeorm.migrationsDir
                 }
             });
+            changeStatus("running");
+        });
+
+        client.on("app-save", (name, fn) => {
+            tar.c({gzip:true}, ['src/api'])
+                .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")))
+                .on("finish", () => {
+                    fn("ok");
+                })
+        });
+        client.on('app-recompile-sync', async (name, fn) => {
+            changeStatus("compiling");
+            try {
+                execSync("rm -rf ./dist/src");
+                execSync("./node_modules/.bin/tsc");
+            }catch(e) {
+                changeStatus("error");
+            }
+            changeStatus("compiled");
+            changeStatus("synchronizing");
             try {
                 await connection.synchronize();
+                changeStatus("synchronized");
             }catch(e) {
-                console.log(e);
-                fn("synchronize-error");
-                io.emit("error", "synchronize-error");
+                changeStatus("error");
             }
-            await connection.close();
-            io.emit("event", "synchronized");
             fn("ok");
         });
         client.on('app-restart', async (name, fn) => {
-            io.emit("event", "app-restarting");
+            changeStatus("restarting");
             pm2.restart(firstApp.name, () => {
                 if (err) {
                     throw err;
                 }
                 console.log(`Restarted app ${ firstApp.name}`);
-                io.emit("event", "app-restarted");
+                changeStatus("restarted");
                 fn("ok");
             });
         });

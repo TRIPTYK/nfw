@@ -20,6 +20,14 @@ export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): Colu
         }
     }
 
+    if (dbColumnaData.scale) {
+        columnArgument.scale = dbColumnaData.scale;
+    }
+
+    if (dbColumnaData.precision) {
+        columnArgument.precision = dbColumnaData.precision;
+    }
+
     // handle nullable
     if (!dbColumnaData.isUnique && !dbColumnaData.isPrimary) {
         columnArgument.nullable ??= dbColumnaData.isNullable;
@@ -30,11 +38,11 @@ export function buildModelColumnArgumentsFromObject(dbColumnaData: Column): Colu
         columnArgument.primary = true;
     }
 
-    if (dbColumnaData.length !== undefined) {
+    if (dbColumnaData.length) {
         columnArgument.length = dbColumnaData.length;
     }
 
-    if (dbColumnaData.width !== undefined) {
+    if (dbColumnaData.width) {
         columnArgument.width = dbColumnaData.width;
     }
 

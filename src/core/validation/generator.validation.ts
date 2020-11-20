@@ -11,7 +11,9 @@ export const createEntity: ValidationSchema<any> = {
     "columns.*.name": {
         exists: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     },
     "columns.*.type": {
         exists: true,
@@ -30,12 +32,38 @@ export const createEntity: ValidationSchema<any> = {
         optional:true
     },
     "columns.*.length": {
-        optional:true,
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
         isInt: true,
         toInt:true
     },
     "columns.*.width": {
-        optional:true,
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
+        isInt: true,
+        toInt:true
+    },
+    "columns.*.precision": {
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
+        isInt: true,
+        toInt:true
+    },
+    "columns.*.scale": {
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
         isInt: true,
         toInt:true
     },
@@ -56,12 +84,16 @@ export const createEntity: ValidationSchema<any> = {
     "relations.*.name": {
         exists: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     },
     "relations.*.target": {
         exists: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     },
     "relations.*.type": {
         exists: true,
@@ -72,7 +104,9 @@ export const createEntity: ValidationSchema<any> = {
     "relations.*.inverseRelationName": {
         optional: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     }
 };
 
@@ -80,12 +114,16 @@ export const createRelation: ValidationSchema<Relation> = {
     name: {
         exists: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     },
     target: {
         exists: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     },
     type: {
         exists: true,
@@ -96,7 +134,9 @@ export const createRelation: ValidationSchema<Relation> = {
     inverseRelationName: {
         optional: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     },
     isNullable: {
         optional: true,
@@ -109,7 +149,9 @@ export const createColumn: ValidationSchema<Column> = {
     name: {
         exists: true,
         isString: true,
-        isAscii : true
+        matches: {
+            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+        }
     },
     type: {
         exists: true,
@@ -128,12 +170,38 @@ export const createColumn: ValidationSchema<Column> = {
         optional: true
     },
     length: {
-        exists: true,
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
         isInt: true,
         toInt:true
     },
     width: {
-        optional:true,
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
+        isInt: true,
+        toInt:true
+    },
+    precision: {
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
+        isInt: true,
+        toInt:true
+    },
+    scale: {
+        optional: {
+            options : { 
+                checkFalsy : true
+            }
+        },
         isInt: true,
         toInt:true
     },
@@ -150,51 +218,18 @@ export const createColumn: ValidationSchema<Column> = {
 }
 
 export const columnsActions: ValidationSchema<any> = {
-    columns:{
-        exists: true,
-        isArray: true
-    },
+    ...exports.createEntity,
     "columns.*.action":{
         exists : true,
         isIn : {
             options : [["ADD", "REMOVE"]]
         }
     },
-    "columns.*.name": {
-        exists: true,
-        isString: true,
-        isAscii : true
-    },
-    "columns.*.type": {
-        exists: true,
-        isString: true,
-        custom:{
-            options: (value) => {
-                const suported = container.resolve(TypeORMService).connection.driver.supportedDataTypes;
-                if (!Object.values(suported).includes(value)) {
-                    throw new Error("unsupported value");
-                }
-                return true;
-            }
+    "relations.*.action":{
+        exists : true,
+        isIn : {
+            options : [["ADD", "REMOVE"]]
         }
-    },
-    "columns.*.default": {
-        optional:true
-    },
-    "columns.*.length": {
-        optional:true,
-        isInt: true,
-        toInt:true
-    },
-    "columns.*.width": {
-        optional:true,
-        isInt: true,
-        toInt:true
-    },
-    "columns.*.isNullable": {
-        exists: true,
-        isBoolean: true,
-        toBoolean : true
     }
 }
 

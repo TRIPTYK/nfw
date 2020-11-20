@@ -74,4 +74,6 @@ export default async function addColumn(entity: string, column: Column): Promise
             )
         });
     }
+
+    modelFile.fixMissingImports();
 }
