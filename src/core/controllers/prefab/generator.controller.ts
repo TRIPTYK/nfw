@@ -106,13 +106,7 @@ export default class GeneratorController extends BaseController {
 
     @Delete("/entity/:name")
     public async deleteEntity(req: Request, res: Response) {
-        try {
-            await deleteJsonApiEntity(req.params.name);
-        }catch(e) {
-            await this.sendMessageAndWaitResponse("app-recompile-sync");
-            await this.sendMessageAndWaitResponse("app-restart");
-            throw e;
-        }
+        await deleteJsonApiEntity(req.params.name);
         res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
@@ -136,9 +130,10 @@ export default class GeneratorController extends BaseController {
         });
     }
 
-    private async sendMessageAndWaitResponse(type: string, data?: any) {
+    private sendMessageAndWaitResponse(type: string, data?: any) {
         return new Promise((resolve, rej) => {
             this.socket.emit(type, data, (response) => {
+                console.log(response);
                 if (response !== "ok") {
                     rej(response);
                 }else{

@@ -2,7 +2,7 @@ import tsMorph = require("ts-morph");
 
 let isInitialised = false;
 const project = new tsMorph.Project({
-
+    tsConfigFilePath: "tsconfig.json"
 });
 
 /**

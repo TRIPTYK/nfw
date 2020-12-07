@@ -5,7 +5,7 @@ import {default as config} from "../ecosystem.config";
 const [firstApp] = config.apps;
 import * as pm2 from "pm2";
 import { container } from "tsyringe";
-import { createConnection } from "typeorm";
+import { Connection, createConnection, getConnectionManager } from "typeorm";
 import ConfigurationService from "./core/services/configuration.service";
 import * as tar from "tar";
 import { execSync } from "child_process";
@@ -26,14 +26,13 @@ pm2.connect(async (err) => {
         process.exit(2);
     }
 
-    pm2.stop(firstApp.name, (err) => {
+    pm2.stop(firstApp.name, () => {
         pm2.start(firstApp, (err) => {
             if (err) {
                 throw err;
             }
         });
     });
-    
 
     const server = Http.createServer();
 
@@ -50,7 +49,6 @@ pm2.connect(async (err) => {
         cors: CORSOptions
     });
 
-    let connection;
     let status = "";
 
     const changeStatus = (newStatus: string) => {
@@ -58,6 +56,19 @@ pm2.connect(async (err) => {
         console.log(status)
         io.emit("status", newStatus);
     };
+
+    const restoreBackup = () => {
+        return new Promise((res, rej) => {
+            tar.c({gzip:true}, ['src/api'])
+                .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")))
+                .on("error", () => {
+                    rej();
+                })
+                .on("finish", () => {
+                    res();
+                })
+        });
+    }
     
     io.on('connection', client => {
         console.log("Client connected", client.id);
@@ -65,23 +76,6 @@ pm2.connect(async (err) => {
         client.emit("status", status);
 
         client.on("hello", async () => {
-            await connection?.close();
-            connection = await createConnection({
-                database: typeorm.database,
-                entities : typeorm.entities,
-                synchronize : typeorm.synchronize,
-                host: typeorm.host,
-                name: typeorm.name,
-                password: typeorm.pwd,
-                port: typeorm.port,
-                type: typeorm.type as any,
-                migrations : typeorm.migrations,
-                username: typeorm.user,
-                cli : {
-                    entitiesDir: typeorm.entitiesDir,
-                    migrationsDir: typeorm.migrationsDir
-                }
-            });
             changeStatus("running");
         });
 
@@ -93,12 +87,40 @@ pm2.connect(async (err) => {
                 })
         });
         client.on('app-recompile-sync', async (name, fn) => {
+            let connection : Connection;
+            try {
+                connection = await createConnection({
+                    database: typeorm.database,
+                    entities : typeorm.entities,
+                    synchronize : typeorm.synchronize,
+                    host: typeorm.host,
+                    name: typeorm.name,
+                    password: typeorm.pwd,
+                    port: typeorm.port,
+                    type: typeorm.type as any,
+                    migrations : typeorm.migrations,
+                    username: typeorm.user,
+                    cli : {
+                        entitiesDir: typeorm.entitiesDir,
+                        migrationsDir: typeorm.migrationsDir
+                    }
+                });
+            }catch(err) {
+                if (err.name === "AlreadyHasActiveConnectionError") {
+                    connection = getConnectionManager().get("default");
+                }else{
+                    changeStatus("error");
+                    return;
+                }
+            }
             changeStatus("compiling");
             try {
                 execSync("rm -rf ./dist/src");
                 execSync("./node_modules/.bin/tsc");
             }catch(e) {
+                console.log(e);
                 changeStatus("error");
+                return;
             }
             changeStatus("compiled");
             changeStatus("synchronizing");
@@ -106,7 +128,9 @@ pm2.connect(async (err) => {
                 await connection.synchronize();
                 changeStatus("synchronized");
             }catch(e) {
+                console.log(e);
                 changeStatus("error");
+                return;
             }
             fn("ok");
         });
