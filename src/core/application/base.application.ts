@@ -3,7 +3,12 @@
 import * as Express from "express";
 import ApplicationInterface from "../interfaces/application.interface";
 import { AnyFunction, Type } from "../types/global";
-import { RouteDefinition, RequestMethods, MiddlewareMetadata, JsonApiMiddlewareMetadata } from "../decorators/controller.decorator";
+import {
+    RouteDefinition,
+    RequestMethods,
+    MiddlewareMetadata,
+    JsonApiMiddlewareMetadata
+} from "../decorators/controller.decorator";
 import { BaseMiddleware } from "../middlewares/base.middleware";
 import { container } from "tsyringe";
 import * as pluralize from "pluralize";
@@ -14,6 +19,7 @@ import * as BaseValidation from "../validation/base.validation";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
 import { toKebabCase } from "../utils/case.util";
 import DeserializeRelationsMiddleware from "../../api/middlewares/deserialize-relations.middleware";
+import BaseJsonApiController from "../controllers/json-api.controller";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
@@ -29,8 +35,12 @@ export default abstract class BaseApplication implements ApplicationInterface {
         this.router = Express.Router();
     }
 
-    public async setupMiddlewares(middlewaresForApp: MiddlewareMetadata[]): Promise<any> {
-        const middlewaresToApply = middlewaresForApp.map((e) => this.useMiddleware(e.middleware, e.args, null))
+    public async setupMiddlewares(
+        middlewaresForApp: MiddlewareMetadata[]
+    ): Promise<any> {
+        const middlewaresToApply = middlewaresForApp.map((e) =>
+            this.useMiddleware(e.middleware, e.args, null)
+        );
 
         if (middlewaresToApply.length) {
             this.router.use(middlewaresToApply.reverse());
@@ -53,21 +63,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
             const server = this.app.listen(port, () => {
                 resolve(server);
             });
-        })
-    }
-
-    private callMethod<T extends BaseController>(methodName: string, context: T) {
-        const middlewareFunction = async (req: Express.Request, res: Express.Response, next: (arg0: any) => any) => {
-            try {
-                const response = await (context[methodName] as AnyFunction)(req, res);
-                if (!res.headersSent) {
-                    res.send(response);
-                }
-            } catch (e) {
-                return next(e);
-            }
-        }
-        return middlewareFunction.bind(context);
+        });
     }
 
     /**
@@ -81,22 +77,41 @@ export default abstract class BaseApplication implements ApplicationInterface {
             // The prefix saved to our controller
             const prefix = Reflect.getMetadata("routeName", controller);
             // Our `routes` array containing all our routes for this controller
-            const routes: RouteDefinition[] = Reflect.getMetadata("routes", controller);
+            const routes: RouteDefinition[] = Reflect.getMetadata(
+                "routes",
+                controller
+            );
 
-            const middlewaresForController: MiddlewareMetadata[] = Reflect.getMetadata("middlewares", controller) ?? [];
+            const middlewaresForController: MiddlewareMetadata[] =
+                Reflect.getMetadata("middlewares", controller) ?? [];
             const router = Express.Router();
 
-            if (middlewaresForController && middlewaresForController.length > 0) {
+            if (
+                middlewaresForController &&
+                middlewaresForController.length > 0
+            ) {
                 middlewaresForController.reverse();
             }
 
-            const jsonApiEntity = Reflect.getMetadata("entity", instanceController);
+            const jsonApiEntity = Reflect.getMetadata(
+                "entity",
+                instanceController
+            );
 
-            if (jsonApiEntity) { // is json-api controller
-                const jsonApiEntityName = toKebabCase(pluralize.plural(jsonApiEntity.name)).toLowerCase();
+            if (jsonApiEntity) {
+                // is json-api controller
+                const jsonApiEntityName = toKebabCase(
+                    pluralize.plural(jsonApiEntity.name)
+                ).toLowerCase();
 
-                const serializer = Reflect.getMetadata("serializer", jsonApiEntity);
-                const validation = Reflect.getMetadata("validator", jsonApiEntity);
+                const serializer = Reflect.getMetadata(
+                    "serializer",
+                    jsonApiEntity
+                );
+                const validation = Reflect.getMetadata(
+                    "validator",
+                    jsonApiEntity
+                );
 
                 this.router.use(`/${jsonApiEntityName}`, router);
 
@@ -168,8 +183,11 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         routeDefinition: route,
                         controllerInstance: instanceController
                     };
-                    let middlewaresWithArgs =
-                        Reflect.getMetadata("middlewares", controller, route.methodName) as MiddlewareMetadata[];
+                    let middlewaresWithArgs = Reflect.getMetadata(
+                        "middlewares",
+                        controller,
+                        route.methodName
+                    ) as MiddlewareMetadata[];
 
                     if (!middlewaresWithArgs) {
                         middlewaresWithArgs = [];
@@ -179,17 +197,34 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
                     const middlewares = [];
 
-                    for (const iterator of middlewaresForController.concat(middlewaresWithArgs)) {
+                    for (const iterator of middlewaresForController.concat(
+                        middlewaresWithArgs
+                    )) {
                         // need to arrow function to keep "this" context in method
-                        middlewares.push(this.useMiddleware(iterator.middleware, iterator.args, routeContext));
+                        middlewares.push(
+                            this.useMiddleware(
+                                iterator.middleware,
+                                iterator.args,
+                                routeContext
+                            )
+                        );
                     }
 
-                    middlewares.push(this.callMethod(route.methodName, instanceController));
+                    middlewares.push(
+                        (instanceController as BaseJsonApiController<any>).callMethod(
+                            route.methodName
+                        )
+                    );
 
                     router[route.requestMethod](`${route.path}`, middlewares);
                 }
 
-                for (const {path, methodType, method, middlewares} of jsonApiRoutes) {
+                for (const {
+                    path,
+                    methodType,
+                    method,
+                    middlewares
+                } of jsonApiRoutes) {
                     const routeContext: RouteContext = {
                         routeDefinition: {
                             path,
@@ -199,9 +234,22 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         controllerInstance: instanceController
                     };
                     const applyMiddlewares = [];
-                    const middlewaresWithArgs: JsonApiMiddlewareMetadata[] = Reflect.getMetadata("middlewares", controller, method) ?? [];
-                    const serializerOverride = Reflect.getMetadata("deserializer", controller, method);
-                    const validatorOverride = Reflect.getMetadata("validator", controller, method);
+                    const middlewaresWithArgs: JsonApiMiddlewareMetadata[] =
+                        Reflect.getMetadata(
+                            "middlewares",
+                            controller,
+                            method
+                        ) ?? [];
+                    const serializerOverride = Reflect.getMetadata(
+                        "deserializer",
+                        controller,
+                        method
+                    );
+                    const validatorOverride = Reflect.getMetadata(
+                        "validator",
+                        controller,
+                        method
+                    );
 
                     const middlewaresByOrder = {
                         afterValidation: [],
@@ -213,66 +261,138 @@ export default abstract class BaseApplication implements ApplicationInterface {
                     };
 
                     for (const middleware of middlewaresWithArgs) {
-                        middlewaresByOrder[middleware.order ?? "afterAll"].push(middleware);
+                        middlewaresByOrder[middleware.order ?? "afterAll"].push(
+                            middleware
+                        );
                     }
 
                     for (const beforeAllMiddleware of middlewaresByOrder.beforeAll.reverse()) {
-                        applyMiddlewares.push(this.useMiddleware(beforeAllMiddleware.middleware, beforeAllMiddleware.args, routeContext));
+                        applyMiddlewares.push(
+                            this.useMiddleware(
+                                beforeAllMiddleware.middleware,
+                                beforeAllMiddleware.args,
+                                routeContext
+                            )
+                        );
                     }
 
                     for (const middleware of middlewares) {
                         if (middleware === "deserialize") {
                             for (const beforeDeserializationMiddleware of middlewaresByOrder.beforeDeserialization.reverse()) {
-                                applyMiddlewares.push(this.useMiddleware(beforeDeserializationMiddleware.middleware, beforeDeserializationMiddleware.args, routeContext));
+                                applyMiddlewares.push(
+                                    this.useMiddleware(
+                                        beforeDeserializationMiddleware.middleware,
+                                        beforeDeserializationMiddleware.args,
+                                        routeContext
+                                    )
+                                );
                             }
 
-                            const schema = serializerOverride ? serializerOverride : "default";
+                            const schema = serializerOverride
+                                ? serializerOverride
+                                : "default";
 
                             if (serializerOverride !== null) {
-                                applyMiddlewares.push(this.useMiddleware(DeserializeMiddleware, {
-                                    serializer,
-                                    schema
-                                }, routeContext));
-                                applyMiddlewares.push(this.useMiddleware(DeserializeRelationsMiddleware, {
-                                    serializer,
-                                    schema
-                                }, routeContext));
+                                applyMiddlewares.push(
+                                    this.useMiddleware(
+                                        DeserializeMiddleware,
+                                        {
+                                            serializer,
+                                            schema
+                                        },
+                                        routeContext
+                                    )
+                                );
+                                applyMiddlewares.push(
+                                    this.useMiddleware(
+                                        DeserializeRelationsMiddleware,
+                                        {
+                                            serializer,
+                                            schema
+                                        },
+                                        routeContext
+                                    )
+                                );
                             }
 
                             for (const afterDeserializationMiddleware of middlewaresByOrder.afterDeserialization.reverse()) {
-                                applyMiddlewares.push(this.useMiddleware(afterDeserializationMiddleware.middleware, afterDeserializationMiddleware.args, routeContext));
+                                applyMiddlewares.push(
+                                    this.useMiddleware(
+                                        afterDeserializationMiddleware.middleware,
+                                        afterDeserializationMiddleware.args,
+                                        routeContext
+                                    )
+                                );
                             }
                         }
 
                         if (middleware === "validation") {
                             for (const beforeValidationMiddleware of middlewaresByOrder.beforeValidation.reverse()) {
-                                applyMiddlewares.push(this.useMiddleware(beforeValidationMiddleware.middleware, beforeValidationMiddleware.args, routeContext));
+                                applyMiddlewares.push(
+                                    this.useMiddleware(
+                                        beforeValidationMiddleware.middleware,
+                                        beforeValidationMiddleware.args,
+                                        routeContext
+                                    )
+                                );
                             }
 
-                            const validationSchema = validatorOverride ? validatorOverride : validation[method] ?? BaseValidation[method];
+                            const validationSchema = validatorOverride
+                                ? validatorOverride
+                                : validation[method] ?? BaseValidation[method];
 
                             if (validatorOverride !== null) {
-                                applyMiddlewares.push(this.useMiddleware(ValidationMiddleware, {
-                                    serializer,
-                                    schema : validationSchema
-                                }, routeContext));
+                                applyMiddlewares.push(
+                                    this.useMiddleware(
+                                        ValidationMiddleware,
+                                        {
+                                            serializer,
+                                            schema: validationSchema
+                                        },
+                                        routeContext
+                                    )
+                                );
                             }
 
                             for (const afterValidationMiddleware of middlewaresByOrder.afterValidation.reverse()) {
-                                applyMiddlewares.push(this.useMiddleware(afterValidationMiddleware.middleware, afterValidationMiddleware.args, routeContext));
+                                applyMiddlewares.push(
+                                    this.useMiddleware(
+                                        afterValidationMiddleware.middleware,
+                                        afterValidationMiddleware.args,
+                                        routeContext
+                                    )
+                                );
                             }
                         }
                     }
 
                     for (const afterAllMiddleware of middlewaresByOrder.afterAll.reverse()) {
-                        applyMiddlewares.push(this.useMiddleware(afterAllMiddleware.middleware, afterAllMiddleware.args, routeContext));
+                        applyMiddlewares.push(
+                            this.useMiddleware(
+                                afterAllMiddleware.middleware,
+                                afterAllMiddleware.args,
+                                routeContext
+                            )
+                        );
                     }
 
-                    applyMiddlewares.push(this.callMethod(method, instanceController));
+                    applyMiddlewares.push(
+                        instanceController.callMethod(method)
+                    );
 
-                    router[methodType](path, middlewaresForController.map((mid) => this.useMiddleware(mid.middleware, mid.args, routeContext)), applyMiddlewares);
+                    router[methodType](
+                        path,
+                        middlewaresForController.map((mid) =>
+                            this.useMiddleware(
+                                mid.middleware,
+                                mid.args,
+                                routeContext
+                            )
+                        ),
+                        applyMiddlewares
+                    );
                 }
-            }else{
+            } else {
                 this.router.use(`/${prefix}`, router);
 
                 // Iterate over all routes and register them to our express application
@@ -281,8 +401,11 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         routeDefinition: route,
                         controllerInstance: instanceController
                     };
-                    let middlewaresWithArgs =
-                        Reflect.getMetadata("middlewares", controller, route.methodName) as MiddlewareMetadata[];
+                    let middlewaresWithArgs = Reflect.getMetadata(
+                        "middlewares",
+                        controller,
+                        route.methodName
+                    ) as MiddlewareMetadata[];
 
                     if (!middlewaresWithArgs) {
                         middlewaresWithArgs = [];
@@ -294,10 +417,18 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
                     for (const iterator of middlewaresWithArgs) {
                         // need to arrow function to keep "this" context in method
-                        middlewares.push(this.useMiddleware(iterator.middleware, iterator.args, routeContext));
+                        middlewares.push(
+                            this.useMiddleware(
+                                iterator.middleware,
+                                iterator.args,
+                                routeContext
+                            )
+                        );
                     }
 
-                    middlewares.push(this.callMethod(route.methodName, instanceController));
+                    middlewares.push(
+                        instanceController.callMethod(route.methodName)
+                    );
 
                     router[route.requestMethod](`${route.path}`, middlewares);
                 }
@@ -305,7 +436,11 @@ export default abstract class BaseApplication implements ApplicationInterface {
         }
     }
 
-    private useMiddleware = (middleware: Type<BaseMiddleware | BaseErrorMiddleware>, args: any, context: RouteContext) => {
+    private useMiddleware = (
+        middleware: Type<BaseMiddleware | BaseErrorMiddleware>,
+        args: any,
+        context: RouteContext
+    ) => {
         const instance = new middleware();
         instance.init(context);
         container.registerInstance(middleware, instance);
@@ -316,7 +451,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                 } catch (e) {
                     return next(e);
                 }
-            }
+            };
         }
         if (instance instanceof BaseErrorMiddleware) {
             return (err, req, res, next) => {
@@ -325,7 +460,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                 } catch (e) {
                     return next(e);
                 }
-            }
+            };
         }
     };
 }

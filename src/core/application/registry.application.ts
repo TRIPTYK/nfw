@@ -10,7 +10,7 @@ import Constructor from "../types/constructor";
 import BaseService from "../services/base.service";
 import BaseController from "../controllers/base.controller";
 import { mesure } from "../utils/mesure.util";
-import {v4} from "uuid";
+import { v4 } from "uuid";
 import { EventEmitter } from "events";
 
 export enum ApplicationStatus {
@@ -27,8 +27,12 @@ export enum ApplicationLifeCycleEvent {
 export class ApplicationRegistry {
     public static application: BaseApplication;
     public static entities: Type<JsonApiModel<any>>[] = [];
-    public static repositories: {[key: string]: Type<BaseJsonApiRepository<any>>} = {};
-    public static serializers: {[key: string]: Type<BaseJsonApiSerializer<any>>} = {};
+    public static repositories: {
+        [key: string]: Type<BaseJsonApiRepository<any>>;
+    } = {};
+    public static serializers: {
+        [key: string]: Type<BaseJsonApiSerializer<any>>;
+    } = {};
     public static controllers: BaseController[] = [];
     public static status: ApplicationStatus = ApplicationStatus.None;
     public static guid = v4();
@@ -38,34 +42,53 @@ export class ApplicationRegistry {
         ApplicationRegistry.eventEmitter.on(event, callback);
     }
 
-    public static async registerApplication<T extends BaseApplication>(app: Constructor<T>) {
+    public static async registerApplication<T extends BaseApplication>(
+        app: Constructor<T>
+    ) {
         ApplicationRegistry.eventEmitter.emit(ApplicationLifeCycleEvent.Boot);
         ApplicationRegistry.status = ApplicationStatus.Booting;
-        const services: Type<BaseService>[] = Reflect.getMetadata("services", app);
-        const controllers: Type<BaseController>[] = Reflect.getMetadata("controllers", app);
-        const middlewares: { middleware: any ; args: any ; order: "before" | "after" }[] = Reflect.getMetadata("middlewares", app) ?? [];
+        const services: Type<BaseService>[] = Reflect.getMetadata(
+            "services",
+            app
+        );
+        const controllers: Type<BaseController>[] = Reflect.getMetadata(
+            "controllers",
+            app
+        );
+        const middlewares: {
+            middleware: any;
+            args: any;
+            order: "before" | "after";
+        }[] = Reflect.getMetadata("middlewares", app) ?? [];
 
         const startTime = Date.now();
 
         // services before all
         let time = await mesure(async () => {
-            await Promise.all(services.map((service) => container.resolve(service).init()));
+            await Promise.all(
+                services.map((service) => container.resolve(service).init())
+            );
         });
         console.log(`[${time}ms] initialized ${services.length} services`);
-        
-        const instance = ApplicationRegistry.application = new app();
+
+        const instance = (ApplicationRegistry.application = new app());
         // app constructor
         time = await mesure(async () => {
             await instance.init();
         });
         console.log(`[${time}ms] initialized app instance`);
-        
 
         // controllers
         time = await mesure(async () => {
-            await Promise.all(controllers.map((controller) => container.resolve(controller).init()));
+            await Promise.all(
+                controllers.map((controller) =>
+                    container.resolve(controller).init()
+                )
+            );
         });
-        console.log(`[${time}ms] initialized ${controllers.length} controllers`);
+        console.log(
+            `[${time}ms] initialized ${controllers.length} controllers`
+        );
 
         // serializers
         const serializers = Object.values(ApplicationRegistry.serializers);
@@ -74,13 +97,19 @@ export class ApplicationRegistry {
                 container.resolve(serializer).init();
             }
         });
-        console.log(`[${time}ms] initialized ${serializers.length} serializers`);
+        console.log(
+            `[${time}ms] initialized ${serializers.length} serializers`
+        );
 
         // setup global middlewares
         time = await mesure(async () => {
-            await instance.setupMiddlewares(middlewares.filter(({order}) => order === "before"));
+            await instance.setupMiddlewares(
+                middlewares.filter(({ order }) => order === "before")
+            );
         });
-        console.log(`[${time}ms] initialized ${middlewares.length} "before" global middlewares`);
+        console.log(
+            `[${time}ms] initialized ${middlewares.length} "before" global middlewares`
+        );
 
         // setup routes etc ...
         time = await mesure(async () => {
@@ -90,9 +119,13 @@ export class ApplicationRegistry {
 
         // setup global middlewares
         time = await mesure(async () => {
-            await instance.setupMiddlewares(middlewares.filter(({order}) => order === "after"));
+            await instance.setupMiddlewares(
+                middlewares.filter(({ order }) => order === "after")
+            );
         });
-        console.log(`[${time}ms] initialized ${middlewares.length} "after" global middlewares`);
+        console.log(
+            `[${time}ms] initialized ${middlewares.length} "after" global middlewares`
+        );
 
         // afterInit hook
         time = await mesure(async () => {
@@ -100,11 +133,17 @@ export class ApplicationRegistry {
         });
 
         ApplicationRegistry.status = ApplicationStatus.Running;
-        ApplicationRegistry.eventEmitter.emit(ApplicationLifeCycleEvent.Running);
+        ApplicationRegistry.eventEmitter.emit(
+            ApplicationLifeCycleEvent.Running
+        );
 
         console.log(`[${time}ms] after init`);
 
-        console.log("Server initialized and ready in", Date.now() - startTime, "ms");
+        console.log(
+            "Server initialized and ready in",
+            Date.now() - startTime,
+            "ms"
+        );
 
         return instance;
     }
@@ -113,11 +152,17 @@ export class ApplicationRegistry {
         ApplicationRegistry.entities.push(entity);
     }
 
-    public static repositoryFor<T extends JsonApiModel<T>>(entity: Type<T>): BaseJsonApiRepository<T> {
-        return getCustomRepository(ApplicationRegistry.repositories[entity.name]);
+    public static repositoryFor<T extends JsonApiModel<T>>(
+        entity: Type<T>
+    ): BaseJsonApiRepository<T> {
+        return getCustomRepository(
+            ApplicationRegistry.repositories[entity.name]
+        );
     }
 
-    public static serializerFor<T extends JsonApiModel<T>>(entity: Type<T>): BaseJsonApiSerializer<T> {
+    public static serializerFor<T extends JsonApiModel<T>>(
+        entity: Type<T>
+    ): BaseJsonApiSerializer<T> {
         return container.resolve(ApplicationRegistry.serializers[entity.name]);
     }
 
@@ -125,11 +170,17 @@ export class ApplicationRegistry {
         ApplicationRegistry.controllers.push(controller);
     }
 
-    public static registerCustomRepositoryFor<T extends JsonApiModel<T>>(entity: Type<T>, repository: Type<BaseJsonApiRepository<T>>) {
+    public static registerCustomRepositoryFor<T extends JsonApiModel<T>>(
+        entity: Type<T>,
+        repository: Type<BaseJsonApiRepository<T>>
+    ) {
         ApplicationRegistry.repositories[entity.name] = repository;
     }
 
-    public static registerSerializerFor<T extends JsonApiModel<T>>(entity: Type<T>, serializer: Type<BaseJsonApiSerializer<T>>) {
+    public static registerSerializerFor<T extends JsonApiModel<T>>(
+        entity: Type<T>,
+        serializer: Type<BaseJsonApiSerializer<T>>
+    ) {
         ApplicationRegistry.serializers[entity.name] = serializer;
     }
 }

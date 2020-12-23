@@ -14,8 +14,9 @@ import ApiResponse from "../responses/response.response";
 import ACLService from "../../api/services/acl.service";
 import { container } from "tsyringe";
 
-
-export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> extends BaseController {
+export default abstract class BaseJsonApiController<
+    T extends JsonApiModel<T>
+> extends BaseController {
     public entity: Type<T>;
     protected serializer: BaseJsonApiSerializer<T>;
     protected repository: BaseJsonApiRepository<T>;
@@ -29,34 +30,50 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
     }
 
     public callMethod(methodName: string): any {
-        return async (req: Request, res: Response, next: (arg0: any) => any) => {
+        return async (
+            req: Request,
+            res: Response,
+            next: (arg0: any) => any
+        ) => {
             try {
                 const response = await this[methodName](req, res);
+
                 if (!res.headersSent) {
-                    const useSchema = Reflect.getMetadata("schema-use", this, methodName) ?? "default";
+                    const useSchema =
+                        Reflect.getMetadata("schema-use", this, methodName) ??
+                        "default";
 
                     if (response instanceof PaginationResponse) {
-                        const serialized = await this.serializer.serialize(response.body, {
-                            schema: useSchema,
-                            paginationData: response.paginationData,
-                            url : req.originalUrl
-                        });
+                        const serialized = await this.serializer.serialize(
+                            response.body,
+                            {
+                                schema: useSchema,
+                                paginationData: response.paginationData,
+                                url: req.originalUrl
+                            }
+                        );
                         res.status(response.status);
                         res.type(response.type);
                         res.send(serialized);
-                    }else if (response instanceof ApiResponse) {
-                        const serialized = await this.serializer.serialize(response.body, {
-                            schema: useSchema,
-                            url : req.originalUrl
-                        });
+                    } else if (response instanceof ApiResponse) {
+                        const serialized = await this.serializer.serialize(
+                            response.body,
+                            {
+                                schema: useSchema,
+                                url: req.originalUrl
+                            }
+                        );
                         res.status(response.status);
                         res.type(response.type);
                         res.send(serialized);
-                    }else{
-                        const serialized = await this.serializer.serialize(response, {
-                            schema: useSchema,
-                            url : req.originalUrl
-                        });
+                    } else {
+                        const serialized = await this.serializer.serialize(
+                            response,
+                            {
+                                schema: useSchema,
+                                url: req.originalUrl
+                            }
+                        );
                         res.status(200);
                         res.type("application/vnd.api+json");
                         res.send(serialized);
@@ -65,20 +82,23 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
             } catch (e) {
                 return next(e);
             }
-        }
+        };
     }
 
     public async list(req: Request, _res: Response): Promise<any> {
         const params = this.parseJsonApiQueryParams(req.query);
 
-        const [entities, count] = await this.repository.jsonApiRequest(params).getManyAndCount();
+        const [entities, count] = await this.repository
+            .jsonApiRequest(params)
+            .getManyAndCount();
 
-        return req.query.page ?
-            new PaginationResponse(entities, {
-                total: count,
-                page: params.page.number,
-                size: params.page.size
-            }) : entities;
+        return req.query.page
+            ? new PaginationResponse(entities, {
+                  total: count,
+                  page: params.page.number,
+                  size: params.page.size
+              })
+            : entities;
     }
 
     public async get(req: Request, _res: Response): Promise<any> {
@@ -94,12 +114,16 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
     public async create(req: Request, _res: Response): Promise<any> {
         const entity: T = this.repository.create(req.body as DeepPartial<T>);
         const saved = await this.repository.save(entity as any);
-        return new ApiResponse(saved, {status : 201, type: "application/vnd.api+json"});
+        return new ApiResponse(saved, {
+            status: 201,
+            type: "application/vnd.api+json"
+        });
     }
 
     public async update(req: Request, _res: Response): Promise<any> {
         let saved = await this.repository.preload({
-            ...req.body, ...{id : req.params.id}
+            ...req.body,
+            ...{ id: req.params.id }
         });
 
         if (saved === undefined) {
@@ -112,7 +136,7 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
     }
 
     public async remove(req: Request, res: Response): Promise<any> {
-        const entity : T = await this.repository.findOne(req.params.id);
+        const entity: T = await this.repository.findOne(req.params.id);
 
         if (!entity) {
             throw Boom.notFound();
@@ -124,70 +148,102 @@ export default abstract class BaseJsonApiController<T extends JsonApiModel<T>> e
 
     public async fetchRelationships(req: Request, res: Response) {
         const relation = req.params.relation;
-        const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation)?.inverseEntityMetadata;
+        const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(
+            relation
+        )?.inverseEntityMetadata;
 
         if (!otherEntityMetadata) {
             throw Boom.notFound();
         }
 
         res.type("application/vnd.api+json");
-        return res.json(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
-            await this.repository.fetchRelationshipsFromRequest(
-                relation,
-                req.params.id,
-                this.parseJsonApiQueryParams(req.query)
-            ),
-            {url : req.originalUrl}
-        ));
+        return res.json(
+            await ApplicationRegistry.serializerFor(
+                otherEntityMetadata.target as any
+            ).serialize(
+                await this.repository.fetchRelationshipsFromRequest(
+                    relation,
+                    req.params.id,
+                    this.parseJsonApiQueryParams(req.query)
+                ),
+                { url: req.originalUrl }
+            )
+        );
     }
 
     public async fetchRelated(req: Request, res: Response): Promise<any> {
         const relation = req.params.relation;
-        const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(relation)?.inverseEntityMetadata;
+        const otherEntityMetadata = this.repository.metadata.findRelationWithPropertyPath(
+            relation
+        )?.inverseEntityMetadata;
 
         if (!otherEntityMetadata) {
             throw Boom.notFound();
         }
 
         res.type("application/vnd.api+json");
-        return res.json(await ApplicationRegistry.serializerFor(otherEntityMetadata.target as any).serialize(
-            await this.repository.fetchRelated(
-                relation,
-                req.params.id,
-                this.parseJsonApiQueryParams(req.query)
-            ),
-            {url : req.originalUrl}
-        ));
+        return res.json(
+            await ApplicationRegistry.serializerFor(
+                otherEntityMetadata.target as any
+            ).serialize(
+                await this.repository.fetchRelated(
+                    relation,
+                    req.params.id,
+                    this.parseJsonApiQueryParams(req.query)
+                ),
+                { url: req.originalUrl }
+            )
+        );
     }
 
     public async addRelationships(req: Request, res: Response): Promise<any> {
-        const {relation, id} = req.params;
+        const { relation, id } = req.params;
 
-        await this.repository.addRelationshipsFromRequest(relation, id, req.body.data);
+        await this.repository.addRelationshipsFromRequest(
+            relation,
+            id,
+            req.body.data
+        );
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    public async updateRelationships(req: Request, res: Response): Promise<any> {
-        const {relation, id} = req.params;
+    public async updateRelationships(
+        req: Request,
+        res: Response
+    ): Promise<any> {
+        const { relation, id } = req.params;
 
-        await this.repository.updateRelationshipsFromRequest(relation, id, req.body.data);
+        await this.repository.updateRelationshipsFromRequest(
+            relation,
+            id,
+            req.body.data
+        );
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    public async removeRelationships(req: Request, res: Response): Promise<any> {
-        const {relation, id} = req.params;
+    public async removeRelationships(
+        req: Request,
+        res: Response
+    ): Promise<any> {
+        const { relation, id } = req.params;
 
-        await this.repository.removeRelationshipsFromRequest(relation, id, req.body.data);
+        await this.repository.removeRelationshipsFromRequest(
+            relation,
+            id,
+            req.body.data
+        );
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
     protected parseJsonApiQueryParams(query: ObjectLiteral) {
         return {
-            includes : query.include ? (query.include as string).split(",") : null,
-            sort : query.sort ? (query.sort as string).split(",") : null,
-            fields : query.fields ?? null,
+            includes: query.include
+                ? (query.include as string).split(",")
+                : null,
+            sort: query.sort ? (query.sort as string).split(",") : null,
+            fields: query.fields ?? null,
             page: query.page ?? null,
             filter: query.filter ?? null
-        }
+        };
     }
 }
