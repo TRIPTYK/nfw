@@ -1,9 +1,9 @@
-import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
-import {getCustomRepository, getRepository, ObjectLiteral} from "typeorm";
-import {User} from "../models/user.model";
-import {Strategy as FacebookStrategy} from "passport-facebook";
-import {Strategy as GoogleStrategy} from "passport-google-oauth20";
-import {Strategy as OutlookStrategy} from "passport-outlook";
+import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
+import { getCustomRepository, getRepository } from "typeorm";
+import { User } from "../models/user.model";
+import { Strategy as FacebookStrategy } from "passport-facebook";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as OutlookStrategy } from "passport-outlook";
 import { Request } from "express";
 import * as Passport from "passport";
 import * as Refresh from "passport-oauth2-refresh";
@@ -35,31 +35,60 @@ class PassportService extends BaseService {
             facebook
         } = this.configurationService.config;
 
-        this.registerStrategy("jwt", new JwtStrategy({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
-            secretOrKey: jwt.secret
-        }, this.jwt));
+        this.registerStrategy(
+            "jwt",
+            new JwtStrategy(
+                {
+                    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(
+                        "Bearer"
+                    ),
+                    secretOrKey: jwt.secret
+                },
+                this.jwt
+            )
+        );
 
-        this.registerStrategy("windowslive", new OutlookStrategy({
-            callbackURL: outlook.redirect,
-            clientID: outlook.id,
-            clientSecret: outlook.secret,
-            passReqToCallback: true
-        }, this.oAuth("windowslive")), true);
+        this.registerStrategy(
+            "windowslive",
+            new OutlookStrategy(
+                {
+                    callbackURL: outlook.redirect,
+                    clientID: outlook.id,
+                    clientSecret: outlook.secret,
+                    passReqToCallback: true
+                },
+                this.oAuth("windowslive")
+            ),
+            true
+        );
 
-        this.registerStrategy("google", new GoogleStrategy({
-            callbackURL: google.redirect,
-            clientID: google.id,
-            clientSecret: google.secret,
-            passReqToCallback: true
-        }, this.oAuth("google")), true);
+        this.registerStrategy(
+            "google",
+            new GoogleStrategy(
+                {
+                    callbackURL: google.redirect,
+                    clientID: google.id,
+                    clientSecret: google.secret,
+                    passReqToCallback: true
+                },
+                this.oAuth("google")
+            ),
+            true
+        );
 
-        this.registerStrategy("facebook", new FacebookStrategy({
-            callbackURL: facebook.redirect,
-            clientID: facebook.id,
-            clientSecret: facebook.secret,
-            passReqToCallback: true
-        }, this.oAuth("facebook")), true);
+        this.registerStrategy(
+            "facebook",
+            new FacebookStrategy(
+                {
+                    callbackURL: facebook.redirect,
+                    clientID: facebook.id,
+                    clientSecret: facebook.secret,
+                    passReqToCallback: true
+                },
+                this.oAuth("facebook")
+            ),
+            true
+        );
 
         for (const strategy of this.strategies) {
             Passport.use(strategy.name, strategy.object);
@@ -69,7 +98,6 @@ class PassportService extends BaseService {
         }
     }
 
-
     /**
      *
      *
@@ -78,11 +106,18 @@ class PassportService extends BaseService {
      * @returns
      * @memberof PassportConfig
      */
-    public async jwt(payload: any, next: (error: null | Error, arg: boolean|User) => void): Promise<any> {
+    public async jwt(
+        payload: any,
+        next: (error: null | Error, arg: boolean | User) => void
+    ): Promise<any> {
         try {
             const userRepository = getRepository(User);
-            const user = await userRepository.findOne(payload.sub, {relations: ["avatar"]});
-            if (user) { return next(null, user); }
+            const user = await userRepository.findOne(payload.sub, {
+                relations: ["avatar"]
+            });
+            if (user) {
+                return next(null, user);
+            }
             next(null, false);
         } catch (error) {
             next(error, false);
@@ -94,16 +129,26 @@ class PassportService extends BaseService {
      *
      * @memberof PassportConfig
      */
-    public oAuth = (service: string) =>
-        async (req: Request, accessToken: string, refreshToken: string, fullToken: string, profile: ObjectLiteral, cb): Promise<any> => {
-            try {
-                const tokenRepo = getCustomRepository(OAuthTokenRepository);
-                await tokenRepo.oAuthLogin(req.user, {service, accessToken, refreshToken});
-                return cb(null, req.user);
-            } catch (err) {
-                return cb(err);
-            }
+    public oAuth = (service: string) => async (
+        req: Request,
+        accessToken: string,
+        refreshToken: string,
+        fullToken: string,
+        profile: Record<string, any>,
+        cb
+    ): Promise<any> => {
+        try {
+            const tokenRepo = getCustomRepository(OAuthTokenRepository);
+            await tokenRepo.oAuthLogin(req.user, {
+                service,
+                accessToken,
+                refreshToken
+            });
+            return cb(null, req.user);
+        } catch (err) {
+            return cb(err);
         }
+    };
 
     /**
      *
@@ -114,9 +159,13 @@ class PassportService extends BaseService {
      * @param {boolean} [refresh=false]
      * @memberof PassportConfig
      */
-    private registerStrategy(name: string, object: Passport.Strategy, refresh = false): void {
-        this.strategies.push({name, object, refresh});
+    private registerStrategy(
+        name: string,
+        object: Passport.Strategy,
+        refresh = false
+    ): void {
+        this.strategies.push({ name, object, refresh });
     }
 }
 
-export {PassportService};
+export { PassportService };

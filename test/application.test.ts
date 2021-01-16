@@ -3,24 +3,20 @@ process.env.NODE_ENV = "test";
 
 // Require modules to test
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkgInfo = require(process.cwd() + "/package.json");
+const pkgInfo = require(`${process.cwd()}/package.json`);
 
 // Require the dev-dependencies
 import * as request from "supertest";
-import {expect} from "chai";
+import { expect } from "chai";
+import { ServerContainer } from "./utils/server";
 
-
-describe("Express application", function() {
-    it("Express instance type is function", function() {
-        expect(typeof (global["server"])).to.equal("function");
+describe("Express application", () => {
+    it("Express instance type is function", () => {
+        expect(typeof ServerContainer.innerInstance).to.equal("function");
     });
 
-    it("Express server version is 4.17.1", function() {
-        expect(pkgInfo.dependencies.express.slice(1)).to.equal("4.17.1");
-    });
-
-    it("API status is OK 200", function(done) {
-        request(global["server"])
+    it("API status is OK 200", (done) => {
+        request(ServerContainer.innerInstance)
             .get("/api/v1/status")
             .expect(200, done);
     });

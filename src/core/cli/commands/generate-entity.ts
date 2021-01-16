@@ -6,26 +6,31 @@ import addColumn from "./add-column";
 import addRelation from "./add-relation";
 import project = require("../utils/project");
 
-export default async function generateJsonApiEntity(modelName: string, data?: EntityColumns): Promise<void> {
+export default async function generateJsonApiEntity(
+    modelName: string,
+    data?: EntityColumns
+): Promise<void> {
     if (!modelName.length) {
         return;
     }
 
     const tableColumns = data ?? {
-        columns:[],
-        relations:[]
+        columns: [],
+        relations: []
     };
 
     const files: SourceFile[] = [];
-    const {filePrefixName, classPrefixName} = getEntityNaming(modelName);
+    const { filePrefixName, classPrefixName } = getEntityNaming(modelName);
 
     for (const file of resources(filePrefixName)) {
-        const {default : generator} = await import(`../templates/${file.template}`);
+        const { default: generator } = await import(
+            `../templates/${file.template}`
+        );
         const createdFile = await generator({
             modelName,
             classPrefixName,
             filePrefixName,
-            fileTemplateInfo : file,
+            fileTemplateInfo: file,
             tableColumns
         });
         files.push(createdFile);
@@ -35,9 +40,15 @@ export default async function generateJsonApiEntity(modelName: string, data?: En
     const applicationClass = applicationFile.getClasses()[0];
     const importControllerName = `${classPrefixName}Controller`;
 
-    const objectArgs = applicationClass.getDecorator("RegisterApplication").getArguments()[0] as ObjectLiteralExpression;
-    const controllersArray = objectArgs.getProperty("controllers").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
-    const exists = controllersArray.getElements().find((elem) => elem.getText() === importControllerName);
+    const objectArgs = applicationClass
+        .getDecorator("RegisterApplication")
+        .getArguments()[0] as ObjectLiteralExpression;
+    const controllersArray = objectArgs
+        .getProperty("controllers")
+        .getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
+    const exists = controllersArray
+        .getElements()
+        .find((elem) => elem.getText() === importControllerName);
 
     if (!exists) {
         controllersArray.addElement(importControllerName);

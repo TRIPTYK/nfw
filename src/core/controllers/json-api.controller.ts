@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import BaseJsonApiRepository from "../repositories/base.repository";
-import { Type } from "../types/global";
+import { Constructor } from "../types/global";
 import { JsonApiModel } from "../models/json-api.model";
 import { Request, Response } from "express";
 import { ApplicationRegistry } from "../application/registry.application";
 import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
-import { DeepPartial, ObjectLiteral } from "typeorm";
+import { DeepPartial } from "typeorm";
 import BaseController from "./base.controller";
 import PaginationResponse from "../responses/pagination.response";
 import ApiResponse from "../responses/response.response";
@@ -17,7 +17,7 @@ import { container } from "tsyringe";
 export default abstract class BaseJsonApiController<
     T extends JsonApiModel<T>
 > extends BaseController {
-    public entity: Type<T>;
+    public entity: Constructor<T>;
     protected serializer: BaseJsonApiSerializer<T>;
     protected repository: BaseJsonApiRepository<T>;
 
@@ -46,11 +46,7 @@ export default abstract class BaseJsonApiController<
                     if (response instanceof PaginationResponse) {
                         const serialized = await this.serializer.serialize(
                             response.body,
-                            {
-                                schema: useSchema,
-                                paginationData: response.paginationData,
-                                url: req.originalUrl
-                            }
+                            useSchema
                         );
                         res.status(response.status);
                         res.type(response.type);
@@ -58,10 +54,7 @@ export default abstract class BaseJsonApiController<
                     } else if (response instanceof ApiResponse) {
                         const serialized = await this.serializer.serialize(
                             response.body,
-                            {
-                                schema: useSchema,
-                                url: req.originalUrl
-                            }
+                            useSchema
                         );
                         res.status(response.status);
                         res.type(response.type);
@@ -69,10 +62,7 @@ export default abstract class BaseJsonApiController<
                     } else {
                         const serialized = await this.serializer.serialize(
                             response,
-                            {
-                                schema: useSchema,
-                                url: req.originalUrl
-                            }
+                            useSchema
                         );
                         res.status(200);
                         res.type("application/vnd.api+json");
@@ -156,6 +146,10 @@ export default abstract class BaseJsonApiController<
             throw Boom.notFound();
         }
 
+        const useSchema =
+            Reflect.getMetadata("schema-use", this, "fetchRelationships") ??
+            "default";
+
         res.type("application/vnd.api+json");
         return res.json(
             await ApplicationRegistry.serializerFor(
@@ -166,7 +160,7 @@ export default abstract class BaseJsonApiController<
                     req.params.id,
                     this.parseJsonApiQueryParams(req.query)
                 ),
-                { url: req.originalUrl }
+                useSchema
             )
         );
     }
@@ -181,6 +175,10 @@ export default abstract class BaseJsonApiController<
             throw Boom.notFound();
         }
 
+        const useSchema =
+            Reflect.getMetadata("schema-use", this, "fetchRelated") ??
+            "default";
+
         res.type("application/vnd.api+json");
         return res.json(
             await ApplicationRegistry.serializerFor(
@@ -191,7 +189,7 @@ export default abstract class BaseJsonApiController<
                     req.params.id,
                     this.parseJsonApiQueryParams(req.query)
                 ),
-                { url: req.originalUrl }
+                useSchema
             )
         );
     }
@@ -235,7 +233,7 @@ export default abstract class BaseJsonApiController<
         res.sendStatus(HttpStatus.NO_CONTENT).end();
     }
 
-    protected parseJsonApiQueryParams(query: ObjectLiteral) {
+    protected parseJsonApiQueryParams(query: Record<string, any>) {
         return {
             includes: query.include
                 ? (query.include as string).split(",")

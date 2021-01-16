@@ -2,7 +2,7 @@
 /* eslint-disable complexity */
 import * as Express from "express";
 import ApplicationInterface from "../interfaces/application.interface";
-import { AnyFunction, Type } from "../types/global";
+import { AnyFunction, Constructor } from "../types/global";
 import {
     RouteDefinition,
     RequestMethods,
@@ -70,7 +70,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
      * Setup controllers routing
      */
     // eslint-disable-next-line @typescript-eslint/require-await
-    public async setupControllers(controllers: Type<BaseController>[]) {
+    public async setupControllers(controllers: Constructor<BaseController>[]) {
         for (const controller of controllers) {
             const instanceController = container.resolve(controller);
 
@@ -437,7 +437,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
     }
 
     private useMiddleware = (
-        middleware: Type<BaseMiddleware | BaseErrorMiddleware>,
+        middleware: Constructor<BaseMiddleware | BaseErrorMiddleware>,
         args: any,
         context: RouteContext
     ) => {

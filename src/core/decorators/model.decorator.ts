@@ -4,13 +4,13 @@ import { EntityOptions, getMetadataArgsStorage } from "typeorm";
 import { TableMetadataArgs } from "typeorm/metadata-args/TableMetadataArgs";
 import { EntityRepositoryMetadataArgs } from "typeorm/metadata-args/EntityRepositoryMetadataArgs";
 import BaseJsonApiRepository from "../repositories/base.repository";
-import { Type } from "../types/global";
+import { Constructor } from "../types/global";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { ApplicationRegistry } from "../application/registry.application";
 
 export interface EntityOptionsExtended<T> extends EntityOptions {
-    repository: Type<BaseJsonApiRepository<T>>;
-    serializer: Type<BaseJsonApiSerializer<T>>;
+    repository: Constructor<BaseJsonApiRepository<T>>;
+    serializer: Constructor<BaseJsonApiSerializer<T>>;
     validator: any;
 }
 
@@ -18,23 +18,34 @@ export interface EntityOptionsExtended<T> extends EntityOptions {
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).
  * Database schema will be created for all classes decorated with it, and Repository can be retrieved and used for it.
  */
-export function JsonApiEntity<T>(options?: EntityOptionsExtended<T>): ClassDecorator;
+export function JsonApiEntity<T>(
+    options?: EntityOptionsExtended<T>
+): ClassDecorator;
 
 /**
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).
  * Database schema will be created for all classes decorated with it, and Repository can be retrieved and used for it.
  */
-export function JsonApiEntity<T>(name?: string, options?: EntityOptionsExtended<T>): ClassDecorator;
+export function JsonApiEntity<T>(
+    name?: string,
+    options?: EntityOptionsExtended<T>
+): ClassDecorator;
 
 /**
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).
  * Database schema will be created for all classes decorated with it, and Repository can be retrieved and used for it.
  */
-export function JsonApiEntity<T>(nameOrOptions?: string|any, maybeOptions?: EntityOptionsExtended<T>): ClassDecorator {
-    const options = (typeof nameOrOptions === "object" ? nameOrOptions : maybeOptions) || {};
-    const name = typeof nameOrOptions === "string" ? nameOrOptions : options.name;
+export function JsonApiEntity<T>(
+    nameOrOptions?: string | any,
+    maybeOptions?: EntityOptionsExtended<T>
+): ClassDecorator {
+    const options =
+        (typeof nameOrOptions === "object" ? nameOrOptions : maybeOptions) ||
+        {};
+    const name =
+        typeof nameOrOptions === "string" ? nameOrOptions : options.name;
 
-    return function(target) {
+    return function (target) {
         getMetadataArgsStorage().tables.push({
             target,
             name,
@@ -57,19 +68,24 @@ export function JsonApiEntity<T>(nameOrOptions?: string|any, maybeOptions?: Enti
         Reflect.defineMetadata("validator", options.validator, target);
 
         getMetadataArgsStorage().entityRepositories.push({
-            target : options.repository,
+            target: options.repository,
             entity: target
         } as EntityRepositoryMetadataArgs);
 
         ApplicationRegistry.registerEntity(target as any);
-        ApplicationRegistry.registerCustomRepositoryFor(target as any, options.repository);
-        ApplicationRegistry.registerSerializerFor(target as any, options.serializer);
+        ApplicationRegistry.registerCustomRepositoryFor(
+            target as any,
+            options.repository
+        );
+        ApplicationRegistry.registerSerializerFor(
+            target as any,
+            options.serializer
+        );
     };
 }
 
-
 export function Filterable(): PropertyDecorator {
-    return function(target: object, propertyKey: string | symbol) {
+    return function (target: object, propertyKey: string | symbol) {
         Reflect.defineMetadata("filterable", true, target, propertyKey);
-    }
+    };
 }

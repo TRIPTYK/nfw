@@ -3,18 +3,22 @@ import { SourceFile, ObjectLiteralExpression } from "ts-morph";
 import resources, { getEntityNaming } from "../static/resources";
 import project = require("../utils/project");
 
-export default async function deleteJsonApiEntity(modelName: string): Promise<void> {
+export default async function deleteJsonApiEntity(
+    modelName: string
+): Promise<void> {
     if (!modelName.length) {
         return;
     }
 
     const files: SourceFile[] = [];
-    const {filePrefixName, classPrefixName} = getEntityNaming(modelName);
+    const { filePrefixName, classPrefixName } = getEntityNaming(modelName);
 
     for (const file of resources(filePrefixName)) {
         const fileObj = project.getSourceFile(`${file.path}/${file.name}`);
         if (!fileObj) {
-            throw new Error(`Entity file ${file.name} does not seems to exists`);
+            throw new Error(
+                `Entity file ${file.name} does not seems to exists`
+            );
         }
         files.push(fileObj);
     }
@@ -30,9 +34,15 @@ export default async function deleteJsonApiEntity(modelName: string): Promise<vo
     const applicationClass = applicationFile.getClasses()[0];
     const importControllerName = `${classPrefixName}Controller`;
 
-    const objectArgs = applicationClass.getDecorator("RegisterApplication").getArguments()[0] as ObjectLiteralExpression;
-    const controllersArray = objectArgs.getProperty("controllers").getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
-    const exists = controllersArray.getElements().find((elem) => elem.getText() === importControllerName);
+    const objectArgs = applicationClass
+        .getDecorator("RegisterApplication")
+        .getArguments()[0] as ObjectLiteralExpression;
+    const controllersArray = objectArgs
+        .getProperty("controllers")
+        .getFirstChildByKind(SyntaxKind.ArrayLiteralExpression);
+    const exists = controllersArray
+        .getElements()
+        .find((elem) => elem.getText() === importControllerName);
 
     controllersArray.removeElement(exists);
 

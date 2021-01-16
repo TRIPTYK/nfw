@@ -1,12 +1,11 @@
 /* eslint-disable no-console */
-import { Type } from "../types/global";
+import { Constructor } from "../types/global";
 import BaseJsonApiRepository from "../repositories/base.repository";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { getCustomRepository } from "typeorm";
 import { container } from "tsyringe";
 import { JsonApiModel } from "../models/json-api.model";
 import BaseApplication from "./base.application";
-import Constructor from "../types/constructor";
 import BaseService from "../services/base.service";
 import BaseController from "../controllers/base.controller";
 import { mesure } from "../utils/mesure.util";
@@ -26,12 +25,12 @@ export enum ApplicationLifeCycleEvent {
 
 export class ApplicationRegistry {
     public static application: BaseApplication;
-    public static entities: Type<JsonApiModel<any>>[] = [];
+    public static entities: Constructor<JsonApiModel<any>>[] = [];
     public static repositories: {
-        [key: string]: Type<BaseJsonApiRepository<any>>;
+        [key: string]: Constructor<BaseJsonApiRepository<any>>;
     } = {};
     public static serializers: {
-        [key: string]: Type<BaseJsonApiSerializer<any>>;
+        [key: string]: Constructor<BaseJsonApiSerializer<any>>;
     } = {};
     public static controllers: BaseController[] = [];
     public static status: ApplicationStatus = ApplicationStatus.None;
@@ -47,11 +46,11 @@ export class ApplicationRegistry {
     ) {
         ApplicationRegistry.eventEmitter.emit(ApplicationLifeCycleEvent.Boot);
         ApplicationRegistry.status = ApplicationStatus.Booting;
-        const services: Type<BaseService>[] = Reflect.getMetadata(
+        const services: Constructor<BaseService>[] = Reflect.getMetadata(
             "services",
             app
         );
-        const controllers: Type<BaseController>[] = Reflect.getMetadata(
+        const controllers: Constructor<BaseController>[] = Reflect.getMetadata(
             "controllers",
             app
         );
@@ -148,12 +147,14 @@ export class ApplicationRegistry {
         return instance;
     }
 
-    public static registerEntity<T extends JsonApiModel<T>>(entity: Type<T>) {
+    public static registerEntity<T extends JsonApiModel<T>>(
+        entity: Constructor<T>
+    ) {
         ApplicationRegistry.entities.push(entity);
     }
 
     public static repositoryFor<T extends JsonApiModel<T>>(
-        entity: Type<T>
+        entity: Constructor<T>
     ): BaseJsonApiRepository<T> {
         return getCustomRepository(
             ApplicationRegistry.repositories[entity.name]
@@ -161,7 +162,7 @@ export class ApplicationRegistry {
     }
 
     public static serializerFor<T extends JsonApiModel<T>>(
-        entity: Type<T>
+        entity: Constructor<T>
     ): BaseJsonApiSerializer<T> {
         return container.resolve(ApplicationRegistry.serializers[entity.name]);
     }
@@ -171,15 +172,15 @@ export class ApplicationRegistry {
     }
 
     public static registerCustomRepositoryFor<T extends JsonApiModel<T>>(
-        entity: Type<T>,
-        repository: Type<BaseJsonApiRepository<T>>
+        entity: Constructor<T>,
+        repository: Constructor<BaseJsonApiRepository<T>>
     ) {
         ApplicationRegistry.repositories[entity.name] = repository;
     }
 
     public static registerSerializerFor<T extends JsonApiModel<T>>(
-        entity: Type<T>,
-        serializer: Type<BaseJsonApiSerializer<T>>
+        entity: Constructor<T>,
+        serializer: Constructor<BaseJsonApiSerializer<T>>
     ) {
         ApplicationRegistry.serializers[entity.name] = serializer;
     }

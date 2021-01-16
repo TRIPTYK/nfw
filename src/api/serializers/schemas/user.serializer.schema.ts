@@ -1,10 +1,18 @@
-import { Serialize, Deserialize, SerializerSchema, Relation } from "../../../core/decorators/serializer.decorator";
+import {
+    Serialize,
+    Deserialize,
+    SerializerSchema,
+    Relation
+} from "../../../core/decorators/serializer.decorator";
 import DocumentSerializerSchema from "./document.serializer.schema";
 import { UserInterface } from "../../models/user.model";
 import { Document } from "../../models/document.model";
+import MasterSerializerSchema from "./master.serializer-schema";
 
 @SerializerSchema()
-export default class UserSerializerSchema implements UserInterface {
+export default class UserSerializerSchema
+    extends MasterSerializerSchema<UserInterface>
+    implements UserInterface {
     @Serialize()
     @Deserialize()
     public username;
@@ -30,7 +38,7 @@ export default class UserSerializerSchema implements UserInterface {
     @Serialize()
     @Deserialize()
     public last_name;
-    
+
     @Deserialize()
     public password;
 
