@@ -44,7 +44,8 @@ export default abstract class BaseJsonApiController<
                     if (response instanceof PaginationResponse) {
                         const serialized = await this.serializer.serialize(
                             response.body,
-                            useSchema
+                            useSchema,
+                            response.paginationData
                         );
                         res.status(response.status);
                         res.type(response.type);
@@ -84,13 +85,18 @@ export default abstract class BaseJsonApiController<
             ? new PaginationResponse(entities, {
                   total: count,
                   page: params.page.number,
-                  size: params.page.size
+                  size: params.page.size,
+                  url: req.url
               })
             : entities;
     }
 
     public async get(req: Request, _res: Response): Promise<any> {
-        const entity = await this.repository.jsonApiFindOne(req, req.params.id);
+        const params = this.parseJsonApiQueryParams(req.query);
+        const entity = await this.repository
+            .jsonApiRequest(params)
+            .andWhere(req.params.id)
+            .getOne();
 
         if (!entity) {
             throw Boom.notFound();

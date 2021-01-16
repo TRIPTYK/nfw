@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as JSONAPISerializer from "json-api-serializer";
 import SerializerInterface from "../interfaces/serializer.interface";
-import { Serializer } from "ts-japi";
 import {
     RelationMetadata,
     SchemaOptions
@@ -21,6 +20,7 @@ export type PaginationParams = {
     total: number;
     page: number;
     size: number;
+    url: string;
 };
 
 export abstract class BaseJsonApiSerializer<T>
@@ -28,7 +28,6 @@ export abstract class BaseJsonApiSerializer<T>
     public static whitelist: string[] = [];
     public type: string;
     public serializer: JSONAPISerializer;
-    private configurationService: ConfigurationService;
 
     public constructor() {
         this.serializer = new JSONAPISerializer({
@@ -44,9 +43,6 @@ export abstract class BaseJsonApiSerializer<T>
     }
 
     public init() {
-        this.configurationService = container.resolve<ConfigurationService>(
-            ConfigurationService
-        );
         const schemasData: SchemaOptions = Reflect.getMetadata("schemas", this);
         this.type = schemasData.type;
 
@@ -72,6 +68,19 @@ export abstract class BaseJsonApiSerializer<T>
     }
 
     public serialize(payload: T | T[], schema: string, extraData?: any): any {
+        return this.serializer.serializeAsync(
+            this.type,
+            payload,
+            schema,
+            extraData
+        );
+    }
+
+    public pagination(
+        payload: T | T[],
+        schema: string,
+        extraData?: PaginationParams
+    ): any {
         return this.serializer.serializeAsync(
             this.type,
             payload,
@@ -164,6 +173,9 @@ export abstract class BaseJsonApiSerializer<T>
             whitelist: serialize,
             whitelistOnDeserialize: deserialize,
             relationships: relationShips,
+            topLevelLinks: (data, extraData) => {
+                return schemaInstance.topLevelLinks(data, extraData, this.type);
+            },
             links: (data, extraData) => {
                 return schemaInstance.links(data, extraData, this.type);
             },
@@ -172,13 +184,4 @@ export abstract class BaseJsonApiSerializer<T>
             }
         });
     }
-
-    /**
-     *  Replace page number parameter value in given URL
-     */
-    protected replacePage = (url: string, newPage: number): string =>
-        url.replace(
-            /(.*page(?:\[|%5B)number(?:]|%5D)=)(?<pageNumber>[0-9]+)(.*)/i,
-            `$1${newPage}$3`
-        );
 }
