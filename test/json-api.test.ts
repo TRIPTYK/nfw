@@ -163,7 +163,7 @@ describe("JSON-API compliance test", () => {
 
     it("A server MUST support fetching relationship data for every relationship URL provided as a self link as part of a relationship’s links object.", (done) => {
         agent
-            .get("/api/v1/users/?include=documents")
+            .get("/articles/1/relationships/author")
             .set("Content-Type", "application/vnd.api+json")
             .set("Authorization", `Bearer ${token}`)
             .end((err, res) => {

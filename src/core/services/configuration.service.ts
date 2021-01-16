@@ -209,7 +209,7 @@ export default class ConfigurationService<
         return { ...loaded, ...applyObj };
     }
 
-    public getKey<T>(key: string): T {
+    public getKey(key: keyof T): T[keyof T] {
         return this._config[key];
     }
 

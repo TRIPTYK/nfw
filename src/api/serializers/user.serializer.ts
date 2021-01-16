@@ -4,8 +4,6 @@ import { JsonApiSerializer } from "../../core/decorators/serializer.decorator";
 import UserSerializerSchema from "./schemas/user.serializer.schema";
 import { BaseJsonApiSerializer } from "../../core/serializers/base.serializer";
 
-@singleton()
-@autoInjectable()
 @JsonApiSerializer({
     type: "users",
     schemas: () => [UserSerializerSchema]

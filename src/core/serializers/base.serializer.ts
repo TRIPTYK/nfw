@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as JSONAPISerializer from "json-api-serializer";
 import SerializerInterface from "../interfaces/serializer.interface";
+import { Serializer } from "ts-japi";
 import {
     RelationMetadata,
     SchemaOptions
@@ -10,7 +11,6 @@ import ConfigurationService from "../services/configuration.service";
 import { container } from "tsyringe";
 
 import { toCamelCase, toKebabCase, toSnakeCase } from "../utils/case.util";
-import * as pluralize from "pluralize";
 import BaseSerializerSchema from "./base.serializer-schema";
 
 export type SerializerParams = {
@@ -21,53 +21,6 @@ export type PaginationParams = {
     total: number;
     page: number;
     size: number;
-};
-
-export type JSONAPISerializerSchema = {
-    id?: string;
-    type: string;
-    blacklist?: string[];
-    whitelist?: string[];
-    jsonapiObject?: boolean;
-    links?: any;
-    topLevelMeta?: any;
-    topLevelLinks?: any;
-    meta?: JSONAPISerializerCustom;
-    relationships?: { [key: string]: JSONAPISerializerSchema };
-    convertCase?: "kebab-case" | "snake_case" | "camelCase";
-    unconvertCase?: "kebab-case" | "snake_case" | "camelCase";
-    blacklistOnDeserialize?: string[];
-    whitelistOnDeserialize?: string[];
-};
-
-export type JSONAPISerializerCustom =
-    | string
-    | ((arg1?: any, arg2?: any) => any | string);
-
-export type JSONAPISerializerRelation = {
-    type: JSONAPISerializerCustom;
-    alternativeKey?: string;
-    schema?: string;
-    links?: any;
-    meta?: JSONAPISerializerCustom;
-    deserialize?: JSONAPISerializerCustom;
-};
-
-export type JSONAPISerializerOptions = {
-    id?: string;
-    blacklist?: string[];
-    whitelist?: string[];
-    jsonapiObject?: boolean;
-    links?: any;
-    topLevelMeta?: any;
-    topLevelLinks?: any;
-    meta?: JSONAPISerializerCustom;
-    relationships?: { [key: string]: JSONAPISerializerRelation };
-    convertCase?: "kebab-case" | "snake_case" | "camelCase";
-    // unconvert
-    unconvertCase?: "kebab-case" | "snake_case" | "camelCase";
-    blacklistOnDeserialize?: string[];
-    whitelistOnDeserialize?: string[];
 };
 
 export abstract class BaseJsonApiSerializer<T>
@@ -81,7 +34,7 @@ export abstract class BaseJsonApiSerializer<T>
         this.serializer = new JSONAPISerializer({
             convertCase: "camelCase",
             unconvertCase: "snake_case"
-        } as JSONAPISerializerSchema);
+        });
 
         const schemasData: SchemaOptions = Reflect.getMetadata("schemas", this);
 
@@ -106,18 +59,25 @@ export abstract class BaseJsonApiSerializer<T>
                 passedBy
             );
         }
+
+        // TODO : move in it's own prefab schema ? move outside ?
+        this.serializer.register(this.type, "relationships", {
+            topLevelLinks: (data, extraData) => {
+                return {
+                    self: `/${extraData.thisType}/${extraData.id}/relationships/${extraData.relationName}`,
+                    related: `/${extraData.thisType}/${extraData.id}/author`
+                };
+            }
+        });
     }
 
-    public paginate(
-        payload: T | T[],
-        schema,
-        totalCount: number,
-        currentPage: number,
-        size: number
-    ): any {}
-
-    public serialize(payload: T | T[], schema: string): any {
-        return this.serializer.serializeAsync(this.type, payload, schema);
+    public serialize(payload: T | T[], schema: string, extraData?: any): any {
+        return this.serializer.serializeAsync(
+            this.type,
+            payload,
+            schema,
+            extraData
+        );
     }
 
     public deserialize(payload: any): T | T[] {
@@ -163,7 +123,7 @@ export abstract class BaseJsonApiSerializer<T>
         const schemaType = Reflect.getMetadata("type", schema) as string;
         const schemaInstance = new schema();
 
-        const relationShips: { [key: string]: JSONAPISerializerRelation } = {};
+        const relationShips: { [key: string]: any } = {};
 
         if (passedBy.includes(schema.name)) {
             return;

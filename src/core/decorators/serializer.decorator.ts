@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+import { container } from "tsyringe";
 import BaseSerializerSchema from "../serializers/base.serializer-schema";
 import { Constructor } from "../types/global";
 
@@ -65,6 +66,7 @@ export interface SchemaOptions {
  */
 export function JsonApiSerializer(options: SchemaOptions): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction) {
+        container.registerSingleton(target as any);
         Reflect.defineMetadata("schemas", options, target.prototype);
     };
 }

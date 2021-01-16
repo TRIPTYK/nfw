@@ -6,11 +6,11 @@ import {
 } from "../../../core/decorators/serializer.decorator";
 import UserSerializerSchema from "./user.serializer.schema";
 import { DocumentInterface } from "../../models/document.model";
-import MasterSerializerSchema from "./master.serializer-schema";
+import BaseSerializerSchema from "../../../core/serializers/base.serializer-schema";
 
 @SerializerSchema()
 export default class DocumentSerializerSchema
-    extends MasterSerializerSchema<DocumentInterface>
+    extends BaseSerializerSchema<DocumentInterface>
     implements DocumentInterface {
     @Serialize()
     public deleted_at: Date;

@@ -1,3 +1,6 @@
+import { container } from "tsyringe";
+import ConfigurationService from "../services/configuration.service";
+
 export interface BaseSerializerSchemaInterface<T> {
     baseUrl: string;
     links(
@@ -6,6 +9,7 @@ export interface BaseSerializerSchemaInterface<T> {
         type: string
     ): {
         self?: string;
+        related?: string;
     };
     relationshipLinks(
         data: T,
@@ -27,7 +31,12 @@ export interface BaseSerializerSchemaInterface<T> {
 
 export default abstract class BaseSerializerSchema<T>
     implements BaseSerializerSchemaInterface<T> {
-    public abstract get baseUrl();
+    public get baseUrl() {
+        const configurationService = container.resolve<ConfigurationService>(
+            ConfigurationService
+        );
+        return `/api/${configurationService.config.api.version}`;
+    }
 
     public links(data, extraData, type) {
         return {
@@ -42,12 +51,16 @@ export default abstract class BaseSerializerSchema<T>
         };
     }
 
-    abstract meta(data: T, extraData: any, type: string);
+    public meta(data: T, extraData: any, type: string) {
+        //nothing to do
+    }
 
-    abstract relationshipMeta(
+    public relationshipMeta(
         data: T,
         extraData: any,
         type: string,
         relationshipName
-    );
+    ) {
+        // nothing to do
+    }
 }

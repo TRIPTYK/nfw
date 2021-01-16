@@ -7,11 +7,11 @@ import {
 import DocumentSerializerSchema from "./document.serializer.schema";
 import { UserInterface } from "../../models/user.model";
 import { Document } from "../../models/document.model";
-import MasterSerializerSchema from "./master.serializer-schema";
+import BaseSerializerSchema from "../../../core/serializers/base.serializer-schema";
 
 @SerializerSchema()
 export default class UserSerializerSchema
-    extends MasterSerializerSchema<UserInterface>
+    extends BaseSerializerSchema<UserInterface>
     implements UserInterface {
     @Serialize()
     @Deserialize()

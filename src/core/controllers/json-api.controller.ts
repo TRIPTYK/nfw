@@ -11,8 +11,6 @@ import { DeepPartial } from "typeorm";
 import BaseController from "./base.controller";
 import PaginationResponse from "../responses/pagination.response";
 import ApiResponse from "../responses/response.response";
-import ACLService from "../../api/services/acl.service";
-import { container } from "tsyringe";
 
 export default abstract class BaseJsonApiController<
     T extends JsonApiModel<T>
@@ -146,22 +144,21 @@ export default abstract class BaseJsonApiController<
             throw Boom.notFound();
         }
 
-        const useSchema =
-            Reflect.getMetadata("schema-use", this, "fetchRelationships") ??
-            "default";
+        const relatedIds = await this.repository.fetchRelationshipsFromRequest(
+            relation,
+            req.params.id,
+            this.parseJsonApiQueryParams(req.query)
+        );
 
         res.type("application/vnd.api+json");
         return res.json(
             await ApplicationRegistry.serializerFor(
                 otherEntityMetadata.target as any
-            ).serialize(
-                await this.repository.fetchRelationshipsFromRequest(
-                    relation,
-                    req.params.id,
-                    this.parseJsonApiQueryParams(req.query)
-                ),
-                useSchema
-            )
+            ).serialize(relatedIds, "relationships", {
+                id: req.params.id,
+                thisType: this.name,
+                relationName: relation
+            })
         );
     }
 
