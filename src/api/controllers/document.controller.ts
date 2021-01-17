@@ -2,22 +2,36 @@ import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
 
 import { Request, Response } from "express";
-import { JsonApiController, JsonApiMethodMiddleware, OverrideSerializer, OverrideValidator } from "../../core/decorators/controller.decorator";
-import { DocumentResizeMiddleware, DocumentResizeMiddlewareArgs } from "../middlewares/document-resize.middleware";
-import FileUploadMiddleware, { FileUploadMiddlewareArgs } from "../middlewares/file-upload.middleware";
-import { autoInjectable, singleton } from "tsyringe";
+import {
+    JsonApiController,
+    JsonApiMethodMiddleware,
+    OverrideSerializer,
+    OverrideValidator
+} from "../../core/decorators/controller.decorator";
+import {
+    DocumentResizeMiddleware,
+    DocumentResizeMiddlewareArgs
+} from "../middlewares/document-resize.middleware";
+import FileUploadMiddleware, {
+    FileUploadMiddlewareArgs
+} from "../middlewares/file-upload.middleware";
+import { autoInjectable } from "tsyringe";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import { Document } from "../models/document.model";
 import { DeepPartial } from "typeorm";
 
 @JsonApiController(Document)
-@singleton()
 @autoInjectable()
 export default class DocumentController extends BaseJsonApiController<Document> {
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, { type : "single", fieldName : "document" })
-    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(DocumentResizeMiddleware)
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {
+        type: "single",
+        fieldName: "document"
+    })
+    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(
+        DocumentResizeMiddleware
+    )
     public async create(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
         const document = this.repository.create(file as DeepPartial<Document>);
@@ -27,8 +41,13 @@ export default class DocumentController extends BaseJsonApiController<Document> 
 
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, { type : "single", fieldName : "document" })
-    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(DocumentResizeMiddleware)
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {
+        type: "single",
+        fieldName: "document"
+    })
+    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(
+        DocumentResizeMiddleware
+    )
     public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
 
@@ -40,7 +59,9 @@ export default class DocumentController extends BaseJsonApiController<Document> 
 
         await originalDocument.removeAssociatedFiles();
 
-        const saved = await this.repository.save(this.repository.merge(originalDocument, file as any));
+        const saved = await this.repository.save(
+            this.repository.merge(originalDocument, file as any)
+        );
 
         return saved;
     }

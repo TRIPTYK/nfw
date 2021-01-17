@@ -4,7 +4,7 @@ import {
     JsonApiController,
     JsonApiMethodMiddleware
 } from "../../core/decorators/controller.decorator";
-import { autoInjectable, singleton } from "tsyringe";
+import { autoInjectable } from "tsyringe";
 import { User } from "../models/user.model";
 import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import DeserializeMiddleware, {
@@ -13,7 +13,6 @@ import DeserializeMiddleware, {
 import { UserSerializer } from "../serializers/user.serializer";
 
 @JsonApiController(User)
-@singleton()
 @autoInjectable()
 export default class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
