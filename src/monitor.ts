@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import "reflect-metadata";
-import {default as config} from "../ecosystem.config";
+import { default as config } from "../ecosystem.config";
 
 const [firstApp] = config.apps;
 import * as pm2 from "pm2";
@@ -36,7 +36,9 @@ pm2.connect(async (err) => {
 
     const server = Http.createServer();
 
-    const {typeorm} = container.resolve<ConfigurationService>(ConfigurationService).config;
+    const { typeorm } = container.resolve<ConfigurationService>(
+        ConfigurationService
+    ).config;
 
     const CORSOptions = {
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -53,24 +55,28 @@ pm2.connect(async (err) => {
 
     const changeStatus = (newStatus: string) => {
         status = newStatus;
-        console.log(status)
+        console.log(status);
         io.emit("status", newStatus);
     };
 
     const restoreBackup = () => {
         return new Promise((res, rej) => {
-            tar.c({gzip:true}, ['src/api'])
-                .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")))
+            tar.c({ gzip: true }, ["src/api"])
+                .pipe(
+                    createWriteStream(
+                        join(process.cwd(), "dist", "backup.tar.gz")
+                    )
+                )
                 .on("error", () => {
                     rej();
                 })
                 .on("finish", () => {
-                    res();
-                })
+                    res(true);
+                });
         });
-    }
-    
-    io.on('connection', client => {
+    };
+
+    io.on("connection", (client) => {
         console.log("Client connected", client.id);
 
         client.emit("status", status);
@@ -80,35 +86,39 @@ pm2.connect(async (err) => {
         });
 
         client.on("app-save", (name, fn) => {
-            tar.c({gzip:true}, ['src/api'])
-                .pipe(createWriteStream(join(process.cwd(), "dist", "backup.tar.gz")))
+            tar.c({ gzip: true }, ["src/api"])
+                .pipe(
+                    createWriteStream(
+                        join(process.cwd(), "dist", "backup.tar.gz")
+                    )
+                )
                 .on("finish", () => {
                     fn("ok");
-                })
+                });
         });
-        client.on('app-recompile-sync', async (name, fn) => {
-            let connection : Connection;
+        client.on("app-recompile-sync", async (name, fn) => {
+            let connection: Connection;
             try {
                 connection = await createConnection({
                     database: typeorm.database,
-                    entities : typeorm.entities,
-                    synchronize : typeorm.synchronize,
+                    entities: typeorm.entities,
+                    synchronize: typeorm.synchronize,
                     host: typeorm.host,
                     name: typeorm.name,
                     password: typeorm.pwd,
                     port: typeorm.port,
                     type: typeorm.type as any,
-                    migrations : typeorm.migrations,
+                    migrations: typeorm.migrations,
                     username: typeorm.user,
-                    cli : {
+                    cli: {
                         entitiesDir: typeorm.entitiesDir,
                         migrationsDir: typeorm.migrationsDir
                     }
                 });
-            }catch(err) {
+            } catch (err) {
                 if (err.name === "AlreadyHasActiveConnectionError") {
                     connection = getConnectionManager().get("default");
-                }else{
+                } else {
                     changeStatus("error");
                     return;
                 }
@@ -117,7 +127,7 @@ pm2.connect(async (err) => {
             try {
                 execSync("rm -rf ./dist/src");
                 execSync("./node_modules/.bin/tsc");
-            }catch(e) {
+            } catch (e) {
                 console.log(e);
                 changeStatus("error");
                 return;
@@ -127,20 +137,20 @@ pm2.connect(async (err) => {
             try {
                 await connection.synchronize();
                 changeStatus("synchronized");
-            }catch(e) {
+            } catch (e) {
                 console.log(e);
                 changeStatus("error");
                 return;
             }
             fn("ok");
         });
-        client.on('app-restart', async (name, fn) => {
+        client.on("app-restart", async (name, fn) => {
             changeStatus("restarting");
             pm2.restart(firstApp.name, () => {
                 if (err) {
                     throw err;
                 }
-                console.log(`Restarted app ${ firstApp.name}`);
+                console.log(`Restarted app ${firstApp.name}`);
                 changeStatus("restarted");
                 fn("ok");
             });

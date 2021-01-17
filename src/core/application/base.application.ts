@@ -47,7 +47,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
         }
     }
 
-    public abstract async afterInit(): Promise<any>;
+    public abstract afterInit(): Promise<any>;
 
     public async init(): Promise<any> {
         // eslint-disable-next-line no-useless-return
