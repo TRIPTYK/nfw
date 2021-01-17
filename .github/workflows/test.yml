@@ -6,7 +6,7 @@ name: Test
 # events but only for the master branch
 on:
     push:
-        branches: [develop, "uniting"]
+        branches: [develop]
     pull_request:
         branches: [develop]
 
