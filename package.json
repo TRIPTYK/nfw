@@ -19,7 +19,7 @@
         "monitor": "tsc && NODE_ENV=production ./node_modules/.bin/ts-node ./src/monitor.ts"
     },
     "engines": {
-        "node": ">=10.16"
+        "node": ">=14"
     },
     "repository": {
         "type": "git",
@@ -132,5 +132,8 @@
         "ts-node-dev": "^1.1.1",
         "typedoc": "^0.20.16",
         "typestrict": "^1.0.2"
+    },
+    "volta": {
+        "node": "14.15.4"
     }
 }
