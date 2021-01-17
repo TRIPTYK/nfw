@@ -5,40 +5,38 @@ name: Test
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
-  push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    push:
+        branches: [develop, "uniting"]
+    pull_request:
+        branches: [develop]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  Test:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    # This workflow contains a single job called "build"
+    Test:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - uses: actions/checkout@v2
 
-    - name: Shutdown Ubuntu MySQL (SUDO)
-      run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
+            - name: Shutdown Ubuntu MySQL (SUDO)
+              run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
 
-    # Runs a single command using the runners shell
-    - name: Setup MySQL
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        mysql root password: "test123*"
-        mysql database: "nfw_test"
-        mysql user: "nfw"
-        mysql password: "test123*"
-        mysql version: "5.7" # mysqljs does not actually support mysql 8 new password auth , need to wait a release
+            # Runs a single command using the runners shell
+            - name: Setup MySQL
+              uses: mirromutth/mysql-action@v1.1
+              with:
+                  mysql root password: "test123*"
+                  mysql database: "nfw_test"
+                  mysql user: "nfw"
+                  mysql password: "test123*"
+                  mysql version: "5.7" # mysqljs does not actually support mysql 8 new password auth , need to wait a release
 
-    - name: Install
-      run: npm i
-    
-    - name: Run test
-      run: npm run test
+            - name: Install
+              run: npm i
 
-    
+            - name: Run test
+              run: npm run test

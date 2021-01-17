@@ -1,17 +1,17 @@
 name: Build
 
 on:
-  push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    push:
+        branches: [develop, "uniting"]
+    pull_request:
+        branches: [develop]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build and test
-      run: |
-        npm install
-        ./node_modules/.bin/tsc
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build and test
+              run: |
+                  npm install
+                  ./node_modules/.bin/tsc
