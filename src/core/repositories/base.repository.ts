@@ -455,20 +455,19 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
             relationAlias: string
         ) => undefined | null
     ) {
-        let matchedBaseRelations: string[] = [];
+        let matchedBaseRelations: string[] = allRelations;
 
         if (prefix) {
             const regexp = new RegExp(`^${prefix.replace(".", "\\.")}\\.`);
             matchedBaseRelations = allRelations
                 .filter((relation) => regexp.exec(relation))
-                .map((relation) => relation.replace(regexp, ""))
-                .filter((relation) =>
-                    metadata.findRelationWithPropertyPath(relation)
-                );
-        } else {
-            matchedBaseRelations = allRelations.filter((relation) =>
-                metadata.findRelationWithPropertyPath(relation)
-            );
+                .map((relation) => relation.replace(regexp, ""));
+        }
+
+        for (const baseRel of matchedBaseRelations) {
+            if (!metadata.findRelationWithPropertyPath(baseRel)) {
+                throw new Error(`Relation ${baseRel} not found`);
+            }
         }
 
         for (const relation of matchedBaseRelations) {

@@ -53,7 +53,10 @@ export default abstract class BaseJsonApiController<
                     } else if (response instanceof ApiResponse) {
                         const serialized = await this.serializer.serialize(
                             response.body,
-                            useSchema
+                            useSchema,
+                            {
+                                url: req.url
+                            }
                         );
                         res.status(response.status);
                         res.type(response.type);
@@ -61,7 +64,10 @@ export default abstract class BaseJsonApiController<
                     } else {
                         const serialized = await this.serializer.serialize(
                             response,
-                            useSchema
+                            useSchema,
+                            {
+                                url: req.url
+                            }
                         );
                         res.status(200);
                         res.type("application/vnd.api+json");
@@ -163,7 +169,8 @@ export default abstract class BaseJsonApiController<
             ).serialize(relatedIds, "relationships", {
                 id: req.params.id,
                 thisType: this.name,
-                relationName: relation
+                relationName: relation,
+                url: req.url
             })
         );
     }
@@ -192,7 +199,10 @@ export default abstract class BaseJsonApiController<
                     req.params.id,
                     this.parseJsonApiQueryParams(req.query)
                 ),
-                useSchema
+                useSchema,
+                {
+                    url: req.url
+                }
             )
         );
     }

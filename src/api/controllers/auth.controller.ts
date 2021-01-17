@@ -129,7 +129,7 @@ export default class AuthController extends BaseController {
         res.sendStatus(HttpStatus.OK);
     }
 
-    @Post("/oAuth")
+    @Post("/o-auth")
     public async oAuth(req: Request): Promise<any> {
         const user = req.user as User;
         const accessToken = user.generateAccessToken();

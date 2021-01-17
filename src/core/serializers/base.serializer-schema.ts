@@ -1,4 +1,3 @@
-import { extra } from "http-status";
 import { container } from "tsyringe";
 import ConfigurationService from "../services/configuration.service";
 
@@ -73,6 +72,10 @@ export default abstract class BaseSerializerSchema<T>
                 self: `${this.baseUrl}/${type}${extraData.url}`
             };
         }
+
+        return {
+            self: `${this.baseUrl}/${type}${extraData.url}`
+        };
     }
 
     public links(data, extraData, type) {

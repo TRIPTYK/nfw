@@ -161,9 +161,44 @@ describe("JSON-API compliance test", () => {
             });
     });
 
-    it("A server MUST support fetching relationship data for every relationship URL provided as a self link as part of a relationship’s links object.", (done) => {
+    it("A server MUST respond to a successful request to fetch a relationship with a 200 OK response.", (done) => {
         agent
-            .get("/articles/1/relationships/author")
+            .get("/api/v1/users/1/relationships/documents")
+            .set("Content-Type", "application/vnd.api+json")
+            .set("Authorization", `Bearer ${token}`)
+            .end((err, res) => {
+                expect(res.status).to.eq(200);
+                done();
+            });
+    });
+
+    it("The top-level links object MAY contain self and related links, as described above for relationship objects.", (done) => {
+        agent
+            .get("/api/v1/users/1/relationships/documents")
+            .set("Content-Type", "application/vnd.api+json")
+            .set("Authorization", `Bearer ${token}`)
+            .end((err, res) => {
+                expect(res.body).to.have.property("links");
+                expect(res.body.links).to.have.property("self");
+                expect(res.body.links).to.have.property("related");
+                done();
+            });
+    });
+
+    it("A server MUST return 404 Not Found when processing a request to fetch a relationship link URL that does not exist.", (done) => {
+        agent
+            .get("/api/v1/users/9999/relationships/documents")
+            .set("Content-Type", "application/vnd.api+json")
+            .set("Authorization", `Bearer ${token}`)
+            .end((err, res) => {
+                expect(res.status).to.eq(404);
+                done();
+            });
+    });
+
+    it("If a server is unable to identify a relationship path or does not support inclusion of resources from a path, it MUST respond with 400 Bad Request.", (done) => {
+        agent
+            .get("/api/v1/users?include=documentsss")
             .set("Content-Type", "application/vnd.api+json")
             .set("Authorization", `Bearer ${token}`)
             .end((err, res) => {

@@ -61,7 +61,7 @@ export abstract class BaseJsonApiSerializer<T>
             topLevelLinks: (data, extraData) => {
                 return {
                     self: `/${extraData.thisType}/${extraData.id}/relationships/${extraData.relationName}`,
-                    related: `/${extraData.thisType}/${extraData.id}/author`
+                    related: `/${extraData.thisType}/${extraData.id}/${extraData.relationName}`
                 };
             }
         });
