@@ -6,7 +6,8 @@ export class ApiServer<T> {
     }
 
     public async init(serverPath: string) {
-        return (this._server = await import(serverPath));
+        const server = await import(serverPath);
+        return (this._server = server);
     }
 }
 
@@ -17,13 +18,8 @@ export class ServerContainer {
         return ServerContainer._server;
     }
 
-    public static get innerInstance() {
-        return ServerContainer._server.server;
-    }
-
     public static async init(serverPath: string) {
-        return (ServerContainer._server = await new ApiServer().init(
-            serverPath
-        ));
+        const server = await new ApiServer().init(serverPath);
+        return (ServerContainer._server = server);
     }
 }

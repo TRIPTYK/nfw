@@ -11,7 +11,7 @@ describe("Document CRUD", () => {
     let accessToken;
 
     before(async () => {
-        agent = request.agent(ServerContainer.innerInstance);
+        agent = request.agent(ServerContainer.server);
         await useRefreshDatabase({ configName: "ormconfig.ts" });
         await useSeeding({ configName: "ormconfig.ts" });
         const user: User = await runSeeder(CreateAuthUserSeed);

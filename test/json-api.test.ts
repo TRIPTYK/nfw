@@ -14,7 +14,7 @@ describe("JSON-API compliance test", () => {
     let token: string;
 
     before(async () => {
-        agent = request.agent(ServerContainer.innerInstance);
+        agent = request.agent(ServerContainer.server);
         await useRefreshDatabase({ connection: "default" });
         await useSeeding({ configName: "ormconfig.ts" });
         const user: User = await runSeeder(CreateAuthUserSeed);

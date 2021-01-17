@@ -10,7 +10,7 @@ describe("Authentification", () => {
     let localRefreshToken: string;
 
     before(async () => {
-        agent = request.agent(ServerContainer.innerInstance);
+        agent = request.agent(ServerContainer.server);
         await useRefreshDatabase({ configName: "ormconfig.ts" });
         await useSeeding({ configName: "ormconfig.ts" });
         await runSeeder(CreateAuthUserSeed);

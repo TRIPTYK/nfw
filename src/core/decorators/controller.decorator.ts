@@ -3,6 +3,7 @@ import { BaseMiddleware } from "../middlewares/base.middleware";
 import { Constructor } from "../types/global";
 import { JsonApiModel } from "../models/json-api.model";
 import { ValidationSchema } from "../types/validation";
+import { container } from "tsyringe";
 
 export type RequestMethods =
     | "get"
@@ -41,6 +42,8 @@ export type MiddlewareOrder =
  */
 export function Controller(routeName: string): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
+        container.registerSingleton(target as any);
+
         Reflect.defineMetadata("routeName", routeName, target);
 
         if (!Reflect.hasMetadata("routes", target)) {

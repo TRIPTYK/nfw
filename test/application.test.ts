@@ -12,12 +12,10 @@ import { ServerContainer } from "./utils/server";
 
 describe("Express application", () => {
     it("Express instance type is function", () => {
-        expect(typeof ServerContainer.innerInstance).to.equal("function");
+        expect(typeof ServerContainer.server).to.equal("function");
     });
 
     it("API status is OK 200", (done) => {
-        request(ServerContainer.innerInstance)
-            .get("/api/v1/status")
-            .expect(200, done);
+        request(ServerContainer.server).get("/api/v1/status").expect(200, done);
     });
 });
