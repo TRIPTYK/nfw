@@ -10,6 +10,7 @@ import * as Boom from "@hapi/boom";
 import * as dashify from "dashify";
 import PaginationQueryParams from "../types/jsonapi";
 import { ApplicationRegistry } from "../application/registry.application";
+import RelationshipNotFoundError from "../errors/relationship-not-found.error";
 
 interface JsonApiRequestParams {
     includes?: string[];
@@ -466,7 +467,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
 
         for (const baseRel of matchedBaseRelations) {
             if (!metadata.findRelationWithPropertyPath(baseRel)) {
-                throw new Error(`Relation ${baseRel} not found`);
+                throw Boom.notFound(`Relation ${baseRel} does not exist`);
             }
         }
 

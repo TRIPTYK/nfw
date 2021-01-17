@@ -101,7 +101,9 @@ export default abstract class BaseJsonApiController<
         const params = this.parseJsonApiQueryParams(req.query);
         const entity = await this.repository
             .jsonApiRequest(params)
-            .andWhere(req.params.id)
+            .andWhere(`${this.repository.metadata.tableName}.id = :id`, {
+                id: req.params.id
+            })
             .getOne();
 
         if (!entity) {

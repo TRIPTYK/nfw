@@ -150,7 +150,7 @@ describe("JSON-API compliance test", () => {
             });
     });
 
-    it("A server MUST respond with 404 Not Found when processing a request to fetch a single resource that does not exist, except when the request warrants a 200 OK response with null as the primary data (as described above).", (done) => {
+    it("A server MUST respond with 404 Not Found when processing a request to fetch a single resource that does not exist", (done) => {
         agent
             .get("/api/v1/users/500000000")
             .set("Content-Type", "application/vnd.api+json")
