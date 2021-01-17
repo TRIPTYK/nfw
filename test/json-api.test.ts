@@ -202,7 +202,7 @@ describe("JSON-API compliance test", () => {
             .set("Content-Type", "application/vnd.api+json")
             .set("Authorization", `Bearer ${token}`)
             .end((err, res) => {
-                expect(res.status).to.eq(404);
+                expect(res.status).to.eq(400);
                 done();
             });
     });

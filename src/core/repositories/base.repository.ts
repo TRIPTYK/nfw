@@ -467,7 +467,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
 
         for (const baseRel of matchedBaseRelations) {
             if (!metadata.findRelationWithPropertyPath(baseRel)) {
-                throw Boom.notFound(`Relation ${baseRel} does not exist`);
+                throw Boom.badRequest(`Relation ${baseRel} does not exist`);
             }
         }
 
