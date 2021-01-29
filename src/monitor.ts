@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import "reflect-metadata";
-import { default as config } from "../ecosystem.config";
+import * as config from "../ecosystem.config";
 
-const [firstApp] = config.apps;
+const [, firstApp] = config.apps;
 import * as pm2 from "pm2";
 import { container } from "tsyringe";
 import { Connection, createConnection, getConnectionManager } from "typeorm";
@@ -13,6 +13,8 @@ import { Server } from "socket.io";
 import { createWriteStream } from "fs";
 import { join } from "path";
 import * as Http from "http";
+
+console.log(firstApp);
 
 process.on("SIGINT", () => {
     console.log("terminated");
@@ -43,7 +45,7 @@ pm2.connect(async (err) => {
     const CORSOptions = {
         allowedHeaders: ["Content-Type", "Authorization"],
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-        origin: "http://localhost:4200",
+        origin: true,
         credentials: true
     };
 

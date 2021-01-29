@@ -113,7 +113,8 @@ export default class ConfigurationService<
         applyObj.env = loaded.NODE_ENV;
         applyObj.port = parseInt(loaded.PORT, 10);
         applyObj.url = loaded.URL;
-        applyObj.authorized = loaded.AUTHORIZED.split(",");
+        applyObj.authorized =
+            loaded.AUTHORIZED === "*" ? true : loaded.AUTHORIZED.split(",");
         applyObj.api = {
             version: loaded.API_VERSION,
             name: loaded.API_NAME
