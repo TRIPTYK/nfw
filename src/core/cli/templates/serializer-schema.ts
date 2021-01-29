@@ -1,32 +1,48 @@
-import project = require ("../utils/project");
+import project = require("../utils/project");
 import { GeneratorParameters } from "../interfaces/generator.interface";
 
-export default function createSerializerSchema({fileTemplateInfo,classPrefixName,filePrefixName}: GeneratorParameters) {
-    const file = project.createSourceFile(`${fileTemplateInfo.path}/${fileTemplateInfo.name}`,null,{
-        overwrite : true
-    });
+export default function createSerializerSchema({
+    fileTemplateInfo,
+    classPrefixName,
+    filePrefixName
+}: GeneratorParameters) {
+    const file = project.createSourceFile(
+        `${fileTemplateInfo.path}/${fileTemplateInfo.name}`,
+        null,
+        {
+            overwrite: true
+        }
+    );
 
     const addedClass = file.addClass({
-        name : `${classPrefixName}SerializerSchema`,
-        isDefaultExport : true
+        name: `${classPrefixName}SerializerSchema`,
+        isDefaultExport: true
     });
 
     file.addImportDeclaration({
-        namedImports : [`${classPrefixName}Interface`],
-        moduleSpecifier : `../../models/${filePrefixName}.model`
+        namedImports: [`${classPrefixName}Interface`],
+        moduleSpecifier: `../../models/${filePrefixName}.model`
     });
 
     file.addImportDeclaration({
-        namedImports : ["Serialize", "Deserialize", "SerializerSchema", "Relation"],
-        moduleSpecifier:  "../../../core/decorators/serializer.decorator"
+        namedImports: [
+            "Serialize",
+            "Deserialize",
+            "SerializerSchema",
+            "Relation"
+        ],
+        moduleSpecifier: "../../../core/decorators/serializer.decorator"
     });
 
+    addedClass.setExtends(`BaseSerializerSchema<${classPrefixName}Interface>`);
     addedClass.addImplements(`${classPrefixName}Interface`);
 
-    addedClass.addDecorator({
-        name : "SerializerSchema",
-        arguments : [],
-    }).setIsDecoratorFactory(true);
+    addedClass
+        .addDecorator({
+            name: "SerializerSchema",
+            arguments: []
+        })
+        .setIsDecoratorFactory(true);
 
     return file;
 }
