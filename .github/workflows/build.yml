@@ -2,7 +2,7 @@ name: Build
 
 on:
     push:
-        branches: [develop, "uniting"]
+        branches: [develop]
     pull_request:
         branches: [develop]
 
