@@ -1,8 +1,8 @@
+import { Request, Response } from "express";
+import { inject, injectable } from "tsyringe";
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import { injectable, inject } from "tsyringe";
 import { MulterService, StorageType } from "../services/multer.service";
 import { validateFile } from "../validations/document.validation";
-import { Request, Response } from "express";
 
 export type FileUploadMiddlewareArgs = {
     type: "single" | "multiple";

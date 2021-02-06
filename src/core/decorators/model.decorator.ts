@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { EntityOptions, getMetadataArgsStorage } from "typeorm";
-import { TableMetadataArgs } from "typeorm/metadata-args/TableMetadataArgs";
 import { EntityRepositoryMetadataArgs } from "typeorm/metadata-args/EntityRepositoryMetadataArgs";
-import BaseJsonApiRepository from "../repositories/base.repository";
-import { Constructor } from "../types/global";
-import { BaseJsonApiSerializer } from "../serializers/base.serializer";
+import { TableMetadataArgs } from "typeorm/metadata-args/TableMetadataArgs";
 import { ApplicationRegistry } from "../application/registry.application";
+import BaseJsonApiRepository from "../repositories/base.repository";
+import { BaseJsonApiSerializer } from "../serializers/base.serializer";
+import { Constructor } from "../types/global";
 
 export interface EntityOptionsExtended<T> extends EntityOptions {
     repository: Constructor<BaseJsonApiRepository<T>>;

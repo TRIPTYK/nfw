@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
-import { Constructor } from "../types/global";
+import { EventEmitter } from "events";
+import { container } from "tsyringe";
+import { getCustomRepository } from "typeorm";
+import { v4 } from "uuid";
+import BaseController from "../controllers/base.controller";
+import { JsonApiModel } from "../models/json-api.model";
 import BaseJsonApiRepository from "../repositories/base.repository";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
-import { getCustomRepository } from "typeorm";
-import { container } from "tsyringe";
-import { JsonApiModel } from "../models/json-api.model";
-import BaseApplication from "./base.application";
 import BaseService from "../services/base.service";
-import BaseController from "../controllers/base.controller";
+import { Constructor } from "../types/global";
 import { mesure } from "../utils/mesure.util";
-import { v4 } from "uuid";
-import { EventEmitter } from "events";
+import BaseApplication from "./base.application";
 
 export enum ApplicationStatus {
     Booting = "BOOTING",

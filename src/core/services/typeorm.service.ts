@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { Connection, createConnection, ConnectionOptions } from "typeorm";
-import BaseService from "./base.service";
-import { singleton, autoInjectable } from "tsyringe";
+import { autoInjectable, singleton } from "tsyringe";
+import { Connection, ConnectionOptions, createConnection } from "typeorm";
 import { LoggerService } from "../../api/services/logger.service";
+import BaseService from "./base.service";
 import ConfigurationService from "./configuration.service";
 
 /**

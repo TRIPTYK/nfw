@@ -1,32 +1,32 @@
-import * as HttpStatus from "http-status";
-import { RefreshToken } from "../models/refresh-token.model";
-import { Request, Response } from "express";
-import { DeepPartial, getCustomRepository, getRepository } from "typeorm";
-import { UserRepository } from "../repositories/user.repository";
-import { RefreshTokenRepository } from "../repositories/refresh-token.repository";
-import Refresh from "passport-oauth2-refresh";
-import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
 import * as Boom from "@hapi/boom";
-import { OAuthToken } from "../models/oauth-token.model";
+import { Request, Response } from "express";
+import * as HttpStatus from "http-status";
+import Refresh from "passport-oauth2-refresh";
+import { autoInjectable } from "tsyringe";
+import { DeepPartial, getCustomRepository, getRepository } from "typeorm";
+import BaseController from "../../core/controllers/base.controller";
 import {
     Controller,
-    Post,
-    MethodMiddleware
+    MethodMiddleware,
+    Post
 } from "../../core/decorators/controller.decorator";
-import SecurityMiddleware, {
-    SecurityMiddlewareArgs
-} from "../middlewares/security.middleware";
 import DeserializeMiddleware, {
     DeserializeMiddlewareArgs
 } from "../../core/middlewares/deserialize.middleware";
-import { UserSerializer } from "../serializers/user.serializer";
-import { register } from "../validations/auth.validation";
-import { autoInjectable } from "tsyringe";
-import { User } from "../models/user.model";
 import ValidationMiddleware, {
     ValidationMiddlewareArgs
 } from "../../core/middlewares/validation.middleware";
-import BaseController from "../../core/controllers/base.controller";
+import SecurityMiddleware, {
+    SecurityMiddlewareArgs
+} from "../middlewares/security.middleware";
+import { OAuthToken } from "../models/oauth-token.model";
+import { RefreshToken } from "../models/refresh-token.model";
+import { User } from "../models/user.model";
+import { RefreshTokenRepository } from "../repositories/refresh-token.repository";
+import { UserRepository } from "../repositories/user.repository";
+import { AuthTokenSerializer } from "../serializers/auth-token.serializer";
+import { UserSerializer } from "../serializers/user.serializer";
+import { register } from "../validations/auth.validation";
 
 /**
  * Authentification Controller!

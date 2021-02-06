@@ -1,5 +1,5 @@
-import { AccessControl } from "role-acl";
 import { Request } from "express";
+import { AccessControl } from "role-acl";
 
 const acl = new AccessControl();
 

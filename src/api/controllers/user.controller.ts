@@ -1,15 +1,15 @@
 import { Request } from "express";
+import { autoInjectable } from "tsyringe";
+import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import {
     Get,
     JsonApiController,
     JsonApiMethodMiddleware
 } from "../../core/decorators/controller.decorator";
-import { autoInjectable } from "tsyringe";
-import { User } from "../models/user.model";
-import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import DeserializeMiddleware, {
     DeserializeMiddlewareArgs
 } from "../../core/middlewares/deserialize.middleware";
+import { User } from "../models/user.model";
 import { UserSerializer } from "../serializers/user.serializer";
 
 @JsonApiController(User)

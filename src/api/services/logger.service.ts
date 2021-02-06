@@ -4,12 +4,12 @@
  * @package https://github.com/winstonjs/winston
  */
 
-import * as Winston from "winston";
 import * as Moment from "moment-timezone";
-import { Environments } from "../enums/environments.enum";
+import { autoInjectable, singleton } from "tsyringe";
+import * as Winston from "winston";
 import BaseService from "../../core/services/base.service";
-import { singleton, autoInjectable } from "tsyringe";
 import ConfigurationService from "../../core/services/configuration.service";
+import { Environments } from "../enums/environments.enum";
 
 @singleton()
 @autoInjectable()

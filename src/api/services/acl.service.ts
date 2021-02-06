@@ -1,8 +1,8 @@
-import BaseService from "../../core/services/base.service";
-import { singleton, autoInjectable } from "tsyringe";
-import { User } from "../models/user.model";
 import { Permission } from "role-acl";
+import { autoInjectable, singleton } from "tsyringe";
+import BaseService from "../../core/services/base.service";
 import { UserACL } from "../acls/user.acl";
+import { User } from "../models/user.model";
 
 /**
  * Elastic search

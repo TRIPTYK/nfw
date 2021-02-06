@@ -1,21 +1,20 @@
+import { promises as Fs } from "fs";
+import * as Path from "path";
 import {
     BeforeInsert,
     BeforeUpdate,
     Column,
-    OneToOne,
-    ManyToMany
+    ManyToMany,
+    OneToOne
 } from "typeorm";
-
-import { User } from "./user.model";
-import { promises as Fs } from "fs";
-import * as Path from "path";
-import { MimeTypes, ImageMimeTypes } from "../enums/mime-type.enum";
-import { DocumentTypes } from "../enums/document-type.enum";
-import { JsonApiModel } from "../../core/models/json-api.model";
-import { DocumentSerializer } from "../serializers/document.serializer";
-import { DocumentRepository } from "../repositories/document.repository";
 import { JsonApiEntity } from "../../core/decorators/model.decorator";
+import { JsonApiModel } from "../../core/models/json-api.model";
+import { DocumentTypes } from "../enums/document-type.enum";
+import { ImageMimeTypes, MimeTypes } from "../enums/mime-type.enum";
+import { DocumentRepository } from "../repositories/document.repository";
+import { DocumentSerializer } from "../serializers/document.serializer";
 import * as DocumentValidator from "../validations/document.validation";
+import { User } from "./user.model";
 
 export interface DocumentInterface {
     fieldname: DocumentTypes;

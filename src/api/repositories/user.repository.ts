@@ -1,8 +1,8 @@
-import { User } from "../models/user.model";
-import * as Moment from "moment-timezone";
 import * as Boom from "@hapi/boom";
-import { RefreshToken } from "../models/refresh-token.model";
+import * as Moment from "moment-timezone";
 import BaseJsonApiRepository from "../../core/repositories/base.repository";
+import { RefreshToken } from "../models/refresh-token.model";
+import { User } from "../models/user.model";
 
 export class UserRepository extends BaseJsonApiRepository<User> {
     /**

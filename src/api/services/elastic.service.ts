@@ -1,6 +1,6 @@
 import { Client } from "@elastic/elasticsearch";
+import { autoInjectable, singleton } from "tsyringe";
 import BaseService from "../../core/services/base.service";
-import { singleton, autoInjectable } from "tsyringe";
 import ConfigurationService from "../../core/services/configuration.service";
 
 /**

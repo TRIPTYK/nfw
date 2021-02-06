@@ -1,5 +1,5 @@
-import { ValidationSchema } from "../types/validation";
 import { Schema } from "express-validator";
+import { ValidationSchema } from "../types/validation";
 
 const isObject = (element: any): boolean => typeof element === "object";
 const isObjectOrString = (element: any): boolean =>

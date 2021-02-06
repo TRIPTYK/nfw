@@ -1,5 +1,5 @@
-import Response from "./response.response";
 import { PaginationParams } from "../serializers/base.serializer";
+import Response from "./response.response";
 
 export default class PaginationResponse extends Response {
     public paginationData: PaginationParams;

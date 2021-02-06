@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import * as XSS from "xss";
 import * as Boom from "@hapi/boom";
+import { NextFunction, Request, Response } from "express";
 import { injectable } from "tsyringe";
+import * as XSS from "xss";
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 export type SecurityMiddlewareArgs = any;

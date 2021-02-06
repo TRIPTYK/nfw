@@ -1,35 +1,33 @@
+import * as Boom from "@hapi/boom";
+import * as Bcrypt from "bcrypt";
+import * as Jwt from "jwt-simple";
+import * as Moment from "moment-timezone";
+import { Permission } from "role-acl";
+import { container } from "tsyringe";
 import {
     BeforeInsert,
     BeforeUpdate,
     Column,
+    DeleteDateColumn,
     JoinColumn,
-    OneToOne,
-    ManyToMany,
     JoinTable,
-    DeleteDateColumn
+    ManyToMany,
+    OneToOne
 } from "typeorm";
-
-import { Document } from "./document.model";
-import { Roles } from "../enums/role.enum";
-
-import * as Moment from "moment-timezone";
-import * as Jwt from "jwt-simple";
-import * as Bcrypt from "bcrypt";
-import * as Boom from "@hapi/boom";
-import { ImageMimeTypes } from "../enums/mime-type.enum";
-import { Environments } from "../enums/environments.enum";
-import { JsonApiModel } from "../../core/models/json-api.model";
-import { UserSerializer } from "../serializers/user.serializer";
-import { UserRepository } from "../repositories/user.repository";
 import {
     Filterable,
     JsonApiEntity
 } from "../../core/decorators/model.decorator";
-import * as UserValidator from "../validations/user.validation";
+import { JsonApiModel } from "../../core/models/json-api.model";
 import ConfigurationService from "../../core/services/configuration.service";
-import { container } from "tsyringe";
+import { Environments } from "../enums/environments.enum";
+import { ImageMimeTypes } from "../enums/mime-type.enum";
+import { Roles } from "../enums/role.enum";
+import { UserRepository } from "../repositories/user.repository";
+import { UserSerializer } from "../serializers/user.serializer";
 import ACLService from "../services/acl.service";
-import { Permission } from "role-acl";
+import * as UserValidator from "../validations/user.validation";
+import { Document } from "./document.model";
 
 export interface UserInterface {
     password: string;

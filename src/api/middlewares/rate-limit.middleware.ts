@@ -1,7 +1,7 @@
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import { injectable } from "tsyringe";
 import { Request, Response } from "express";
 import * as RateLimit from "express-rate-limit";
+import { injectable } from "tsyringe";
+import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 export type RateLimitMiddlewareArgs = any;
 

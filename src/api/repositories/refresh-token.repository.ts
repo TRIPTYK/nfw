@@ -1,11 +1,11 @@
-import * as Moment from "moment-timezone";
 import * as Crypto from "crypto";
-import { User } from "../models/user.model";
-import { RefreshToken } from "../models/refresh-token.model";
-import BaseJsonApiRepository from "../../core/repositories/base.repository";
-import { EntityRepository } from "typeorm";
+import * as Moment from "moment-timezone";
 import { autoInjectable, container } from "tsyringe";
+import { EntityRepository } from "typeorm";
+import BaseJsonApiRepository from "../../core/repositories/base.repository";
 import ConfigurationService from "../../core/services/configuration.service";
+import { RefreshToken } from "../models/refresh-token.model";
+import { User } from "../models/user.model";
 
 @EntityRepository(RefreshToken)
 @autoInjectable()

@@ -1,8 +1,8 @@
-import { Controller, Get } from "../../core/decorators/controller.decorator";
 import { Request, Response } from "express";
-import BaseController from "../../core/controllers/base.controller";
 import { autoInjectable } from "tsyringe";
 import { ApplicationRegistry } from "../../core/application/registry.application";
+import BaseController from "../../core/controllers/base.controller";
+import { Controller, Get } from "../../core/decorators/controller.decorator";
 
 @Controller("status")
 @autoInjectable()

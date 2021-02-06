@@ -1,7 +1,7 @@
 import { getCustomRepository } from "typeorm";
-import { UserRepository } from "../repositories/user.repository";
 import { ValidationSchema } from "../../core/types/validation";
 import { User } from "../models/user.model";
+import { UserRepository } from "../repositories/user.repository";
 
 // POST /v1/auth/register
 const register: ValidationSchema<User> = {

@@ -1,9 +1,9 @@
-import BaseService from "./base.service";
 import * as dotenv from "dotenv";
-import { parseBool } from "../utils/string-parse.util";
-import { singleton } from "tsyringe";
 import { join } from "path";
+import { singleton } from "tsyringe";
 import { DatabaseType } from "typeorm";
+import { parseBool } from "../utils/string-parse.util";
+import BaseService from "./base.service";
 
 export type Configuration = {
     env?: string;

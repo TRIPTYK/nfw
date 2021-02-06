@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BaseJsonApiSerializer } from "../serializers/base.serializer";
-import BaseJsonApiRepository from "../repositories/base.repository";
-import { Constructor } from "../types/global";
-import { JsonApiModel } from "../models/json-api.model";
-import { Request, Response } from "express";
-import { ApplicationRegistry } from "../application/registry.application";
-import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
+import { Request, Response } from "express";
+import * as HttpStatus from "http-status";
 import { DeepPartial } from "typeorm";
-import BaseController from "./base.controller";
+import { ApplicationRegistry } from "../application/registry.application";
+import { JsonApiModel } from "../models/json-api.model";
+import BaseJsonApiRepository from "../repositories/base.repository";
 import PaginationResponse from "../responses/pagination.response";
 import ApiResponse from "../responses/response.response";
+import { BaseJsonApiSerializer } from "../serializers/base.serializer";
+import { Constructor } from "../types/global";
+import BaseController from "./base.controller";
 
 export default abstract class BaseJsonApiController<
     T extends JsonApiModel<T>

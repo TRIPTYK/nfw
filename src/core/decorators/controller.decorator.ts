@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { BaseMiddleware } from "../middlewares/base.middleware";
-import { Constructor } from "../types/global";
-import { JsonApiModel } from "../models/json-api.model";
-import { ValidationSchema } from "../types/validation";
 import { container } from "tsyringe";
+import { BaseMiddleware } from "../middlewares/base.middleware";
+import { JsonApiModel } from "../models/json-api.model";
+import { Constructor } from "../types/global";
+import { ValidationSchema } from "../types/validation";
 
 export type RequestMethods =
     | "get"

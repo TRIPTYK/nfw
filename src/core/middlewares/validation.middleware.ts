@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
-    ValidationChain,
     checkSchema,
     Location,
-    ParamSchema
+    ParamSchema,
+    ValidationChain
 } from "express-validator";
 import { injectable } from "tsyringe";
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";

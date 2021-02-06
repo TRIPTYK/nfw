@@ -1,8 +1,8 @@
-import { BaseMiddleware } from "./base.middleware";
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { container, injectable } from "tsyringe";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { Constructor } from "../types/global";
+import { BaseMiddleware } from "./base.middleware";
 
 export type DeserializeMiddlewareArgs = {
     serializer: Constructor<BaseJsonApiSerializer<any>>;

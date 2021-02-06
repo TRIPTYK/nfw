@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { Constructor } from "../types/global";
-import BaseService from "../services/base.service";
-import { BaseMiddleware } from "../middlewares/base.middleware";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
+import { BaseMiddleware } from "../middlewares/base.middleware";
+import BaseService from "../services/base.service";
+import { Constructor } from "../types/global";
 
 /**
  *

@@ -1,3 +1,5 @@
+import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
+import { container } from "tsyringe";
 import {
     AfterLoad,
     BeforeInsert,
@@ -8,12 +10,10 @@ import {
     ManyToOne,
     Unique
 } from "typeorm";
-import { User } from "./user.model";
-import { OAuthTypes } from "../enums/oauth-type.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
-import { randomBytes, createCipheriv, createDecipheriv } from "crypto";
 import ConfigurationService from "../../core/services/configuration.service";
-import { container } from "tsyringe";
+import { OAuthTypes } from "../enums/oauth-type.enum";
+import { User } from "./user.model";
 
 @Entity()
 @Unique(["user", "type"])

@@ -1,5 +1,5 @@
-import { User } from "../models/user.model";
 import { injectable } from "tsyringe";
+import { User } from "../models/user.model";
 
 @injectable()
 /**

@@ -1,6 +1,6 @@
-import { Constructor } from "../types/global";
 import BaseController from "../controllers/base.controller";
 import { MiddlewareMetadata } from "../decorators/controller.decorator";
+import { Constructor } from "../types/global";
 
 export default interface ApplicationInterface {
     init(): Promise<any>;

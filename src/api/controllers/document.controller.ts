@@ -1,7 +1,9 @@
-import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
-
 import { Request, Response } from "express";
+import * as HttpStatus from "http-status";
+import { autoInjectable } from "tsyringe";
+import { DeepPartial } from "typeorm";
+import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import {
     JsonApiController,
     JsonApiMethodMiddleware,
@@ -15,10 +17,7 @@ import {
 import FileUploadMiddleware, {
     FileUploadMiddlewareArgs
 } from "../middlewares/file-upload.middleware";
-import { autoInjectable } from "tsyringe";
-import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import { Document } from "../models/document.model";
-import { DeepPartial } from "typeorm";
 
 @JsonApiController(Document)
 @autoInjectable()

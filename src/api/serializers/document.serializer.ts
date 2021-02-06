@@ -1,7 +1,7 @@
-import { Document } from "../models/document.model";
 import { JsonApiSerializer } from "../../core/decorators/serializer.decorator";
-import DocumentSerializerSchema from "./schemas/document.serializer.schema";
 import { BaseJsonApiSerializer } from "../../core/serializers/base.serializer";
+import { Document } from "../models/document.model";
+import DocumentSerializerSchema from "./schemas/document.serializer.schema";
 
 @JsonApiSerializer({
     schemas: () => [DocumentSerializerSchema],

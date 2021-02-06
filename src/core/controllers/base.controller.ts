@@ -1,6 +1,6 @@
-import ControllerInterface from "../interfaces/controller.interface";
-import { ApplicationRegistry } from "../application/registry.application";
 import * as Express from "express";
+import { ApplicationRegistry } from "../application/registry.application";
+import ControllerInterface from "../interfaces/controller.interface";
 
 export default abstract class BaseController implements ControllerInterface {
     public name: string;

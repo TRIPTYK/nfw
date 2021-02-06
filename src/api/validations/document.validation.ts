@@ -1,8 +1,8 @@
 // GET /v1/documents/:id
-import { MimeTypes } from "../enums/mime-type.enum";
 import * as Boom from "@hapi/boom";
-import { Document } from "../models/document.model";
 import { ValidationSchema } from "../../core/types/validation";
+import { MimeTypes } from "../enums/mime-type.enum";
+import { Document } from "../models/document.model";
 
 export const get: ValidationSchema<Document> = {
     id: {

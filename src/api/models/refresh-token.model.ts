@@ -1,7 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, Unique, Index } from "typeorm";
-import { User } from "./user.model";
+import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from "typeorm";
 import { JsonApiModel } from "../../core/models/json-api.model";
 import { OAuthToken } from "./oauth-token.model";
+import { User } from "./user.model";
 
 @Entity()
 @Unique(["user"])

@@ -1,16 +1,15 @@
-import {
-    Brackets,
-    Repository,
-    EntityMetadata,
-    SelectQueryBuilder
-} from "typeorm";
-import * as SqlString from "sqlstring";
-import { Request } from "express";
 import * as Boom from "@hapi/boom";
 import * as dashify from "dashify";
-import PaginationQueryParams from "../types/jsonapi";
+import { Request } from "express";
+import * as SqlString from "sqlstring";
+import {
+    Brackets,
+    EntityMetadata,
+    Repository,
+    SelectQueryBuilder
+} from "typeorm";
 import { ApplicationRegistry } from "../application/registry.application";
-import RelationshipNotFoundError from "../errors/relationship-not-found.error";
+import PaginationQueryParams from "../types/jsonapi";
 
 interface JsonApiRequestParams {
     includes?: string[];

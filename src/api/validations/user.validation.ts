@@ -1,8 +1,8 @@
-import { Roles } from "../enums/role.enum";
-import { UserRepository } from "../repositories/user.repository";
 import { getCustomRepository } from "typeorm";
 import { ValidationSchema } from "../../core/types/validation";
+import { Roles } from "../enums/role.enum";
 import { User } from "../models/user.model";
+import { UserRepository } from "../repositories/user.repository";
 
 export const changePassword: ValidationSchema<any> = {
     new_password: {

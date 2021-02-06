@@ -1,12 +1,11 @@
-import * as Passport from "passport";
 import * as Boom from "@hapi/boom";
-
-import { User } from "../models/user.model";
-import { promisify } from "util";
-import { Roles } from "./../enums/role.enum";
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import * as Passport from "passport";
 import { injectable } from "tsyringe";
+import { promisify } from "util";
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
+import { User } from "../models/user.model";
+import { Roles } from "./../enums/role.enum";
 
 export type AuthMiddlewareArgs = Roles[];
 
