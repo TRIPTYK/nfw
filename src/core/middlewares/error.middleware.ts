@@ -2,7 +2,7 @@
 import * as JSONAPISerializer from "json-api-serializer";
 import { singleton } from "tsyringe";
 import { BaseErrorMiddleware } from "./base.error-middleware";
-import {Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction } from "express";
 import * as Boom from "@hapi/boom";
 import { toCamelCase } from "../utils/case.util";
 
@@ -10,18 +10,24 @@ interface JsonApiErrorObject {
     detail: string;
     title: string;
     source: {
-        parameter?: string,
-        pointer?: string
+        parameter?: string;
+        pointer?: string;
     };
     meta: any;
-    status : string;
+    status: string;
 }
 
 @singleton()
 export default class ErrorMiddleware extends BaseErrorMiddleware {
     private serializer = new JSONAPISerializer();
 
-    public use(error: any, req: Request, res: Response, next: NextFunction, args: any) {
+    public use(
+        error: any,
+        req: Request,
+        res: Response,
+        next: NextFunction,
+        args: any
+    ) {
         console.log(error);
 
         if (Array.isArray(error)) {
@@ -30,16 +36,16 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
 
             for (const err of errs) {
                 for (const suberror of err) {
-                    const err : JsonApiErrorObject= {
+                    const err: JsonApiErrorObject = {
                         detail: `${suberror.msg} for ${suberror.param} in ${suberror.location}, value is ${suberror.value}`,
                         title: "Validation Error",
                         source: {},
-                        meta : {
-                            param : toCamelCase(suberror.param),
-                            msg : suberror.msg,
-                            location : suberror.location
+                        meta: {
+                            param: toCamelCase(suberror.param),
+                            msg: suberror.msg,
+                            location: suberror.location
                         },
-                        status : "400"
+                        status: "400"
                     };
 
                     if (["query", "params"].includes(suberror.location)) {
@@ -47,7 +53,9 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
                     }
 
                     if (suberror.location === "body") {
-                        err.source.pointer = `/data/attributes/${toCamelCase(suberror.param)}`;
+                        err.source.pointer = `/data/attributes/${toCamelCase(
+                            suberror.param
+                        )}`;
                     }
 
                     allErrors.push(err);
@@ -64,9 +72,11 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
         }
 
         res.status(error.output.statusCode);
-        res.json(this.serializer.serializeError({
-            detail: error.message,
-            status: error.output.statusCode
-        }));
+        res.json(
+            this.serializer.serializeError({
+                detail: error.message,
+                status: error.output.statusCode
+            })
+        );
     }
 }

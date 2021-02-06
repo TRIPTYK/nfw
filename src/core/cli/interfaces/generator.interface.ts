@@ -13,8 +13,8 @@ export interface Column {
     type: string;
     length?: number;
     width?: number;
-    precision?:number;
-    scale?:number;
+    precision?: number;
+    scale?: number;
     isNullable: boolean;
     isPrimary?: boolean;
     isUnique?: boolean;

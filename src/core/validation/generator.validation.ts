@@ -4,7 +4,7 @@ import TypeORMService from "../services/typeorm.service";
 import { ValidationSchema } from "../types/validation";
 
 export const createEntity: ValidationSchema<any> = {
-    columns:{
+    columns: {
         exists: true,
         isArray: true
     },
@@ -12,15 +12,16 @@ export const createEntity: ValidationSchema<any> = {
         exists: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     },
     "columns.*.type": {
         exists: true,
         isString: true,
-        custom:{
+        custom: {
             options: (value) => {
-                const suported = container.resolve(TypeORMService).connection.driver.supportedDataTypes;
+                const suported = container.resolve(TypeORMService).connection
+                    .driver.supportedDataTypes;
                 if (!Object.values(suported).includes(value)) {
                     throw new Error("unsupported value");
                 }
@@ -29,46 +30,46 @@ export const createEntity: ValidationSchema<any> = {
         }
     },
     "columns.*.default": {
-        optional:true
+        optional: true
     },
     "columns.*.length": {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     "columns.*.width": {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     "columns.*.precision": {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     "columns.*.scale": {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     "columns.*.isUnique": {
-        optional:true,
+        optional: true,
         isBoolean: true,
         toBoolean: true
     },
@@ -77,7 +78,7 @@ export const createEntity: ValidationSchema<any> = {
         isBoolean: true,
         toBoolean: true
     },
-    relations:{
+    relations: {
         exists: true,
         isArray: true
     },
@@ -85,27 +86,27 @@ export const createEntity: ValidationSchema<any> = {
         exists: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     },
     "relations.*.target": {
         exists: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     },
     "relations.*.type": {
         exists: true,
-        isIn : {
-            options : [["many-to-many", "one-to-many", "one-to-one"]]
+        isIn: {
+            options: [["many-to-many", "one-to-many", "one-to-one"]]
         }
     },
     "relations.*.inverseRelationName": {
         optional: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     }
 };
@@ -115,27 +116,27 @@ export const createRelation: ValidationSchema<Relation> = {
         exists: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     },
     target: {
         exists: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     },
     type: {
         exists: true,
-        isIn : {
-            options : [["many-to-many", "one-to-many", "one-to-one"]]
+        isIn: {
+            options: [["many-to-many", "one-to-many", "one-to-one"]]
         }
     },
     inverseRelationName: {
         optional: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     },
     isNullable: {
@@ -143,22 +144,23 @@ export const createRelation: ValidationSchema<Relation> = {
         isBoolean: true,
         toBoolean: true
     }
-}
+};
 
 export const createColumn: ValidationSchema<Column> = {
     name: {
         exists: true,
         isString: true,
         matches: {
-            options : /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+            options: /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
         }
     },
     type: {
         exists: true,
         isString: true,
-        custom:{
+        custom: {
             options: (value) => {
-                const suported = container.resolve(TypeORMService).connection.driver.supportedDataTypes;
+                const suported = container.resolve(TypeORMService).connection
+                    .driver.supportedDataTypes;
                 if (!Object.values(suported).includes(value)) {
                     throw new Error("unsupported value");
                 }
@@ -171,39 +173,39 @@ export const createColumn: ValidationSchema<Column> = {
     },
     length: {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     width: {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     precision: {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     scale: {
         optional: {
-            options : { 
-                checkFalsy : true
+            options: {
+                checkFalsy: true
             }
         },
         isInt: true,
-        toInt:true
+        toInt: true
     },
     isUnique: {
         exists: true,
@@ -215,21 +217,20 @@ export const createColumn: ValidationSchema<Column> = {
         isBoolean: true,
         toBoolean: true
     }
-}
+};
 
 export const columnsActions: ValidationSchema<any> = {
     ...exports.createEntity,
-    "columns.*.action":{
-        exists : true,
-        isIn : {
-            options : [["ADD", "REMOVE"]]
+    "columns.*.action": {
+        exists: true,
+        isIn: {
+            options: [["ADD", "REMOVE"]]
         }
     },
-    "relations.*.action":{
-        exists : true,
-        isIn : {
-            options : [["ADD", "REMOVE"]]
+    "relations.*.action": {
+        exists: true,
+        isIn: {
+            options: [["ADD", "REMOVE"]]
         }
     }
-}
-
+};

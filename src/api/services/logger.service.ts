@@ -18,23 +18,25 @@ export class LoggerService extends BaseService {
 
     public constructor(private configurationService: ConfigurationService) {
         super();
-        const {env} = configurationService.config;
+        const { env } = configurationService.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const timestampFnc = () => Moment().format("YYYY-MM-DD HH:mm:ss.SSS");
 
-        const timestampFormatJSON = Winston.format.printf(({ level, message, label }) =>
-            JSON.stringify({
-                label,
-                level,
-                message,
-                timestamp : timestampFnc()
-            })
+        const timestampFormatJSON = Winston.format.printf(
+            ({ level, message, label }) =>
+                JSON.stringify({
+                    label,
+                    level,
+                    message,
+                    timestamp: timestampFnc()
+                })
         );
 
-        const timestampFormatText = Winston.format.printf(({ level, message, label }) =>
-            `${timestampFnc()} [${label}] ${level}: ${message}`
+        const timestampFormatText = Winston.format.printf(
+            ({ level, message, label }) =>
+                `${timestampFnc()} [${label}] ${level}: ${message}`
         );
 
         this._logger = Winston.createLogger({
@@ -45,8 +47,13 @@ export class LoggerService extends BaseService {
                 // - Write to all logs with level `info` and below to `combined.log`
                 // - Write all logs error (and below) to `error.log`.
                 //
-                new Winston.transports.File({filename: `${directory}/logs/error.log`, level: "error"}),
-                new Winston.transports.File({filename: `${directory}/logs/combined.log`})
+                new Winston.transports.File({
+                    filename: `${directory}/logs/error.log`,
+                    level: "error"
+                }),
+                new Winston.transports.File({
+                    filename: `${directory}/logs/combined.log`
+                })
             ]
         });
 
@@ -55,10 +62,14 @@ export class LoggerService extends BaseService {
         // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
         //
         if (env !== Environments.Production) {
-            this.logger.add(new Winston.transports.Console({format: Winston.format.combine(
-                Winston.format.label({ label: env }),
-                timestampFormatText
-            )}));
+            this.logger.add(
+                new Winston.transports.Console({
+                    format: Winston.format.combine(
+                        Winston.format.label({ label: env }),
+                        timestampFormatText
+                    )
+                })
+            );
         }
 
         if (!process.env.CLI) {

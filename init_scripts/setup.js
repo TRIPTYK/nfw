@@ -1,12 +1,12 @@
-const mkdirp = require('mkdirp');
-const spawn = require('cross-spawn');
-const fs = require('fs');
+const mkdirp = require("mkdirp");
+const spawn = require("cross-spawn");
+const fs = require("fs");
 
 const dirs = [
-    './dist/logs',
-    './dist/uploads/documents/xs',
-    './dist/uploads/documents/md',
-    './dist/uploads/documents/xl'
+    "./dist/logs",
+    "./dist/uploads/documents/xs",
+    "./dist/uploads/documents/md",
+    "./dist/uploads/documents/xl"
 ];
 
 for (const dir of dirs) {
@@ -14,13 +14,13 @@ for (const dir of dirs) {
     if (!fs.existsSync(dir)) {
         mkdirp.sync(dir);
         console.log(`${dir} created`);
-    }else{
+    } else {
         console.log(`${dir} already exists , skipping ...`);
     }
 }
 
 console.log("Compiling...");
-spawn.sync(`./node_modules/.bin/tsc`, [], { stdio: 'inherit' });
+spawn.sync(`./node_modules/.bin/tsc`, [], { stdio: "inherit" });
 console.log("Compiling done");
 
 // pm2 reload ecosystem.config.js --env production

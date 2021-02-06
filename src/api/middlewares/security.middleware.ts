@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction } from "express";
 import * as XSS from "xss";
 import * as Boom from "@hapi/boom";
 import { injectable } from "tsyringe";

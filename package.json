@@ -5,7 +5,8 @@
     "scripts": {
         "setup": "npm i && node ./init_scripts/setup",
         "deploy": "npm i && node ./init_scripts/deploy",
-        "lint": "./node_modules/.bin/eslint src/**/**/*.ts --ignore-pattern src/migration/**/**/*.ts",
+        "lint": "npx eslint src/**/**/*.ts",
+        "prettier": "npx prettier --write .",
         "migration-generate": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:generate -n ",
         "migration-run": "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js migration:run",
         "typedoc": "typedoc --out ./docs --ignoreCompilerErrors",
@@ -128,6 +129,7 @@
         "chai-http": "^4.2.1",
         "jenkins": "^0.27.0",
         "nyc": "^15.1.0",
+        "prettier": "^2.2.1",
         "ts-mocha": "^7.0.0",
         "ts-node": "^9.1.1",
         "ts-node-dev": "^1.1.1",

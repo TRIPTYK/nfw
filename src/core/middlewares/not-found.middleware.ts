@@ -10,12 +10,18 @@ import { BaseMiddleware } from "./base.middleware";
 export default class NotFoundMiddleware extends BaseMiddleware {
     private serializer = new JSONAPISerializer();
 
-
-    public use(req: Request, res: Response, next: (err?: any) => void, args: any) {
+    public use(
+        req: Request,
+        res: Response,
+        next: (err?: any) => void,
+        args: any
+    ) {
         res.status(404);
-        res.json(this.serializer.serializeError({
-            detail: "Not found",
-            status: "404"
-        }));
+        res.json(
+            this.serializer.serializeError({
+                detail: "Not found",
+                status: "404"
+            })
+        );
     }
 }

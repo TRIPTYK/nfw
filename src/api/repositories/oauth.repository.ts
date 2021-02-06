@@ -8,8 +8,11 @@ export class OAuthTokenRepository extends BaseJsonApiRepository<OAuthToken> {
      *
      * @param param
      */
-    public async oAuthLogin(user, {service, accessToken, refreshToken}): Promise<OAuthToken> {
-        let OAuthTokens = await this.findOne({type : service, user});
+    public async oAuthLogin(
+        user,
+        { service, accessToken, refreshToken }
+    ): Promise<OAuthToken> {
+        let OAuthTokens = await this.findOne({ type: service, user });
 
         if (OAuthTokens === undefined) {
             OAuthTokens = this.create({

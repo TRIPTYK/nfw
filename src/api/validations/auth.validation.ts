@@ -1,4 +1,4 @@
-import {getCustomRepository} from "typeorm";
+import { getCustomRepository } from "typeorm";
 import { UserRepository } from "../repositories/user.repository";
 import { ValidationSchema } from "../../core/types/validation";
 import { User } from "../models/user.model";
@@ -8,7 +8,12 @@ const register: ValidationSchema<User> = {
     email: {
         custom: {
             options: async (value) => {
-                if (await (getCustomRepository(UserRepository).exists("email", value))) {
+                if (
+                    await getCustomRepository(UserRepository).exists(
+                        "email",
+                        value
+                    )
+                ) {
                     return Promise.reject("email already exists");
                 }
             }
@@ -16,26 +21,31 @@ const register: ValidationSchema<User> = {
         isEmail: true
     },
     first_name: {
-        isString : true
+        isString: true
     },
     last_name: {
-        isString : true
+        isString: true
     },
     password: {
-        isEmpty : {
-            negated : true
+        isEmpty: {
+            negated: true
         },
-        isString : true
+        isString: true
     },
     username: {
         custom: {
             options: async (value) => {
-                if (await (getCustomRepository(UserRepository).exists("username", value))) {
+                if (
+                    await getCustomRepository(UserRepository).exists(
+                        "username",
+                        value
+                    )
+                ) {
                     return Promise.reject("username already exists");
                 }
             }
         },
-        isString : true
+        isString: true
     }
 };
 
@@ -45,20 +55,20 @@ const login: ValidationSchema<User> = {
         isEmail: true
     },
     password: {
-        isEmpty : {
-            errorMessage : "Password must not be empty",
-            negated : true
+        isEmpty: {
+            errorMessage: "Password must not be empty",
+            negated: true
         },
-        isString : true
+        isString: true
     }
 };
 
 // POST /v1/auth/refresh
 const refresh: ValidationSchema<any> = {
-    refreshToken : {
-        exists : true,
-        isString : true
+    refreshToken: {
+        exists: true,
+        isString: true
     }
 };
 
-export {register, login, refresh };
+export { register, login, refresh };

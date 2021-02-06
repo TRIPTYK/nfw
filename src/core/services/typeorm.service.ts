@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Connection, createConnection, ConnectionOptions} from "typeorm";
+import { Connection, createConnection, ConnectionOptions } from "typeorm";
 import BaseService from "./base.service";
 import { singleton, autoInjectable } from "tsyringe";
 import { LoggerService } from "../../api/services/logger.service";
@@ -24,7 +24,9 @@ export default class TypeORMService extends BaseService {
 
     public async init() {
         this._connection = await createConnection(this.ConfigurationObject);
-        this.loggerService.logger.info("Connection to mysql server established");
+        this.loggerService.logger.info(
+            "Connection to mysql server established"
+        );
     }
 
     public async disconnect() {
@@ -37,20 +39,20 @@ export default class TypeORMService extends BaseService {
     }
 
     public get ConfigurationObject(): ConnectionOptions {
-        const {typeorm} = this.configurationService.config;
+        const { typeorm } = this.configurationService.config;
 
         return {
             database: typeorm.database,
-            entities : typeorm.entities,
-            synchronize : typeorm.synchronize,
+            entities: typeorm.entities,
+            synchronize: typeorm.synchronize,
             host: typeorm.host,
             name: typeorm.name,
             password: typeorm.pwd,
             port: typeorm.port,
             type: typeorm.type as any,
-            migrations : typeorm.migrations,
+            migrations: typeorm.migrations,
             username: typeorm.user,
-            cli : {
+            cli: {
                 entitiesDir: typeorm.entitiesDir,
                 migrationsDir: typeorm.migrationsDir
             }

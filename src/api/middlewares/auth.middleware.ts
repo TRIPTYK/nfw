@@ -12,12 +12,25 @@ export type AuthMiddlewareArgs = Roles[];
 
 @injectable()
 export default class AuthMiddleware extends BaseMiddleware {
-    public use(req: Request, res: Response, next: NextFunction, args: AuthMiddlewareArgs) {
-        return Passport.authenticate( "jwt", { session: false },
-            this.handleJWT(req, res, next, args) ) (req, res, next);
+    public use(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+        args: AuthMiddlewareArgs
+    ) {
+        return Passport.authenticate(
+            "jwt",
+            { session: false },
+            this.handleJWT(req, res, next, args)
+        )(req, res, next);
     }
 
-    private handleJWT = (req: any, res: Response, next, roles: Roles[] = []) => async (err: Error, user: User, info: any) => {
+    private handleJWT = (
+        req: any,
+        res: Response,
+        next,
+        roles: Roles[] = []
+    ) => async (err: Error, user: User, info: any) => {
         const error = err || info;
         const logIn = promisify(req.logIn);
 
@@ -44,5 +57,5 @@ export default class AuthMiddleware extends BaseMiddleware {
         req.user = user;
 
         return next();
-    }
+    };
 }

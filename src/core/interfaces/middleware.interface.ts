@@ -5,6 +5,11 @@ export default interface MiddlewareInterface {
 }
 
 export interface ErrorMiddlewareInterface {
-    use(err: any, req: Request, res: Response, next: (err?: any) => void, args: any): any;
+    use(
+        err: any,
+        req: Request,
+        res: Response,
+        next: (err?: any) => void,
+        args: any
+    ): any;
 }
-

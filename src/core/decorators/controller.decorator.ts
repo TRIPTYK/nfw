@@ -60,6 +60,7 @@ export function JsonApiController<T extends JsonApiModel<T>>(
     entity: Constructor<T>
 ): ClassDecorator {
     return function <TFunction extends Function>(target: TFunction): void {
+        container.registerSingleton(target as any);
         Reflect.defineMetadata("entity", entity, target.prototype);
 
         if (!Reflect.hasMetadata("routes", target)) {

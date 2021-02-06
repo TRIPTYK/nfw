@@ -2,7 +2,8 @@ import { ValidationSchema } from "../types/validation";
 import { Schema } from "express-validator";
 
 const isObject = (element: any): boolean => typeof element === "object";
-const isObjectOrString = (element: any): boolean => typeof element === "object" || typeof element === "string";
+const isObjectOrString = (element: any): boolean =>
+    typeof element === "object" || typeof element === "string";
 
 export const jsonApiQuery: Schema = {
     "page.*": {
@@ -10,35 +11,35 @@ export const jsonApiQuery: Schema = {
         isInt: true,
         toInt: true
     },
-    "fields": {
+    fields: {
         in: ["query"],
-        optional : true,
+        optional: true,
         errorMessage: "Must be a string or object",
         custom: {
-            options : isObjectOrString
+            options: isObjectOrString
         }
     },
-    "include": {
+    include: {
         in: ["query"],
         errorMessage: "Must be a string",
-        optional : true,
-        isString : true
+        optional: true,
+        isString: true
     },
-    "sort": {
+    sort: {
         in: ["query"],
         errorMessage: "Must be a string",
-        optional : true,
-        isString : true
+        optional: true,
+        isString: true
     },
-    "filter": {
+    filter: {
         in: ["query"],
         errorMessage: "Must be an object",
-        optional : true,
+        optional: true,
         custom: {
-            options : isObject
+            options: isObject
         }
     }
-}
+};
 
 export const get: ValidationSchema<any> = {
     ...jsonApiQuery,
@@ -46,7 +47,7 @@ export const get: ValidationSchema<any> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     }
 };
 
@@ -54,19 +55,17 @@ export const list: ValidationSchema<any> = {
     ...jsonApiQuery
 };
 
-export const create: ValidationSchema<any> = {
-
-};
+export const create: ValidationSchema<any> = {};
 
 export const remove: ValidationSchema<any> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     relation: {
-        isString : true
+        isString: true
     }
 };
 
@@ -75,11 +74,11 @@ export const fetchRelated: ValidationSchema<any> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     relation: {
         in: ["params"],
-        isString : true
+        isString: true
     }
 };
 
@@ -88,11 +87,11 @@ export const fetchRelationships: ValidationSchema<any> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     relation: {
         in: ["params"],
-        isString : true
+        isString: true
     }
 };
 
@@ -101,11 +100,11 @@ export const addRelationships: ValidationSchema<any> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     relation: {
         in: ["params"],
-        isString : true
+        isString: true
     }
 };
 
@@ -114,25 +113,24 @@ export const updateRelationships: ValidationSchema<any> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     relation: {
         in: ["params"],
-        isString : true
+        isString: true
     }
 };
-
 
 export const removeRelationships: ValidationSchema<any> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     relation: {
         in: ["params"],
-        isString : true
+        isString: true
     }
 };
 
@@ -141,7 +139,6 @@ export const update: ValidationSchema<any> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     }
 };
-

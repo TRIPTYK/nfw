@@ -1,4 +1,4 @@
-import {Roles} from "../enums/role.enum";
+import { Roles } from "../enums/role.enum";
 import { UserRepository } from "../repositories/user.repository";
 import { getCustomRepository } from "typeorm";
 import { ValidationSchema } from "../../core/types/validation";
@@ -18,7 +18,12 @@ export const create: ValidationSchema<User> = {
     email: {
         custom: {
             options: async (value) => {
-                if (await (getCustomRepository(UserRepository).exists("email", value))) {
+                if (
+                    await getCustomRepository(UserRepository).exists(
+                        "email",
+                        value
+                    )
+                ) {
                     return Promise.reject("email already exists");
                 }
             }
@@ -26,13 +31,13 @@ export const create: ValidationSchema<User> = {
         isEmail: true
     },
     first_name: {
-        isString : true,
+        isString: true,
         isUppercase: {
             negated: true
         }
     },
     last_name: {
-        isString : true,
+        isString: true,
         isUppercase: {
             negated: true
         }
@@ -40,10 +45,10 @@ export const create: ValidationSchema<User> = {
     password: {
         errorMessage: "Must have a password",
         exists: true,
-        isString : true
+        isString: true
     },
     username: {
-        isString : true,
+        isString: true,
         isUppercase: {
             negated: true
         }
@@ -57,18 +62,18 @@ export const update: ValidationSchema<User> = {
         optional: true
     },
     first_name: {
-        isString : true,
+        isString: true,
         optional: true
     },
     last_name: {
-        isString : true,
+        isString: true,
         isUppercase: {
             negated: true
         },
         optional: true
     },
     password: {
-        isString : true,
+        isString: true,
         optional: true
     },
     role: {
@@ -81,10 +86,10 @@ export const update: ValidationSchema<User> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     username: {
-        isString : true,
+        isString: true,
         optional: true
     }
 };

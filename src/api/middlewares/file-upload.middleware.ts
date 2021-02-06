@@ -5,8 +5,8 @@ import { validateFile } from "../validations/document.validation";
 import { Request, Response } from "express";
 
 export type FileUploadMiddlewareArgs = {
-    type : "single" | "multiple",
-    fieldName : string & "document",
+    type: "single" | "multiple";
+    fieldName: string & "document";
 };
 
 @injectable()
@@ -15,13 +15,23 @@ export default class FileUploadMiddleware extends BaseMiddleware {
         super();
     }
 
-    public use(req: Request, res: Response, next: (err?: any) => void, args: FileUploadMiddlewareArgs): any {
+    public use(
+        req: Request,
+        res: Response,
+        next: (err?: any) => void,
+        args: FileUploadMiddlewareArgs
+    ): any {
         const { type = "single", fieldName = "document" } = args;
-        const multerInstance = this.multer.makeMulter(StorageType.DISK, "./dist/uploads/documents", validateFile, 50000 );
+        const multerInstance = this.multer.makeMulter(
+            StorageType.DISK,
+            "./dist/uploads/documents",
+            validateFile,
+            50000
+        );
 
         if (type === "single") {
             return multerInstance.single(fieldName)(req, res, next);
-        } 
+        }
         return multerInstance.array(fieldName)(req, res, next);
     }
 }

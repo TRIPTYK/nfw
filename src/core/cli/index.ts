@@ -11,9 +11,4 @@ import deleteJsonApiEntity from "./commands/delete-entity";
 import generateJsonApiEntity from "./commands/generate-entity";
 import removeColumn from "./commands/remove-column";
 
-export {
-    addColumn,
-    removeColumn,
-    generateJsonApiEntity,
-    deleteJsonApiEntity
-}
+export { addColumn, removeColumn, generateJsonApiEntity, deleteJsonApiEntity };

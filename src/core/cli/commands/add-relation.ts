@@ -19,31 +19,37 @@ export default async function addRelation(entity: string, relation: Relation) {
         throw new Error("Entity class does not exists");
     }
 
-    if(entityClass.getInstanceProperty(relation.name)) {
+    if (entityClass.getInstanceProperty(relation.name)) {
         throw new Error("Relation property already exists");
     }
 
-    const inverseModel = resources(relation.target).find((r) => r.template === "model");
-    const inversemodelFile = project.getSourceFile(`${inverseModel.path}/${inverseModel.name}`);
+    const inverseModel = resources(relation.target).find(
+        (r) => r.template === "model"
+    );
+    const inversemodelFile = project.getSourceFile(
+        `${inverseModel.path}/${inverseModel.name}`
+    );
 
     if (!inversemodelFile) {
         throw new Error("Entity does not exists");
     }
 
     const inverseNaming = getEntityNaming(relation.target);
-    const inverseEntityClass = inversemodelFile.getClass(inverseNaming.classPrefixName);
+    const inverseEntityClass = inversemodelFile.getClass(
+        inverseNaming.classPrefixName
+    );
 
     if (!inverseEntityClass) {
         throw new Error("Entity class does not exists");
     }
 
     modelFile.addImportDeclaration({
-        namedImports : [inverseNaming.classPrefixName],
-        moduleSpecifier : `../models/${inverseNaming.filePrefixName}.model`
+        namedImports: [inverseNaming.classPrefixName],
+        moduleSpecifier: `../models/${inverseNaming.filePrefixName}.model`
     });
     inversemodelFile.addImportDeclaration({
-        namedImports : [naming.classPrefixName],
-        moduleSpecifier : `../models/${naming.filePrefixName}.model`
+        namedImports: [naming.classPrefixName],
+        moduleSpecifier: `../models/${naming.filePrefixName}.model`
     });
 
     const existing = entityClass.getProperty(relation.name);
@@ -52,72 +58,91 @@ export default async function addRelation(entity: string, relation: Relation) {
         existing.remove();
     }
 
-    const mainRelationProperty = entityClass.addProperty({name : relation.name })
+    const mainRelationProperty = entityClass
+        .addProperty({ name: relation.name })
         .toggleModifier("public");
 
-    relation.inverseRelationName ??= relation.type === "many-to-many" ? pluralize(relation.target) : relation.target;
+    relation.inverseRelationName ??=
+        relation.type === "many-to-many"
+            ? pluralize(relation.target)
+            : relation.target;
     const decoratorName = pascalcase(relation.type);
 
     let inverseDecoratorName;
 
-    switch(relation.type) {
-    case "one-to-many": 
-        inverseDecoratorName = "ManyToOne";
-        break;  
-    case "many-to-many":
-        inverseDecoratorName = "ManyToMany";
-        break;
-    default: // oneToOne
-        inverseDecoratorName = "OneToOne";
-        break;
+    switch (relation.type) {
+        case "one-to-many":
+            inverseDecoratorName = "ManyToOne";
+            break;
+        case "many-to-many":
+            inverseDecoratorName = "ManyToMany";
+            break;
+        default:
+            // oneToOne
+            inverseDecoratorName = "OneToOne";
+            break;
     }
 
-    const entityInterface = modelFile.getInterface(`${naming.classPrefixName}Interface`);
+    const entityInterface = modelFile.getInterface(
+        `${naming.classPrefixName}Interface`
+    );
     if (entityInterface) {
-        entityInterface.addProperty({name : relation.name });
+        entityInterface.addProperty({ name: relation.name });
     }
 
-    const inverseEntityInterface = inversemodelFile.getInterface(`${inverseNaming.classPrefixName}Interface`);
+    const inverseEntityInterface = inversemodelFile.getInterface(
+        `${inverseNaming.classPrefixName}Interface`
+    );
     if (inverseEntityInterface) {
-        inverseEntityInterface.addProperty({name : relation.inverseRelationName });
+        inverseEntityInterface.addProperty({
+            name: relation.inverseRelationName
+        });
     }
 
     mainRelationProperty
         .addDecorator({
-            name : decoratorName,
-            arguments : [`() => ${inverseNaming.classPrefixName}`, `(inverseRelation) => inverseRelation.${relation.inverseRelationName}`]
+            name: decoratorName,
+            arguments: [
+                `() => ${inverseNaming.classPrefixName}`,
+                `(inverseRelation) => inverseRelation.${relation.inverseRelationName}`
+            ]
         })
         .setIsDecoratorFactory(true);
 
     if (relation.type === "one-to-one") {
         mainRelationProperty
             .addDecorator({
-                name : "JoinColumn"
+                name: "JoinColumn"
             })
             .setIsDecoratorFactory(true);
     }
     if (relation.type === "many-to-many") {
         mainRelationProperty
             .addDecorator({
-                name : "JoinTable"
+                name: "JoinTable"
             })
             .setIsDecoratorFactory(true);
     }
 
-    const existingInverse = inverseEntityClass.getProperty(relation.inverseRelationName);
+    const existingInverse = inverseEntityClass.getProperty(
+        relation.inverseRelationName
+    );
 
     if (existingInverse) {
         existingInverse.remove();
     }
 
     const inverseRelationProperty = inverseEntityClass
-        .addProperty({name : relation.inverseRelationName })
+        .addProperty({ name: relation.inverseRelationName })
         .toggleModifier("public");
 
     inverseRelationProperty
         .addDecorator({
-            name : inverseDecoratorName,
-            arguments : [`() => ${naming.classPrefixName}`, `(inverseRelation) => inverseRelation.${relation.name}`]
+            name: inverseDecoratorName,
+            arguments: [
+                `() => ${naming.classPrefixName}`,
+                `(inverseRelation) => inverseRelation.${relation.name}`
+            ]
         })
         .setIsDecoratorFactory(true);
 
@@ -126,9 +151,15 @@ export default async function addRelation(entity: string, relation: Relation) {
     inversemodelFile.organizeImports();
     modelFile.organizeImports();
 
-    const serializer = resources(entity).find((r) => r.template === "serializer-schema");
-    const serializerFile = project.getSourceFile(`${serializer.path}/${serializer.name}`);
-    const serializerClass = serializerFile.getClass(`${naming.classPrefixName}SerializerSchema`);
+    const serializer = resources(entity).find(
+        (r) => r.template === "serializer-schema"
+    );
+    const serializerFile = project.getSourceFile(
+        `${serializer.path}/${serializer.name}`
+    );
+    const serializerClass = serializerFile.getClass(
+        `${naming.classPrefixName}SerializerSchema`
+    );
 
     const serializerPropertyExists = serializerClass.getProperty(relation.name);
 
@@ -137,30 +168,38 @@ export default async function addRelation(entity: string, relation: Relation) {
     }
 
     const serializerProperty = serializerClass
-        .addProperty({name: relation.name})
+        .addProperty({ name: relation.name })
         .toggleModifier("public");
 
     serializerProperty.addDecorator({
-        name : "Relation",
+        name: "Relation",
         arguments: [`() => ${inverseNaming.classPrefixName}SerializerSchema`]
     });
 
-    const inverseSerializer = resources(relation.target).find((r) => r.template === "serializer-schema");
-    const inverseSerializerFile = project.getSourceFile(`${inverseSerializer.path}/${inverseSerializer.name}`);
-    const inverseSerializerClass = inverseSerializerFile.getClass(`${inverseNaming.classPrefixName}SerializerSchema`);
+    const inverseSerializer = resources(relation.target).find(
+        (r) => r.template === "serializer-schema"
+    );
+    const inverseSerializerFile = project.getSourceFile(
+        `${inverseSerializer.path}/${inverseSerializer.name}`
+    );
+    const inverseSerializerClass = inverseSerializerFile.getClass(
+        `${inverseNaming.classPrefixName}SerializerSchema`
+    );
 
-    const inverseSerializerPropertyExists = inverseSerializerClass.getProperty(relation.name);
+    const inverseSerializerPropertyExists = inverseSerializerClass.getProperty(
+        relation.name
+    );
 
     if (inverseSerializerPropertyExists) {
         inverseSerializerPropertyExists.remove();
     }
 
     const inverseSerializerProperty = inverseSerializerClass
-        .addProperty({name: relation.inverseRelationName})
+        .addProperty({ name: relation.inverseRelationName })
         .toggleModifier("public");
 
     inverseSerializerProperty.addDecorator({
-        name : "Relation",
+        name: "Relation",
         arguments: [`() => ${naming.classPrefixName}SerializerSchema`]
     });
 

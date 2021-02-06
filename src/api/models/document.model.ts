@@ -6,11 +6,11 @@ import {
     ManyToMany
 } from "typeorm";
 
-import {User} from "./user.model";
-import {promises as Fs} from "fs";
+import { User } from "./user.model";
+import { promises as Fs } from "fs";
 import * as Path from "path";
-import {MimeTypes, ImageMimeTypes} from "../enums/mime-type.enum";
-import {DocumentTypes} from "../enums/document-type.enum";
+import { MimeTypes, ImageMimeTypes } from "../enums/mime-type.enum";
+import { DocumentTypes } from "../enums/document-type.enum";
 import { JsonApiModel } from "../../core/models/json-api.model";
 import { DocumentSerializer } from "../serializers/document.serializer";
 import { DocumentRepository } from "../repositories/document.repository";
@@ -30,11 +30,13 @@ export interface DocumentInterface {
 }
 
 @JsonApiEntity("documents", {
-    serializer : DocumentSerializer,
-    repository : DocumentRepository,
-    validator : DocumentValidator
+    serializer: DocumentSerializer,
+    repository: DocumentRepository,
+    validator: DocumentValidator
 })
-export class Document extends JsonApiModel<Document> implements DocumentInterface {
+export class Document
+    extends JsonApiModel<Document>
+    implements DocumentInterface {
     @Column({
         enum: DocumentTypes,
         nullable: false,
@@ -43,29 +45,29 @@ export class Document extends JsonApiModel<Document> implements DocumentInterfac
     public fieldname: DocumentTypes;
 
     @Column({
-        nullable : false
+        nullable: false
     })
     public filename: string;
 
     @Column({
-        nullable : false
+        nullable: false
     })
     public originalname: string;
 
     @Column({
-        nullable : false
+        nullable: false
     })
     public path: string;
 
     @Column({
         enum: MimeTypes,
-        nullable : false,
+        nullable: false,
         type: "simple-enum"
     })
     public mimetype: MimeTypes;
 
     @Column({
-        nullable : false
+        nullable: false
     })
     public size: number;
 
@@ -94,7 +96,11 @@ export class Document extends JsonApiModel<Document> implements DocumentInterfac
         const promises = [Fs.unlink(`${this.path}/${this.filename}`)];
 
         if (Object.values(ImageMimeTypes).includes(this.mimetype as any)) {
-            promises.concat(["xs", "md", "xl"].map((size) => Fs.unlink(`${this.path}/${size}/${this.filename}`)));
+            promises.concat(
+                ["xs", "md", "xl"].map((size) =>
+                    Fs.unlink(`${this.path}/${size}/${this.filename}`)
+                )
+            );
         }
 
         return Promise.all(promises);

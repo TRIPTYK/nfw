@@ -38,12 +38,23 @@ export const remove: ValidationSchema<Document> = {
  * @param file
  * @param cb
  */
-export const validateFile = (req,
-    file: {mimetype: string; destination: string; filename: string; fieldname: string; path: string; size: string},
-    next) => {
+export const validateFile = (
+    req,
+    file: {
+        mimetype: string;
+        destination: string;
+        filename: string;
+        fieldname: string;
+        path: string;
+        size: string;
+    },
+    next
+) => {
     if (Object.values(MimeTypes).includes(file.mimetype as any)) {
         return next(null, true);
     }
-    return next(Boom.unsupportedMediaType("File mimetype not supported"), false);
+    return next(
+        Boom.unsupportedMediaType("File mimetype not supported"),
+        false
+    );
 };
-

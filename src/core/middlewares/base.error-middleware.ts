@@ -1,5 +1,5 @@
 import { ErrorMiddlewareInterface } from "../interfaces/middleware.interface";
-import { Request, Response} from "express";
+import { Request, Response } from "express";
 import { RouteContext } from "../application/base.application";
 
 export abstract class BaseErrorMiddleware implements ErrorMiddlewareInterface {
@@ -7,5 +7,11 @@ export abstract class BaseErrorMiddleware implements ErrorMiddlewareInterface {
     public init(context: RouteContext) {
         this.context = context;
     }
-    public abstract use(err: any, req: Request, res: Response, next: (err?: any) => void, args: any): any;
+    public abstract use(
+        err: any,
+        req: Request,
+        res: Response,
+        next: (err?: any) => void,
+        args: any
+    ): any;
 }

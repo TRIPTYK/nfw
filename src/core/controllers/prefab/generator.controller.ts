@@ -1,16 +1,34 @@
 /* eslint-disable arrow-body-style */
 import BaseController from "../base.controller";
-import { Controller, Post, Delete, MethodMiddleware } from "../../decorators/controller.decorator";
-import { generateJsonApiEntity, deleteJsonApiEntity, addColumn, removeColumn } from "../../cli";
+import {
+    Controller,
+    Post,
+    Delete,
+    MethodMiddleware
+} from "../../decorators/controller.decorator";
+import {
+    generateJsonApiEntity,
+    deleteJsonApiEntity,
+    addColumn,
+    removeColumn
+} from "../../cli";
 import { Request, Response } from "express";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
-import { createEntity, createColumn, createRelation, columnsActions } from "../../validation/generator.validation";
+import {
+    createEntity,
+    createColumn,
+    createRelation,
+    columnsActions
+} from "../../validation/generator.validation";
 import { removeRelation } from "../../cli/commands/remove-relation";
 import addRelation from "../../cli/commands/add-relation";
 import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
 import project = require("../../cli/utils/project");
-import { ApplicationLifeCycleEvent, ApplicationRegistry } from "../../application/registry.application";
+import {
+    ApplicationLifeCycleEvent,
+    ApplicationRegistry
+} from "../../application/registry.application";
 import { singleton } from "tsyringe";
 
 /**
@@ -22,11 +40,14 @@ export default class GeneratorController extends BaseController {
     public socket: SocketIOClient.Socket = null;
 
     @Post("/entity/:name")
-    @MethodMiddleware(ValidationMiddleware, {schema : createEntity, location: ["body"]})
+    @MethodMiddleware(ValidationMiddleware, {
+        schema: createEntity,
+        location: ["body"]
+    })
     public async generateEntity(req: Request, res: Response) {
         await generateJsonApiEntity(req.params.name, {
-            columns : req.body.columns,
-            relations : req.body.relations
+            columns: req.body.columns,
+            relations: req.body.relations
         });
         res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-save");
@@ -36,7 +57,10 @@ export default class GeneratorController extends BaseController {
     }
 
     @Post("/entity/:name/relation")
-    @MethodMiddleware(ValidationMiddleware, {schema : createRelation, location: ["body"]})
+    @MethodMiddleware(ValidationMiddleware, {
+        schema: createRelation,
+        location: ["body"]
+    })
     public async addEntityRelation(req: Request, res: Response) {
         await addRelation(req.params.name, req.body);
         res.sendStatus(HttpStatus.ACCEPTED);
@@ -47,7 +71,10 @@ export default class GeneratorController extends BaseController {
     }
 
     @Post("/entity/:name/column")
-    @MethodMiddleware(ValidationMiddleware, {schema : createColumn, location: ["body"]})
+    @MethodMiddleware(ValidationMiddleware, {
+        schema: createColumn,
+        location: ["body"]
+    })
     public async generateColumn(req: Request, res: Response) {
         await addColumn(req.params.name, req.body);
         res.sendStatus(HttpStatus.ACCEPTED);
@@ -57,9 +84,11 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
-    
     @Post("/entity/:name/entity-actions")
-    @MethodMiddleware(ValidationMiddleware, {schema : columnsActions, location: ["body"]})
+    @MethodMiddleware(ValidationMiddleware, {
+        schema: columnsActions,
+        location: ["body"]
+    })
     public async do(req: Request, res: Response) {
         for (const column of req.body.columns) {
             if (column.action === "ADD") {
@@ -116,14 +145,14 @@ export default class GeneratorController extends BaseController {
 
     constructor() {
         super();
-        this.socket = SocketIO('http://localhost:3000', {
+        this.socket = SocketIO("http://localhost:3000", {
             query: {
-                app : false
+                app: false
             }
         });
         ApplicationRegistry.on(ApplicationLifeCycleEvent.Running, () => {
             this.socket.on("connect", () => {
-                this.socket.emit("hello"); 
+                this.socket.emit("hello");
             });
 
             // removeRelation("user", "documents").then(() => project.save());
@@ -136,15 +165,10 @@ export default class GeneratorController extends BaseController {
                 console.log(response);
                 if (response !== "ok") {
                     rej(response);
-                }else{
+                } else {
                     resolve(response);
                 }
             });
-        }) 
+        });
     }
 }
-
-
-
-
-

@@ -1,5 +1,5 @@
-import {Column, Entity, JoinColumn, ManyToOne, Unique, Index} from "typeorm";
-import {User} from "./user.model";
+import { Column, Entity, JoinColumn, ManyToOne, Unique, Index } from "typeorm";
+import { User } from "./user.model";
 import { JsonApiModel } from "../../core/models/json-api.model";
 import { OAuthToken } from "./oauth-token.model";
 

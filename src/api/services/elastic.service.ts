@@ -16,7 +16,9 @@ export default class ElasticSearchConnectionService extends BaseService {
     }
 
     public async init() {
-        this._connection = new Client({ node: this.configurationService.config.elastic.url });
+        this._connection = new Client({
+            node: this.configurationService.config.elastic.url
+        });
         await this._connection.ping();
     }
 

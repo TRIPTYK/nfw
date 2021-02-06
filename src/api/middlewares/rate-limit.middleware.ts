@@ -13,7 +13,8 @@ export default class RateLimitMiddleware extends BaseMiddleware {
         super();
         this.rateInstance = new RateLimit({
             max: 50,
-            message: "Too many requests from this IP, please try again after an hour",
+            message:
+                "Too many requests from this IP, please try again after an hour",
             windowMs: 300000
         });
     }

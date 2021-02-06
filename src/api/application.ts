@@ -13,7 +13,10 @@ import { autoInjectable } from "tsyringe";
 import { PassportService } from "./services/passport.service";
 import StatusController from "./controllers/status.controller";
 import MetadataController from "../core/controllers/prefab/metadata.controller";
-import { RegisterApplication, GlobalMiddleware } from "../core/decorators/application.decorator";
+import {
+    RegisterApplication,
+    GlobalMiddleware
+} from "../core/decorators/application.decorator";
 import { MailService } from "./services/mail-sender.service";
 import TypeORMService from "../core/services/typeorm.service";
 import { MulterService } from "./services/multer.service";
@@ -25,8 +28,22 @@ import ErrorMiddleware from "../core/middlewares/error.middleware";
 import RateLimitMiddleware from "./middlewares/rate-limit.middleware";
 
 @RegisterApplication({
-    controllers: [AuthController, UserController, DocumentController, StatusController, MetadataController, GeneratorController],
-    services:[MailService, TypeORMService, MulterService, PassportService, LoggerService, ConfigurationService]
+    controllers: [
+        AuthController,
+        UserController,
+        DocumentController,
+        StatusController,
+        MetadataController,
+        GeneratorController
+    ],
+    services: [
+        MailService,
+        TypeORMService,
+        MulterService,
+        PassportService,
+        LoggerService,
+        ConfigurationService
+    ]
 })
 @GlobalMiddleware(RateLimitMiddleware)
 @GlobalMiddleware(NotFoundMiddleware, null, "after")
@@ -37,13 +54,18 @@ export class Application extends BaseApplication {
         return true;
     }
 
-    public constructor(private loggerService: LoggerService, private configurationService: ConfigurationService) {
+    public constructor(
+        private loggerService: LoggerService,
+        private configurationService: ConfigurationService
+    ) {
         super();
     }
 
     public listen(port: number) {
         return super.listen(port).then(() => {
-            this.loggerService.logger.info(`HTTP server is now running on port ${port}`);
+            this.loggerService.logger.info(
+                `HTTP server is now running on port ${port}`
+            );
         });
     }
 
@@ -58,7 +80,7 @@ export class Application extends BaseApplication {
          * @inheritdoc https://www.npmjs.com/package/body-parser
          */
         this.app.use(BodyParser.urlencoded({ extended: false }));
-        this.app.use(BodyParser.json({type: "application/vnd.api+json"}));
+        this.app.use(BodyParser.json({ type: "application/vnd.api+json" }));
 
         /**
          * GZIP compression
@@ -92,7 +114,6 @@ export class Application extends BaseApplication {
         };
         this.app.use(Cors(CORSOptions));
 
-
         /**
          * Passport configuration
          *
@@ -102,7 +123,7 @@ export class Application extends BaseApplication {
 
         this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
-        this.app.use(`/api/${api.version}`, this.router );
+        this.app.use(`/api/${api.version}`, this.router);
 
         return this.app;
     }

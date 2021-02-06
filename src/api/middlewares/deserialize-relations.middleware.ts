@@ -4,13 +4,17 @@ import { injectable } from "tsyringe";
 import { Type } from "ts-morph";
 
 export type DeserializeRelationsMiddlewareArgs = {
-    schema : Type<any>
+    schema: Type<any>;
 };
 
 @injectable()
 export default class DeserializeRelationsMiddleware extends BaseMiddleware {
-    public async use(req: Request, response: Response, next: NextFunction, args: DeserializeRelationsMiddlewareArgs) {
-
+    public async use(
+        req: Request,
+        response: Response,
+        next: NextFunction,
+        args: DeserializeRelationsMiddlewareArgs
+    ) {
         return next();
     }
 }
