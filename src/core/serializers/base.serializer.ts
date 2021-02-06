@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as JSONAPISerializer from "json-api-serializer";
 import {
     RelationMetadata,

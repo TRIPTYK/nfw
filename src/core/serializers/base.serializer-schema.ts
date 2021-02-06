@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { container } from "tsyringe";
 import ConfigurationService from "../services/configuration.service";
 
