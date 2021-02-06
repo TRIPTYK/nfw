@@ -1,5 +1,8 @@
 import { container } from "tsyringe";
-import { Column, Relation } from "../cli/interfaces/generator.interface";
+import {
+    EntityColumn,
+    EntityRelation
+} from "../cli/interfaces/generator.interface";
 import TypeORMService from "../services/typeorm.service";
 import { ValidationSchema } from "../types/validation";
 
@@ -111,7 +114,7 @@ export const createEntity: ValidationSchema<any> = {
     }
 };
 
-export const createRelation: ValidationSchema<Relation> = {
+export const createRelation: ValidationSchema<EntityRelation> = {
     name: {
         exists: true,
         isString: true,
@@ -146,7 +149,7 @@ export const createRelation: ValidationSchema<Relation> = {
     }
 };
 
-export const createColumn: ValidationSchema<Column> = {
+export const createColumn: ValidationSchema<EntityColumn> = {
     name: {
         exists: true,
         isString: true,

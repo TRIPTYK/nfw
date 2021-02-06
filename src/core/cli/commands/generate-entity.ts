@@ -1,10 +1,9 @@
-import { SyntaxKind } from "ts-morph";
-import { SourceFile, ObjectLiteralExpression } from "ts-morph";
+import { ObjectLiteralExpression, SourceFile, SyntaxKind } from "ts-morph";
 import { EntityColumns } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
+import project from "../utils/project";
 import addColumn from "./add-column";
 import addRelation from "./add-relation";
-import project = require("../utils/project");
 
 export default async function generateJsonApiEntity(
     modelName: string,

@@ -1,11 +1,11 @@
 import { SyntaxKind, VariableDeclarationKind } from "ts-morph";
-import { Column } from "../interfaces/generator.interface";
+import { EntityColumn } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
-import project = require("../utils/project");
+import project from "../utils/project";
 
 export default async function removeColumn(
     modelName: string,
-    column: Column | string
+    column: EntityColumn | string
 ): Promise<void> {
     const model = resources(modelName).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);

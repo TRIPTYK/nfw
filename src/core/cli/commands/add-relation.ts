@@ -1,10 +1,13 @@
-import { Relation } from "../interfaces/generator.interface";
-import resources, { getEntityNaming } from "../static/resources";
-import * as pluralize from "pluralize";
 import * as pascalcase from "pascalcase";
-import project = require("../utils/project");
+import * as pluralize from "pluralize";
+import { EntityRelation } from "../interfaces/generator.interface";
+import resources, { getEntityNaming } from "../static/resources";
+import project from "../utils/project";
 
-export default async function addRelation(entity: string, relation: Relation) {
+export default async function addRelation(
+    entity: string,
+    relation: EntityRelation
+) {
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);
     const naming = getEntityNaming(entity);

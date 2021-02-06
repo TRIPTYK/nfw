@@ -8,7 +8,7 @@ export interface GeneratorParameters {
     classPrefixName: string;
 }
 
-export interface Column {
+export interface EntityColumn {
     name: string;
     type: string;
     length?: number;
@@ -23,7 +23,7 @@ export interface Column {
 
 export type RelationTypes = "one-to-one" | "one-to-many" | "many-to-many";
 
-export interface Relation {
+export interface EntityRelation {
     name: string;
     target: string;
     type: RelationTypes;
@@ -32,6 +32,6 @@ export interface Relation {
 }
 
 export interface EntityColumns {
-    columns: Column[];
-    relations: Relation[];
+    columns: EntityColumn[];
+    relations: EntityRelation[];
 }

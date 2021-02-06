@@ -1,35 +1,33 @@
 /* eslint-disable arrow-body-style */
-import BaseController from "../base.controller";
-import {
-    Controller,
-    Post,
-    Delete,
-    MethodMiddleware
-} from "../../decorators/controller.decorator";
-import {
-    generateJsonApiEntity,
-    deleteJsonApiEntity,
-    addColumn,
-    removeColumn
-} from "../../cli";
 import { Request, Response } from "express";
-import ValidationMiddleware from "../../middlewares/validation.middleware";
-import {
-    createEntity,
-    createColumn,
-    createRelation,
-    columnsActions
-} from "../../validation/generator.validation";
-import { removeRelation } from "../../cli/commands/remove-relation";
-import addRelation from "../../cli/commands/add-relation";
-import * as SocketIO from "socket.io-client";
 import * as HttpStatus from "http-status";
-import project = require("../../cli/utils/project");
+import * as SocketIO from "socket.io-client";
+import { singleton } from "tsyringe";
 import {
     ApplicationLifeCycleEvent,
     ApplicationRegistry
 } from "../../application/registry.application";
-import { singleton } from "tsyringe";
+import addColumn from "../../cli/commands/add-column";
+import addRelation from "../../cli/commands/add-relation";
+import deleteJsonApiEntity from "../../cli/commands/delete-entity";
+import generateJsonApiEntity from "../../cli/commands/generate-entity";
+import removeColumn from "../../cli/commands/remove-column";
+import { removeRelation } from "../../cli/commands/remove-relation";
+import project from "../../cli/utils/project";
+import {
+    Controller,
+    Delete,
+    MethodMiddleware,
+    Post
+} from "../../decorators/controller.decorator";
+import ValidationMiddleware from "../../middlewares/validation.middleware";
+import {
+    columnsActions,
+    createColumn,
+    createEntity,
+    createRelation
+} from "../../validation/generator.validation";
+import BaseController from "../base.controller";
 
 /**
  * Generates app
@@ -162,7 +160,6 @@ export default class GeneratorController extends BaseController {
     private sendMessageAndWaitResponse(type: string, data?: any) {
         return new Promise((resolve, rej) => {
             this.socket.emit(type, data, (response) => {
-                console.log(response);
                 if (response !== "ok") {
                     rej(response);
                 } else {

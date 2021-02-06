@@ -1,11 +1,11 @@
 import { ArrowFunction, PropertyAccessExpression, SyntaxKind } from "ts-morph";
-import { Relation } from "../interfaces/generator.interface";
+import { EntityRelation } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
-import project = require("../utils/project");
+import project from "../utils/project";
 
 export async function removeRelation(
     entity: string,
-    relationName: string | Relation
+    relationName: string | EntityRelation
 ) {
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);

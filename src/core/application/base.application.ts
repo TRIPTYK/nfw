@@ -1,25 +1,24 @@
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable complexity */
 import * as Express from "express";
-import ApplicationInterface from "../interfaces/application.interface";
-import { AnyFunction, Constructor } from "../types/global";
-import {
-    RouteDefinition,
-    RequestMethods,
-    MiddlewareMetadata,
-    JsonApiMiddlewareMetadata
-} from "../decorators/controller.decorator";
-import { BaseMiddleware } from "../middlewares/base.middleware";
-import { container } from "tsyringe";
 import * as pluralize from "pluralize";
+import { container } from "tsyringe";
+import BaseController from "../controllers/base.controller";
+import BaseJsonApiController from "../controllers/json-api.controller";
+import {
+    JsonApiMiddlewareMetadata,
+    MiddlewareMetadata,
+    RequestMethods,
+    RouteDefinition
+} from "../decorators/controller.decorator";
+import ApplicationInterface from "../interfaces/application.interface";
+import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
+import { BaseMiddleware } from "../middlewares/base.middleware";
 import DeserializeMiddleware from "../middlewares/deserialize.middleware";
 import ValidationMiddleware from "../middlewares/validation.middleware";
-import BaseController from "../controllers/base.controller";
-import * as BaseValidation from "../validation/base.validation";
-import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
+import { Constructor } from "../types/global";
 import { toKebabCase } from "../utils/case.util";
-import DeserializeRelationsMiddleware from "../../api/middlewares/deserialize-relations.middleware";
-import BaseJsonApiController from "../controllers/json-api.controller";
+import * as BaseValidation from "../validation/base.validation";
 
 export interface RouteContext {
     routeDefinition: RouteDefinition;
@@ -296,16 +295,6 @@ export default abstract class BaseApplication implements ApplicationInterface {
                                 applyMiddlewares.push(
                                     this.useMiddleware(
                                         DeserializeMiddleware,
-                                        {
-                                            serializer,
-                                            schema
-                                        },
-                                        routeContext
-                                    )
-                                );
-                                applyMiddlewares.push(
-                                    this.useMiddleware(
-                                        DeserializeRelationsMiddleware,
                                         {
                                             serializer,
                                             schema

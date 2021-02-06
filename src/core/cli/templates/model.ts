@@ -1,7 +1,7 @@
-import project = require("../utils/project");
+import * as pluralize from "pluralize";
 import { SourceFile } from "ts-morph";
 import { GeneratorParameters } from "../interfaces/generator.interface";
-import * as pluralize from "pluralize";
+import project from "../utils/project";
 
 /**
  *

@@ -8,7 +8,7 @@
         "experimentalDecorators": true,
         "sourceMap": true,
         "outDir": "./dist/",
-        "plugins": [{ "name": "typescript-tslint-plugin" }]
+        "forceConsistentCasingInFileNames": true
     },
     "exclude": ["**/**/node_modules", "src/migration/**/**", "node_modules"]
 }

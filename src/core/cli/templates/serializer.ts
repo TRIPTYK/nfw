@@ -1,6 +1,6 @@
-import project = require("../utils/project");
-import { GeneratorParameters } from "../interfaces/generator.interface";
 import * as pluralize from "pluralize";
+import { GeneratorParameters } from "../interfaces/generator.interface";
+import project from "../utils/project";
 
 export default function createSerializer({
     modelName,

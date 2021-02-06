@@ -9,7 +9,7 @@ const project = new tsMorph.Project({
  * @return Project
  * @description Singleton like method
  */
-export = (() => {
+export default (() => {
     if (!isInitialised) {
         project.addSourceFilesAtPaths(["src/**/*.ts", "test/**/*.ts"]);
         isInitialised = true;

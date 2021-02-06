@@ -1,9 +1,9 @@
-import { Column } from "../interfaces/generator.interface";
 import { ColumnOptions, ColumnType } from "typeorm";
 import { ValidationSchema } from "../../types/validation";
+import { EntityColumn } from "../interfaces/generator.interface";
 
 export function buildModelColumnArgumentsFromObject(
-    dbColumnaData: Column
+    dbColumnaData: EntityColumn
 ): ColumnOptions {
     const columnArgument: ColumnOptions = {};
 
@@ -55,7 +55,7 @@ export function buildModelColumnArgumentsFromObject(
 }
 
 export function buildValidationArgumentsFromObject(
-    dbColumnaData: Column
+    dbColumnaData: EntityColumn
 ): ValidationSchema<any> {
     const validationArguments = {};
 

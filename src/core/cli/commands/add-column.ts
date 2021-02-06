@@ -1,21 +1,20 @@
+import * as stringifyObject from "stringify-object";
 import {
-    Project,
+    ObjectLiteralExpression,
     SyntaxKind,
-    VariableDeclarationKind,
-    ObjectLiteralExpression
+    VariableDeclarationKind
 } from "ts-morph";
-import { Column } from "../interfaces/generator.interface";
+import { EntityColumn } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
+import project from "../utils/project";
 import {
     buildModelColumnArgumentsFromObject,
     buildValidationArgumentsFromObject
 } from "../utils/template";
-import * as stringifyObject from "stringify-object";
-import project = require("../utils/project");
 
 export default async function addColumn(
     entity: string,
-    column: Column
+    column: EntityColumn
 ): Promise<void> {
     const model = resources(entity).find((r) => r.template === "model");
     const modelFile = project.getSourceFile(`${model.path}/${model.name}`);

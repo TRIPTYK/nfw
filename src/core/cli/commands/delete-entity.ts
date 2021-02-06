@@ -1,7 +1,6 @@
-import { SyntaxKind } from "ts-morph";
-import { SourceFile, ObjectLiteralExpression } from "ts-morph";
+import { ObjectLiteralExpression, SourceFile, SyntaxKind } from "ts-morph";
 import resources, { getEntityNaming } from "../static/resources";
-import project = require("../utils/project");
+import project from "../utils/project";
 
 export default async function deleteJsonApiEntity(
     modelName: string

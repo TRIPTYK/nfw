@@ -1,14 +1,7 @@
-/**
- * @module generateEntityFiles
- * @description Generate entity files except model
- * @author Deflorenne Amaury
- * @author Verliefden Romain
- * @author Sam Antoine
- */
+// created from 'create-ts-index'
 
-import addColumn from "./commands/add-column";
-import deleteJsonApiEntity from "./commands/delete-entity";
-import generateJsonApiEntity from "./commands/generate-entity";
-import removeColumn from "./commands/remove-column";
-
-export { addColumn, removeColumn, generateJsonApiEntity, deleteJsonApiEntity };
+export * from "./commands";
+export * from "./interfaces";
+export * from "./static";
+export * from "./templates";
+export * from "./utils";

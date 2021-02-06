@@ -1,7 +1,7 @@
-import project = require("../utils/project");
+import { GeneratorParameters } from "../interfaces/generator.interface";
+import project from "../utils/project";
 import TsMorph = require("ts-morph");
 import stringifyObject = require("stringify-object");
-import { GeneratorParameters } from "../interfaces/generator.interface";
 
 export default function createValidationTemplate({
     fileTemplateInfo,
