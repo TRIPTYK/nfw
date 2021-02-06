@@ -1,8 +1,8 @@
+import * as Boom from "@hapi/boom";
+import { NextFunction, Request, Response } from "express";
 import { injectable } from "tsyringe";
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import { Response, Request, NextFunction } from "express";
 import { User } from "../models/user.model";
-import * as Boom from "@hapi/boom";
 
 @injectable()
 export default class ACLMiddleware extends BaseMiddleware {

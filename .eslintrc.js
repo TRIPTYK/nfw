@@ -13,9 +13,18 @@ Happy linting! 💖
 */
 module.exports = {
     root: true,
+    parserOptions: {
+        ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
+        sourceType: "module" // Allows for the use of imports
+    },
     parser: "@typescript-eslint/parser",
     plugins: ["@typescript-eslint"],
-    extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+    extends: [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+    ],
     rules: {
         "no-console": "error",
         "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -73,7 +82,6 @@ module.exports = {
         "comma-spacing": "warn",
         "comma-style": "warn",
         "consistent-this": "error",
-        indent: ["error", 4],
         "no-new-object": "error",
         "no-unneeded-ternary": "error",
         "prefer-object-spread": "error",

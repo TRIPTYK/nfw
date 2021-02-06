@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import * as Boom from "@hapi/boom";
+import { NextFunction, Request, Response } from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { singleton } from "tsyringe";
-import { BaseErrorMiddleware } from "./base.error-middleware";
-import { Request, Response, NextFunction } from "express";
-import * as Boom from "@hapi/boom";
 import { toCamelCase } from "../utils/case.util";
+import { BaseErrorMiddleware } from "./base.error-middleware";
 
 interface JsonApiErrorObject {
     detail: string;
@@ -28,8 +28,6 @@ export default class ErrorMiddleware extends BaseErrorMiddleware {
         next: NextFunction,
         args: any
     ) {
-        console.log(error);
-
         if (Array.isArray(error)) {
             const errs = error;
             const allErrors = [];

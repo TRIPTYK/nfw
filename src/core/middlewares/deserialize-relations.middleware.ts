@@ -17,13 +17,10 @@ export default class DeserializeRelationsMiddleware extends BaseMiddleware {
         next: NextFunction,
         args: DeserializeRelationsMiddlewareArgs
     ): Promise<any> {
-        console.log("bb");
         const serializerInstance = container.resolve(args.serializer);
         const schema = serializerInstance.getSchema(args.schema ?? "default");
 
         const relations = Reflect.getMetadata("relations", schema);
-
-        console.log("bb", relations);
 
         return next();
     }

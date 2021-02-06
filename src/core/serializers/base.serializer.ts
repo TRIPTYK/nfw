@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as JSONAPISerializer from "json-api-serializer";
-import SerializerInterface from "../interfaces/serializer.interface";
 import {
     RelationMetadata,
     SchemaOptions
 } from "../decorators/serializer.decorator";
+import SerializerInterface from "../interfaces/serializer.interface";
 import { Constructor } from "../types/global";
-import ConfigurationService from "../services/configuration.service";
-import { container } from "tsyringe";
-
 import { toCamelCase, toKebabCase, toSnakeCase } from "../utils/case.util";
 import BaseSerializerSchema from "./base.serializer-schema";
 
