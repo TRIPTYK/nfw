@@ -2,9 +2,9 @@
 
 # NFW a node Typescript boilerplate
 
-![Build](https://github.com/TRIPTYK/nfw/workflows/Build/badge.svg?branch=uniting)
-![Test](https://github.com/TRIPTYK/nfw/workflows/Test/badge.svg?branch=uniting)
-![Lint](https://github.com/TRIPTYK/nfw/workflows/Lint/badge.svg?branch=uniting)
+![Build](https://github.com/TRIPTYK/nfw/workflows/Build/badge.svg?branch=develop)
+![Test](https://github.com/TRIPTYK/nfw/workflows/Test/badge.svg?branch=develop)
+![Lint](https://github.com/TRIPTYK/nfw/workflows/Lint/badge.svg?branch=develop)
 
 This repository contains a REST API boilerplate [Express.js](http://expressjs.com/en/4x/api.html), [Typescript](https://github.com/Microsoft/TypeScript) and [TypeORM](https://github.com/typeorm/typeorm) based.
 
