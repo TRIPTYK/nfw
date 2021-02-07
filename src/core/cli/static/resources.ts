@@ -1,5 +1,5 @@
-import * as pascalcase from "pascalcase";
 import kebabCase from "@queso/kebab-case";
+import * as pascalcase from "pascalcase";
 
 export interface TemplateStructureInterface {
     template: string;

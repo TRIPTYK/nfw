@@ -1,8 +1,8 @@
-import * as request from "supertest";
 import { expect } from "chai";
+import * as request from "supertest";
 import { runSeeder, useRefreshDatabase, useSeeding } from "typeorm-seeding";
-import CreateAuthUserSeed from "../src/seed/create-auth-user.seed";
 import { User } from "../src/api/models/user.model";
+import CreateAuthUserSeed from "../src/seed/create-auth-user.seed";
 import { ServerContainer } from "./utils/server";
 
 describe("Document CRUD", () => {

@@ -1,7 +1,7 @@
-import { define } from "typeorm-seeding";
 import Faker from "faker";
-import { User } from "../api/models/user.model";
+import { define } from "typeorm-seeding";
 import { Roles } from "../api/enums/role.enum";
+import { User } from "../api/models/user.model";
 
 define(User, (faker: typeof Faker) => {
     const user = new User({

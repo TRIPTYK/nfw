@@ -1,3 +1,3 @@
 // created from 'create-ts-index'
 
-export * from './generator.interface';
+export * from "./generator.interface";

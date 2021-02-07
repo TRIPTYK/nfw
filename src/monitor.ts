@@ -1,18 +1,18 @@
 /* eslint-disable no-console */
-import "reflect-metadata";
-import * as config from "../ecosystem.config";
-
-const [, firstApp] = config.apps;
+import { execSync } from "child_process";
+import { createWriteStream } from "fs";
+import * as Http from "http";
+import { join } from "path";
 import * as pm2 from "pm2";
+import "reflect-metadata";
+import { Server } from "socket.io";
+import * as tar from "tar";
 import { container } from "tsyringe";
 import { Connection, createConnection, getConnectionManager } from "typeorm";
+import * as config from "../ecosystem.config";
 import ConfigurationService from "./core/services/configuration.service";
-import * as tar from "tar";
-import { execSync } from "child_process";
-import { Server } from "socket.io";
-import { createWriteStream } from "fs";
-import { join } from "path";
-import * as Http from "http";
+
+const [, firstApp] = config.apps;
 
 console.log(firstApp);
 

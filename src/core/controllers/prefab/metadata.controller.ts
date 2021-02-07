@@ -1,11 +1,11 @@
 /* eslint-disable arrow-body-style */
-import BaseController from "../base.controller";
-import { Controller, Get } from "../../decorators/controller.decorator";
-import { ApplicationRegistry } from "../../application/registry.application";
-import TypeORMService from "../../services/typeorm.service";
 import { Request, Response } from "express";
-import { EntityMetadata, getRepository } from "typeorm";
 import { singleton } from "tsyringe";
+import { EntityMetadata, getRepository } from "typeorm";
+import { ApplicationRegistry } from "../../application/registry.application";
+import { Controller, Get } from "../../decorators/controller.decorator";
+import TypeORMService from "../../services/typeorm.service";
+import BaseController from "../base.controller";
 
 /**
  * Use or inherit this controller in your app if you want to get api metadata

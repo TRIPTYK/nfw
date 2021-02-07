@@ -1,4 +1,4 @@
-import { Seeder, Factory } from "typeorm-seeding";
+import { Factory, Seeder } from "typeorm-seeding";
 import { Document } from "../api/models/document.model";
 import { User } from "../api/models/user.model";
 

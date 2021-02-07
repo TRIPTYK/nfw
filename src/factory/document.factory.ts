@@ -1,8 +1,8 @@
-import { define } from "typeorm-seeding";
 import Faker from "faker";
-import { Document } from "../api/models/document.model";
+import { define } from "typeorm-seeding";
 import { DocumentTypes } from "../api/enums/document-type.enum";
 import { MimeTypes } from "../api/enums/mime-type.enum";
+import { Document } from "../api/models/document.model";
 
 define(Document, (faker: typeof Faker) => {
     const doc = new Document({

@@ -1,13 +1,13 @@
 import {
-    Serialize,
     Deserialize,
-    SerializerSchema,
-    Relation
+    Relation,
+    Serialize,
+    SerializerSchema
 } from "../../../core/decorators/serializer.decorator";
-import DocumentSerializerSchema from "./document.serializer.schema";
-import { UserInterface } from "../../models/user.model";
-import { Document } from "../../models/document.model";
 import BaseSerializerSchema from "../../../core/serializers/base.serializer-schema";
+import { Document } from "../../models/document.model";
+import { UserInterface } from "../../models/user.model";
+import DocumentSerializerSchema from "./document.serializer.schema";
 
 @SerializerSchema()
 export default class UserSerializerSchema

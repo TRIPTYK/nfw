@@ -6,8 +6,8 @@ process.env.NODE_ENV = "test";
 const pkgInfo = require(`${process.cwd()}/package.json`);
 
 // Require the dev-dependencies
-import * as request from "supertest";
 import { expect } from "chai";
+import * as request from "supertest";
 import { ServerContainer } from "./utils/server";
 
 describe("Express application", () => {
