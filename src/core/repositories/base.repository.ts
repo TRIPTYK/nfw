@@ -257,17 +257,19 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
         const otherRepo = ApplicationRegistry.repositoryFor(otherEntity);
         const alias = otherRepo.metadata.tableName;
         const aliasRelation = this.buildAlias(
-            alias,
+            // build an unusable alias, just need it to fetch the relation
+            thisRelation.inverseSidePropertyPath,
             thisRelation.inverseSidePropertyPath
         );
 
-        if ((await this.count({ where: { id } })) === 0) {
+        if ((await this.findOne({ where: { id } })) === undefined) {
             throw Boom.notFound();
         }
 
         const resultQb = otherRepo
             .createQueryBuilder(otherRepo.metadata.tableName)
-            .leftJoin(
+            .innerJoin(
+                // innerjoin, if not exists returns empty
                 `${alias}.${thisRelation.inverseSidePropertyPath}`,
                 aliasRelation
             )
