@@ -1,6 +1,5 @@
 import * as Boom from "@hapi/boom";
 import * as dashify from "dashify";
-import { Request } from "express";
 import * as SqlString from "sqlstring";
 import {
     Brackets,
@@ -198,22 +197,6 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
         }
 
         return queryBuilder;
-    }
-
-    /**
-     * Shortcut function to make a JSON-API findMany request with data used for pagination
-     */
-    public jsonApiFind(
-        req: Request,
-        options?: {
-            allowIncludes?: boolean;
-            allowSorting?: boolean;
-            allowPagination?: boolean;
-            allowFields?: boolean;
-            allowFilters?: boolean;
-        }
-    ): Promise<[T[], number]> {
-        return this.jsonApiRequest(req.query, options).getManyAndCount();
     }
 
     /**
