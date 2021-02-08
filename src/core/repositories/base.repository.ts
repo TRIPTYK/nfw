@@ -201,25 +201,6 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
     }
 
     /**
-     * Shortcut function to make a JSON-API findOne request on id key
-     */
-    public jsonApiFindOne(
-        req: Request,
-        id: any,
-        options?: {
-            allowIncludes?: boolean;
-            allowSorting?: boolean;
-            allowPagination?: boolean;
-            allowFields?: boolean;
-            allowFilters?: boolean;
-        }
-    ): Promise<T> {
-        return this.jsonApiRequest(req.query, options)
-            .where(`${this.metadata.tableName}.id = :id`, { id })
-            .getOne();
-    }
-
-    /**
      * Shortcut function to make a JSON-API findMany request with data used for pagination
      */
     public jsonApiFind(
