@@ -24,6 +24,18 @@ export default class MetadataController extends BaseController {
         return connection.driver.supportedDataTypes;
     }
 
+    @Get("/count")
+    public async countAllEntitiesRecords() {
+        const counts: { entityName: string; count: number }[] = [];
+        for (const entity of this.getJsonApiEntities()) {
+            counts.push({
+                entityName: entity.name,
+                count: await getRepository(entity.target).count()
+            });
+        }
+        return counts;
+    }
+
     @Get("/:entity/count")
     public async countEntityRecords(req: Request, res: Response) {
         const { entity } = req.params;
