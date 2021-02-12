@@ -15,7 +15,6 @@ import {
     OneToOne
 } from "typeorm";
 import {
-    Filterable,
     JsonApiEntity
 } from "../../core/decorators/model.decorator";
 import { JsonApiModel } from "../../core/models/json-api.model";
@@ -52,7 +51,6 @@ export class User extends JsonApiModel<User> implements UserInterface {
         length: 32,
         nullable: false
     })
-    @Filterable()
     public username: string;
 
     @Column({

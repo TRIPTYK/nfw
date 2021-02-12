@@ -83,9 +83,3 @@ export function JsonApiEntity<T>(
         );
     };
 }
-
-export function Filterable(): PropertyDecorator {
-    return function (target: object, propertyKey: string | symbol) {
-        Reflect.defineMetadata("filterable", true, target, propertyKey);
-    };
-}
