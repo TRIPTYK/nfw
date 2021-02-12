@@ -1,5 +1,4 @@
-import { getCustomRepository } from "typeorm";
-import { ValidationSchema } from "../../core/types/validation";
+import { getCustomRepository, ValidationSchema } from "@triptyk/nfw-core";
 import { User } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
 

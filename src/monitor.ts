@@ -1,4 +1,10 @@
 /* eslint-disable no-console */
+import {
+    ConfigurationService,
+    Connection,
+    createConnection,
+    getConnectionManager
+} from "@triptyk/nfw-core";
 import { execSync } from "child_process";
 import { createWriteStream } from "fs";
 import * as Http from "http";
@@ -8,9 +14,7 @@ import "reflect-metadata";
 import { Server } from "socket.io";
 import * as tar from "tar";
 import { container } from "tsyringe";
-import { Connection, createConnection, getConnectionManager } from "typeorm";
 import * as config from "../ecosystem.config";
-import ConfigurationService from "./core/services/configuration.service";
 
 const [, firstApp] = config.apps;
 

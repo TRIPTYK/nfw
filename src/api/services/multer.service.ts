@@ -1,8 +1,8 @@
+import { BaseService } from "@triptyk/nfw-core";
 import { Request } from "express";
 import { sync as mkdirpSync } from "mkdirp";
 import * as Multer from "multer";
 import { autoInjectable, singleton } from "tsyringe";
-import BaseService from "../../core/services/base.service";
 
 enum StorageType {
     MEMORY,

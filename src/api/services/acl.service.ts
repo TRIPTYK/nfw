@@ -1,6 +1,6 @@
+import { BaseService } from "@triptyk/nfw-core";
 import { Permission } from "role-acl";
 import { autoInjectable, singleton } from "tsyringe";
-import BaseService from "../../core/services/base.service";
 import { UserACL } from "../acls/user.acl";
 import { User } from "../models/user.model";
 

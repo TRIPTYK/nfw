@@ -1,22 +1,22 @@
 import * as Boom from "@hapi/boom";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    ConfigurationService,
+    DeleteDateColumn,
+    JoinColumn,
+    JoinTable,
+    JsonApiEntity,
+    JsonApiModel,
+    ManyToMany,
+    OneToOne
+} from "@triptyk/nfw-core";
 import * as Bcrypt from "bcrypt";
 import * as Jwt from "jwt-simple";
 import * as Moment from "moment-timezone";
 import { Permission } from "role-acl";
 import { container } from "tsyringe";
-import {
-    BeforeInsert,
-    BeforeUpdate,
-    Column,
-    DeleteDateColumn,
-    JoinColumn,
-    JoinTable,
-    ManyToMany,
-    OneToOne
-} from "typeorm";
-import { JsonApiEntity } from "../../core/decorators/model.decorator";
-import { JsonApiModel } from "../../core/models/json-api.model";
-import ConfigurationService from "../../core/services/configuration.service";
 import { Environments } from "../enums/environments.enum";
 import { ImageMimeTypes } from "../enums/mime-type.enum";
 import { Roles } from "../enums/role.enum";

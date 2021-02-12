@@ -1,9 +1,11 @@
+import {
+    BaseJsonApiRepository,
+    ConfigurationService,
+    EntityRepository
+} from "@triptyk/nfw-core";
 import * as Crypto from "crypto";
 import * as Moment from "moment-timezone";
 import { autoInjectable, container } from "tsyringe";
-import { EntityRepository } from "typeorm";
-import BaseJsonApiRepository from "../../core/repositories/base.repository";
-import ConfigurationService from "../../core/services/configuration.service";
 import { RefreshToken } from "../models/refresh-token.model";
 import { User } from "../models/user.model";
 

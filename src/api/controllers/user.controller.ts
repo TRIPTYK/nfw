@@ -1,14 +1,13 @@
-import { Request } from "express";
-import { autoInjectable } from "tsyringe";
-import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import {
+    BaseJsonApiController,
+    DeserializeMiddleware,
+    DeserializeMiddlewareArgs,
     Get,
     JsonApiController,
     JsonApiMethodMiddleware
-} from "../../core/decorators/controller.decorator";
-import DeserializeMiddleware, {
-    DeserializeMiddlewareArgs
-} from "../../core/middlewares/deserialize.middleware";
+} from "@triptyk/nfw-core";
+import { Request } from "express";
+import { autoInjectable } from "tsyringe";
 import { User } from "../models/user.model";
 import { UserSerializer } from "../serializers/user.serializer";
 

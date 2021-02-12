@@ -1,6 +1,6 @@
+import { BaseMiddleware } from "@triptyk/nfw-core";
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 import { MulterService, StorageType } from "../services/multer.service";
 import { validateFile } from "../validations/document.validation";
 

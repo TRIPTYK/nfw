@@ -1,5 +1,4 @@
-import { JsonApiSerializer } from "../../core/decorators/serializer.decorator";
-import { BaseJsonApiSerializer } from "../../core/serializers/base.serializer";
+import { BaseJsonApiSerializer, JsonApiSerializer } from "@triptyk/nfw-core";
 import { Document } from "../models/document.model";
 import DocumentSerializerSchema from "./schemas/document.serializer.schema";
 

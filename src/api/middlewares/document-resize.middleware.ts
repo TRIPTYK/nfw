@@ -1,8 +1,7 @@
+import { BaseMiddleware, ConfigurationService } from "@triptyk/nfw-core";
 import { NextFunction, Request, Response } from "express";
 import * as Jimp from "jimp";
 import { autoInjectable, injectable } from "tsyringe";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
-import ConfigurationService from "../../core/services/configuration.service";
 import { ImageMimeTypes } from "../enums/mime-type.enum";
 
 export type DocumentResizeMiddlewareArgs = any;

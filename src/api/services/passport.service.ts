@@ -1,3 +1,9 @@
+import {
+    BaseService,
+    ConfigurationService,
+    getCustomRepository,
+    getRepository
+} from "@triptyk/nfw-core";
 import { Request } from "express";
 import * as Passport from "passport";
 import { Strategy as FacebookStrategy } from "passport-facebook";
@@ -6,9 +12,6 @@ import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import * as Refresh from "passport-oauth2-refresh";
 import { Strategy as OutlookStrategy } from "passport-outlook";
 import { autoInjectable, singleton } from "tsyringe";
-import { getCustomRepository, getRepository } from "typeorm";
-import BaseService from "../../core/services/base.service";
-import ConfigurationService from "../../core/services/configuration.service";
 import { User } from "../models/user.model";
 import { OAuthTokenRepository } from "../repositories/oauth.repository";
 

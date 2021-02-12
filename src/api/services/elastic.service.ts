@@ -1,7 +1,6 @@
 import { Client } from "@elastic/elasticsearch";
+import { BaseService, ConfigurationService } from "@triptyk/nfw-core";
 import { autoInjectable, singleton } from "tsyringe";
-import BaseService from "../../core/services/base.service";
-import ConfigurationService from "../../core/services/configuration.service";
 
 /**
  * Elastic search

@@ -1,14 +1,14 @@
-import { promises as Fs } from "fs";
-import * as Path from "path";
 import {
     BeforeInsert,
     BeforeUpdate,
     Column,
+    JsonApiEntity,
+    JsonApiModel,
     ManyToMany,
     OneToOne
-} from "typeorm";
-import { JsonApiEntity } from "../../core/decorators/model.decorator";
-import { JsonApiModel } from "../../core/models/json-api.model";
+} from "@triptyk/nfw-core";
+import { promises as Fs } from "fs";
+import * as Path from "path";
 import { DocumentTypes } from "../enums/document-type.enum";
 import { ImageMimeTypes, MimeTypes } from "../enums/mime-type.enum";
 import { DocumentRepository } from "../repositories/document.repository";

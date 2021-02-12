@@ -1,3 +1,14 @@
+import {
+    BaseApplication,
+    ConfigurationService,
+    ErrorMiddleware,
+    GeneratorController,
+    GlobalMiddleware,
+    MetadataController,
+    NotFoundMiddleware,
+    RegisterApplication,
+    TypeORMService
+} from "@triptyk/nfw-core";
 import * as BodyParser from "body-parser";
 import * as Compression from "compression";
 import * as Cors from "cors";
@@ -5,17 +16,6 @@ import * as Express from "express";
 import * as Helmet from "helmet";
 import * as Passport from "passport";
 import { autoInjectable } from "tsyringe";
-import BaseApplication from "../core/application/base.application";
-import GeneratorController from "../core/controllers/prefab/generator.controller";
-import MetadataController from "../core/controllers/prefab/metadata.controller";
-import {
-    GlobalMiddleware,
-    RegisterApplication
-} from "../core/decorators/application.decorator";
-import ErrorMiddleware from "../core/middlewares/error.middleware";
-import NotFoundMiddleware from "../core/middlewares/not-found.middleware";
-import ConfigurationService from "../core/services/configuration.service";
-import TypeORMService from "../core/services/typeorm.service";
 import AuthController from "./controllers/auth.controller";
 import DocumentController from "./controllers/document.controller";
 import StatusController from "./controllers/status.controller";
