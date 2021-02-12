@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable complexity */
 import * as Express from "express";
+import * as pluralize from "pluralize";
 import { container } from "tsyringe";
 import BaseController from "../controllers/base.controller";
 import BaseJsonApiController from "../controllers/json-api.controller";
@@ -10,7 +11,6 @@ import {
     RequestMethods,
     RouteDefinition
 } from "../decorators/controller.decorator";
-import * as pluralize from "../generator/commands/node_modules/pluralize";
 import ApplicationInterface from "../interfaces/application.interface";
 import { BaseErrorMiddleware } from "../middlewares/base.error-middleware";
 import { BaseMiddleware } from "../middlewares/base.middleware";
