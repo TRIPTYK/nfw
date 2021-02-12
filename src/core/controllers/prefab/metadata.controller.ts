@@ -26,14 +26,14 @@ export default class MetadataController extends BaseController {
 
     @Get("/count")
     public async countAllEntitiesRecords() {
-        const counts: { entityName: string; count: number }[] = [];
-        for (const entity of this.getJsonApiEntities()) {
-            counts.push({
-                entityName: entity.name,
-                count: await getRepository(entity.target).count()
-            });
-        }
-        return counts;
+        return Promise.all(
+            this.getJsonApiEntities().map(async (entity) => {
+                return {
+                    entityName: entity.name,
+                    count: await getRepository(entity.target).count()
+                };
+            })
+        );
     }
 
     @Get("/:entity/count")
