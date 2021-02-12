@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { container, injectable } from "tsyringe";
+import { container, singleton } from "tsyringe";
 import { BaseJsonApiSerializer } from "../serializers/base.serializer";
 import { Constructor } from "../types/global";
 import { BaseMiddleware } from "./base.middleware";
@@ -9,7 +9,7 @@ export type DeserializeMiddlewareArgs = {
     schema?: string;
 };
 
-@injectable()
+@singleton()
 export default class DeserializeMiddleware extends BaseMiddleware {
     public async use(
         req: Request,

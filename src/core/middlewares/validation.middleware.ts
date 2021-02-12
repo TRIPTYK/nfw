@@ -5,7 +5,7 @@ import {
     ParamSchema,
     ValidationChain
 } from "express-validator";
-import { injectable } from "tsyringe";
+import { singleton } from "tsyringe";
 import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 export type ValidationMiddlewareArgs = {
@@ -13,7 +13,7 @@ export type ValidationMiddlewareArgs = {
     location?: Location[];
 };
 
-@injectable()
+@singleton()
 export default class ValidationMiddleware extends BaseMiddleware {
     public async use(
         req: Request,

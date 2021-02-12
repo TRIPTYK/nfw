@@ -14,9 +14,7 @@ import {
     ManyToMany,
     OneToOne
 } from "typeorm";
-import {
-    JsonApiEntity
-} from "../../core/decorators/model.decorator";
+import { JsonApiEntity } from "../../core/decorators/model.decorator";
 import { JsonApiModel } from "../../core/models/json-api.model";
 import ConfigurationService from "../../core/services/configuration.service";
 import { Environments } from "../enums/environments.enum";

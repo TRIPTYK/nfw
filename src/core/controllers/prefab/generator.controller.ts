@@ -2,7 +2,6 @@
 import { Request, Response } from "express";
 import * as HttpStatus from "http-status";
 import * as SocketIO from "socket.io-client";
-import { singleton } from "tsyringe";
 import {
     ApplicationLifeCycleEvent,
     ApplicationRegistry
@@ -33,7 +32,6 @@ import BaseController from "../base.controller";
  * Generates app
  */
 @Controller("generate")
-@singleton()
 export default class GeneratorController extends BaseController {
     public socket: SocketIOClient.Socket = null;
 
