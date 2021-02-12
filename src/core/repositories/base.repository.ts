@@ -1,11 +1,12 @@
 import * as Boom from "@hapi/boom";
 import * as dashify from "dashify";
-import * as SqlString from "sqlstring";
+import * as Sqlstring from "sqlstring";
 import {
     Brackets,
     EntityMetadata,
     Repository,
-    SelectQueryBuilder
+    SelectQueryBuilder,
+    WhereExpression
 } from "typeorm";
 import { ApplicationRegistry } from "../application/registry.application";
 import PaginationQueryParams from "../types/jsonapi";
@@ -16,6 +17,26 @@ interface JsonApiRequestParams {
     fields?: Record<string, any>;
     page?: PaginationQueryParams;
     filter?: any;
+}
+
+interface FilterConditionBlock {
+    value: string;
+    operator:
+        | "eq"
+        | "in"
+        | "gt"
+        | "lt"
+        | "not-eq"
+        | "not-in"
+        | "not-gt"
+        | "not-lt";
+    path: string;
+    conjunction?: "and" | "or";
+}
+
+interface FilterBlock {
+    block: (FilterConditionBlock | FilterBlock)[];
+    conjunction?: "and" | "or";
 }
 
 /**
@@ -45,11 +66,6 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
         parentQueryBuilder?: SelectQueryBuilder<T>
     ): SelectQueryBuilder<T> {
         const currentTable = this.metadata.tableName;
-        const splitAndFilter = (string: string, symbol: string) =>
-            string
-                .split(symbol)
-                .map((e) => e.trim())
-                .filter((str) => str !== ""); // split parameters and filter empty strings
 
         const queryBuilder = parentQueryBuilder
             ? parentQueryBuilder
@@ -102,99 +118,10 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
 
         if (allowFilters && params.filter) {
             // put everything into sub brackets to not interfere with more important search params
-            const queryBrackets = new Brackets((qb) => {
-                for (const key in params.filter) {
-                    for (let strategy in params.filter[key]) {
-                        let sqlExpression: string;
-                        const value = params.filter[key][strategy];
-                        let conditionalOperator = "and";
-
-                        // remove "and" or "or"
-                        if (strategy.startsWith("or")) {
-                            strategy = strategy.substring(2);
-                            conditionalOperator = "or";
-                        } else if (strategy.startsWith("and")) {
-                            strategy = strategy.substring(3);
-                            conditionalOperator = "and";
-                        }
-
-                        switch (strategy) {
-                            case "like":
-                                sqlExpression = SqlString.format("?? LIKE ?", [
-                                    key,
-                                    value
-                                ]);
-                                break;
-                            case "eq":
-                                sqlExpression = SqlString.format("?? = ?", [
-                                    key,
-                                    value
-                                ]);
-                                break;
-                            case "noteq":
-                                sqlExpression = SqlString.format("NOT ?? = ?", [
-                                    key,
-                                    value
-                                ]);
-                                break;
-                            case "in":
-                                sqlExpression = SqlString.format("?? IN (?)", [
-                                    key,
-                                    splitAndFilter(value, "+")
-                                ]);
-                                break;
-                            case "notin":
-                                sqlExpression = SqlString.format(
-                                    "?? NOT IN (?)",
-                                    [key, splitAndFilter(value, "+")]
-                                );
-                                break;
-                            // eslint-disable-next-line no-lone-blocks
-                            case "btw":
-                                {
-                                    const andvalues = splitAndFilter(
-                                        value,
-                                        "+"
-                                    );
-                                    if (andvalues.length !== 2) {
-                                        throw Boom.badRequest(
-                                            "Must have 2 values in between filter"
-                                        );
-                                    }
-                                    sqlExpression = SqlString.format(
-                                        "?? BETWEEN ? AND ?",
-                                        [key, andvalues[0], andvalues[1]]
-                                    );
-                                }
-                                break;
-                            case "orsupeq":
-                                sqlExpression = SqlString.format("?? >= ?", [
-                                    key,
-                                    value
-                                ]);
-                                break;
-                            case "andlesseq":
-                                sqlExpression = SqlString.format("?? <= ?", [
-                                    key,
-                                    value
-                                ]);
-                                break;
-                            default:
-                                throw Boom.badRequest(
-                                    `Unrecognized filter : ${strategy}`
-                                );
-                        }
-
-                        if (conditionalOperator === "or") {
-                            qb.orWhere(sqlExpression);
-                        } else {
-                            qb.andWhere(sqlExpression);
-                        }
-                    }
-                }
-            });
-            queryBuilder.andWhere(queryBrackets);
+            this.applyFilter(params.filter, queryBuilder);
         }
+
+        console.log(queryBuilder.getSql());
 
         return queryBuilder;
     }
@@ -247,6 +174,109 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
             : resultQb.getMany());
 
         return result;
+    }
+
+    private applyConditionBlock(
+        block: FilterConditionBlock,
+        we: WhereExpression
+    ) {
+        block.conjunction ??= "and";
+        block.operator ??= "eq";
+
+        let queryString = "";
+        let queryParams = {};
+        const varName = `${block.operator}${block.value}`;
+        const propertyName = `${Sqlstring.format(block.path)}`;
+
+        switch (block.operator) {
+            case "eq":
+                queryString = `${propertyName} = :${varName}`;
+                queryParams = { [varName]: block.value };
+                break;
+            case "not-eq":
+                queryString = `${propertyName} != :${varName}`;
+                queryParams = { [varName]: block.value };
+                break;
+            case "not-in":
+                queryString = `NOT ${propertyName} IN (:${varName})`;
+                queryParams = { [varName]: block.value };
+                break;
+            case "in":
+                queryString = `${propertyName} IN (:${varName})`;
+                queryParams = { [varName]: block.value };
+                break;
+            case "lt":
+                queryString = `${propertyName} < :${varName}`;
+                queryParams = { [varName]: block.value };
+                break;
+            case "not-lt":
+                queryString = `NOT ${propertyName} < :${varName}`;
+                queryParams = { [varName]: block.value };
+                break;
+            case "not-gt":
+                queryString = `NOT ${propertyName} > :${varName}`;
+                queryParams = { [varName]: block.value };
+                break;
+            case "gt":
+                queryString = `${propertyName} > :${varName}`;
+                queryParams = { [varName]: block.value };
+                break;
+            default:
+                break;
+        }
+
+        switch (block.conjunction) {
+            case "and":
+                we.andWhere(queryString, queryParams);
+                break;
+            case "or":
+                we.orWhere(queryString, queryParams);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private applyFilter(
+        queryBlock: FilterBlock | (FilterConditionBlock | FilterBlock)[],
+        we: WhereExpression | SelectQueryBuilder<T>
+    ) {
+        const conjunction = queryBlock["conjunction"] ?? "and";
+        const brackets = new Brackets((qb) => {
+            let blocks: (FilterConditionBlock | FilterBlock)[];
+
+            if (Array.isArray(queryBlock)) {
+                blocks = queryBlock;
+            } else if (queryBlock.block) {
+                blocks = queryBlock.block;
+            } else if (typeof queryBlock === "object") {
+                blocks = [queryBlock];
+            } else {
+                throw new Error("Wrong filter syntax");
+            }
+
+            for (const iterator of blocks) {
+                if ((iterator as FilterBlock).block) {
+                    this.applyFilter(iterator as FilterBlock, qb);
+                } else {
+                    this.applyConditionBlock(
+                        iterator as FilterConditionBlock,
+                        qb
+                    );
+                }
+            }
+        });
+
+        switch (conjunction) {
+            case "and":
+                we.andWhere(brackets);
+                break;
+            case "or":
+                we.orWhere(brackets);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
