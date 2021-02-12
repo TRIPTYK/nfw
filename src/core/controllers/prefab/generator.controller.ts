@@ -6,19 +6,19 @@ import {
     ApplicationLifeCycleEvent,
     ApplicationRegistry
 } from "../../application/registry.application";
-import addColumn from "../../cli/commands/add-column";
-import addRelation from "../../cli/commands/add-relation";
-import deleteJsonApiEntity from "../../cli/commands/delete-entity";
-import generateJsonApiEntity from "../../cli/commands/generate-entity";
-import removeColumn from "../../cli/commands/remove-column";
-import { removeRelation } from "../../cli/commands/remove-relation";
-import project from "../../cli/utils/project";
 import {
     Controller,
     Delete,
     MethodMiddleware,
     Post
 } from "../../decorators/controller.decorator";
+import addColumn from "../../generator/commands/add-column";
+import addRelation from "../../generator/commands/add-relation";
+import deleteJsonApiEntity from "../../generator/commands/delete-entity";
+import generateJsonApiEntity from "../../generator/commands/generate-entity";
+import removeColumn from "../../generator/commands/remove-column";
+import { removeRelation } from "../../generator/commands/remove-relation";
+import project from "../../generator/utils/project";
 import ValidationMiddleware from "../../middlewares/validation.middleware";
 import {
     columnsActions,

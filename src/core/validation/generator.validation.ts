@@ -2,7 +2,7 @@ import { container } from "tsyringe";
 import {
     EntityColumn,
     EntityRelation
-} from "../cli/interfaces/generator.interface";
+} from "../generator/interfaces/generator.interface";
 import TypeORMService from "../services/typeorm.service";
 import { ValidationSchema } from "../types/validation";
 

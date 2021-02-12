@@ -1,10 +1,10 @@
 // created from 'create-ts-index'
 
 export * from "./application";
-export * from "./cli";
 export * from "./controllers";
 export * from "./decorators";
 export * from "./errors";
+export * from "./generator";
 export * from "./interfaces";
 export * from "./middlewares";
 export * from "./models";
