@@ -1,8 +1,5 @@
-import {
-    BaseJsonApiRepository,
-    ConfigurationService,
-    EntityRepository
-} from "@triptyk/nfw-core";
+import { BaseJsonApiRepository, ConfigurationService } from "@triptyk/nfw-core";
+import { EntityRepository } from "@triptyk/nfw-core/typeorm";
 import * as Crypto from "crypto";
 import * as Moment from "moment-timezone";
 import { autoInjectable, container } from "tsyringe";

@@ -1,15 +1,14 @@
+import { ConfigurationService, JsonApiModel } from "@triptyk/nfw-core";
 import {
     AfterLoad,
     BeforeInsert,
     BeforeUpdate,
     Column,
-    ConfigurationService,
     Entity,
     JoinColumn,
-    JsonApiModel,
     ManyToOne,
     Unique
-} from "@triptyk/nfw-core";
+} from "@triptyk/nfw-core/typeorm";
 import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
 import { container } from "tsyringe";
 import { OAuthTypes } from "../enums/oauth-type.enum";

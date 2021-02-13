@@ -1,17 +1,19 @@
 import * as Boom from "@hapi/boom";
 import {
+    ConfigurationService,
+    JsonApiEntity,
+    JsonApiModel
+} from "@triptyk/nfw-core";
+import {
     BeforeInsert,
     BeforeUpdate,
     Column,
-    ConfigurationService,
     DeleteDateColumn,
     JoinColumn,
     JoinTable,
-    JsonApiEntity,
-    JsonApiModel,
     ManyToMany,
     OneToOne
-} from "@triptyk/nfw-core";
+} from "@triptyk/nfw-core/typeorm";
 import * as Bcrypt from "bcrypt";
 import * as Jwt from "jwt-simple";
 import * as Moment from "moment-timezone";

@@ -1,12 +1,11 @@
+import { JsonApiEntity, JsonApiModel } from "@triptyk/nfw-core";
 import {
     BeforeInsert,
     BeforeUpdate,
     Column,
-    JsonApiEntity,
-    JsonApiModel,
     ManyToMany,
     OneToOne
-} from "@triptyk/nfw-core";
+} from "@triptyk/nfw-core/typeorm";
 import { promises as Fs } from "fs";
 import * as Path from "path";
 import { DocumentTypes } from "../enums/document-type.enum";

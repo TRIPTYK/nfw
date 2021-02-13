@@ -1,4 +1,5 @@
-import { BaseJsonApiRepository, EntityRepository } from "@triptyk/nfw-core";
+import { BaseJsonApiRepository } from "@triptyk/nfw-core";
+import { EntityRepository } from "@triptyk/nfw-core/typeorm";
 import { OAuthToken } from "../models/oauth-token.model";
 
 @EntityRepository(OAuthToken)

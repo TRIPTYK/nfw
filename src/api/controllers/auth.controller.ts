@@ -2,16 +2,18 @@ import * as Boom from "@hapi/boom";
 import {
     BaseController,
     Controller,
-    DeepPartial,
     DeserializeMiddleware,
     DeserializeMiddlewareArgs,
-    getCustomRepository,
-    getRepository,
     MethodMiddleware,
     Post,
     ValidationMiddleware,
     ValidationMiddlewareArgs
 } from "@triptyk/nfw-core";
+import {
+    DeepPartial,
+    getCustomRepository,
+    getRepository
+} from "@triptyk/nfw-core/typeorm";
 import { Request, Response } from "express";
 import * as HttpStatus from "http-status";
 import Refresh from "passport-oauth2-refresh";
