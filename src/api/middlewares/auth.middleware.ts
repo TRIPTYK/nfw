@@ -10,7 +10,7 @@ import { Roles } from "./../enums/role.enum";
 export type AuthMiddlewareArgs = Roles[];
 
 @injectable()
-export default class AuthMiddleware extends BaseMiddleware {
+export class AuthMiddleware extends BaseMiddleware {
     public use(
         req: Request,
         res: Response,

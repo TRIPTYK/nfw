@@ -9,7 +9,7 @@ import { autoInjectable } from "tsyringe";
 
 @Controller("status")
 @autoInjectable()
-export default class StatusController extends BaseController {
+export class StatusController extends BaseController {
     @Get("/")
     public status(req: Request, res: Response): void {
         res.json({

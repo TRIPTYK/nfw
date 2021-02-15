@@ -13,7 +13,7 @@ import { UserSerializer } from "../serializers/user.serializer";
 
 @JsonApiController(User)
 @autoInjectable()
-export default class UserController extends BaseJsonApiController<User> {
+export class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
     @JsonApiMethodMiddleware<DeserializeMiddlewareArgs>(DeserializeMiddleware, {
         serializer: UserSerializer,

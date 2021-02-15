@@ -9,7 +9,7 @@ import { User } from "../models/user.model";
  */
 @singleton()
 @autoInjectable()
-export default class ACLService extends BaseService {
+export class ACLService extends BaseService {
     public init() {
         return true;
     }

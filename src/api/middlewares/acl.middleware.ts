@@ -5,7 +5,7 @@ import { injectable } from "tsyringe";
 import { User } from "../models/user.model";
 
 @injectable()
-export default class ACLMiddleware extends BaseMiddleware {
+export class ACLMiddleware extends BaseMiddleware {
     public async use(
         req: Request,
         response: Response,

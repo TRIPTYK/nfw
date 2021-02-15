@@ -24,7 +24,7 @@ import { ImageMimeTypes } from "../enums/mime-type.enum";
 import { Roles } from "../enums/role.enum";
 import { UserRepository } from "../repositories/user.repository";
 import { UserSerializer } from "../serializers/user.serializer";
-import ACLService from "../services/acl.service";
+import { ACLService } from "../services/acl.service";
 import * as UserValidator from "../validations/user.validation";
 import { Document } from "./document.model";
 

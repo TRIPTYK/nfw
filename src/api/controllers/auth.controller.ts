@@ -18,7 +18,8 @@ import { Request, Response } from "express";
 import * as HttpStatus from "http-status";
 import Refresh from "passport-oauth2-refresh";
 import { autoInjectable } from "tsyringe";
-import SecurityMiddleware, {
+import {
+    SecurityMiddleware,
     SecurityMiddlewareArgs
 } from "../middlewares/security.middleware";
 import { OAuthToken } from "../models/oauth-token.model";
@@ -36,7 +37,7 @@ import { register } from "../validations/auth.validation";
  */
 @Controller("auth")
 @autoInjectable()
-export default class AuthController extends BaseController {
+export class AuthController extends BaseController {
     // can't inject repositories
     private repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;

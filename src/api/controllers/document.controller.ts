@@ -14,14 +14,15 @@ import {
     DocumentResizeMiddleware,
     DocumentResizeMiddlewareArgs
 } from "../middlewares/document-resize.middleware";
-import FileUploadMiddleware, {
+import {
+    FileUploadMiddleware,
     FileUploadMiddlewareArgs
 } from "../middlewares/file-upload.middleware";
 import { Document } from "../models/document.model";
 
 @JsonApiController(Document)
 @autoInjectable()
-export default class DocumentController extends BaseJsonApiController<Document> {
+export class DocumentController extends BaseJsonApiController<Document> {
     @OverrideSerializer(null)
     @OverrideValidator(null)
     @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {

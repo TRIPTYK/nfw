@@ -6,7 +6,7 @@ import { injectable } from "tsyringe";
 export type RateLimitMiddlewareArgs = any;
 
 @injectable()
-export default class RateLimitMiddleware extends BaseMiddleware {
+export class RateLimitMiddleware extends BaseMiddleware {
     private rateInstance: RateLimit.Instance;
 
     public constructor() {

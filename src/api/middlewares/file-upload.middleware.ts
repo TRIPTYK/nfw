@@ -10,7 +10,7 @@ export type FileUploadMiddlewareArgs = {
 };
 
 @injectable()
-export default class FileUploadMiddleware extends BaseMiddleware {
+export class FileUploadMiddleware extends BaseMiddleware {
     public constructor(@inject(MulterService) private multer: MulterService) {
         super();
     }

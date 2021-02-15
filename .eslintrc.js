@@ -32,6 +32,7 @@ module.exports = {
         "@typescript-eslint/no-unsafe-return": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/naming-convention": "off",
+        "no-default-export": true,
         "getter-return": "error",
         "no-promise-executor-return": "error",
         "no-template-curly-in-string": "error",

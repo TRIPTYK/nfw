@@ -7,7 +7,7 @@ import { autoInjectable, singleton } from "tsyringe";
  */
 @singleton()
 @autoInjectable()
-export default class ElasticSearchConnectionService extends BaseService {
+export class ElasticSearchConnectionService extends BaseService {
     private _connection: Client;
 
     public constructor(private configurationService: ConfigurationService) {

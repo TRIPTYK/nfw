@@ -7,7 +7,7 @@ import * as XSS from "xss";
 export type SecurityMiddlewareArgs = any;
 
 @injectable()
-export default class SecurityMiddleware extends BaseMiddleware {
+export class SecurityMiddleware extends BaseMiddleware {
     public use(req: Request, res: Response, next: NextFunction) {
         try {
             this.filterXSS(req.body);
