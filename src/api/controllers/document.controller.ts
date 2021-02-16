@@ -1,12 +1,12 @@
 import * as Boom from "@hapi/boom";
 import {
     BaseJsonApiController,
+    DeepPartial,
     JsonApiController,
     JsonApiMethodMiddleware,
     OverrideSerializer,
     OverrideValidator
 } from "@triptyk/nfw-core";
-import { DeepPartial } from "@triptyk/nfw-core/typeorm";
 import { Request, Response } from "express";
 import * as HttpStatus from "http-status";
 import { autoInjectable } from "tsyringe";

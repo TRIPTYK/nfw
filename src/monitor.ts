@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-import { ConfigurationService } from "@triptyk/nfw-core";
 import {
+    ConfigurationService,
     Connection,
     createConnection,
     getConnectionManager
-} from "@triptyk/nfw-core/typeorm";
+} from "@triptyk/nfw-core";
 import { execSync } from "child_process";
 import { createWriteStream } from "fs";
 import * as Http from "http";

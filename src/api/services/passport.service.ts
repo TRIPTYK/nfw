@@ -1,5 +1,9 @@
-import { BaseService, ConfigurationService } from "@triptyk/nfw-core";
-import { getCustomRepository, getRepository } from "@triptyk/nfw-core/typeorm";
+import {
+    BaseService,
+    ConfigurationService,
+    getCustomRepository,
+    getRepository
+} from "@triptyk/nfw-core";
 import { Request } from "express";
 import * as Passport from "passport";
 import { Strategy as FacebookStrategy } from "passport-facebook";

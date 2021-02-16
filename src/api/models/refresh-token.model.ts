@@ -1,12 +1,12 @@
-import { JsonApiModel } from "@triptyk/nfw-core";
 import {
     Column,
     Entity,
     Index,
     JoinColumn,
+    JsonApiModel,
     ManyToOne,
     Unique
-} from "@triptyk/nfw-core/typeorm";
+} from "@triptyk/nfw-core";
 import { OAuthToken } from "./oauth-token.model";
 import { User } from "./user.model";
 

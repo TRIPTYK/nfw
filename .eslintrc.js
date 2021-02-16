@@ -18,11 +18,14 @@ module.exports = {
         sourceType: "module" // Allows for the use of imports
     },
     parser: "@typescript-eslint/parser",
-    plugins: ["@typescript-eslint"],
+    plugins: ["@typescript-eslint", "import"],
     extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "prettier/@typescript-eslint",
+        "plugin:import/warnings",
+        "plugin:import/errors",
+        "plugin:import/typescript",
         "plugin:prettier/recommended"
     ],
     rules: {
@@ -32,8 +35,8 @@ module.exports = {
         "@typescript-eslint/no-unsafe-return": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/naming-convention": "off",
-        "no-default-export": true,
         "getter-return": "error",
+        "import/no-default-export": "error",
         "no-promise-executor-return": "error",
         "no-template-curly-in-string": "error",
         "block-scoped-var": "error",
