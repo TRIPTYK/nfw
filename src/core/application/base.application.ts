@@ -28,10 +28,12 @@ export interface RouteContext {
 export default abstract class BaseApplication implements ApplicationInterface {
     protected app: Express.Application;
     protected router: Express.Router;
+    protected routes: Array<{ prefix: string; routes: Array<RouteDefinition> }>;
 
     public constructor() {
         this.app = Express();
         this.router = Express.Router();
+        this.routes = [];
     }
 
     public async setupMiddlewares(
@@ -55,6 +57,10 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
     public get App() {
         return this.app;
+    }
+
+    public get Routes() {
+        return this.routes;
     }
 
     public listen(port: number) {
@@ -381,6 +387,17 @@ export default abstract class BaseApplication implements ApplicationInterface {
                         applyMiddlewares
                     );
                 }
+                //push the entities routes to the routes list
+                this.routes.push({
+                    prefix: jsonApiEntityName,
+                    routes: jsonApiRoutes.map((route) => {
+                        return {
+                            path: route.path,
+                            requestMethod: route.methodType as RequestMethods,
+                            methodName: route.method
+                        };
+                    })
+                });
             } else {
                 this.router.use(`/${prefix}`, router);
 
@@ -421,6 +438,11 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
                     router[route.requestMethod](`${route.path}`, middlewares);
                 }
+                //push basics routes to the routes list
+                this.routes.push({
+                    prefix,
+                    routes
+                });
             }
         }
     }

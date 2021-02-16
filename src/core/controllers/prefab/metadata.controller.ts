@@ -17,6 +17,11 @@ export default class MetadataController extends BaseController {
         super();
     }
 
+    @Get("/routes")
+    public getallRoutes() {
+        return ApplicationRegistry.application.Routes;
+    }
+
     @Get("/types")
     public getSupportedTypes() {
         const connection = this.typeormConnection.connection;
@@ -58,6 +63,23 @@ export default class MetadataController extends BaseController {
             this.entityMetadaBuilder(table)
         );
     }
+
+    /*protected findRouter(element: any) {
+        const route = {
+            path: null,
+            subroute: null
+        };
+        if (element.path) route.path = element.path;
+        else if (element.regexp) route.path = element.regexp.toString();
+        if (element.name === "router") {
+            route.subroute = element.handle.stack
+                .map((handler) => {
+                    return this.findRouter(handler);
+                })
+                .filter((val) => val.path !== null);
+        }
+        return route;
+    }*/
 
     protected getJsonApiEntities() {
         return this.typeormConnection.connection.entityMetadatas.filter(
