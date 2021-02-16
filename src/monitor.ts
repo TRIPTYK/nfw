@@ -4,7 +4,7 @@ import {
     Connection,
     createConnection,
     getConnectionManager
-} from "@triptyk/nfw-core/";
+} from "@triptyk/nfw-core/typeorm";
 import { execSync } from "child_process";
 import { createWriteStream } from "fs";
 import * as Http from "http";

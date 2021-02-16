@@ -25,8 +25,8 @@ describe("Authentification", () => {
                         attributes: {
                             email: "jacky@localhost.com",
                             password: "Complexity*123",
-                            firstname: "jacky",
-                            lastname: "Jack",
+                            firstName: "jacky",
+                            lastName: "Jack",
                             username: "maboul"
                         }
                     }

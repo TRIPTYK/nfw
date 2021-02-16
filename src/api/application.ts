@@ -1,11 +1,9 @@
 import {
     BaseApplication,
     ConfigurationService,
-    ErrorMiddleware,
     GeneratorController,
     GlobalMiddleware,
     MetadataController,
-    NotFoundMiddleware,
     RegisterApplication,
     TypeORMService
 } from "@triptyk/nfw-core";
@@ -20,6 +18,8 @@ import { AuthController } from "./controllers/auth.controller";
 import { DocumentController } from "./controllers/document.controller";
 import { StatusController } from "./controllers/status.controller";
 import { UserController } from "./controllers/user.controller";
+import { ErrorMiddleware } from "./middlewares/error.middleware";
+import { NotFoundMiddleware } from "./middlewares/not-found.middleware";
 import { RateLimitMiddleware } from "./middlewares/rate-limit.middleware";
 import { LoggerService } from "./services/logger.service";
 import { MailService } from "./services/mail-sender.service";
