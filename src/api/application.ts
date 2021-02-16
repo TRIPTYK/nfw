@@ -68,7 +68,6 @@ export class Application extends BaseApplication {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
     public async init() {
         super.init();
         const { authorized, api } = this.configurationService.config;
