@@ -1,24 +1,22 @@
 import {
     BaseJsonApiController,
-    DeserializeMiddleware,
-    DeserializeMiddlewareArgs,
     Get,
     JsonApiController,
     JsonApiMethodMiddleware
 } from "@triptyk/nfw-core";
 import { Request } from "express";
 import { autoInjectable } from "tsyringe";
+import {
+    AuthMiddleware,
+    AuthMiddlewareArgs
+} from "../middlewares/auth.middleware";
 import { User } from "../models/user.model";
-import { UserSerializer } from "../serializers/user.serializer";
 
 @JsonApiController(User)
 @autoInjectable()
 export class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
-    @JsonApiMethodMiddleware<DeserializeMiddlewareArgs>(DeserializeMiddleware, {
-        serializer: UserSerializer,
-        schema: "default"
-    })
+    @JsonApiMethodMiddleware<AuthMiddlewareArgs>(AuthMiddleware)
     public profile(req: Request): any {
         return req.user;
     }

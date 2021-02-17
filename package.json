@@ -51,7 +51,7 @@
     "dependencies": {
         "@elastic/elasticsearch": "^7.5.0",
         "@hapi/boom": "^9.1.0",
-        "@triptyk/nfw-core": "1.0.0-beta2",
+        "@triptyk/nfw-core": "1.0.0-beta3",
         "bcrypt": "^5.0.0",
         "body-parser": "^1.19.0",
         "compression": "^1.7.4",
