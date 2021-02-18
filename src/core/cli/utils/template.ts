@@ -1,3 +1,4 @@
+import * as pascalcase from "pascalcase";
 import { ColumnOptions, ColumnType } from "typeorm";
 import { ValidationSchema } from "../../types/validation";
 import { EntityColumn } from "../interfaces/generator.interface";
@@ -39,7 +40,7 @@ export function buildModelColumnArgumentsFromObject(
     }
 
     if (dbColumnaData.enums) {
-        columnArgument.enum = dbColumnaData.name;
+        columnArgument.enum = pascalcase(dbColumnaData.name);
     }
     // handle nullable
     if (!dbColumnaData.isUnique && !dbColumnaData.isPrimary) {

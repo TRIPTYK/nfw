@@ -22,7 +22,6 @@ export interface EntityColumn {
     date: Date;
     time: string;
     enums: Array<string>;
-    tmp: any;
 }
 
 export type RelationTypes = "one-to-one" | "one-to-many" | "many-to-many";
