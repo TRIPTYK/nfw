@@ -1,3 +1,5 @@
+import * as camelcase from "camelcase";
+import * as pascalcase from "pascalcase";
 import * as stringifyObject from "stringify-object";
 import {
     ObjectLiteralExpression,
@@ -6,6 +8,7 @@ import {
 } from "ts-morph";
 import { EntityColumn } from "../interfaces/generator.interface";
 import resources, { getEntityNaming } from "../static/resources";
+import enumsTemplate from "../templates/enums";
 import project from "../utils/project";
 import {
     buildModelColumnArgumentsFromObject,
@@ -48,10 +51,28 @@ export default async function addColumn(
             name: "Column",
             arguments: stringifyObject(
                 buildModelColumnArgumentsFromObject(column),
-                { singleQuotes: false }
+                {
+                    transform: (tmp, prop, originalResult) => {
+                        if (prop === "enum") {
+                            return originalResult.split("'").join("");
+                        }
+                        return originalResult;
+                    },
+                    singleQuote: false
+                }
             )
         })
         .setIsDecoratorFactory(true);
+
+    if (column.enums) {
+        const importDeclaration = modelFile.addImportDeclaration({
+            moduleSpecifier: `../enums/${camelcase(column.name)}.enum`
+        });
+        const namedImport = importDeclaration.addNamedImport({
+            name: pascalcase(column.name)
+        });
+        enumsTemplate(column.name, column.enums);
+    }
 
     const serializer = resources(entity).find(
         (r) => r.template === "serializer-schema"
