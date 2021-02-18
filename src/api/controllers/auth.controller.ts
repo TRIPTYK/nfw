@@ -1,22 +1,23 @@
 import * as Boom from "@hapi/boom";
+import {
+    BaseController,
+    Controller,
+    DeepPartial,
+    DeserializeMiddleware,
+    DeserializeMiddlewareArgs,
+    getCustomRepository,
+    getRepository,
+    MethodMiddleware,
+    Post,
+    ValidationMiddleware,
+    ValidationMiddlewareArgs
+} from "@triptyk/nfw-core";
 import { Request, Response } from "express";
 import * as HttpStatus from "http-status";
 import Refresh from "passport-oauth2-refresh";
 import { autoInjectable } from "tsyringe";
-import { DeepPartial, getCustomRepository, getRepository } from "typeorm";
-import BaseController from "../../core/controllers/base.controller";
 import {
-    Controller,
-    MethodMiddleware,
-    Post
-} from "../../core/decorators/controller.decorator";
-import DeserializeMiddleware, {
-    DeserializeMiddlewareArgs
-} from "../../core/middlewares/deserialize.middleware";
-import ValidationMiddleware, {
-    ValidationMiddlewareArgs
-} from "../../core/middlewares/validation.middleware";
-import SecurityMiddleware, {
+    SecurityMiddleware,
     SecurityMiddlewareArgs
 } from "../middlewares/security.middleware";
 import { OAuthToken } from "../models/oauth-token.model";
@@ -34,7 +35,7 @@ import { register } from "../validations/auth.validation";
  */
 @Controller("auth")
 @autoInjectable()
-export default class AuthController extends BaseController {
+export class AuthController extends BaseController {
     // can't inject repositories
     private repository: UserRepository;
     private refreshRepository: RefreshTokenRepository;

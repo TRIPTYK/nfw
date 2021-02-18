@@ -1,16 +1,16 @@
 import {
+    BaseSerializerSchema,
     Deserialize,
     Relation,
     Serialize,
     SerializerSchema
-} from "../../../core/decorators/serializer.decorator";
-import BaseSerializerSchema from "../../../core/serializers/base.serializer-schema";
+} from "@triptyk/nfw-core";
 import { Document } from "../../models/document.model";
 import { UserInterface } from "../../models/user.model";
-import DocumentSerializerSchema from "./document.serializer.schema";
+import { DocumentSerializerSchema } from "./document.serializer.schema";
 
 @SerializerSchema()
-export default class UserSerializerSchema
+export class UserSerializerSchema
     extends BaseSerializerSchema<UserInterface>
     implements UserInterface {
     @Serialize()

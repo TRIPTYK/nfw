@@ -1,27 +1,28 @@
 import * as Boom from "@hapi/boom";
-import { Request, Response } from "express";
-import * as HttpStatus from "http-status";
-import { autoInjectable } from "tsyringe";
-import { DeepPartial } from "typeorm";
-import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import {
+    BaseJsonApiController,
+    DeepPartial,
     JsonApiController,
     JsonApiMethodMiddleware,
     OverrideSerializer,
     OverrideValidator
-} from "../../core/decorators/controller.decorator";
+} from "@triptyk/nfw-core";
+import { Request, Response } from "express";
+import * as HttpStatus from "http-status";
+import { autoInjectable } from "tsyringe";
 import {
     DocumentResizeMiddleware,
     DocumentResizeMiddlewareArgs
 } from "../middlewares/document-resize.middleware";
-import FileUploadMiddleware, {
+import {
+    FileUploadMiddleware,
     FileUploadMiddlewareArgs
 } from "../middlewares/file-upload.middleware";
 import { Document } from "../models/document.model";
 
 @JsonApiController(Document)
 @autoInjectable()
-export default class DocumentController extends BaseJsonApiController<Document> {
+export class DocumentController extends BaseJsonApiController<Document> {
     @OverrideSerializer(null)
     @OverrideValidator(null)
     @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {

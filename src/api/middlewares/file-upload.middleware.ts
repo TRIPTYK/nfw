@@ -1,6 +1,6 @@
+import { BaseMiddleware } from "@triptyk/nfw-core";
 import { Request, Response } from "express";
-import { inject, injectable } from "tsyringe";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
+import { autoInjectable, singleton } from "tsyringe";
 import { MulterService, StorageType } from "../services/multer.service";
 import { validateFile } from "../validations/document.validation";
 
@@ -9,9 +9,10 @@ export type FileUploadMiddlewareArgs = {
     fieldName: string & "document";
 };
 
-@injectable()
-export default class FileUploadMiddleware extends BaseMiddleware {
-    public constructor(@inject(MulterService) private multer: MulterService) {
+@autoInjectable()
+@singleton()
+export class FileUploadMiddleware extends BaseMiddleware {
+    public constructor(private multer: MulterService) {
         super();
     }
 

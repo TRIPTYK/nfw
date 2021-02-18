@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as request from "supertest";
 import { runSeeder, useRefreshDatabase, useSeeding } from "typeorm-seeding";
-import CreateAuthUserSeed from "../src/seed/create-auth-user.seed";
+import { CreateAuthUserSeed } from "../src/seed/create-auth-user.seed";
 import { ServerContainer } from "./utils/server";
 
 describe("Authentification", () => {
@@ -25,8 +25,8 @@ describe("Authentification", () => {
                         attributes: {
                             email: "jacky@localhost.com",
                             password: "Complexity*123",
-                            firstname: "jacky",
-                            lastname: "Jack",
+                            firstName: "jacky",
+                            lastName: "Jack",
                             username: "maboul"
                         }
                     }

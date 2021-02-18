@@ -1,12 +1,12 @@
+import { BaseMiddleware } from "@triptyk/nfw-core";
 import { Request, Response } from "express";
 import * as RateLimit from "express-rate-limit";
 import { injectable } from "tsyringe";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 export type RateLimitMiddlewareArgs = any;
 
 @injectable()
-export default class RateLimitMiddleware extends BaseMiddleware {
+export class RateLimitMiddleware extends BaseMiddleware {
     private rateInstance: RateLimit.Instance;
 
     public constructor() {

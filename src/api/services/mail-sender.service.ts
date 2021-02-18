@@ -1,8 +1,7 @@
 import Boom from "@hapi/boom";
+import { BaseService, ConfigurationService } from "@triptyk/nfw-core";
 import * as Mailgun from "mailgun-js";
 import { autoInjectable, singleton } from "tsyringe";
-import BaseService from "../../core/services/base.service";
-import ConfigurationService from "../../core/services/configuration.service";
 
 // tslint:disable-next-line: interface-over-type-literal
 type MailGunData = {

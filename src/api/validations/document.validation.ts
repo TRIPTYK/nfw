@@ -1,6 +1,6 @@
 // GET /v1/documents/:id
 import * as Boom from "@hapi/boom";
-import { ValidationSchema } from "../../core/types/validation";
+import { ValidationSchema } from "@triptyk/nfw-core";
 import { MimeTypes } from "../enums/mime-type.enum";
 import { Document } from "../models/document.model";
 

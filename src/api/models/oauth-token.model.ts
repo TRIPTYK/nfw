@@ -1,17 +1,17 @@
-import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
-import { container } from "tsyringe";
 import {
     AfterLoad,
     BeforeInsert,
     BeforeUpdate,
     Column,
+    ConfigurationService,
     Entity,
     JoinColumn,
+    JsonApiModel,
     ManyToOne,
     Unique
-} from "typeorm";
-import { JsonApiModel } from "../../core/models/json-api.model";
-import ConfigurationService from "../../core/services/configuration.service";
+} from "@triptyk/nfw-core";
+import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
+import { container } from "tsyringe";
 import { OAuthTypes } from "../enums/oauth-type.enum";
 import { User } from "./user.model";
 

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { BaseMiddleware } from "@triptyk/nfw-core";
 import { Request, Response } from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { singleton } from "tsyringe";
-import { BaseMiddleware } from "./base.middleware";
 
 @singleton()
-export default class NotFoundMiddleware extends BaseMiddleware {
+export class NotFoundMiddleware extends BaseMiddleware {
     private serializer = new JSONAPISerializer();
 
     public use(

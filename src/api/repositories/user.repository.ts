@@ -1,6 +1,6 @@
 import * as Boom from "@hapi/boom";
+import { BaseJsonApiRepository } from "@triptyk/nfw-core";
 import * as Moment from "moment-timezone";
-import BaseJsonApiRepository from "../../core/repositories/base.repository";
 import { RefreshToken } from "../models/refresh-token.model";
 import { User } from "../models/user.model";
 

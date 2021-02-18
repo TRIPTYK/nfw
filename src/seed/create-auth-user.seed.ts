@@ -2,7 +2,7 @@ import { Factory, Seeder } from "typeorm-seeding";
 import { Document } from "../api/models/document.model";
 import { User } from "../api/models/user.model";
 
-export default class CreateAuthUserSeed implements Seeder {
+export class CreateAuthUserSeed implements Seeder {
     public async run(factory: Factory): Promise<any> {
         const document = await factory(Document)().create();
         const authUser = await factory(User)().create({

@@ -1,13 +1,13 @@
 import * as Boom from "@hapi/boom";
+import { BaseMiddleware } from "@triptyk/nfw-core";
 import { NextFunction, Request, Response } from "express";
 import { injectable } from "tsyringe";
 import * as XSS from "xss";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 
 export type SecurityMiddlewareArgs = any;
 
 @injectable()
-export default class SecurityMiddleware extends BaseMiddleware {
+export class SecurityMiddleware extends BaseMiddleware {
     public use(req: Request, res: Response, next: NextFunction) {
         try {
             this.filterXSS(req.body);

@@ -4,11 +4,10 @@
  * @package https://github.com/winstonjs/winston
  */
 
+import { BaseService, ConfigurationService } from "@triptyk/nfw-core";
 import * as Moment from "moment-timezone";
 import { autoInjectable, singleton } from "tsyringe";
 import * as Winston from "winston";
-import BaseService from "../../core/services/base.service";
-import ConfigurationService from "../../core/services/configuration.service";
 import { Environments } from "../enums/environments.enum";
 
 @singleton()

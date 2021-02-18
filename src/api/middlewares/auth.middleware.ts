@@ -1,16 +1,16 @@
 import * as Boom from "@hapi/boom";
+import { BaseMiddleware } from "@triptyk/nfw-core";
 import { NextFunction, Request, Response } from "express";
 import * as Passport from "passport";
 import { injectable } from "tsyringe";
 import { promisify } from "util";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 import { User } from "../models/user.model";
 import { Roles } from "./../enums/role.enum";
 
 export type AuthMiddlewareArgs = Roles[];
 
 @injectable()
-export default class AuthMiddleware extends BaseMiddleware {
+export class AuthMiddleware extends BaseMiddleware {
     public use(
         req: Request,
         res: Response,

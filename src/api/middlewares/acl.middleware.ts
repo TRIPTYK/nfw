@@ -1,11 +1,11 @@
 import * as Boom from "@hapi/boom";
+import { BaseMiddleware } from "@triptyk/nfw-core";
 import { NextFunction, Request, Response } from "express";
 import { injectable } from "tsyringe";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
 import { User } from "../models/user.model";
 
 @injectable()
-export default class ACLMiddleware extends BaseMiddleware {
+export class ACLMiddleware extends BaseMiddleware {
     public async use(
         req: Request,
         response: Response,

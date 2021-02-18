@@ -1,14 +1,13 @@
 import { Client } from "@elastic/elasticsearch";
+import { BaseService, ConfigurationService } from "@triptyk/nfw-core";
 import { autoInjectable, singleton } from "tsyringe";
-import BaseService from "../../core/services/base.service";
-import ConfigurationService from "../../core/services/configuration.service";
 
 /**
  * Elastic search
  */
 @singleton()
 @autoInjectable()
-export default class ElasticSearchConnectionService extends BaseService {
+export class ElasticSearchConnectionService extends BaseService {
     private _connection: Client;
 
     public constructor(private configurationService: ConfigurationService) {
