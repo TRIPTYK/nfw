@@ -184,45 +184,38 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
         block.operator ??= "eq";
 
         let queryString = "";
-        let queryParams = {};
         const varName = `${block.operator}${block.value}`;
         const propertyName = `${Sqlstring.format(block.path)}`;
+        const queryParams = { [varName]: block.value };
 
         switch (block.operator) {
             case "eq":
                 queryString = `${propertyName} = :${varName}`;
-                queryParams = { [varName]: block.value };
                 break;
             case "not-eq":
                 queryString = `${propertyName} != :${varName}`;
-                queryParams = { [varName]: block.value };
                 break;
             case "not-in":
                 queryString = `NOT ${propertyName} IN (:${varName})`;
-                queryParams = { [varName]: block.value };
                 break;
             case "in":
                 queryString = `${propertyName} IN (:${varName})`;
-                queryParams = { [varName]: block.value };
+
                 break;
             case "lt":
                 queryString = `${propertyName} < :${varName}`;
-                queryParams = { [varName]: block.value };
                 break;
             case "not-lt":
                 queryString = `NOT ${propertyName} < :${varName}`;
-                queryParams = { [varName]: block.value };
                 break;
             case "not-gt":
                 queryString = `NOT ${propertyName} > :${varName}`;
-                queryParams = { [varName]: block.value };
                 break;
             case "gt":
                 queryString = `${propertyName} > :${varName}`;
-                queryParams = { [varName]: block.value };
                 break;
             default:
-                break;
+                throw new Error(`Unknown operator ${block.operator}`);
         }
 
         switch (block.conjunction) {
@@ -241,6 +234,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
         queryBlock: FilterBlock | (FilterConditionBlock | FilterBlock)[],
         we: WhereExpression | SelectQueryBuilder<T>
     ) {
+        // eslint-disable-next-line dot-notation
         const conjunction = queryBlock["conjunction"] ?? "and";
         const brackets = new Brackets((qb) => {
             let blocks: (FilterConditionBlock | FilterBlock)[];
@@ -275,7 +269,7 @@ export default class BaseJsonApiRepository<T> extends Repository<T> {
                 we.orWhere(brackets);
                 break;
             default:
-                break;
+                throw new Error("Unexpected conjunction operator");
         }
     }
 
