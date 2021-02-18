@@ -7,8 +7,6 @@
 ![Lint](https://github.com/TRIPTYK/nfw/workflows/Lint/badge.svg?branch=master)
 [![CodeQL](https://github.com/TRIPTYK/nfw/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/TRIPTYK/nfw/actions/workflows/codeql-analysis.yml)
 
-:warning: Next version is being developed in branch _uniting_
-
 This repository contains a REST API boilerplate [Express.js](http://expressjs.com/en/4x/api.html), [Typescript](https://github.com/Microsoft/TypeScript) and [TypeORM](https://github.com/typeorm/typeorm) based.
 
 As a starter project, he implements some classic features :
