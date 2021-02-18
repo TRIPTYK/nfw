@@ -6,6 +6,8 @@
 ![Test](https://github.com/TRIPTYK/nfw/workflows/Test/badge.svg?branch=develop)
 ![Lint](https://github.com/TRIPTYK/nfw/workflows/Lint/badge.svg?branch=develop)
 
+:warning: Next version is being developed in branch *uniting*
+
 This repository contains a REST API boilerplate [Express.js](http://expressjs.com/en/4x/api.html), [Typescript](https://github.com/Microsoft/TypeScript) and [TypeORM](https://github.com/typeorm/typeorm) based.
 
 As a starter project, he implements some classic features :

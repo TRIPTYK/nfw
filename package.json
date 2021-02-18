@@ -1,6 +1,6 @@
 {
     "name": "nfw",
-    "version": "1.0.0",
+    "version": "1.0.0=pre",
     "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
     "scripts": {
         "setup": "npm i && node ./init_scripts/setup",
