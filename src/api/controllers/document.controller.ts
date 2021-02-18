@@ -1,114 +1,53 @@
-import * as HttpStatus from "http-status";
 import * as Boom from "@hapi/boom";
-
+import {
+    BaseJsonApiController,
+    DeepPartial,
+    JsonApiController,
+    JsonApiMethodMiddleware,
+    OverrideSerializer,
+    OverrideValidator
+} from "@triptyk/nfw-core";
 import { Request, Response } from "express";
-import { DocumentSerializer } from "../serializers/document.serializer";
-import { documentRelations } from "../enums/json-api/document.enum";
-import { DocumentRepository } from "../repositories/document.repository";
-import { Controller, Post, Get, Patch, Delete, Put, MethodMiddleware, RouteMiddleware } from "../../core/decorators/controller.decorator";
-import AuthMiddleware from "../middlewares/auth.middleware";
-import { Roles } from "../enums/role.enum";
-import { DocumentResizeMiddleware } from "../middlewares/document-resize.middleware";
-import FileUploadMiddleware from "../middlewares/file-upload.middleware";
-import ValidationMiddleware from "../middlewares/validation.middleware";
-import { updateDocument } from "../validations/document.validation";
+import * as HttpStatus from "http-status";
 import { autoInjectable } from "tsyringe";
-import { getCustomRepository } from "typeorm";
-import PaginationQueryParams from "../../core/types/jsonapi";
+import {
+    DocumentResizeMiddleware,
+    DocumentResizeMiddlewareArgs
+} from "../middlewares/document-resize.middleware";
+import {
+    FileUploadMiddleware,
+    FileUploadMiddlewareArgs
+} from "../middlewares/file-upload.middleware";
+import { Document } from "../models/document.model";
 
-@Controller("documents")
-@RouteMiddleware(AuthMiddleware, [Roles.Admin, Roles.User])
+@JsonApiController(Document)
 @autoInjectable()
-export default class DocumentController {
-    private repository: DocumentRepository;
-
-    public constructor( private serializer?: DocumentSerializer ) {
-        this.repository = getCustomRepository(DocumentRepository);
-    }
-
-    @Get("/")
-    public async list(req: Request): Promise<any> {
-        const [documents, total] = await this.repository.jsonApiFind(req, documentRelations);
-
-        if (req.query.page) {
-            const page: PaginationQueryParams = req.query.page as any;
-
-            return new DocumentSerializer({
-                pagination : {
-                    page: page.number,
-                    size: page.size,
-                    total,
-                    url: req.url
-                }
-            }).serialize(documents);
-        }
-
-        return this.serializer.serialize(documents);
-    }
-
-    @Post("/")
-    @MethodMiddleware(FileUploadMiddleware)
-    @MethodMiddleware(DocumentResizeMiddleware)
-    public async create(req: Request): Promise<void> {
+export class DocumentController extends BaseJsonApiController<Document> {
+    @OverrideSerializer(null)
+    @OverrideValidator(null)
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {
+        type: "single",
+        fieldName: "document"
+    })
+    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(
+        DocumentResizeMiddleware
+    )
+    public async create(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
-        const document = this.repository.create(file as object);
+        const document = this.repository.create(file as DeepPartial<Document>);
         await this.repository.save(document);
-        return this.serializer.serialize(document);
+        return document;
     }
 
-    /**
-     * Retrieve one document according to :id
-     *
-     * @param {Object}req Request
-     * @param {Object}res Response
-     * @param {Function}next Function
-     *
-     * @public
-     */
-    @Get("/:id")
-    public async get(req: Request): Promise<any> {
-        const document = await this.repository.jsonApiFindOne(req, req.params.id, documentRelations);
-
-        if (!document) {
-            throw Boom.notFound("Document not found");
-        }
-
-        return this.serializer.serialize(document);
-    }
-
-    @Get("/:id/:relation")
-    public async fetchRelated(req: Request): Promise<any> {
-        return this.repository.fetchRelated(req, this.serializer);
-    }
-
-    @Get("/:id/relationships/:relation")
-    public async fetchRelationships(req: Request): Promise<any> {
-        return this.repository.fetchRelationshipsFromRequest(req, this.serializer);
-    }
-
-    @Post("/:id/relationships/:relation")
-    public async addRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.addRelationshipsFromRequest(req);
-        res.sendStatus(HttpStatus.NO_CONTENT).end();
-    }
-
-    @Patch("/:id/relationships/:relation")
-    public async updateRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.updateRelationshipsFromRequest(req);
-        res.sendStatus(HttpStatus.NO_CONTENT).end();
-    }
-
-    @Delete("/:id/relationships/:relation")
-    public async removeRelationships(req: Request, res: Response): Promise<any> {
-        await this.repository.removeRelationshipsFromRequest(req);
-        res.sendStatus(HttpStatus.NO_CONTENT).end();
-    }
-
-    @Patch("/:id")
-    @Put("/:id")
-    @MethodMiddleware(ValidationMiddleware, {schema : updateDocument})
-    @MethodMiddleware(FileUploadMiddleware)
-    @MethodMiddleware(DocumentResizeMiddleware)
+    @OverrideSerializer(null)
+    @OverrideValidator(null)
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {
+        type: "single",
+        fieldName: "document"
+    })
+    @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(
+        DocumentResizeMiddleware
+    )
     public async update(req: Request): Promise<any> {
         const file: Express.Multer.File = req.file;
 
@@ -120,9 +59,11 @@ export default class DocumentController {
 
         await originalDocument.removeAssociatedFiles();
 
-        const saved = await this.repository.save(this.repository.merge(originalDocument,file as any));
+        const saved = await this.repository.save(
+            this.repository.merge(originalDocument, file as any)
+        );
 
-        return this.serializer.serialize(saved);
+        return saved;
     }
 
     /**
@@ -134,7 +75,6 @@ export default class DocumentController {
      *
      * @public
      */
-    @Delete("/:id")
     public async remove(req: Request, res: Response): Promise<any> {
         const document = await this.repository.findOne(req.params.id);
 

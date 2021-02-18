@@ -1,15 +1,9 @@
-import { BaseSerializer, SerializerParams } from "./base.serializer";
-import UserSchema from "./schemas/user.serializer.schema";
-import {injectable} from "tsyringe";
+import { BaseJsonApiSerializer, JsonApiSerializer } from "@triptyk/nfw-core";
 import { User } from "../models/user.model";
+import { UserSerializerSchema } from "./schemas/user.serializer.schema";
 
-@injectable()
-export class UserSerializer extends BaseSerializer<User> {
-    public constructor(serializerParams: SerializerParams = {}) {
-        super(UserSchema.schema);
-
-        if (serializerParams.pagination) {
-            this.setupPaginationLinks(serializerParams.pagination);
-        }
-    }
-}
+@JsonApiSerializer({
+    type: "users",
+    schemas: () => [UserSerializerSchema]
+})
+export class UserSerializer extends BaseJsonApiSerializer<User> {}

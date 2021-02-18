@@ -1,7 +1,8 @@
-import * as Multer from "multer";
+import { BaseService } from "@triptyk/nfw-core";
 import { Request } from "express";
-import {singleton} from "tsyringe";
-import {sync as mkdirpSync} from "mkdirp";
+import { sync as mkdirpSync } from "mkdirp";
+import * as Multer from "multer";
+import { autoInjectable, singleton } from "tsyringe";
 
 enum StorageType {
     MEMORY,
@@ -9,13 +10,23 @@ enum StorageType {
 }
 
 @singleton()
-class MulterService {
-    private multers: object = {
-        [StorageType.MEMORY] : {},
-        [StorageType.DISK] : {}
+@autoInjectable()
+class MulterService extends BaseService {
+    private multers = {
+        [StorageType.MEMORY]: {},
+        [StorageType.DISK]: {}
     };
 
-    public makeMulter(type: StorageType, destinationOrName: string, validate, maxFileSize: number): any {
+    public init() {
+        return true;
+    }
+
+    public makeMulter(
+        type: StorageType,
+        destinationOrName: string,
+        validate,
+        maxFileSize: number
+    ): any {
         if (this.multers[type][destinationOrName]) {
             return this.multers[type][destinationOrName];
         }
@@ -25,14 +36,25 @@ class MulterService {
             mkdirpSync(destinationOrName);
         }
 
-        const storage = type === StorageType.DISK ? Multer.diskStorage({
-            destination(req: Request, file: any, next: (err: Error, destination: string) => void ) {
-                next(null, destinationOrName);
-            },
-            filename(req: Request, file, next: (err: Error, destination: string) => void) {
-                next(null, `${file.originalname}-${Date.now()}`);
-            }
-        }) : Multer.memoryStorage();
+        const storage =
+            type === StorageType.DISK
+                ? Multer.diskStorage({
+                      destination(
+                          req: Request,
+                          file: any,
+                          next: (err: Error, destination: string) => void
+                      ) {
+                          next(null, destinationOrName);
+                      },
+                      filename(
+                          req: Request,
+                          file,
+                          next: (err: Error, destination: string) => void
+                      ) {
+                          next(null, `${file.originalname}-${Date.now()}`);
+                      }
+                  })
+                : Multer.memoryStorage();
 
         // Return configured multer instance, with size and file type rejection
         const built = Multer({
@@ -43,12 +65,8 @@ class MulterService {
             storage
         });
 
-        return this.multers[type][destinationOrName] = built;
+        return (this.multers[type][destinationOrName] = built);
     }
 }
 
-export {
-    StorageType,
-    MulterService
-};
-
+export { StorageType, MulterService };

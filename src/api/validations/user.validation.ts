@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import {Roles} from "../enums/role.enum";
-import { UserRepository } from "../repositories/user.repository";
-import { getCustomRepository } from "typeorm";
-import { ValidationSchema } from "../../core/types/validation";
+import { getCustomRepository, ValidationSchema } from "@triptyk/nfw-core";
+import { Roles } from "../enums/role.enum";
 import { User } from "../models/user.model";
+import { UserRepository } from "../repositories/user.repository";
 
 export const changePassword: ValidationSchema<any> = {
     new_password: {
@@ -14,80 +12,67 @@ export const changePassword: ValidationSchema<any> = {
     }
 };
 
-// GET /v1/users/id
-export const getUser: ValidationSchema<User> = {
-    id: {
-        errorMessage: "Please provide a valid id",
-        in: ["params"],
-        isInt: true,
-        toInt : true
-    }
-};
-
 // POST /v1/users
-export const createUser: ValidationSchema<User> = {
+export const create: ValidationSchema<User> = {
     email: {
         custom: {
             options: async (value) => {
-                if (await (getCustomRepository(UserRepository).exists("email", value))) {
+                if (
+                    await getCustomRepository(UserRepository).exists(
+                        "email",
+                        value
+                    )
+                ) {
                     return Promise.reject("email already exists");
                 }
             }
         },
         isEmail: true
     },
-    firstname: {
-        isString : true,
+    first_name: {
+        isString: true,
         isUppercase: {
-            negated: true,
+            negated: true
         }
     },
-    lastname: {
-        isString : true,
+    last_name: {
+        isString: true,
         isUppercase: {
-            negated: true,
+            negated: true
         }
     },
     password: {
-        isEmpty : {
-            negated : true
-        },
-        isString : true,
+        errorMessage: "Must have a password",
+        exists: true,
+        isString: true
     },
     username: {
-        custom: {
-            options: async (value) => {
-                if (await (getCustomRepository(UserRepository).exists("username", value))) {
-                    return Promise.reject("username already exists");
-                }
-            }
-        },
-        isString : true,
+        isString: true,
         isUppercase: {
-            negated: true,
+            negated: true
         }
     }
 };
 
 // PATCH /v1/users/:id
-export const updateUser: ValidationSchema<User> = {
+export const update: ValidationSchema<User> = {
     email: {
         isEmail: true,
         optional: true
     },
-    firstname: {
-        isString : true,
+    first_name: {
+        isString: true,
         optional: true
     },
-    lastname: {
-        isString : true,
+    last_name: {
+        isString: true,
         isUppercase: {
-            negated: true,
+            negated: true
         },
         optional: true
     },
     password: {
-        isString : true,
+        isString: true,
         optional: true
     },
     role: {
@@ -100,10 +85,10 @@ export const updateUser: ValidationSchema<User> = {
         errorMessage: "Please provide a valid id",
         in: ["params"],
         isInt: true,
-        toInt : true
+        toInt: true
     },
     username: {
-        isString : true,
-        optional: true,
+        isString: true,
+        optional: true
     }
 };

@@ -1,30 +1,53 @@
-import { JSONAPISerializerSchema } from "../base.serializer";
-import DocumentSerializerSchema from "./document.serializer.schema";
+import {
+    BaseSerializerSchema,
+    Deserialize,
+    Relation,
+    Serialize,
+    SerializerSchema
+} from "@triptyk/nfw-core";
+import { Document } from "../../models/document.model";
+import { UserInterface } from "../../models/user.model";
+import { DocumentSerializerSchema } from "./document.serializer.schema";
 
-export default class UserSerializerSchema {
-    public static type = "user";
+@SerializerSchema()
+export class UserSerializerSchema
+    extends BaseSerializerSchema<UserInterface>
+    implements UserInterface {
+    @Serialize()
+    @Deserialize()
+    public username;
 
-    /**
-     * Allowed serialized elements
-     */
-    public static serialize: string[] = ["username", "email", "firstname", "lastname", "role", "created_at", "updated_at", "user"];
+    @Serialize()
+    @Deserialize()
+    public email;
 
-    /**
-     * Allowed deserialize elements
-     */
-    public static deserialize: string[] = ["username", "email", "firstname", "password", "lastname", "role", "user"];
+    @Serialize()
+    @Deserialize()
+    public first_name;
 
-    public static get schema(): Readonly<JSONAPISerializerSchema> {
-        return {
-            relationships : {
-                avatar : {
-                    type: DocumentSerializerSchema.type,
-                    whitelist : DocumentSerializerSchema.serialize
-                },
-            },
-            type: UserSerializerSchema.type,
-            whitelist: UserSerializerSchema.serialize,
-            whitelistOnDeserialize : UserSerializerSchema.deserialize
-        };
-    }
+    @Serialize()
+    public updated_at;
+
+    @Serialize()
+    public created_at;
+
+    @Serialize()
+    @Deserialize()
+    public role;
+
+    @Serialize()
+    @Deserialize()
+    public last_name;
+
+    @Deserialize()
+    public password;
+
+    @Relation(() => DocumentSerializerSchema)
+    public documents;
+
+    @Serialize()
+    public deleted_at: any;
+
+    @Relation(() => DocumentSerializerSchema)
+    public avatar: Document;
 }

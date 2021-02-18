@@ -1,12 +1,18 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, Index} from "typeorm";
-import {User} from "./user.model";
+import {
+    Column,
+    Entity,
+    Index,
+    JoinColumn,
+    JsonApiModel,
+    ManyToOne,
+    Unique
+} from "@triptyk/nfw-core";
+import { OAuthToken } from "./oauth-token.model";
+import { User } from "./user.model";
 
 @Entity()
 @Unique(["user"])
-export class RefreshToken {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
+export class RefreshToken extends JsonApiModel<OAuthToken> {
     @Index()
     @Column()
     public refreshToken: string;
@@ -21,8 +27,4 @@ export class RefreshToken {
 
     @Column()
     public expires: Date;
-
-    public constructor(payload: Partial<RefreshToken> = {}) {
-        Object.assign(this, payload);
-    }
 }

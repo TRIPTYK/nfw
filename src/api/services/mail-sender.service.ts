@@ -1,8 +1,7 @@
 import Boom from "@hapi/boom";
-import { default as Axios } from "axios";
+import { BaseService, ConfigurationService } from "@triptyk/nfw-core";
 import * as Mailgun from "mailgun-js";
-import { singleton } from "tsyringe";
-import EnvironmentConfiguration from "../../config/environment.config";
+import { autoInjectable, singleton } from "tsyringe";
 
 // tslint:disable-next-line: interface-over-type-literal
 type MailGunData = {
@@ -12,87 +11,50 @@ type MailGunData = {
     template?: string;
     text?: string;
     to?: string;
-    variables?: object;
+    variables?: Record<string, any>;
     filename?: string;
 };
 
 @singleton()
-export class MailService {
-    /**
-     * Sparkpost API
-     */
-    public async sendmailSparkpost(emailData: object): Promise<any> {
+@autoInjectable()
+export class MailService extends BaseService {
+    public constructor(private configurationService: ConfigurationService) {
+        super();
+    }
 
-        const data = JSON.stringify(emailData);
-        // 2. Send email to user with request_token, with a link to the "new password page [FRONT]"
-        const options = {
-            headers: {
-                "Accept": "application/json",
-                "Authorization": process.env.SPARKPOST_API_KEY,
-                "Content-Length": Buffer.byteLength( data ),
-                "Content-Type": "application/json"
-            },
-            host: "api.sparkpost.com",
-            method: "POST",
-            path: "/api/v1/transmissions",
-            port: "443"
-        };
-
-        const axios = Axios.create(options as any);
-
-        return new Promise((resolve, reject) => {
-            axios.request({
-                data,
-                url: "https://" + options.host + options.path
-            })
-                .then((response) => {
-                    const object =  {
-                        data: response.data,
-                        error: response.data.error || "",
-                        message: response.data.message,
-                        status: response.status
-                    };
-                    resolve(object);
-                })
-                .catch( ( error ) => {
-                    const object =  {
-                        error: error.message,
-                        message: error.message,
-                        status: 500,
-                    };
-                    reject(object);
-                });
-        });
+    public init() {
+        return true;
     }
 
     /**
      * Mailgun API
      */
-    public async sendmailGun(gunData: MailGunData, type: "attachment" | null): Promise<any> {
-        const { mailgun : mailgunConf } = EnvironmentConfiguration.config;
+    public async sendmailGun(
+        gunData: MailGunData,
+        type: "attachment" | null
+    ): Promise<any> {
+        const { mailgun: mailgunConf } = this.configurationService.config;
 
         const mailgun: Mailgun = new Mailgun({
-            apiKey : mailgunConf.privateKey,
-            domain : mailgunConf.domain,
-            host : mailgunConf.host,
-            publicApiKey : mailgunConf.publicKey,
-            timeout : 2000
+            apiKey: mailgunConf.privateKey,
+            domain: mailgunConf.domain,
+            host: mailgunConf.host,
+            publicApiKey: mailgunConf.publicKey,
+            timeout: 2000
         });
 
         if (!gunData) {
             return Boom.badRequest("Payload cannot be empty");
         }
 
-
         let data = {
             attachment: null,
-            from : gunData.from,
-            subject : gunData.subject,
+            from: gunData.from,
+            subject: gunData.subject,
             template: gunData.template,
-            text : gunData.text,
-            to : gunData.to
+            text: gunData.text,
+            to: gunData.to
         };
-
 
         if (gunData.variables) {
             const dataMerged = { ...data, ...gunData.variables };
@@ -100,13 +62,18 @@ export class MailService {
         }
 
         if (type === "attachment") {
-            const attch = new mailgun.Attachment({data: gunData.attachment, filename: gunData.filename});
+            const attch = new mailgun.Attachment({
+                data: gunData.attachment,
+                filename: gunData.filename
+            });
             data.attachment = attch;
         }
 
         return new Promise((res, rej) => {
             mailgun.messages().send(data, (error, body) => {
-                if (error) { rej(error); }
+                if (error) {
+                    rej(error);
+                }
                 res(body);
             });
         });

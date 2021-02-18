@@ -1,15 +1,9 @@
-import { BaseSerializer, SerializerParams } from "./base.serializer";
-import { injectable } from "tsyringe";
-import DocumentSchema from "./schemas/document.serializer.schema";
-import {Document} from "../models/document.model";
+import { BaseJsonApiSerializer, JsonApiSerializer } from "@triptyk/nfw-core";
+import { Document } from "../models/document.model";
+import { DocumentSerializerSchema } from "./schemas/document.serializer.schema";
 
-@injectable()
-export class DocumentSerializer extends BaseSerializer<Document> {
-    public constructor(serializerParams: SerializerParams = {}) {
-        super(DocumentSchema.schema);
-
-        if (serializerParams.pagination) {
-            this.setupPaginationLinks(serializerParams.pagination);
-        }
-    }
-}
+@JsonApiSerializer({
+    schemas: () => [DocumentSerializerSchema],
+    type: "documents"
+})
+export class DocumentSerializer extends BaseJsonApiSerializer<Document> {}

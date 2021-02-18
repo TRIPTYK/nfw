@@ -1,21 +1,35 @@
-import * as Passport from "passport";
 import * as Boom from "@hapi/boom";
-
-import { User } from "../models/user.model";
-import { promisify } from "util";
-import { Roles } from "./../enums/role.enum";
-import { Request , Response, NextFunction } from "express";
+import { BaseMiddleware } from "@triptyk/nfw-core";
+import { NextFunction, Request, Response } from "express";
+import * as Passport from "passport";
 import { injectable } from "tsyringe";
-import { BaseMiddleware } from "../../core/middlewares/base.middleware";
+import { promisify } from "util";
+import { User } from "../models/user.model";
+import { Roles } from "./../enums/role.enum";
+
+export type AuthMiddlewareArgs = Roles[];
 
 @injectable()
-export default class AuthMiddleware extends BaseMiddleware {
-    public use(req: Request, res: Response, next: NextFunction, args: any) {
-        return Passport.authenticate( "jwt", { session: false },
-            this.handleJWT(req, res, next, args) ) (req, res, next);
+export class AuthMiddleware extends BaseMiddleware {
+    public use(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+        args: AuthMiddlewareArgs
+    ) {
+        return Passport.authenticate(
+            "jwt",
+            { session: false },
+            this.handleJWT(req, res, next, args)
+        )(req, res, next);
     }
 
-    private handleJWT = (req: any, res: Response, next , roles: any) => async (err: Error, user: User, info: any) => {
+    private handleJWT = (
+        req: any,
+        res: Response,
+        next,
+        roles: Roles[] = []
+    ) => async (err: Error, user: User, info: any) => {
         const error = err || info;
         const logIn = promisify(req.logIn);
 
@@ -28,11 +42,12 @@ export default class AuthMiddleware extends BaseMiddleware {
             return next(Boom.forbidden(e.message));
         }
 
-        if (roles === Roles.User) {
-            if (user.role !== Roles.Admin && req.params.id !== user.id.toString()) {
-                return next(Boom.forbidden("Forbidden area"));
-            }
-        } else if (!roles.includes(user.role)) {
+        if (!roles.length) {
+            req.user = user;
+            return next();
+        }
+
+        if (!roles.includes(user.role)) {
             return next(Boom.forbidden("Forbidden area"));
         } else if (err || !user) {
             return next(Boom.badRequest(err.message));
@@ -41,5 +56,5 @@ export default class AuthMiddleware extends BaseMiddleware {
         req.user = user;
 
         return next();
-    }
+    };
 }

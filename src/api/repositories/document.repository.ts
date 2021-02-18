@@ -1,8 +1,4 @@
-import {Document} from "../models/document.model";
-import {EntityRepository} from "typeorm";
-import {BaseRepository} from "../../core/repositories/base.repository";
+import { BaseJsonApiRepository } from "@triptyk/nfw-core";
+import { Document } from "../models/document.model";
 
-
-@EntityRepository(Document)
-export class DocumentRepository extends BaseRepository<Document> {
-}
+export class DocumentRepository extends BaseJsonApiRepository<Document> {}

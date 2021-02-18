@@ -1,52 +1,50 @@
+import { expect } from "chai";
 import * as request from "supertest";
-import {expect} from "chai";
 import { runSeeder, useRefreshDatabase, useSeeding } from "typeorm-seeding";
-import CreateAuthUserSeed from "../src/seed/create-auth-user.seed";
+import { CreateAuthUserSeed } from "../src/seed/create-auth-user.seed";
+import { ServerContainer } from "./utils/server";
 
-describe("Authentification", function() {
+describe("Authentification", () => {
     let agent;
     let credentials;
     let localRefreshToken: string;
-    let localAccessToken: string;
 
-    before(async function() {
-        agent = request.agent(global["server"]);
-        await useRefreshDatabase({configName : "ormconfig.ts"});
-        await useSeeding({configName : "ormconfig.ts"});
+    before(async () => {
+        agent = request.agent(ServerContainer.server);
+        await useRefreshDatabase({ configName: "ormconfig.ts" });
+        await useSeeding({ configName: "ormconfig.ts" });
         await runSeeder(CreateAuthUserSeed);
     });
 
-    describe("Register", function() {
-
-        it("POST api/v1/auth/register succeed with 201", function(done) {
+    describe("Register", () => {
+        it("POST api/v1/auth/register succeed with 201", (done) => {
             agent
                 .post("/api/v1/auth/register")
                 .send({
-                    data : {
-                        attributes : {
-                            email : "jacky@localhost.com",
-                            password : "Complexity*123",
-                            firstname : "jacky",
-                            lastname : "Jack",
-                            username : "maboul"
+                    data: {
+                        attributes: {
+                            email: "jacky@localhost.com",
+                            password: "Complexity*123",
+                            firstName: "jacky",
+                            lastName: "Jack",
+                            username: "maboul"
                         }
                     }
                 })
                 .set("Accept", "application/vnd.api+json")
                 .set("Content-Type", "application/vnd.api+json")
-                .end(function(err, res) {
-                    console.log(res.body);
+                .end((err, res) => {
                     expect(res.statusCode).to.equal(201);
                     done();
                 });
         });
 
-        it("POST api/v1/auth/register failed with 400 (email or username already taken)", function(done) {
+        it("POST api/v1/auth/register failed with 400 (email or username already taken)", (done) => {
             agent
                 .post("/api/v1/auth/register")
                 .send({
-                    data : {
-                        attributes : credentials
+                    data: {
+                        attributes: credentials
                     }
                 })
                 .set("Accept", "application/vnd.api+json")
@@ -55,9 +53,8 @@ describe("Authentification", function() {
         });
     });
 
-    describe("Login", function() {
-
-        it("Authentification succeed with good credentials", function(done) {
+    describe("Login", () => {
+        it("Authentification succeed with good credentials", (done) => {
             agent
                 .post("/api/v1/auth/login")
                 .set("Accept", "application/vnd.api+json")
@@ -66,15 +63,14 @@ describe("Authentification", function() {
                     email: "admin@localhost.com",
                     password: "admin"
                 })
-                .end(function(err, res) {
+                .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
-                    localAccessToken = res.body["accessToken"];
-                    localRefreshToken = res.body["refreshToken"];
+                    localRefreshToken = res.body.refreshToken;
                     done();
                 });
         });
 
-        it("Authentification failed with bad password", function(done) {
+        it("Authentification failed with bad password", (done) => {
             agent
                 .post("/api/v1/auth/login")
                 .set("Accept", "application/vnd.api+json")
@@ -86,7 +82,7 @@ describe("Authentification", function() {
                 .expect(401, done);
         });
 
-        it("Authentification failed with bad email", function(done) {
+        it("Authentification failed with bad email", (done) => {
             agent
                 .post("/api/v1/auth/login")
                 .set("Accept", "application/vnd.api+json")
@@ -97,12 +93,10 @@ describe("Authentification", function() {
                 })
                 .expect(404, done);
         });
-
     });
 
-    describe("Refresh token", function() {
-
-        it("POST api/v1/auth/refresh-token succeed with 200", function(done) {
+    describe("Refresh token", () => {
+        it("POST api/v1/auth/refresh-token succeed with 200", (done) => {
             agent
                 .post("/api/v1/auth/refresh-token")
                 .set("Accept", "application/vnd.api+json")
@@ -110,95 +104,10 @@ describe("Authentification", function() {
                 .send({
                     refreshToken: localRefreshToken
                 })
-                .end(function(err, res) {
+                .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
                     done();
                 });
         });
-
-    });
-
-    describe("Unauthorized without token", function() {
-
-        describe("Users", function() {
-
-            it("GET /api/v1/users rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/users")
-                    .expect(403, done);
-            });
-
-            it("GET /api/v1/users/1 rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-            it("GET /api/v1/users/profile rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/users/profile")
-                    .expect(403, done);
-            });
-
-            it("POST /api/v1/users rejected with 403", function(done) {
-                agent
-                    .post("/api/v1/users")
-                    .expect(403, done);
-            });
-
-            it("PUT /api/v1/users/1 rejected with 403", function(done) {
-                agent
-                    .put("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-            it("PATCH /api/v1/users/1 rejected with 403", function(done) {
-                agent
-                    .patch("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-            it("DELETE /api/v1/users/1 rejected as 403", function(done) {
-                agent
-                    .delete("/api/v1/users/1")
-                    .expect(403, done);
-            });
-
-        });
-
-        describe("Documents", function() {
-
-            it("GET /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .get("/api/v1/documents")
-                    .expect(403, done);
-            });
-
-            it("POST /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .post("/api/v1/documents")
-                    .expect(403, done);
-            });
-
-            it("PUT /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .put("/api/v1/documents/1")
-                    .expect(403, done);
-            });
-
-            it("PATCH /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .patch("/api/v1/documents/1")
-                    .expect(403, done);
-            });
-
-            it("DELETE /api/v1/documents rejected with 403", function(done) {
-                agent
-                    .delete("/api/v1/documents/1")
-                    .expect(403, done);
-            });
-
-        });
-
     });
 });

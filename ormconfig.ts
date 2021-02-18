@@ -1,12 +1,12 @@
 /**
  * Environement file is now dynamic to the API , no need to a CLI to update it anymore
  */
+import { TypeORMService } from "@triptyk/nfw-core";
+import "reflect-metadata";
+import { container } from "tsyringe";
 
-import EnvironmentConfiguration from "./src/config/environment.config";
-import { TypeORMConfiguration } from "./src/config/typeorm.config";
+process.env.CLI = "true";
 
-const env = EnvironmentConfiguration.guessCurrentEnvironment();
+const configObject = container.resolve(TypeORMService).ConfigurationObject;
 
-EnvironmentConfiguration.loadEnvironment(env);
-
-module.exports = TypeORMConfiguration.ConfigurationObject;
+module.exports = configObject;

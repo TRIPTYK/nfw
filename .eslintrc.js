@@ -12,217 +12,90 @@ https://github.com/typescript-eslint/tslint-to-eslint-config/blob/master/docs/FA
 Happy linting! 💖
 */
 module.exports = {
-    "env": {
-        "es6": true,
-        "node": true
+    root: true,
+    parserOptions: {
+        ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
+        sourceType: "module" // Allows for the use of imports
     },
-    "extends": [
+    parser: "@typescript-eslint/parser",
+    plugins: ["@typescript-eslint", "import"],
+    extends: [
+        "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+        "prettier/@typescript-eslint",
+        "plugin:import/warnings",
+        "plugin:import/errors",
+        "plugin:import/typescript",
+        "plugin:prettier/recommended"
     ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "project": "tsconfig.json",
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "rules": {
-        "@typescript-eslint/adjacent-overload-signatures": "error",
-        "@typescript-eslint/array-type": [
-            "error",
-            {
-                "default": "array"
-            }
-        ],
-        "@typescript-eslint/await-thenable": "error",
-        "@typescript-eslint/ban-types": [
-            "error",
-            {
-                "types": {
-                    "Object": {
-                        "message": "Avoid using the `Object` type. Did you mean `object`?"
-                    },
-                    "Function": {
-                        "message": "Avoid using the `Function` type. Prefer a specific function type, like `() => void`."
-                    },
-                    "Boolean": {
-                        "message": "Avoid using the `Boolean` type. Did you mean `boolean`?"
-                    },
-                    "Number": {
-                        "message": "Avoid using the `Number` type. Did you mean `number`?"
-                    },
-                    "String": {
-                        "message": "Avoid using the `String` type. Did you mean `string`?"
-                    },
-                    "Symbol": {
-                        "message": "Avoid using the `Symbol` type. Did you mean `symbol`?"
-                    }
-                }
-            }
-        ],
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/class-name-casing": "error",
-        "@typescript-eslint/consistent-type-assertions": "error",
-        "@typescript-eslint/consistent-type-definitions": "off",
-        "@typescript-eslint/explicit-member-accessibility": [
-            "error",
-            {
-                "accessibility": "explicit"
-            }
-        ],
-        "@typescript-eslint/indent": "error",
-        "@typescript-eslint/member-delimiter-style": [
-            "error",
-            {
-                "multiline": {
-                    "delimiter": "semi",
-                    "requireLast": true
-                },
-                "singleline": {
-                    "delimiter": "semi",
-                    "requireLast": false
-                }
-            }
-        ],
-        "@typescript-eslint/member-ordering": "error",
-        "@typescript-eslint/no-empty-function": "error",
-        "@typescript-eslint/no-empty-interface": "error",
+    rules: {
+        "no-console": "error",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-for-in-array": "error",
-        "@typescript-eslint/no-misused-new": "error",
-        "@typescript-eslint/no-namespace": "error",
-        "@typescript-eslint/no-parameter-properties": "off",
-        "@typescript-eslint/no-this-alias": "error",
-        "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/no-var-requires": "error",
-        "@typescript-eslint/prefer-for-of": "error",
-        "@typescript-eslint/prefer-function-type": "error",
-        "@typescript-eslint/prefer-namespace-keyword": "error",
-        "@typescript-eslint/quotes": [
-            "error",
-            "double",
-            {
-                "avoidEscape": true
-            }
-        ],
-        "@typescript-eslint/require-await": "error",
-        "@typescript-eslint/restrict-plus-operands": "error",
-        "@typescript-eslint/triple-slash-reference": "error",
-        "@typescript-eslint/type-annotation-spacing": "error",
-        "@typescript-eslint/unified-signatures": "error",
-        "arrow-body-style": "error",
-        "arrow-parens": [
-            "error",
-            "always"
-        ],
-        "camelcase": "off",
-        "comma-dangle": "off",
-        "complexity": [
-            "error",
-            {
-                "max": 20
-            }
-        ],
-        "constructor-super": "error",
-        "curly": "error",
-        "dot-notation": "off",
-        "eol-last": "error",
-        "eqeqeq": [
-            "error",
-            "smart"
-        ],
-        "guard-for-in": "off",
-        "id-blacklist": "off",
-        "id-match": "off",
-        "import/order": "off",
-        "max-classes-per-file": [
-            "error",
-            1
-        ],
-        "max-lines": [
-            "error",
-            500
-        ],
-        "new-parens": "error",
-        "no-bitwise": "error",
-        "no-caller": "error",
-        "no-cond-assign": "error",
-        "no-console": [
-            "warn",
-            {
-                "allow": [
-                    "warn",
-                    "dir",
-                    "timeLog",
-                    "assert",
-                    "clear",
-                    "count",
-                    "countReset",
-                    "group",
-                    "groupEnd",
-                    "table",
-                    "dirxml",
-                    "error",
-                    "groupCollapsed",
-                    "Console",
-                    "profile",
-                    "profileEnd",
-                    "timeStamp",
-                    "context"
-                ]
-            }
-        ],
-        "no-debugger": "error",
-        "no-duplicate-imports": "error",
-        "no-empty": "error",
-        "no-eval": "error",
-        "no-fallthrough": "off",
-        "no-invalid-this": "off",
-        "no-irregular-whitespace": "error",
-        "no-multiple-empty-lines": "off",
-        "no-new-wrappers": "error",
-        "no-redeclare": "error",
-        "no-return-await": "error",
-        "no-shadow": [
-            "error",
-            {
-                "hoist": "all"
-            }
-        ],
+        "@typescript-eslint/naming-convention": "off",
+        "getter-return": "error",
+        "import/no-default-export": "error",
+        "no-promise-executor-return": "error",
         "no-template-curly-in-string": "error",
+        "block-scoped-var": "error",
+        curly: "warn",
+        "default-case-last": "error",
+        "default-case": "error",
+        "dot-notation": "warn",
+        eqeqeq: "error",
+        "no-alert": "error",
+        "no-caller": "error",
+        "no-constructor-return": "error",
+        "no-else-return": "error",
+        "no-empty-function": "error",
+        "no-eq-null": "error",
+        "no-eval": "error",
+        "no-extend-native": "error",
+        "no-extra-bind": "error",
+        "no-extra-label": "warn",
+        "no-floating-decimal": "warn",
+        "no-implicit-globals": "error",
+        "no-implied-eval": "error",
+        "no-invalid-this": "error",
+        "no-iterator": "error",
+        "no-lone-blocks": "error",
+        "no-loop-func": "error",
+        "no-multi-spaces": "warn",
+        "no-new": "error",
+        "no-new-func": "error",
+        "no-new-wrappers": "error",
+        "no-proto": "error",
+        "no-return-await": "error",
+        "no-script-url": "error",
+        "no-self-compare": "error",
+        "no-sequences": "error",
         "no-throw-literal": "error",
-        "no-trailing-spaces": "error",
-        "no-undef-init": "error",
-        "no-underscore-dangle": "off",
-        "no-unsafe-finally": "error",
+        "no-unmodified-loop-condition": "error",
         "no-unused-expressions": "error",
-        "no-unused-labels": "error",
-        "no-useless-constructor": "error",
+        "no-useless-call": "error",
+        "no-useless-concat": "error",
+        "no-useless-return": "error",
+        "no-void": "error",
+        "no-warning-comments": "warn",
+        "vars-on-top": "error",
+        "wrap-iife": "error",
+        yoda: "error",
+        "comma-dangle": "warn",
+        "comma-spacing": "warn",
+        "comma-style": "warn",
+        "consistent-this": "error",
+        "no-new-object": "error",
+        "no-unneeded-ternary": "error",
+        "prefer-object-spread": "error",
+        "no-confusing-arrow": "warn",
         "no-var": "error",
-        "object-shorthand": "error",
-        "one-var": [
-            "error",
-            "never"
-        ],
-        "prefer-arrow/prefer-arrow-functions": "off",
+        "object-shorthand": "warn",
+        "prefer-arrow-callback": "error",
         "prefer-const": "error",
-        "quote-props": [
-            "error",
-            "consistent-as-needed"
-        ],
-        "radix": "error",
-        "space-before-function-paren": [
-            "error",
-            {
-                "anonymous": "never",
-                "asyncArrow": "always",
-                "named": "never"
-            }
-        ],
-        "spaced-comment": "error",
-        "use-isnan": "error",
-        "valid-typeof": "off"
+        "prefer-rest-params": "error",
+        "prefer-spread": "error",
+        "prefer-template": "error"
     }
 };

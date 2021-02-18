@@ -1,30 +1,47 @@
-import { JSONAPISerializerSchema } from "../base.serializer";
-import UserSerializerSchema from "./user.serializer.schema";
+import {
+    BaseSerializerSchema,
+    Deserialize,
+    Relation,
+    Serialize,
+    SerializerSchema
+} from "@triptyk/nfw-core";
+import { DocumentInterface } from "../../models/document.model";
+import { UserSerializerSchema } from "./user.serializer.schema";
 
-export default class DocumentSerializerSchema {
-    public static type = "document";
+@SerializerSchema()
+export class DocumentSerializerSchema
+    extends BaseSerializerSchema<DocumentInterface>
+    implements DocumentInterface {
+    @Serialize()
+    public deleted_at: Date;
 
-    /**
-     * Allowed serialized elements
-     */
-    public static serialize: string[] = ["fieldname", "filename", "path", "mimetype", "size", "created_at"];
+    @Serialize()
+    @Deserialize()
+    public fieldname;
 
-    /**
-     * Allowed deserialize elements
-     */
-    public static deserialize: string[] = [];
+    @Serialize()
+    @Deserialize()
+    public filename;
 
-    public static get schema(): Readonly<JSONAPISerializerSchema> {
-        return {
-            relationships : {
-                user : {
-                    type: UserSerializerSchema.type,
-                    whitelist : UserSerializerSchema.serialize
-                }
-            },
-            type: DocumentSerializerSchema.type,
-            whitelist: DocumentSerializerSchema.serialize,
-            whitelistOnDeserialize : DocumentSerializerSchema.deserialize
-        };
-    }
+    @Serialize()
+    @Deserialize()
+    public originalname;
+
+    @Serialize()
+    @Deserialize()
+    public size;
+
+    @Serialize()
+    @Deserialize()
+    public mimetype;
+
+    @Serialize()
+    @Deserialize()
+    public path;
+
+    @Relation(() => UserSerializerSchema)
+    public users;
+
+    @Relation(() => UserSerializerSchema)
+    public user_avatar;
 }

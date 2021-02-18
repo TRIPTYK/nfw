@@ -1,17 +1,27 @@
+import { BaseMiddleware, ConfigurationService } from "@triptyk/nfw-core";
+import { NextFunction, Request, Response } from "express";
 import * as Jimp from "jimp";
-import {BaseMiddleware} from "../../core/middlewares/base.middleware";
-import { Request , Response, NextFunction } from "express";
-import {ImageMimeTypes} from "../enums/mime-type.enum";
-import EnvironmentConfiguration from "../../config/environment.config";
+import { autoInjectable, injectable } from "tsyringe";
+import { ImageMimeTypes } from "../enums/mime-type.enum";
 
+export type DocumentResizeMiddlewareArgs = any;
+
+@injectable()
+@autoInjectable()
 export class DocumentResizeMiddleware extends BaseMiddleware {
-    public use(req: Request, res: Response, next: NextFunction) {
-        const { jimp } = EnvironmentConfiguration.config;
+    public constructor(private configurationService: ConfigurationService) {
+        super();
+    }
 
+    public use(req: Request, res: Response, next: NextFunction) {
+        const { jimp } = this.configurationService.config;
         try {
             // If image optimization is activated and is image mime type
-            if (jimp.isActive && Object.values(ImageMimeTypes).includes(req.file.mimetype as any)) {
-                const {destination, path , filename} = req.file;
+            if (
+                jimp.isActive &&
+                Object.values(ImageMimeTypes).includes(req.file.mimetype as any)
+            ) {
+                const { destination, path, filename } = req.file;
 
                 // Read original file
                 Jimp.read(path).then((image) => {

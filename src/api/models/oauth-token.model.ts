@@ -1,16 +1,26 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique} from "typeorm";
-import {User} from "./user.model";
+import {
+    AfterLoad,
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    ConfigurationService,
+    Entity,
+    JoinColumn,
+    JsonApiModel,
+    ManyToOne,
+    Unique
+} from "@triptyk/nfw-core";
+import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
+import { container } from "tsyringe";
 import { OAuthTypes } from "../enums/oauth-type.enum";
+import { User } from "./user.model";
 
 @Entity()
 @Unique(["user", "type"])
-export class OAuthToken {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
+export class OAuthToken extends JsonApiModel<OAuthToken> {
     @Column({
-        nullable : false,
-        type : "text"
+        nullable: false,
+        type: "text"
     })
     public refreshToken: string;
 
@@ -23,19 +33,57 @@ export class OAuthToken {
     public user: User;
 
     @Column({
-        nullable : false,
-        type : "text"
+        nullable: false,
+        type: "text"
     })
     public accessToken: string;
 
     @Column({
         enum: OAuthTypes,
-        nullable : false,
+        nullable: false,
         type: "enum"
     })
     public type: OAuthTypes;
 
-    public constructor(payload: Partial<OAuthToken> = {}) {
-        Object.assign(this, payload);
+    @BeforeInsert()
+    @BeforeUpdate()
+    public async encryptRefresh() {
+        const configurationService = container.resolve<ConfigurationService>(
+            ConfigurationService
+        );
+        const iv = randomBytes(16);
+        const cipher = createCipheriv(
+            "aes-256-cbc",
+            Buffer.from(configurationService.config.oAuthKey),
+            iv
+        );
+
+        const encrypted = Buffer.concat([
+            cipher.update(this.refreshToken),
+            cipher.final()
+        ]);
+        const encryptedString = `${iv.toString("hex")}:${encrypted.toString(
+            "hex"
+        )}`;
+        this.refreshToken = encryptedString;
+    }
+
+    @AfterLoad()
+    public decryptRefresh() {
+        const configurationService = container.resolve<ConfigurationService>(
+            ConfigurationService
+        );
+        const textParts = this.refreshToken.split(":");
+        const iv = Buffer.from(textParts.shift(), "hex");
+        const encryptedText = Buffer.from(textParts.join(":"), "hex");
+        const decipher = createDecipheriv(
+            "aes-256-cbc",
+            Buffer.from(configurationService.config.oAuthKey),
+            iv
+        );
+        let decrypted = decipher.update(encryptedText);
+
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        this.refreshToken = decrypted.toString();
     }
 }

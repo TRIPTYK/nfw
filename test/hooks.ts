@@ -1,7 +1,7 @@
-import { useRefreshDatabase, useSeeding, tearDownDatabase } from "typeorm-seeding";
+import { ServerContainer } from "./utils/server";
 
 exports.mochaHooks = {
     async beforeAll() {
-        global["server"] = await import("./../src/app.bootstrap");
+        await ServerContainer.init("./../../src/app.bootstrap");
     }
 };

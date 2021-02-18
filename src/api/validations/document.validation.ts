@@ -1,10 +1,10 @@
 // GET /v1/documents/:id
-import { MimeTypes } from "../enums/mime-type.enum";
 import * as Boom from "@hapi/boom";
+import { ValidationSchema } from "@triptyk/nfw-core";
+import { MimeTypes } from "../enums/mime-type.enum";
 import { Document } from "../models/document.model";
-import { ValidationSchema } from "../../core/types/validation";
 
-export const getDocument: ValidationSchema<Document> = {
+export const get: ValidationSchema<Document> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
@@ -14,7 +14,7 @@ export const getDocument: ValidationSchema<Document> = {
 };
 
 // PATCH /v1/documents/:id
-export const updateDocument: ValidationSchema<Document> = {
+export const update: ValidationSchema<Document> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
@@ -24,7 +24,7 @@ export const updateDocument: ValidationSchema<Document> = {
 };
 
 // DELETE /v1/documents/:id
-export const deleteDocument: ValidationSchema<Document> = {
+export const remove: ValidationSchema<Document> = {
     id: {
         errorMessage: "Please provide a valid id",
         in: ["params"],
@@ -38,12 +38,23 @@ export const deleteDocument: ValidationSchema<Document> = {
  * @param file
  * @param cb
  */
-export const validateFile = (req,
-    file: {mimetype: string; destination: string; filename: string; fieldname: string; path: string; size: string},
-    next) => {
+export const validateFile = (
+    req,
+    file: {
+        mimetype: string;
+        destination: string;
+        filename: string;
+        fieldname: string;
+        path: string;
+        size: string;
+    },
+    next
+) => {
     if (Object.values(MimeTypes).includes(file.mimetype as any)) {
         return next(null, true);
     }
-    return next(Boom.unsupportedMediaType("File mimetype not supported"), false);
+    return next(
+        Boom.unsupportedMediaType("File mimetype not supported"),
+        false
+    );
 };
-

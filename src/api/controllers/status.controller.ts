@@ -1,10 +1,20 @@
-import { Controller, Get } from "../../core/decorators/controller.decorator";
-import { Request , Response } from "express";
+import {
+    ApplicationRegistry,
+    BaseController,
+    Controller,
+    Get
+} from "@triptyk/nfw-core";
+import { Request, Response } from "express";
+import { autoInjectable } from "tsyringe";
 
 @Controller("status")
-export default class StatusController {
+@autoInjectable()
+export class StatusController extends BaseController {
     @Get("/")
     public status(req: Request, res: Response): void {
-        res.sendStatus(200);
+        res.json({
+            status: ApplicationRegistry.status,
+            guid: ApplicationRegistry.guid
+        });
     }
 }
