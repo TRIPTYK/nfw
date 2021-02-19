@@ -19,6 +19,11 @@ export default (entity: string): TemplateStructureInterface[] => {
     const { filePrefixName } = getEntityNaming(entity);
     return [
         {
+            template: "base-controller",
+            path: "src/api/controllers",
+            name: `${filePrefixName}.controller.ts`
+        },
+        {
             template: "controller",
             path: "src/api/controllers",
             name: `${filePrefixName}.controller.ts`

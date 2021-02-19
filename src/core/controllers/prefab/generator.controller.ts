@@ -1,8 +1,9 @@
 /* eslint-disable arrow-body-style */
 import { Request, Response } from "express";
-import * as HttpStatus from "http-status";
+import httpStatus, * as HttpStatus from "http-status";
 import * as SocketIO from "socket.io-client";
 import { singleton } from "tsyringe";
+import { http } from "winston";
 import {
     ApplicationLifeCycleEvent,
     ApplicationRegistry
@@ -11,6 +12,7 @@ import addColumn from "../../cli/commands/add-column";
 import addRelation from "../../cli/commands/add-relation";
 import deleteJsonApiEntity from "../../cli/commands/delete-entity";
 import generateJsonApiEntity from "../../cli/commands/generate-entity";
+import generateBasicRoute from "../../cli/commands/generate-route";
 import removeColumn from "../../cli/commands/remove-column";
 import { removeRelation } from "../../cli/commands/remove-relation";
 import project from "../../cli/utils/project";
@@ -24,6 +26,7 @@ import ValidationMiddleware from "../../middlewares/validation.middleware";
 import {
     columnsActions,
     createColumn,
+    createRoute,
     createEntity,
     createRelation
 } from "../../validation/generator.validation";
@@ -36,6 +39,20 @@ import BaseController from "../base.controller";
 @singleton()
 export default class GeneratorController extends BaseController {
     public socket: SocketIOClient.Socket = null;
+
+    @Post("/route/:name")
+    @MethodMiddleware(ValidationMiddleware, {
+        schema: createRoute,
+        location: ["body"]
+    })
+    public async generateRoute(req: Request, res: Response) {
+        await generateBasicRoute(req.params.name, req.body.methods);
+        res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
 
     @Post("/entity/:name")
     @MethodMiddleware(ValidationMiddleware, {
