@@ -1,19 +1,17 @@
-import { ObjectLiteralExpression, SourceFile, SyntaxKind } from "ts-morph";
+import { ObjectLiteralExpression, SyntaxKind } from "ts-morph";
 import resources, { getEntityNaming } from "../static/resources";
 import project from "../utils/project";
 
-export default async function deleteRoute(
-    routeName: string
-): Promise<void> {
+export default async function deleteRoute(routeName: string): Promise<void> {
     if (!routeName.length) {
         return;
     }
 
     const { filePrefixName, classPrefixName } = getEntityNaming(routeName);
 
-    const file = resources(filePrefixName).filter(
+    const file = resources(filePrefixName).find(
         (f) => f.template === "base-controller"
-    )[0];
+    );
 
     const fileObj = project.getSourceFile(`${file.path}/${file.name}`);
     if (!fileObj) {
