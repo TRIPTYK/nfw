@@ -1,3 +1,4 @@
+import * as pascalcase from "pascalcase";
 import { ColumnOptions, ColumnType } from "typeorm";
 import { ValidationSchema } from "../../types/validation";
 import { EntityColumn } from "../interfaces/generator.interface";
@@ -11,10 +12,14 @@ export function buildModelColumnArgumentsFromObject(
 
     if (dbColumnaData.default !== undefined) {
         if (
-            dbColumnaData.isNullable !== false &&
+            dbColumnaData.isNullable !== true &&
             dbColumnaData.default !== null
         ) {
             columnArgument.default = dbColumnaData.default;
+        } else if (dbColumnaData.date) {
+            columnArgument.default = dbColumnaData.date;
+        } else if (dbColumnaData.time) {
+            columnArgument.default = dbColumnaData.time;
         }
     }
 
@@ -34,6 +39,9 @@ export function buildModelColumnArgumentsFromObject(
         columnArgument.precision = dbColumnaData.precision;
     }
 
+    if (dbColumnaData.enums) {
+        columnArgument.enum = pascalcase(dbColumnaData.name);
+    }
     // handle nullable
     if (!dbColumnaData.isUnique && !dbColumnaData.isPrimary) {
         columnArgument.nullable ??= dbColumnaData.isNullable;
