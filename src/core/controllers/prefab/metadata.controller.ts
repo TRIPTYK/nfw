@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { singleton } from "tsyringe";
 import { EntityMetadata, getRepository } from "typeorm";
+import { Roles } from "../../../api/enums/role.enum";
 import { ApplicationRegistry } from "../../application/registry.application";
 import { Controller, Get } from "../../decorators/controller.decorator";
 import TypeORMService from "../../services/typeorm.service";
@@ -39,6 +40,11 @@ export default class MetadataController extends BaseController {
                 };
             })
         );
+    }
+
+    @Get("/roles")
+    public getRoles(req: Request, res: Response) {
+        return Roles;
     }
 
     @Get("/:entity/count")

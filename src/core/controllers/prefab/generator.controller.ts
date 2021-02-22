@@ -10,11 +10,13 @@ import {
 } from "../../application/registry.application";
 import addColumn from "../../cli/commands/add-column";
 import addRelation from "../../cli/commands/add-relation";
+import addRole from "../../cli/commands/add-role";
 import deleteJsonApiEntity from "../../cli/commands/delete-entity";
 import generateJsonApiEntity from "../../cli/commands/generate-entity";
 import generateBasicRoute from "../../cli/commands/generate-route";
 import removeColumn from "../../cli/commands/remove-column";
 import { removeRelation } from "../../cli/commands/remove-relation";
+import removeRole from "../../cli/commands/remove-role";
 import project from "../../cli/utils/project";
 import {
     Controller,
@@ -64,6 +66,21 @@ export default class GeneratorController extends BaseController {
             columns: req.body.columns,
             relations: req.body.relations
         });
+        res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
+
+    @Post("/role/:name")
+    public async generateRole(req: Request, res: Response) {
+        if (req.body.action === "ADD") {
+            await addRole(req.params.name);
+        }
+        if (req.body.action === "REMOVE") {
+            await removeRole(req.params.name);
+        }
         res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
