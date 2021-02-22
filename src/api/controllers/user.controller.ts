@@ -6,20 +6,17 @@ import {
     JsonApiController,
     JsonApiMethodMiddleware
 } from "../../core/decorators/controller.decorator";
-import DeserializeMiddleware, {
-    DeserializeMiddlewareArgs
-} from "../../core/middlewares/deserialize.middleware";
+import { Roles } from "../enums/role.enum";
+import AuthMiddleware, {
+    AuthMiddlewareArgs
+} from "../middlewares/auth.middleware";
 import { User } from "../models/user.model";
-import { UserSerializer } from "../serializers/user.serializer";
 
 @JsonApiController(User)
 @autoInjectable()
 export default class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
-    @JsonApiMethodMiddleware<DeserializeMiddlewareArgs>(DeserializeMiddleware, {
-        serializer: UserSerializer,
-        schema: "default"
-    })
+    @JsonApiMethodMiddleware<AuthMiddlewareArgs>(AuthMiddleware, [Roles.Admin])
     public profile(req: Request): any {
         return req.user;
     }
