@@ -28,7 +28,11 @@ export interface RouteContext {
 export default abstract class BaseApplication implements ApplicationInterface {
     protected app: Express.Application;
     protected router: Express.Router;
-    protected routes: Array<{ prefix: string; routes: Array<RouteDefinition> }>;
+    protected routes: Array<{
+        prefix: string;
+        type: "basic" | "generated" | "entity";
+        routes: Array<RouteDefinition>;
+    }>;
 
     public constructor() {
         this.app = Express();
@@ -390,6 +394,7 @@ export default abstract class BaseApplication implements ApplicationInterface {
                 //push the entities routes to the routes list
                 this.routes.push({
                     prefix: jsonApiEntityName,
+                    type: "entity",
                     routes: jsonApiRoutes.map((route) => {
                         return {
                             path: route.path,
@@ -438,9 +443,13 @@ export default abstract class BaseApplication implements ApplicationInterface {
 
                     router[route.requestMethod](`${route.path}`, middlewares);
                 }
+
                 //push basics routes to the routes list
                 this.routes.push({
                     prefix,
+                    type: Reflect.getMetadata("generated", controller)
+                        ? "generated"
+                        : "basic",
                     routes
                 });
             }

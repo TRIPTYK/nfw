@@ -1,4 +1,5 @@
 import { ObjectLiteralExpression, SyntaxKind } from "ts-morph";
+import { ApplicationRegistry } from "../../application/registry.application";
 import resources, { getEntityNaming } from "../static/resources";
 import project from "../utils/project";
 import addEndpoint from "./add-endpoint";
@@ -8,6 +9,11 @@ export default async function generateBasicRoute(
     methods?: Array<string>
 ): Promise<void> {
     if (!routeName) return;
+
+    for (const route of ApplicationRegistry.application.Routes) {
+        if (routeName === route.prefix)
+            throw new Error("This route already exists.");
+    }
 
     methods = methods ?? ["GET"];
 

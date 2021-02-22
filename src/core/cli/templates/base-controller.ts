@@ -29,7 +29,7 @@ export default function createBaseControllerTemplate({
 
     controllerClass
         .addDecorator({
-            name: "Controller",
+            name: "GeneratedController",
             arguments: [`"${classPrefixName.toLowerCase()}"`]
         })
         .setIsDecoratorFactory(true);

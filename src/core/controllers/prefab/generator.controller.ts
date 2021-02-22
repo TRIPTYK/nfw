@@ -128,6 +128,12 @@ export default class GeneratorController extends BaseController {
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
+    @Delete("/route/:name")
+    public async deleteRoute(req: Request, res: Response) {
+        //TODO
+        res.sendStatus(HttpStatus.ACCEPTED);
+    }
+
     @Delete("/entity/:name/:column")
     public async deleteEntityColumn(req: Request, res: Response) {
         await removeColumn(req.params.name, req.params.column);
