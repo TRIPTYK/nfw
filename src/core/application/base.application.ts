@@ -395,13 +395,15 @@ export default abstract class BaseApplication implements ApplicationInterface {
                 this.routes.push({
                     prefix: jsonApiEntityName,
                     type: "entity",
-                    routes: jsonApiRoutes.map((route) => {
-                        return {
-                            path: route.path,
-                            requestMethod: route.methodType as RequestMethods,
-                            methodName: route.method
-                        };
-                    })
+                    routes: jsonApiRoutes
+                        .map((route) => {
+                            return {
+                                path: route.path,
+                                requestMethod: route.methodType as RequestMethods,
+                                methodName: route.method
+                            };
+                        })
+                        .concat(routes)
                 });
             } else {
                 this.router.use(`/${prefix}`, router);
