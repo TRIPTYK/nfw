@@ -1,20 +1,22 @@
 /* eslint-disable arrow-body-style */
 import { Request, Response } from "express";
-import httpStatus, * as HttpStatus from "http-status";
+import * as HttpStatus from "http-status";
 import * as SocketIO from "socket.io-client";
 import { singleton } from "tsyringe";
-import { http } from "winston";
 import {
     ApplicationLifeCycleEvent,
     ApplicationRegistry
 } from "../../application/registry.application";
 import addColumn from "../../cli/commands/add-column";
+import addEndpoint from "../../cli/commands/add-endpoint";
 import addRelation from "../../cli/commands/add-relation";
 import addRole from "../../cli/commands/add-role";
 import deleteJsonApiEntity from "../../cli/commands/delete-entity";
+import deleteBasicRoute from "../../cli/commands/delete-route";
 import generateJsonApiEntity from "../../cli/commands/generate-entity";
 import generateBasicRoute from "../../cli/commands/generate-route";
 import removeColumn from "../../cli/commands/remove-column";
+import removeEndpoint from "../../cli/commands/remove-endpoint";
 import { removeRelation } from "../../cli/commands/remove-relation";
 import removeRole from "../../cli/commands/remove-role";
 import project from "../../cli/utils/project";
@@ -28,9 +30,10 @@ import ValidationMiddleware from "../../middlewares/validation.middleware";
 import {
     columnsActions,
     createColumn,
-    createRoute,
     createEntity,
-    createRelation
+    createRelation,
+    createRoute,
+    createSubRoute
 } from "../../validation/generator.validation";
 import BaseController from "../base.controller";
 
@@ -49,6 +52,20 @@ export default class GeneratorController extends BaseController {
     })
     public async generateRoute(req: Request, res: Response) {
         await generateBasicRoute(req.params.name, req.body.methods);
+        res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
+
+    @Post("/route/:name/subroute")
+    @MethodMiddleware(ValidationMiddleware, {
+        schema: createSubRoute,
+        location: ["body"]
+    })
+    public async generateSubRoute(req: Request, res: Response) {
+        await addEndpoint(req.params.name, req.body.method, req.body.subRoute);
         res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
@@ -147,8 +164,22 @@ export default class GeneratorController extends BaseController {
 
     @Delete("/route/:name")
     public async deleteRoute(req: Request, res: Response) {
-        //TODO
+        await deleteBasicRoute(req.params.name);
         res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
+
+    @Delete("/route/:name/subroute/:methodName")
+    public async deleteSubRoute(req: Request, res: Response) {
+        await removeEndpoint(req.params.name, req.params.methodName);
+        res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
     }
 
     @Delete("/entity/:name/:column")

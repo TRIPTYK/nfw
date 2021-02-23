@@ -1,13 +1,14 @@
 import { ObjectLiteralExpression, SyntaxKind } from "ts-morph";
+import { ApplicationRegistry } from "../../application";
 import resources, { getEntityNaming } from "../static/resources";
 import project from "../utils/project";
 
-export default async function deleteRoute(routeName: string): Promise<void> {
-    if (!routeName.length) {
+export default async function deleteBasicRoute(prefix: string): Promise<void> {
+    if (!prefix.length) {
         return;
     }
 
-    const { filePrefixName, classPrefixName } = getEntityNaming(routeName);
+    const { filePrefixName, classPrefixName } = getEntityNaming(prefix);
 
     const file = resources(filePrefixName).find(
         (f) => f.template === "base-controller"
@@ -18,7 +19,15 @@ export default async function deleteRoute(routeName: string): Promise<void> {
         throw new Error(`Entity file ${file.name} does not seems to exists`);
     }
 
-    // do something
+    const currentRoute = ApplicationRegistry.application.Routes.find(
+        (route) => route.prefix === prefix
+    );
+
+    if (currentRoute.type !== "generated") {
+        throw new Error(
+            "Only generated routes can be deleted by DELETE method."
+        );
+    }
 
     fileObj?.delete();
 

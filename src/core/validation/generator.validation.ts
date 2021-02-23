@@ -267,3 +267,35 @@ export const createRoute: ValidationSchema<any> = {
         }
     }
 };
+
+export const createSubRoute: ValidationSchema<any> = {
+    method: {
+        exists: true,
+        isString: true,
+        isIn: {
+            options: [
+                [
+                    "GET",
+                    "PUT",
+                    "POST",
+                    "DELETE",
+                    "PATCH",
+                    "COPY",
+                    "HEAD",
+                    "OPTIONS",
+                    "LINK",
+                    "UNLINK",
+                    "PURGE",
+                    "LOCK",
+                    "UNLOCK",
+                    "PROFIND",
+                    "VIEW"
+                ]
+            ]
+        }
+    },
+    subRoute: {
+        exists: true,
+        isString: true
+    }
+};

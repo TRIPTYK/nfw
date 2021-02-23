@@ -5,19 +5,19 @@ import project from "../utils/project";
 import addEndpoint from "./add-endpoint";
 
 export default async function generateBasicRoute(
-    routeName: string,
+    prefix: string,
     methods?: Array<string>
 ): Promise<void> {
-    if (!routeName) return;
+    if (!prefix) return;
 
     for (const route of ApplicationRegistry.application.Routes) {
-        if (routeName === route.prefix)
+        if (prefix === route.prefix)
             throw new Error("This route already exists.");
     }
 
     methods = methods ?? ["GET"];
 
-    const { filePrefixName, classPrefixName } = getEntityNaming(routeName);
+    const { filePrefixName, classPrefixName } = getEntityNaming(prefix);
 
     const file = resources(filePrefixName).find(
         (f) => f.template === "base-controller"
@@ -26,7 +26,7 @@ export default async function generateBasicRoute(
         `../templates/${file.template}`
     );
     const createdFile = await generator({
-        routeName,
+        prefix,
         classPrefixName,
         filePrefixName,
         fileTemplateInfo: file
@@ -35,11 +35,6 @@ export default async function generateBasicRoute(
     const applicationFile = project.getSourceFile("src/api/application.ts");
     const applicationClass = applicationFile.getClasses()[0];
     const importControllerName = `${classPrefixName}Controller`;
-
-    createdFile.addImportDeclaration({
-        defaultImport: "Express",
-        moduleSpecifier: "express"
-    });
 
     const objectArgs = applicationClass
         .getDecorator("RegisterApplication")
@@ -56,7 +51,7 @@ export default async function generateBasicRoute(
     }
 
     for (const method of methods) {
-        await addEndpoint(routeName, method);
+        await addEndpoint(prefix, method);
     }
 
     // auto generate imports
