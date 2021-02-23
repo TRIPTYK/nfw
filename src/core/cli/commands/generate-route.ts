@@ -8,11 +8,14 @@ export default async function generateBasicRoute(
     prefix: string,
     methods?: Array<string>
 ): Promise<void> {
-    if (!prefix) return;
+    if (!prefix) {
+        return;
+    }
 
     for (const route of ApplicationRegistry.application.Routes) {
-        if (prefix === route.prefix)
+        if (prefix === route.prefix) {
             throw new Error("This route already exists.");
+        }
     }
 
     methods = methods ?? ["GET"];

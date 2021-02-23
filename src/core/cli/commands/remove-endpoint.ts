@@ -13,7 +13,13 @@ export default async function removeEndpoint(
         (sub) => sub.methodName === methodName
     );
 
-    if (!currentRoute || !subRoute) return;
+    if (!currentRoute) {
+        throw new Error(`"${prefix}" does not exist.`);
+    }
+
+    if (!subRoute) {
+        throw new Error(`"${methodName}" does not exist.`);
+    }
 
     const controller = resources(prefix).find(
         (r) => r.template === "controller"
@@ -36,6 +42,7 @@ export default async function removeEndpoint(
     }
 
     const classMethod = routeClass.getMethod(subRoute.methodName);
+
     classMethod.getDecorator(
         subRoute.methodName.charAt(0).toUpperCase() +
             subRoute.methodName.slice(1)
