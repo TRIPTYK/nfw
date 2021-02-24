@@ -4,6 +4,7 @@ import { ApplicationRegistry } from "../../application";
 import { toCamelCase } from "../../utils/case.util";
 import resources, { getEntityNaming } from "../static/resources";
 import project from "../utils/project";
+import { getJsonApiEntityName } from "../utils/naming";
 
 export default async function addEndpoint(
     prefix: string,
@@ -82,18 +83,4 @@ export default async function addEndpoint(
         })
         .setIsDecoratorFactory(true);
     controllerFile.fixMissingImports();
-}
-
-function getJsonApiEntityName(prefix: string) {
-    return getConnection()
-        .entityMetadatas.filter((table) =>
-            ApplicationRegistry.entities.includes(table.target as any)
-        )
-        .map((table) => {
-            return {
-                entityName: table.name,
-                tableName: table.tableName
-            };
-        })
-        .find((table) => table.tableName.toLowerCase() === prefix);
 }

@@ -1,6 +1,8 @@
+import { getConnection } from "typeorm";
 import { ApplicationRegistry } from "../../application";
 import resources, { getEntityNaming } from "../static/resources";
 import project from "../utils/project";
+import { getJsonApiEntityName } from "../utils/naming";
 
 export default async function removeEndpoint(
     prefix: string,
@@ -9,6 +11,8 @@ export default async function removeEndpoint(
     const currentRoute = ApplicationRegistry.application.Routes.find(
         (r) => r.prefix === prefix
     );
+
+    prefix = getJsonApiEntityName(prefix)?.entityName.toLowerCase() ?? prefix;
 
     if (currentRoute?.type === "basic") {
         throw new Error("Subroute of basic routes can't be deleted.");
