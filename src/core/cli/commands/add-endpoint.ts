@@ -10,6 +10,13 @@ export default async function addEndpoint(
     method: string,
     subroute?: string
 ): Promise<void> {
+    if (
+        ApplicationRegistry.application.Routes.find((r) => r.prefix === prefix)
+            ?.type === "basic"
+    ) {
+        throw new Error("Subroute can't be added to basic routes.");
+    }
+
     subroute = `/${normalize(subroute ?? "/").replace(/^\/+|\/+$/, "")}`;
 
     prefix = getJsonApiEntityName(prefix)?.entityName.toLowerCase() ?? prefix;

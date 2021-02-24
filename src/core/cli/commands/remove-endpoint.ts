@@ -9,6 +9,11 @@ export default async function removeEndpoint(
     const currentRoute = ApplicationRegistry.application.Routes.find(
         (r) => r.prefix === prefix
     );
+
+    if (currentRoute?.type === "basic") {
+        throw new Error("Subroute of basic routes can't be deleted.");
+    }
+
     const subRoute = currentRoute.routes.find(
         (sub) => sub.methodName === methodName
     );
