@@ -52,7 +52,10 @@ export const create: ValidationSchema<User> = {
         isUppercase: {
             negated: true
         }
-    }
+    },
+    test: {
+        	exists: true
+        }
 };
 
 // PATCH /v1/users/:id
@@ -91,5 +94,8 @@ export const update: ValidationSchema<User> = {
     username: {
         isString: true,
         optional: true
-    }
+    },
+    test: {
+        	exists: true
+        }
 };

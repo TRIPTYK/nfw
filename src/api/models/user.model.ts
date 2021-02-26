@@ -28,6 +28,7 @@ import { UserSerializer } from "../serializers/user.serializer";
 import ACLService from "../services/acl.service";
 import * as UserValidator from "../validations/user.validation";
 import { Document } from "./document.model";
+import { Test } from "../enums/test.enum";
 
 export interface UserInterface {
     password: string;
@@ -39,6 +40,7 @@ export interface UserInterface {
     deleted_at: any;
     documents: Document[];
     avatar: Document;
+    test;
 }
 
 @JsonApiEntity("users", {
@@ -157,4 +159,11 @@ export class User extends JsonApiModel<User> implements UserInterface {
         const aclService = container.resolve(ACLService);
         return aclService.can(this, method, context, resource);
     }
+
+    @Column({
+    	type: 'set',
+    	enum: Test,
+    	nullable: false
+    })
+    public test;
 }

@@ -4,7 +4,7 @@ import BaseJsonApiController from "../../core/controllers/json-api.controller";
 import {
     Get,
     JsonApiController,
-    JsonApiMethodMiddleware
+    RouteMiddleware
 } from "../../core/decorators/controller.decorator";
 import { Roles } from "../enums/role.enum";
 import AuthMiddleware, {
@@ -14,9 +14,9 @@ import { User } from "../models/user.model";
 
 @JsonApiController(User)
 @autoInjectable()
+@RouteMiddleware<AuthMiddlewareArgs>(AuthMiddleware, [Roles.Admin, Roles.User])
 export default class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
-    @JsonApiMethodMiddleware<AuthMiddlewareArgs>(AuthMiddleware, [Roles.Admin])
     public profile(req: Request): any {
         return req.user;
     }
