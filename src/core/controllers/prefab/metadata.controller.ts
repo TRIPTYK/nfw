@@ -4,6 +4,7 @@ import { singleton } from "tsyringe";
 import { EntityMetadata, getRepository } from "typeorm";
 import { Roles } from "../../../api/enums/role.enum";
 import { ApplicationRegistry } from "../../application/registry.application";
+import getPerms from "../../cli/commands/get-perms";
 import { Controller, Get } from "../../decorators/controller.decorator";
 import TypeORMService from "../../services/typeorm.service";
 import BaseController from "../base.controller";
@@ -45,6 +46,11 @@ export default class MetadataController extends BaseController {
     @Get("/roles")
     public getRoles(req: Request, res: Response) {
         return Roles;
+    }
+
+    @Get("/perms/:name")
+    public getPerms(req: Request, res: Response) {
+        return this.getAllPerms(req.params.name);
     }
 
     @Get("/:entity/count")
@@ -117,5 +123,9 @@ export default class MetadataController extends BaseController {
                 };
             })
         };
+    }
+
+    protected getAllPerms(name: string) {
+        return getPerms(name);
     }
 }

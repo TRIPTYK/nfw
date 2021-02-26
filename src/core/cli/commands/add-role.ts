@@ -14,5 +14,7 @@ export default async function addRole(roleName: string): Promise<void> {
             name: pascalcase(roleName),
             value: camelcase(roleName)
         });
+    } else {
+        throw new Error(`${roleName} already exist`);
     }
 }

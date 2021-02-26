@@ -50,4 +50,7 @@ export default class UserSerializerSchema
 
     @Relation(() => DocumentSerializerSchema)
     public avatar: Document;
+    @Serialize()
+    @Deserialize()
+    public test;
 }

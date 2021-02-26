@@ -8,8 +8,7 @@ import {
     JsonApiController,
     JsonApiMethodMiddleware,
     OverrideSerializer,
-    OverrideValidator
-} from "../../core/decorators/controller.decorator";
+    OverrideValidator, RouteMiddleware } from "../../core/decorators/controller.decorator";
 import {
     DocumentResizeMiddleware,
     DocumentResizeMiddlewareArgs
@@ -18,6 +17,8 @@ import FileUploadMiddleware, {
     FileUploadMiddlewareArgs
 } from "../middlewares/file-upload.middleware";
 import { Document } from "../models/document.model";
+import AuthMiddleware, { AuthMiddlewareArgs } from "../middlewares/auth.middleware";
+import { Roles } from "../enums/role.enum";
 
 @JsonApiController(Document)
 @autoInjectable()

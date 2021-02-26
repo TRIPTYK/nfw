@@ -1,22 +1,23 @@
 /* eslint-disable arrow-body-style */
 import { Request, Response } from "express";
-import httpStatus, * as HttpStatus from "http-status";
+import * as HttpStatus from "http-status";
 import * as SocketIO from "socket.io-client";
 import { singleton } from "tsyringe";
-import { http } from "winston";
 import {
     ApplicationLifeCycleEvent,
     ApplicationRegistry
 } from "../../application/registry.application";
 import addColumn from "../../cli/commands/add-column";
+import addPerms from "../../cli/commands/add-permission";
 import addRelation from "../../cli/commands/add-relation";
 import addRole from "../../cli/commands/add-role";
 import deleteJsonApiEntity from "../../cli/commands/delete-entity";
+import deleteRole from "../../cli/commands/delete-role";
 import generateJsonApiEntity from "../../cli/commands/generate-entity";
 import generateBasicRoute from "../../cli/commands/generate-route";
 import removeColumn from "../../cli/commands/remove-column";
+import removePerms from "../../cli/commands/remove-permissions";
 import { removeRelation } from "../../cli/commands/remove-relation";
-import removeRole from "../../cli/commands/remove-role";
 import project from "../../cli/utils/project";
 import {
     Controller,
@@ -28,9 +29,9 @@ import ValidationMiddleware from "../../middlewares/validation.middleware";
 import {
     columnsActions,
     createColumn,
-    createRoute,
     createEntity,
-    createRelation
+    createRelation,
+    createRoute
 } from "../../validation/generator.validation";
 import BaseController from "../base.controller";
 
@@ -75,12 +76,17 @@ export default class GeneratorController extends BaseController {
 
     @Post("/role/:name")
     public async generateRole(req: Request, res: Response) {
-        if (req.body.action === "ADD") {
-            await addRole(req.params.name);
-        }
-        if (req.body.action === "REMOVE") {
-            await removeRole(req.params.name);
-        }
+        await addRole(req.params.name);
+        res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
+
+    @Post("/perms/:name")
+    public async addPermissions(req: Request, res: Response) {
+        await addPerms(req.params.name, req.body.role);
         res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
@@ -174,6 +180,26 @@ export default class GeneratorController extends BaseController {
     @Delete("/entity/:name")
     public async deleteEntity(req: Request, res: Response) {
         await deleteJsonApiEntity(req.params.name);
+        res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
+
+    @Delete("/role/:name")
+    public async deleteRole(req: Request, res: Response) {
+        await deleteRole(req.params.name);
+        res.sendStatus(HttpStatus.ACCEPTED);
+        await this.sendMessageAndWaitResponse("app-save");
+        await project.save();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
+
+    @Delete("/perms/:name")
+    public async removePerms(req: Request, res: Response) {
+        await removePerms(req.params.name, req.body.role);
         res.sendStatus(HttpStatus.ACCEPTED);
         await this.sendMessageAndWaitResponse("app-save");
         await project.save();
