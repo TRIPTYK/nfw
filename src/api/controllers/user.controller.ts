@@ -14,9 +14,9 @@ import { User } from "../models/user.model";
 
 @JsonApiController(User)
 @autoInjectable()
-export class UserController extends BaseJsonApiController<User> {
+//@RouteMiddleware<AuthMiddlewareArgs>(AuthMiddleware, [Roles.Admin, Roles.User])
+export default class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
-    @JsonApiMethodMiddleware<AuthMiddlewareArgs>(AuthMiddleware)
     public profile(req: Request): any {
         return req.user;
     }

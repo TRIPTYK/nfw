@@ -19,6 +19,8 @@ import {
     FileUploadMiddlewareArgs
 } from "../middlewares/file-upload.middleware";
 import { Document } from "../models/document.model";
+import AuthMiddleware, { AuthMiddlewareArgs } from "../middlewares/auth.middleware";
+import { Roles } from "../enums/role.enum";
 
 @JsonApiController(Document)
 @autoInjectable()
