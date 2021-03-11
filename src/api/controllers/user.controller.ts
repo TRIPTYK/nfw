@@ -1,8 +1,7 @@
 import {
     BaseJsonApiController,
     Get,
-    JsonApiController,
-    Post
+    JsonApiController
 } from "@triptyk/nfw-core";
 import { Request } from "express";
 import { autoInjectable } from "tsyringe";
@@ -14,10 +13,5 @@ export class UserController extends BaseJsonApiController<User> {
     @Get("/profile")
     public profile(req: Request): any {
         return req.user;
-    }
-
-    @Post("/")
-    public create(req: Request, res): any {
-        return super.create(req, res);
     }
 }
