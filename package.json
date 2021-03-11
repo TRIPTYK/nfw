@@ -51,7 +51,7 @@
     "dependencies": {
         "@elastic/elasticsearch": "^7.5.0",
         "@hapi/boom": "^9.1.0",
-        "@triptyk/nfw-core": "file:../nfw-core/",
+        "@triptyk/nfw-core": "../nfw-core/",
         "bcrypt": "^5.0.0",
         "body-parser": "^1.19.0",
         "compression": "^1.7.4",
@@ -63,6 +63,7 @@
         "helmet": "^3.21.2",
         "http-status": "^1.4.2",
         "jimp": "^0.9.3",
+        "joi": "^17.4.0",
         "jwt-simple": "^0.5.6",
         "mailgun-js": "^0.22.0",
         "mkdirp": "^1.0.4",

@@ -17,7 +17,7 @@ import { autoInjectable } from "tsyringe";
 import { AuthController } from "./controllers/auth.controller";
 import { DocumentController } from "./controllers/document.controller";
 import { StatusController } from "./controllers/status.controller";
-import UserController from "./controllers/user.controller";
+import { UserController } from "./controllers/user.controller";
 import { ErrorMiddleware } from "./middlewares/error.middleware";
 import { NotFoundMiddleware } from "./middlewares/not-found.middleware";
 import { RateLimitMiddleware } from "./middlewares/rate-limit.middleware";
