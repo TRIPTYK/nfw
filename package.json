@@ -65,6 +65,7 @@
         "http-status": "^1.4.2",
         "jimp": "^0.9.3",
         "json-api-serializer": "^2.6.1",
+        "joi": "^17.4.0",
         "jwt-simple": "^0.5.6",
         "mailgun-js": "^0.22.0",
         "mkdirp": "^1.0.4",
