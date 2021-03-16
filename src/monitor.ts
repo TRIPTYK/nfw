@@ -141,7 +141,10 @@ pm2.connect(async (err) => {
             changeStatus("compiled");
             changeStatus("synchronizing");
             try {
-                await connection.synchronize();
+                //await connection.synchronize();
+                execSync(
+                    "./node_modules/.bin/ts-node ./node_modules/typeorm/cli.js schema:sync"
+                );
                 changeStatus("synchronized");
             } catch (e) {
                 console.log(e);
