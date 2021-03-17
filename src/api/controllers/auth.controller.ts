@@ -82,6 +82,11 @@ export class AuthController extends BaseController {
             user
         );
 
+        //sleep for a second
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, 1500);
+        });
+
         return new AuthTokenSerializer().serialize(
             accessToken,
             refreshToken.refreshToken,
