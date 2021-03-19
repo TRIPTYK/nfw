@@ -109,3 +109,4 @@ package-lock.json
 !document.*.ts
 !status.*.ts
 !user.*.ts
+!backup.*.ts
