@@ -66,19 +66,15 @@ pm2.connect(async (err) => {
     };
 
     const restoreBackup = () => {
-        return new Promise((res, rej) => {
-            tar.c({ gzip: true }, ["src/api"])
-                .pipe(
-                    createWriteStream(
-                        join(process.cwd(), "dist", "backup.tar.gz")
-                    )
-                )
-                .on("error", () => {
-                    rej();
-                })
-                .on("finish", () => {
-                    res(true);
+        return new Promise(async (res, rej) => {
+            try {
+                await tar.x({
+                    file: join(process.cwd(), "dist", "backup.tar.gz")
                 });
+                res(true);
+            } catch (error) {
+                rej();
+            }
         });
     };
 
@@ -89,6 +85,17 @@ pm2.connect(async (err) => {
 
         client.on("hello", async () => {
             changeStatus("running");
+        });
+
+        client.on('restore-backup', async (name, fn) => {
+            try {
+                await restoreBackup();
+                changeStatus("restorded");
+                fn("ok");
+            } catch (error) {
+                changeStatus("error");
+                console.log(error);
+            }
         });
 
         client.on("app-save", (name, fn) => {

@@ -15,6 +15,7 @@ import * as Helmet from "helmet";
 import * as Passport from "passport";
 import { autoInjectable } from "tsyringe";
 import { AuthController } from "./controllers/auth.controller";
+import { BackupController } from "./controllers/backup.controller";
 import { DocumentController } from "./controllers/document.controller";
 import { StatusController } from "./controllers/status.controller";
 import { UserController } from "./controllers/user.controller";
@@ -29,6 +30,7 @@ import { PassportService } from "./services/passport.service";
 @RegisterApplication({
     controllers: [
         AuthController,
+        BackupController,
         UserController,
         DocumentController,
         StatusController,
