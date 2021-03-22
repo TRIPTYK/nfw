@@ -6,7 +6,7 @@ import {
     getConnectionManager
 } from "@triptyk/nfw-core";
 import { execSync } from "child_process";
-import { createWriteStream } from "fs";
+import { createWriteStream, unlinkSync } from "fs";
 import * as Http from "http";
 import { join } from "path";
 import * as pm2 from "pm2";
@@ -15,6 +15,7 @@ import { Server } from "socket.io";
 import * as tar from "tar";
 import { container } from "tsyringe";
 import * as config from "../ecosystem.config";
+import { recursiveReadDir } from "./utils/recursiveDir";
 
 const [, firstApp] = config.apps;
 
@@ -59,22 +60,50 @@ pm2.connect(async (err) => {
 
     let status = "";
 
+    /**
+     * Change the current websocket status.
+     * @param newStatus new web socket status.
+     */
     const changeStatus = (newStatus: string) => {
         status = newStatus;
         console.log(status);
         io.emit("status", newStatus);
     };
 
-    const restoreBackup = () => {
-        return new Promise(async (res, rej) => {
-            try {
-                await tar.x({
-                    file: join(process.cwd(), "dist", "backup.tar.gz")
+    /**
+     * Restore the last saved backup.
+     * @param deleteSupp If true, all files not included in the backup will be deleted.
+     */
+    const restoreBackup = (deleteSupp = true) => {
+        if (deleteSupp) {
+            const backupFiles = execSync("tar -dvf dist/backup.tar.gz")
+                .toString()
+                .split("\n");
+            const delFiles = recursiveReadDir("./src/api/")
+                .map((f) => f.path)
+                .filter((f) => !backupFiles.includes(f));
+
+            for (const f of delFiles) unlinkSync(f);
+        }
+        return tar.x({
+            file: join(process.cwd(), "dist", "backup.tar.gz")
+        });
+    };
+
+    /**
+     * Save the current configuration.
+     */
+    const saveBackup = () => {
+        return new Promise((res, rej) => {
+            tar.c({ gzip: true }, ["src/api"])
+                .pipe(
+                    createWriteStream(
+                        join(process.cwd(), "dist", "backup.tar.gz")
+                    )
+                )
+                .on("finish", () => {
+                    res(true);
                 });
-                res(true);
-            } catch (error) {
-                rej();
-            }
         });
     };
 
@@ -87,7 +116,7 @@ pm2.connect(async (err) => {
             changeStatus("running");
         });
 
-        client.on('restore-backup', async (name, fn) => {
+        client.on("restore-backup", async (name, fn) => {
             try {
                 await restoreBackup();
                 changeStatus("restorded");
@@ -98,17 +127,12 @@ pm2.connect(async (err) => {
             }
         });
 
-        client.on("app-save", (name, fn) => {
-            tar.c({ gzip: true }, ["src/api"])
-                .pipe(
-                    createWriteStream(
-                        join(process.cwd(), "dist", "backup.tar.gz")
-                    )
-                )
-                .on("finish", () => {
-                    fn("ok");
-                });
+        client.on("app-save", async (name, fn) => {
+            await saveBackup().then(() => {
+                fn("ok");
+            });
         });
+
         client.on("app-recompile-sync", async (name, fn) => {
             let connection: Connection;
             try {
