@@ -42,13 +42,20 @@ export class BackupController extends BaseController {
         res.status(200).send();
     }
 
+    @Post()
+    public async restart(req: Request, res: Response) {
+        res.status(200).send();
+        await this.sendMessageAndWaitResponse("app-recompile-sync");
+        await this.sendMessageAndWaitResponse("app-restart");
+    }
+
     private sendMessageAndWaitResponse(type: string, data?: any) {
         return new Promise((resolve, rej) => {
             this.socket.emit(type, data, (response) => {
-                if (response !== "ok") {
-                    rej(response);
-                } else {
+                if (response === "ok") {
                     resolve(response);
+                } else {
+                    rej(response);
                 }
             });
         });
