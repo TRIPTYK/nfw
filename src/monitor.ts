@@ -76,7 +76,7 @@ pm2.connect(async (err) => {
      */
     const restoreBackup = (deleteSupp = true) => {
         if (deleteSupp) {
-            const backupFiles = execSync("tar -dvf dist/backup.tar.gz")
+            const backupFiles = execSync("tar -tvf dist/backup.tar.gz")
                 .toString()
                 .split("\n");
             const delFiles = recursiveReadDir("./src/api/")
