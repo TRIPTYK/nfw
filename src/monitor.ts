@@ -60,6 +60,8 @@ pm2.connect(async (err) => {
 
     let status = "";
 
+    const backupDirs = ["src/api", "src/test"];
+
     /**
      * Change the current websocket status.
      * @param newStatus new web socket status.
@@ -79,11 +81,12 @@ pm2.connect(async (err) => {
             const backupFiles = execSync("tar -tvf dist/backup.tar.gz")
                 .toString()
                 .split("\n");
-            const delFiles = recursiveReadDir("./src/api/")
-                .map((f) => f.path)
-                .filter((f) => !backupFiles.includes(f));
-
-            for (const f of delFiles) unlinkSync(f);
+            for (const dir of backupDirs) {
+                const delFiles = recursiveReadDir(dir)
+                    .map((f) => f.path)
+                    .filter((f) => !backupFiles.includes(f));
+                for (const file of delFiles) unlinkSync(file);
+            }
         }
         return tar.x({
             file: join(process.cwd(), "dist", "backup.tar.gz")
@@ -95,7 +98,7 @@ pm2.connect(async (err) => {
      */
     const saveBackup = () => {
         return new Promise((res, rej) => {
-            tar.c({ gzip: true }, ["src/api"])
+            tar.c({ gzip: true }, backupDirs)
                 .pipe(
                     createWriteStream(
                         join(process.cwd(), "dist", "backup.tar.gz")

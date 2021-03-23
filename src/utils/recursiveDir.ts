@@ -7,11 +7,11 @@ export function recursiveReadDir(path = "") {
     });
     const files = entries
         .filter((file) => !file.isDirectory())
-        .map((file) => ({ ...file, path: path + file.name }));
+        .map((file) => ({ ...file, path: join(path, file.name) }));
     const folders = entries.filter((folder) => folder.isDirectory());
 
     for (const folder of folders)
-        files.push(...recursiveReadDir(`${path}${folder.name}/`));
+        files.push(...recursiveReadDir(join(path, folder.name)));
 
     return files;
 }
