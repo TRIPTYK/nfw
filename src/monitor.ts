@@ -131,9 +131,8 @@ pm2.connect(async (err) => {
         });
 
         client.on("app-save", async (name, fn) => {
-            await saveBackup().then(() => {
-                fn("ok");
-            });
+            await saveBackup();
+            fn("ok");
         });
 
         client.on("app-recompile-sync", async (name, fn) => {
