@@ -121,9 +121,10 @@ pm2.connect(async (err) => {
 
         client.on("restore-backup", async (name, fn) => {
             try {
+                changeStatus("restoring");
                 await restoreBackup();
-                changeStatus("restorded");
                 fn("ok");
+                changeStatus("restorded");
             } catch (error) {
                 changeStatus("error");
                 console.log(error);
@@ -131,8 +132,15 @@ pm2.connect(async (err) => {
         });
 
         client.on("app-save", async (name, fn) => {
-            await saveBackup();
-            fn("ok");
+            try {
+                console.log("saving");
+                await saveBackup();
+                fn("ok");
+                console.log("saved");
+            } catch (error) {
+                changeStatus("error");
+                console.log(error);
+            }
         });
 
         client.on("app-recompile-sync", async (name, fn) => {
