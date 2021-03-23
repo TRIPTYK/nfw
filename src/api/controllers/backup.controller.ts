@@ -3,9 +3,12 @@ import {
     ApplicationRegistry,
     BaseController,
     Controller,
+    Get,
     Post
 } from "@triptyk/nfw-core";
 import { Request, Response } from "express";
+import { readdirSync, statSync } from "fs";
+import { join } from "path";
 import * as SocketIO from "socket.io-client";
 import { autoInjectable } from "tsyringe";
 
@@ -13,6 +16,7 @@ import { autoInjectable } from "tsyringe";
 @autoInjectable()
 export class BackupController extends BaseController {
     private socket = null;
+    private backupFolder = join(process.cwd(), "dist", "backups");
 
     constructor() {
         super();
@@ -25,6 +29,20 @@ export class BackupController extends BaseController {
             this.socket.on("connect", () => {
                 this.socket.emit("hello");
             });
+        });
+    }
+
+    @Get("/")
+    public async getBackups(req: Request, res: Response) {
+        res.send({
+            backupList: readdirSync(this.backupFolder)
+                .filter((b) => /backup.{0,}\.tar\.gz/.test(b))
+                .map((d) => {
+                    return {
+                        file: d,
+                        date: statSync(join(this.backupFolder, d)).birthtime
+                    };
+                })
         });
     }
 

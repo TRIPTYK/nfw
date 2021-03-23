@@ -6,7 +6,13 @@ import {
     getConnectionManager
 } from "@triptyk/nfw-core";
 import { execSync } from "child_process";
-import { createWriteStream, unlinkSync } from "fs";
+import {
+    createWriteStream,
+    existsSync,
+    mkdirSync,
+    readdirSync,
+    unlinkSync
+} from "fs";
 import * as Http from "http";
 import { join } from "path";
 import * as pm2 from "pm2";
@@ -61,6 +67,7 @@ pm2.connect(async (err) => {
     let status = "";
 
     const backupDirs = ["src/api", "src/test"];
+    const backupFolder = join(process.cwd(), "dist/backups");
 
     /**
      * Change the current websocket status.
@@ -76,21 +83,23 @@ pm2.connect(async (err) => {
      * Restore the last saved backup.
      * @param deleteSupp If true, all files not included in the backup will be deleted.
      */
-    const restoreBackup = (deleteSupp = true) => {
-        if (deleteSupp) {
-            const backupFiles = execSync("tar -tvf dist/backup.tar.gz")
-                .toString()
-                .split("\n");
-            for (const dir of backupDirs) {
-                const delFiles = recursiveReadDir(dir)
-                    .map((f) => f.path)
-                    .filter((f) => !backupFiles.includes(f));
-                for (const file of delFiles) unlinkSync(file);
+    const restoreBackup = (name?: string, deleteSupp = true) => {
+        name = name ?? readdirSync(backupFolder).slice(-1)[0];
+        if (name) {
+            const file = join(backupFolder, name);
+            if (deleteSupp) {
+                const backupFiles = execSync(`tar -tvf ${file}`)
+                    .toString()
+                    .split("\n");
+                for (const backupDir of backupDirs) {
+                    const delFiles = recursiveReadDir(backupDir)
+                        .map((f) => f.path)
+                        .filter((f) => !backupFiles.includes(f));
+                    for (const delFile of delFiles) unlinkSync(delFile);
+                }
             }
+            return tar.x({ file });
         }
-        return tar.x({
-            file: join(process.cwd(), "dist", "backup.tar.gz")
-        });
     };
 
     /**
@@ -98,10 +107,18 @@ pm2.connect(async (err) => {
      */
     const saveBackup = () => {
         return new Promise((res, rej) => {
+            if (!existsSync(backupFolder))
+                mkdirSync(backupFolder, { recursive: true });
             tar.c({ gzip: true }, backupDirs)
                 .pipe(
                     createWriteStream(
-                        join(process.cwd(), "dist", "backup.tar.gz")
+                        join(
+                            backupFolder,
+                            `backup${new Date()
+                                .toISOString()
+                                .slice(0, 19)
+                                .replace(/[-:]+/g, "")}.tar.gz`
+                        )
                     )
                 )
                 .on("finish", () => {
