@@ -66,7 +66,9 @@ pm2.connect(async (err) => {
 
     let status = "";
 
+    //List of dirs to backup.
     const backupDirs = ["src/api", "src/test"];
+    //Folder containing backups.
     const backupFolder = join(process.cwd(), "dist/backups");
 
     /**
@@ -80,7 +82,8 @@ pm2.connect(async (err) => {
     };
 
     /**
-     * Restore the last saved backup.
+     * Restore a saved backup.
+     * @param name Name of the backup to recover, if omitted, the last backup will be used.
      * @param deleteSupp If true, all files not included in the backup will be deleted.
      */
     const restoreBackup = (name?: string, deleteSupp = true) => {
@@ -107,11 +110,13 @@ pm2.connect(async (err) => {
      */
     const saveBackup = () => {
         return new Promise((res, rej) => {
+            //Create the backup folder if it doesn't exist yet.
             if (!existsSync(backupFolder))
                 mkdirSync(backupFolder, { recursive: true });
             tar.c({ gzip: true }, backupDirs)
                 .pipe(
                     createWriteStream(
+                        //named like this: backupYYYYMMDDTHHMMSS.tar.gz
                         join(
                             backupFolder,
                             `backup${new Date()
@@ -124,6 +129,9 @@ pm2.connect(async (err) => {
                 .on("finish", () => {
                     res(true);
                 });
+            //Above 10 backups, the oldest is erased.
+            if (readdirSync(backupFolder).length > 10)
+                unlinkSync(join(backupFolder, readdirSync(backupFolder)[0]));
         });
     };
 
@@ -139,7 +147,7 @@ pm2.connect(async (err) => {
         client.on("restore-backup", async (name, fn) => {
             try {
                 changeStatus("restoring");
-                await restoreBackup();
+                await restoreBackup(name);
                 fn("ok");
                 changeStatus("restorded");
             } catch (error) {

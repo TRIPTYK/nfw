@@ -48,7 +48,8 @@ export class BackupController extends BaseController {
 
     @Post()
     public async restore(req: Request, res: Response) {
-        await this.sendMessageAndWaitResponse("restore-backup");
+        const { name } = req.body;
+        await this.sendMessageAndWaitResponse("restore-backup", name);
         res.status(200).send();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
         await this.sendMessageAndWaitResponse("app-restart");
