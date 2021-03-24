@@ -37,10 +37,10 @@ export class BackupController extends BaseController {
         res.send({
             backupList: readdirSync(this.backupFolder)
                 .filter((b) => /backup.{0,}\.tar\.gz/.test(b))
-                .map((d) => {
+                .map((file) => {
                     return {
-                        file: d,
-                        date: statSync(join(this.backupFolder, d)).birthtime
+                        file,
+                        date: statSync(join(this.backupFolder, file)).birthtime
                     };
                 })
         });
