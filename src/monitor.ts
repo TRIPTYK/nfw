@@ -75,10 +75,11 @@ pm2.connect(async (err) => {
      * Change the current websocket status.
      * @param newStatus new web socket status.
      */
-    const changeStatus = (newStatus: string) => {
+    const changeStatus = (newStatus: string, data?: any) => {
         status = newStatus;
         console.log(status);
-        io.emit("status", newStatus);
+        if (newStatus === "error") data = data.message;
+        io.emit("status", newStatus, data);
     };
 
     /**
@@ -151,7 +152,7 @@ pm2.connect(async (err) => {
                 fn("ok");
                 changeStatus("restorded");
             } catch (error) {
-                changeStatus("error");
+                changeStatus("error", error);
                 console.log(error);
             }
         });
@@ -163,7 +164,7 @@ pm2.connect(async (err) => {
                 fn("ok");
                 console.log("saved");
             } catch (error) {
-                changeStatus("error");
+                changeStatus("error", error);
                 console.log(error);
             }
         });
@@ -191,7 +192,7 @@ pm2.connect(async (err) => {
                 if (err.name === "AlreadyHasActiveConnectionError") {
                     connection = getConnectionManager().get("default");
                 } else {
-                    changeStatus("error");
+                    changeStatus("error", err);
                     return;
                 }
             }
@@ -201,7 +202,7 @@ pm2.connect(async (err) => {
                 execSync("./node_modules/.bin/tsc");
             } catch (e) {
                 console.log(e);
-                changeStatus("error");
+                changeStatus("error", e);
                 return;
             }
             changeStatus("compiled");
@@ -214,7 +215,7 @@ pm2.connect(async (err) => {
                 changeStatus("synchronized");
             } catch (e) {
                 console.log(e);
-                changeStatus("error");
+                changeStatus("error", e);
                 return;
             }
             fn("ok");
