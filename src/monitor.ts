@@ -145,6 +145,10 @@ pm2.connect(async (err) => {
             changeStatus("running");
         });
 
+        client.on("message", (message: string) => {
+            console.log(`From ${client.id}: ${message}`);
+        });
+
         client.on("restore-backup", async (name, fn) => {
             try {
                 changeStatus("restoring");

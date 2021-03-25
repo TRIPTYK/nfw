@@ -26,8 +26,9 @@ export class BackupController extends BaseController {
             }
         });
         ApplicationRegistry.on(ApplicationLifeCycleEvent.Running, () => {
-            this.socket.on("connect", () => {
-                this.socket.emit("hello");
+            this.socket.on("status", (status: string) => {
+                if (status === "running")
+                    this.socket.emit("message", "backup system operational");
             });
         });
     }
