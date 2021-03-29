@@ -7,7 +7,6 @@ import {
     RegisterApplication,
     TypeORMService
 } from "@triptyk/nfw-core";
-import * as BodyParser from "body-parser";
 import * as Compression from "compression";
 import * as Cors from "cors";
 import * as Express from "express";
@@ -79,8 +78,8 @@ export class Application extends BaseApplication {
          *
          * @inheritdoc https://www.npmjs.com/package/body-parser
          */
-        this.app.use(BodyParser.urlencoded({ extended: false }));
-        this.app.use(BodyParser.json({ type: "application/vnd.api+json" }));
+        this.app.use(Express.urlencoded({ extended: false }));
+        this.app.use(Express.json({ type: "application/vnd.api+json" }));
 
         /**
          * GZIP compression
