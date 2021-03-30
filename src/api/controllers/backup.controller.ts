@@ -1,31 +1,16 @@
-import {
-    ApplicationLifeCycleEvent,
-    ApplicationRegistry,
-    BaseController,
-    Controller,
-    Get,
-    Post
-} from "@triptyk/nfw-core";
+import { Controller, Get, Post, WsController } from "@triptyk/nfw-core";
 import { Request, Response } from "express";
 import { readdirSync, statSync } from "fs";
 import { join } from "path";
-import * as SocketIO from "socket.io-client";
 import { autoInjectable } from "tsyringe";
 
 @Controller("backup")
 @autoInjectable()
-export class BackupController extends BaseController {
-    private socket = null;
+export class BackupController extends WsController {
     private backupFolder = join(process.cwd(), "dist", "backups");
 
     constructor() {
-        super();
-        this.socket = SocketIO("http://localhost:3000", {
-            query: {
-                app: false
-            }
-        });
-        ApplicationRegistry.on(ApplicationLifeCycleEvent.Running, () => {
+        super("http://localhost:3000", undefined, () => {
             this.socket.on("status", (status: string) => {
                 if (status === "running")
                     this.socket.emit("message", "backup system operational");
@@ -67,17 +52,5 @@ export class BackupController extends BaseController {
         res.status(200).send();
         await this.sendMessageAndWaitResponse("app-recompile-sync");
         await this.sendMessageAndWaitResponse("app-restart");
-    }
-
-    private sendMessageAndWaitResponse(type: string, data?: any) {
-        return new Promise((resolve, rej) => {
-            this.socket.emit(type, data, (response) => {
-                if (response === "ok") {
-                    resolve(response);
-                } else {
-                    rej(response);
-                }
-            });
-        });
     }
 }
