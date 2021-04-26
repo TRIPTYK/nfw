@@ -72,7 +72,7 @@ pm2.connect(async (err) => {
     const backupFolder = join(process.cwd(), "dist/backups");
 
     /**
-     * Change the current websocket status.
+     * Changes the current websocket status.
      * @param newStatus new web socket status.
      */
     const changeStatus = (newStatus: string, data?: any) => {
@@ -83,11 +83,20 @@ pm2.connect(async (err) => {
     };
 
     /**
-     * Restore a saved backup.
+     * Creates the backup folder if it doesn't exist yet.
+     */
+    const createBackupFolder = () => {
+        if (!existsSync(backupFolder))
+                mkdirSync(backupFolder, { recursive: true });
+    };
+
+    /**
+     * Restores a saved backup.
      * @param name Name of the backup to recover, if omitted, the last backup will be used.
      * @param deleteSupp If true, all files not included in the backup will be deleted.
      */
     const restoreBackup = (name?: string, deleteSupp = true) => {
+        createBackupFolder();
         name = name ?? readdirSync(backupFolder).slice(-1)[0];
         if (name) {
             const file = join(backupFolder, name);
@@ -111,9 +120,7 @@ pm2.connect(async (err) => {
      */
     const saveBackup = () => {
         return new Promise((res, rej) => {
-            //Create the backup folder if it doesn't exist yet.
-            if (!existsSync(backupFolder))
-                mkdirSync(backupFolder, { recursive: true });
+            createBackupFolder();
             tar.c({ gzip: true }, backupDirs)
                 .pipe(
                     createWriteStream(
