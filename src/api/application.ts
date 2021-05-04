@@ -7,7 +7,6 @@ import {
     RegisterApplication,
     TypeORMService
 } from "@triptyk/nfw-core";
-import * as BodyParser from "body-parser";
 import * as Compression from "compression";
 import * as Cors from "cors";
 import * as Express from "express";
@@ -15,6 +14,7 @@ import * as Helmet from "helmet";
 import * as Passport from "passport";
 import { autoInjectable } from "tsyringe";
 import { AuthController } from "./controllers/auth.controller";
+import { BackupController } from "./controllers/backup.controller";
 import { DocumentController } from "./controllers/document.controller";
 import { StatusController } from "./controllers/status.controller";
 import { UserController } from "./controllers/user.controller";
@@ -29,6 +29,7 @@ import { PassportService } from "./services/passport.service";
 @RegisterApplication({
     controllers: [
         AuthController,
+        BackupController,
         UserController,
         DocumentController,
         StatusController,
@@ -77,8 +78,8 @@ export class Application extends BaseApplication {
          *
          * @inheritdoc https://www.npmjs.com/package/body-parser
          */
-        this.app.use(BodyParser.urlencoded({ extended: false }));
-        this.app.use(BodyParser.json({ type: "application/vnd.api+json" }));
+        this.app.use(Express.urlencoded({ extended: false }));
+        this.app.use(Express.json({ type: "application/vnd.api+json" }));
 
         /**
          * GZIP compression

@@ -8,9 +8,9 @@ import {
     useRefreshDatabase,
     useSeeding
 } from "typeorm-seeding";
-import { Roles } from "../src/api/enums/role.enum";
-import { User } from "../src/api/models/user.model";
-import { CreateAuthUserSeed } from "../src/seed/create-auth-user.seed";
+import { Roles } from "../api/enums/role.enum";
+import { User } from "../api/models/user.model";
+import { CreateAuthUserSeed } from "../seed/create-auth-user.seed";
 import { ServerContainer } from "./utils/server";
 
 chai.config.includeStack = false;
