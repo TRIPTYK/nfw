@@ -73,6 +73,10 @@ export class AuthController extends BaseController {
 
     @Post()
     public async login(req: Request): Promise<any> {
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, 1500);
+        });
+
         const { email, password } = req.body;
         const {
             user,

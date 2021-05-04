@@ -2,8 +2,8 @@ import * as chai from "chai";
 import { expect } from "chai";
 import * as request from "supertest";
 import { runSeeder, useRefreshDatabase, useSeeding } from "typeorm-seeding";
-import { User } from "../src/api/models/user.model";
-import { CreateAuthUserSeed } from "../src/seed/create-auth-user.seed";
+import { User } from "../api/models/user.model";
+import { CreateAuthUserSeed } from "../seed/create-auth-user.seed";
 import { ServerContainer } from "./utils/server";
 
 chai.config.includeStack = false;

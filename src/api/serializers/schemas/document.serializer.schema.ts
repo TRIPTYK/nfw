@@ -16,6 +16,12 @@ export class DocumentSerializerSchema
     public deleted_at: Date;
 
     @Serialize()
+    public updated_at;
+
+    @Serialize()
+    public created_at;
+
+    @Serialize()
     @Deserialize()
     public fieldname;
 

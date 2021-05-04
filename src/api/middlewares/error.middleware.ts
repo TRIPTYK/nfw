@@ -3,7 +3,9 @@ import * as Boom from "@hapi/boom";
 import { BaseErrorMiddleware, toCamelCase } from "@triptyk/nfw-core";
 import { NextFunction, Request, Response } from "express";
 import * as JSONAPISerializer from "json-api-serializer";
+import { MulterError } from "multer";
 import { singleton } from "tsyringe";
+import { fileError } from "../enums/file-error.enum";
 
 interface JsonApiErrorObject {
     detail: string;
@@ -62,6 +64,12 @@ export class ErrorMiddleware extends BaseErrorMiddleware {
             res.status(400);
             res.json(this.serializer.serializeError(allErrors));
             return;
+        }
+
+        if (error instanceof MulterError) {
+            error = Boom.boomify(error, {
+                statusCode: fileError[error.code]
+            });
         }
 
         if (!error.isBoom) {

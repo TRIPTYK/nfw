@@ -5,11 +5,11 @@ module.exports = {
             script: "./dist/src/app.bootstrap.js",
             args: "",
             exec_mode: "fork",
-            autorestart: true,
+            autorestart: false,
             max_restarts: 10,
             restart_delay: 1,
             node_args: "--max-old-space-size=512",
-            watch: true,
+            watch: false,
             max_memory_restart: "500M",
             env: {
                 NODE_ENV: "development"
@@ -27,7 +27,6 @@ module.exports = {
             args: "",
             exec_mode: "fork",
             max_restarts: 10,
-            watch: ["src"],
             env: {
                 NODE_ENV: "development"
             },
