@@ -1,6 +1,6 @@
 {
     "name": "nfw",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "This repository contains 3rd party REST API boilerplate Express.js, Typescript, TypeORM based.",
     "scripts": {
         "setup": "npm i && node ./init_scripts/setup",
@@ -51,6 +51,7 @@
     "dependencies": {
         "@elastic/elasticsearch": "^7.5.0",
         "@hapi/boom": "^9.1.0",
+        "@triptyk/nfw-core": "^0.0.8",
         "@types/socket.io-client": "^1.4.35",
         "bcrypt": "^5.0.0",
         "body-parser": "^1.19.0",
