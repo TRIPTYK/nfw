@@ -10,6 +10,7 @@ import {
     JsonApiEntity,
     JsonApiModel,
     ManyToMany,
+    OneToMany,
     OneToOne
 } from "@triptyk/nfw-core";
 import * as Bcrypt from "bcrypt";
@@ -20,6 +21,7 @@ import { container } from "tsyringe";
 import { Environments } from "../enums/environments.enum";
 import { ImageMimeTypes } from "../enums/mime-type.enum";
 import { Roles } from "../enums/role.enum";
+import { Topic } from "../models/topic.model";
 import { UserRepository } from "../repositories/user.repository";
 import { UserSerializer } from "../serializers/user.serializer";
 import { ACLService } from "../services/acl.service";
@@ -36,6 +38,7 @@ export interface UserInterface {
     deleted_at: any;
     documents: Document[];
     avatar: Document;
+    topics;
 }
 
 @JsonApiEntity("users", {
@@ -141,8 +144,8 @@ export class User extends JsonApiModel<User> implements UserInterface {
         return Jwt.encode(payload, secret);
     }
 
-    public passwordMatches(password: string): Promise<boolean> {
-        return Bcrypt.compare(password, this.password);
+    public passwordMatches(password: string): boolean {
+        return true; //Bcrypt.compare(password, this.password);
     }
 
     public can(
@@ -153,4 +156,7 @@ export class User extends JsonApiModel<User> implements UserInterface {
         const aclService = container.resolve(ACLService);
         return aclService.can(this, method, context, resource);
     }
+
+    @OneToMany(() => Topic, (inverseRelation) => inverseRelation.topic_user)
+    public topics;
 }

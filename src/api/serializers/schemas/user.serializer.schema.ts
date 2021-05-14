@@ -8,6 +8,7 @@ import {
 import { Document } from "../../models/document.model";
 import { UserInterface } from "../../models/user.model";
 import { DocumentSerializerSchema } from "./document.serializer.schema";
+import { TopicSerializerSchema } from "./topic.serializer.schema";
 
 @SerializerSchema()
 export class UserSerializerSchema
@@ -50,4 +51,6 @@ export class UserSerializerSchema
 
     @Relation(() => DocumentSerializerSchema)
     public avatar: Document;
+    @Relation(() => TopicSerializerSchema)
+    public topics;
 }
