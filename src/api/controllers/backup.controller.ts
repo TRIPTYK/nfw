@@ -12,8 +12,9 @@ export class BackupController extends WsController {
     constructor() {
         super("http://localhost:3000", undefined, () => {
             this.socket.on("status", (status: string) => {
-                if (status === "running")
+                if (status === "running") {
                     this.socket.emit("message", "backup system operational");
+                }
             });
         });
     }
