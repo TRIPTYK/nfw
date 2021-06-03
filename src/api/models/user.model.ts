@@ -141,8 +141,8 @@ export class User extends JsonApiModel<User> implements UserInterface {
         return Jwt.encode(payload, secret);
     }
 
-    public passwordMatches(password: string): boolean {
-        return true; //Bcrypt.compare(password, this.password);
+    public passwordMatches(password: string): Promise<boolean> {
+        return Bcrypt.compare(password, this.password);
     }
 
     public can(
