@@ -16,9 +16,7 @@ import { autoInjectable } from "tsyringe";
 import { AuthController } from "./controllers/auth.controller";
 import { BackupController } from "./controllers/backup.controller";
 import { DocumentController } from "./controllers/document.controller";
-import { PostController } from "./controllers/post.controller";
 import { StatusController } from "./controllers/status.controller";
-import { TopicController } from "./controllers/topic.controller";
 import { UserController } from "./controllers/user.controller";
 import { ErrorMiddleware } from "./middlewares/error.middleware";
 import { NotFoundMiddleware } from "./middlewares/not-found.middleware";
@@ -36,9 +34,7 @@ import { PassportService } from "./services/passport.service";
         DocumentController,
         StatusController,
         MetadataController,
-        GeneratorController,
-        TopicController,
-        PostController
+        GeneratorController
     ],
     services: [
         MailService,
