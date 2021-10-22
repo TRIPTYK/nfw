@@ -1,45 +1,13 @@
-import * as Boom from "@hapi/boom";
 import {
     BaseJsonApiModel,
-    BeforeInsert,
-    BeforeUpdate,
     Column,
-    ConfigurationService,
     DeleteDateColumn,
-    JoinColumn,
-    JoinTable,
     JsonApiEntity,
-    ManyToMany,
-    OneToOne
 } from "@triptyk/nfw-core";
-import * as Bcrypt from "bcrypt";
-import * as Jwt from "jwt-simple";
-import * as Moment from "moment-timezone";
-import { Permission } from "role-acl";
-import { container } from "tsyringe";
-import { Environments } from "../enums/environments.enum";
-import { ImageMimeTypes } from "../enums/mime-type.enum";
 import { Roles } from "../enums/role.enum";
-import { ACLService } from "../services/acl.service";
-import * as UserValidator from "../validations/user.validation";
-import { Document } from "./document.model";
 
-export interface UserInterface {
-    password: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    username: string;
-    role: Roles;
-    deleted_at: any;
-    documents: Document[];
-    avatar: Document;
-}
-
-@JsonApiEntity("users", {
-    validator: UserValidator
-})
-export class User extends BaseJsonApiModel<User> implements UserInterface {
+@JsonApiEntity("users")
+export class User extends BaseJsonApiModel<User> {
     @Column({
         default: "User",
         length: 32,
@@ -79,69 +47,6 @@ export class User extends BaseJsonApiModel<User> implements UserInterface {
     })
     public role: Roles;
 
-    @JoinTable()
-    @ManyToMany(() => Document, (document) => document.users)
-    public documents: Document[];
-
-    @OneToOne(() => Document, (document) => document.user_avatar)
-    @JoinColumn()
-    public avatar: Document;
-
     @DeleteDateColumn()
     public deleted_at;
-
-    @BeforeUpdate()
-    @BeforeInsert()
-    public checkAvatar(): void {
-        if (this.avatar) {
-            if (!(this.avatar.mimetype in ImageMimeTypes)) {
-                throw Boom.notAcceptable("Wrong document type");
-            }
-        }
-    }
-
-    @BeforeInsert()
-    @BeforeUpdate()
-    public async hashPassword(): Promise<boolean> {
-        try {
-            const rounds =
-                container.resolve<ConfigurationService>(ConfigurationService)
-                    .config.env === Environments.Test
-                    ? 1
-                    : 10;
-            this.password = await Bcrypt.hash(this.password, rounds);
-            return true;
-        } catch (error) {
-            throw Boom.badImplementation(error.message);
-        }
-    }
-
-    public generateAccessToken(): string {
-        const {
-            jwt: { accessExpires, secret }
-        } = container.resolve<ConfigurationService>(
-            ConfigurationService
-        ).config;
-
-        const payload = {
-            exp: Moment().add(accessExpires, "minutes").unix(),
-            iat: Moment().unix(),
-            sub: this.id
-        };
-
-        return Jwt.encode(payload, secret);
-    }
-
-    public passwordMatches(password: string): Promise<boolean> {
-        return Bcrypt.compare(password, this.password);
-    }
-
-    public can(
-        method: string,
-        context: any,
-        resource: string
-    ): Promise<Permission> {
-        const aclService = container.resolve(ACLService);
-        return aclService.can(this, method, context, resource);
-    }
 }

@@ -1,21 +1,9 @@
 import {
-    BaseApplication,
-    ConfigurationService,
-    GeneratorController,
-    MetadataController,
-    TypeORMService
+    BaseApplication
 } from "@triptyk/nfw-core";
-import * as Compression from "compression";
-import * as Cors from "cors";
-import * as Express from "express";
-import * as Helmet from "helmet";
-import * as Passport from "passport";
 import { autoInjectable } from "tsyringe";
 import { LoggerService } from "./services/logger.service";
 
-// @GlobalMiddleware(RateLimitMiddleware)
-// @GlobalMiddleware(NotFoundMiddleware, null, "after")
-// @GlobalMiddleware(ErrorMiddleware, null, "after")
 @autoInjectable()
 export class Application extends BaseApplication {
     public async afterInit(): Promise<any> {
@@ -23,8 +11,7 @@ export class Application extends BaseApplication {
     }
 
     public constructor(
-        private loggerService: LoggerService,
-        private configurationService: ConfigurationService
+        private loggerService: LoggerService
     ) {
         super();
     }
@@ -35,63 +22,5 @@ export class Application extends BaseApplication {
                 `HTTP server is now running on port ${port}`
             );
         });
-    }
-
-    public async init() {
-        super.init();
-        const { authorized, api } = this.configurationService.config;
-
-        /**
-         * Expose body on req.body
-         *
-         * @inheritdoc https://www.npmjs.com/package/body-parser
-         */
-        this.app.use(Express.urlencoded({ extended: false }));
-        this.app.use(Express.json({ type: "application/vnd.api+json" }));
-
-        /**
-         * GZIP compression
-         *
-         * @inheritdoc https://github.com/expressjs/compression
-         */
-        this.app.use(Compression());
-
-        /**
-         * Public resources
-         */
-        this.app.use("/static", Express.static("dist/uploads/documents"));
-
-        /**
-         * Enable and set Helmet security middleware
-         *
-         * @inheritdoc https://github.com/helmetjs/helmet
-         */
-        this.app.use(Helmet());
-
-        /**
-         * Enable CORS - Cross Origin Resource Sharing
-         *
-         * @inheritdoc https://www.npmjs.com/package/cors
-         */
-
-        const CORSOptions = {
-            allowedHeaders: ["Content-Type", "Authorization"],
-            methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-            origin: authorized
-        };
-        this.app.use(Cors(CORSOptions));
-
-        /**
-         * Passport configuration
-         *
-         * @inheritdoc http://www.passportjs.org/
-         */
-        this.app.use(Passport.initialize());
-
-        this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
-
-        this.app.use(`/api/${api.version}`, this.router);
-
-        return this.app;
     }
 }

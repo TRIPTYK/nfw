@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BaseMiddleware } from "@triptyk/nfw-core";
 import { Request, Response } from "express";
 import * as JSONAPISerializer from "json-api-serializer";

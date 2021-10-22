@@ -5,14 +5,10 @@ import {
     Serialize,
     SerializerSchema
 } from "@triptyk/nfw-core";
-import { Document } from "../../models/document.model";
-import { UserInterface } from "../../models/user.model";
-import { DocumentSerializerSchema } from "./document.serializer.schema";
 
 @SerializerSchema()
 export class UserSerializerSchema
-    extends BaseSerializerSchema<UserInterface>
-    implements UserInterface {
+    extends BaseSerializerSchema<unknown> {
     @Serialize()
     @Deserialize()
     public username;
@@ -42,12 +38,6 @@ export class UserSerializerSchema
     @Deserialize()
     public password;
 
-    @Relation(() => DocumentSerializerSchema)
-    public documents;
-
     @Serialize()
     public deleted_at: any;
-
-    @Relation(() => DocumentSerializerSchema)
-    public avatar: Document;
 }

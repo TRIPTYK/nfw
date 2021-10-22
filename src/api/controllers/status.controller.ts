@@ -7,7 +7,7 @@ import {
 import { Request, Response } from "express";
 import { autoInjectable } from "tsyringe";
 
-@Controller("status")
+@Controller("/status")
 @autoInjectable()
 export class StatusController extends BaseController {
     @Get("/")

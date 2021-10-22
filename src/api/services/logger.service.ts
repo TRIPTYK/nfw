@@ -5,9 +5,8 @@
  */
 
 import { BaseService, ConfigurationService } from "@triptyk/nfw-core";
-import * as Moment from "moment-timezone";
 import { autoInjectable, singleton } from "tsyringe";
-import * as Winston from "winston";
+import Winston from "winston";
 import { Environments } from "../enums/environments.enum";
 
 @singleton()
@@ -20,8 +19,7 @@ export class LoggerService extends BaseService {
         const { env } = configurationService.config;
         const directory = env === Environments.Test ? "test" : "dist";
 
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        const timestampFnc = () => Moment().format("YYYY-MM-DD HH:mm:ss.SSS");
+        const timestampFnc = () => new Date().toLocaleTimeString();
 
         const timestampFormatJSON = Winston.format.printf(
             ({ level, message, label }) =>

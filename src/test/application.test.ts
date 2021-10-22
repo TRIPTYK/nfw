@@ -7,7 +7,7 @@ const pkgInfo = require(`${process.cwd()}/package.json`);
 
 // Require the dev-dependencies
 import { expect } from "chai";
-import * as request from "supertest";
+import request from "supertest";
 import { ServerContainer } from "./utils/server";
 
 describe("Express application", () => {

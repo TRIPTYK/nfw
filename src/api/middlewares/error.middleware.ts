@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Boom from "@hapi/boom";
-import { BaseErrorMiddleware, toCamelCase } from "@triptyk/nfw-core";
+import { BaseErrorMiddleware, Middleware, toCamelCase } from "@triptyk/nfw-core";
 import { NextFunction, Request, Response } from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { MulterError } from "multer";
@@ -18,7 +18,6 @@ interface JsonApiErrorObject {
     status: string;
 }
 
-@singleton()
 export class ErrorMiddleware extends BaseErrorMiddleware {
     private serializer = new JSONAPISerializer();
 

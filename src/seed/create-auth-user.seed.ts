@@ -1,5 +1,4 @@
 import { Factory, Seeder } from "typeorm-seeding";
-import { Document } from "../api/models/document.model";
 import { User } from "../api/models/user.model";
 
 export class CreateAuthUserSeed implements Seeder {
@@ -9,7 +8,6 @@ export class CreateAuthUserSeed implements Seeder {
             id: "1",
             password: "admin",
             email: "admin@localhost.com",
-            documents: [document]
         });
 
         return authUser;
