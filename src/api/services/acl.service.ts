@@ -1,4 +1,4 @@
-import { BaseService } from "@triptyk/nfw-core";
+import { BaseService, Service } from "@triptyk/nfw-core";
 import { Permission } from "role-acl";
 import { autoInjectable, singleton } from "tsyringe";
 import { UserACL } from "../acls/user.acl";
@@ -7,13 +7,9 @@ import { User } from "../models/user.model";
 /**
  * Elastic search
  */
-@singleton()
+@Service()
 @autoInjectable()
 export class ACLService extends BaseService {
-    public init() {
-        return true;
-    }
-
     public can(
         user: User,
         method: string,

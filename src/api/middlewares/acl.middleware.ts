@@ -19,7 +19,7 @@ export class ACLMiddleware extends BaseMiddleware {
 
         try {
             const can = await user.can(
-                this.context.routeDefinition.methodName,
+                this.context.routeMeta.method,
                 req,
                 this.context.controllerInstance.name
             );

@@ -2,7 +2,8 @@
     "compilerOptions": {
         "lib": ["es2020"],
         "target": "ES2020",
-        "module": "commonjs",
+        "moduleResolution": "node",
+        "module": "CommonJS",
         "allowSyntheticDefaultImports": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,

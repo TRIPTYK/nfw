@@ -1,5 +1,6 @@
 import * as Boom from "@hapi/boom";
 import {
+    BaseJsonApiModel,
     BeforeInsert,
     BeforeUpdate,
     Column,
@@ -8,7 +9,6 @@ import {
     JoinColumn,
     JoinTable,
     JsonApiEntity,
-    JsonApiModel,
     ManyToMany,
     OneToOne
 } from "@triptyk/nfw-core";
@@ -20,8 +20,6 @@ import { container } from "tsyringe";
 import { Environments } from "../enums/environments.enum";
 import { ImageMimeTypes } from "../enums/mime-type.enum";
 import { Roles } from "../enums/role.enum";
-import { UserRepository } from "../repositories/user.repository";
-import { UserSerializer } from "../serializers/user.serializer";
 import { ACLService } from "../services/acl.service";
 import * as UserValidator from "../validations/user.validation";
 import { Document } from "./document.model";
@@ -39,11 +37,9 @@ export interface UserInterface {
 }
 
 @JsonApiEntity("users", {
-    serializer: UserSerializer,
-    repository: UserRepository,
     validator: UserValidator
 })
-export class User extends JsonApiModel<User> implements UserInterface {
+export class User extends BaseJsonApiModel<User> implements UserInterface {
     @Column({
         default: "User",
         length: 32,
@@ -93,11 +89,6 @@ export class User extends JsonApiModel<User> implements UserInterface {
 
     @DeleteDateColumn()
     public deleted_at;
-
-    public constructor(payload: Partial<User> = {}) {
-        super();
-        Object.assign(this, payload);
-    }
 
     @BeforeUpdate()
     @BeforeInsert()

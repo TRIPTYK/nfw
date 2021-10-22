@@ -25,10 +25,10 @@ import { Document } from "../models/document.model";
 export class DocumentController extends BaseJsonApiController<Document> {
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, { args : {
         type: "single",
         fieldName: "document"
-    })
+    }})
     @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(
         DocumentResizeMiddleware
     )
@@ -41,10 +41,10 @@ export class DocumentController extends BaseJsonApiController<Document> {
 
     @OverrideSerializer(null)
     @OverrideValidator(null)
-    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, {
+    @JsonApiMethodMiddleware<FileUploadMiddlewareArgs>(FileUploadMiddleware, { args : {
         type: "single",
         fieldName: "document"
-    })
+    }})
     @JsonApiMethodMiddleware<DocumentResizeMiddlewareArgs>(
         DocumentResizeMiddleware
     )

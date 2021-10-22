@@ -96,22 +96,3 @@ package-lock.json
 *credentials.json
 
 /.nyc_output/
-
-*.controller.ts
-*.model.ts
-*.repository.ts
-*.serializer.ts
-*.serializer.schema.ts
-*.validation.ts 
-*.test.ts
-
-!auth.*.ts
-!document.*.ts
-!status.*.ts
-!user.*.ts
-!backup.*.ts
-
-!application.test.ts
-!generator.test.ts
-!json-api.test.ts
-!metadata.test.ts

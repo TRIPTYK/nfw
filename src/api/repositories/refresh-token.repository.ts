@@ -5,12 +5,11 @@ import {
 } from "@triptyk/nfw-core";
 import * as Crypto from "crypto";
 import * as Moment from "moment-timezone";
-import { autoInjectable, container } from "tsyringe";
+import { container } from "tsyringe";
 import { RefreshToken } from "../models/refresh-token.model";
 import { User } from "../models/user.model";
 
 @EntityRepository(RefreshToken)
-@autoInjectable()
 export class RefreshTokenRepository extends BaseJsonApiRepository<RefreshToken> {
     /**
      *

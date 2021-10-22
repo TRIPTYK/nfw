@@ -3,16 +3,18 @@ import {
     Entity,
     Index,
     JoinColumn,
-    JsonApiModel,
     ManyToOne,
+    PrimaryGeneratedColumn,
     Unique
 } from "@triptyk/nfw-core";
-import { OAuthToken } from "./oauth-token.model";
 import { User } from "./user.model";
 
 @Entity()
 @Unique(["user"])
-export class RefreshToken extends JsonApiModel<OAuthToken> {
+export class RefreshToken {
+    @PrimaryGeneratedColumn("uuid")
+    public id: string;
+
     @Index()
     @Column()
     public refreshToken: string;

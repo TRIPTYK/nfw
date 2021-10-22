@@ -33,7 +33,7 @@ export class BackupController extends WsController {
         });
     }
 
-    @Post()
+    @Post("/")
     public async restore(req: Request, res: Response) {
         const { name } = req.body;
         await this.sendMessageAndWaitResponse("restore-backup", name);
@@ -42,13 +42,13 @@ export class BackupController extends WsController {
         await this.sendMessageAndWaitResponse("app-restart");
     }
 
-    @Post()
+    @Post("/")
     public async save(req: Request, res: Response) {
         await this.sendMessageAndWaitResponse("app-save");
         res.status(200).send();
     }
 
-    @Post()
+    @Post("/")
     public async restart(req: Request, res: Response) {
         res.status(200).send();
         await this.sendMessageAndWaitResponse("app-recompile-sync");

@@ -1,9 +1,9 @@
 import {
+    BaseJsonApiModel,
     BeforeInsert,
     BeforeUpdate,
     Column,
     JsonApiEntity,
-    JsonApiModel,
     ManyToMany,
     OneToOne
 } from "@triptyk/nfw-core";
@@ -11,8 +11,6 @@ import { promises as Fs } from "fs";
 import * as Path from "path";
 import { DocumentTypes } from "../enums/document-type.enum";
 import { ImageMimeTypes, MimeTypes } from "../enums/mime-type.enum";
-import { DocumentRepository } from "../repositories/document.repository";
-import { DocumentSerializer } from "../serializers/document.serializer";
 import * as DocumentValidator from "../validations/document.validation";
 import { User } from "./user.model";
 
@@ -29,12 +27,10 @@ export interface DocumentInterface {
 }
 
 @JsonApiEntity("documents", {
-    serializer: DocumentSerializer,
-    repository: DocumentRepository,
     validator: DocumentValidator
 })
 export class Document
-    extends JsonApiModel<Document>
+    extends BaseJsonApiModel<Document>
     implements DocumentInterface {
     @Column({
         enum: DocumentTypes,

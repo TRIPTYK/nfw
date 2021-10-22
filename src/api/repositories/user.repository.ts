@@ -1,9 +1,10 @@
 import * as Boom from "@hapi/boom";
-import { BaseJsonApiRepository } from "@triptyk/nfw-core";
+import { BaseJsonApiRepository, JsonApiRepository } from "@triptyk/nfw-core";
 import * as Moment from "moment-timezone";
 import { RefreshToken } from "../models/refresh-token.model";
 import { User } from "../models/user.model";
 
+@JsonApiRepository(User)
 export class UserRepository extends BaseJsonApiRepository<User> {
     /**
      * Find user by email and tries to generate a JWT token

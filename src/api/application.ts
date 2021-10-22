@@ -2,9 +2,7 @@ import {
     BaseApplication,
     ConfigurationService,
     GeneratorController,
-    GlobalMiddleware,
     MetadataController,
-    RegisterApplication,
     TypeORMService
 } from "@triptyk/nfw-core";
 import * as Compression from "compression";
@@ -13,41 +11,11 @@ import * as Express from "express";
 import * as Helmet from "helmet";
 import * as Passport from "passport";
 import { autoInjectable } from "tsyringe";
-import { AuthController } from "./controllers/auth.controller";
-import { BackupController } from "./controllers/backup.controller";
-import { DocumentController } from "./controllers/document.controller";
-import { StatusController } from "./controllers/status.controller";
-import { UserController } from "./controllers/user.controller";
-import { ErrorMiddleware } from "./middlewares/error.middleware";
-import { NotFoundMiddleware } from "./middlewares/not-found.middleware";
-import { RateLimitMiddleware } from "./middlewares/rate-limit.middleware";
 import { LoggerService } from "./services/logger.service";
-import { MailService } from "./services/mail-sender.service";
-import { MulterService } from "./services/multer.service";
-import { PassportService } from "./services/passport.service";
 
-@RegisterApplication({
-    controllers: [
-        AuthController,
-        BackupController,
-        UserController,
-        DocumentController,
-        StatusController,
-        MetadataController,
-        GeneratorController
-    ],
-    services: [
-        MailService,
-        TypeORMService,
-        MulterService,
-        PassportService,
-        LoggerService,
-        ConfigurationService
-    ]
-})
-@GlobalMiddleware(RateLimitMiddleware)
-@GlobalMiddleware(NotFoundMiddleware, null, "after")
-@GlobalMiddleware(ErrorMiddleware, null, "after")
+// @GlobalMiddleware(RateLimitMiddleware)
+// @GlobalMiddleware(NotFoundMiddleware, null, "after")
+// @GlobalMiddleware(ErrorMiddleware, null, "after")
 @autoInjectable()
 export class Application extends BaseApplication {
     public async afterInit(): Promise<any> {
