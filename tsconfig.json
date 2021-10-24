@@ -1,15 +1,17 @@
 {
     "compilerOptions": {
-        "lib": ["ESNext"],
-        "target": "ESNext",
-        "moduleResolution": "node",
-        "module": "CommonJS",
-        "allowSyntheticDefaultImports": true,
-        "emitDecoratorMetadata": true,
-        "esModuleInterop": true,
-        "experimentalDecorators": true,
-        "outDir": "./dist/",
-        "forceConsistentCasingInFileNames": true
+      "lib": ["ES2020"],
+      "target": "ES2020",
+      "moduleResolution": "node",
+      "module": "CommonJS",
+      "allowSyntheticDefaultImports": true,
+      "emitDecoratorMetadata": true,
+      "esModuleInterop": true,
+      "experimentalDecorators": true,
+      "declaration": true,
+      "outDir": "./dist",
+      "forceConsistentCasingInFileNames": true
     },
-    "exclude": ["**/**/node_modules", "src/migration/**/**", "node_modules"]
-}
+    "exclude": [ "dist/**/*"]
+  }
+  

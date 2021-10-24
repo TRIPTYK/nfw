@@ -1,20 +1,16 @@
-import * as Boom from "@hapi/boom";
 import {
     BaseController,
+    Body,
     ConfigurationService,
     Controller,
     DeepPartial,
     getCustomRepository,
-    getRepository,
-    MethodMiddleware,
     Post,
+    UseMiddleware,
 } from "@triptyk/nfw-core";
-import { Request, Response } from "express";
+import { json } from "body-parser";
+import { Request } from "express";
 import { autoInjectable } from "tsyringe";
-import {
-    SecurityMiddleware,
-    SecurityMiddlewareArgs
-} from "../middlewares/security.middleware";
 import { User } from "../models/user.model";
 import { RefreshTokenRepository } from "../repositories/refresh-token.repository";
 import { UserRepository } from "../repositories/user.repository";
@@ -25,6 +21,7 @@ import { UserRepository } from "../repositories/user.repository";
  */
 @Controller("/auth")
 @autoInjectable()
+@UseMiddleware(json())
 export class AuthController extends BaseController {
     // can't inject repositories
     private repository: UserRepository;
@@ -37,8 +34,8 @@ export class AuthController extends BaseController {
     }
 
     @Post("/register")
-    public async register(req: Request, res: Response): Promise<any> {
-        let user = this.repository.create(req.body as DeepPartial<User>);
+    public async register(@Body() body: DeepPartial<User>): Promise<any> {
+        let user = this.repository.create(body);
         await this.repository.save(user);
         const refresh =  await this.refreshRepository.generate(user, this.configurationService.config.jwt.refreshExpires);
         const accessToken = this.repository.generateAccessToken(user,this.configurationService.config.jwt.accessExpires,this.configurationService.config.jwt.secret);

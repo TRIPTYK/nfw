@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Boom from "@hapi/boom";
-import { BaseErrorMiddleware, Middleware, toCamelCase } from "@triptyk/nfw-core";
+import { BaseErrorMiddleware, toCamelCase } from "@triptyk/nfw-core";
 import { NextFunction, Request, Response } from "express";
 import * as JSONAPISerializer from "json-api-serializer";
 import { MulterError } from "multer";
-import { singleton } from "tsyringe";
 import { fileError } from "../enums/file-error.enum";
 
 interface JsonApiErrorObject {
