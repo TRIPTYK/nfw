@@ -27,6 +27,9 @@
   },
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/koa-ratelimit": "^4.2.3",
+    "@types/koa__router": "^8.0.8",
     "@types/node": "^16.11.4",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
@@ -35,6 +38,7 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
+    "koa-ratelimit": "^5.0.1",
     "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8"
   }
