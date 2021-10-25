@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-  db:
+  nfw-stack:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     ports:
