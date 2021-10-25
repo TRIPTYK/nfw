@@ -1,7 +1,7 @@
-import { ControllerRouteContext, GuardInterface } from "@triptyk/nfw-core";
+import { ControllerGuardContext, GuardInterface } from '@triptyk/nfw-core'
 
 export class AuthGuard implements GuardInterface {
-    can(context: ControllerRouteContext) {
-        return false;
-    }
+  can (context: ControllerGuardContext) {
+    return context.args[0] as boolean
+  }
 }

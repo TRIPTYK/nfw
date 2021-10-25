@@ -1,5 +1,6 @@
 {
     "editor.formatOnSave": true,
+    "eslint.format.enable": true,
     "typescript.preferences.importModuleSpecifierEnding": "js",
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
 }

@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./src/**/*.ts",
     "start": "",
     "start:dev": "node --loader ts-node/esm ./src/application.ts"
   },
