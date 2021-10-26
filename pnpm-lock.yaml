@@ -20,14 +20,14 @@ specifiers:
   ts-node: ^10.4.0
   ts-node-dev: ^1.1.8
   typescript: ^4.4.4
-  uuidv4: ^6.2.12
+  uuid: ^8.3.2
 
 dependencies:
   '@mikro-orm/core': 4.5.9_@mikro-orm+mysql@4.5.9
   '@mikro-orm/mysql': 4.5.9_@mikro-orm+core@4.5.9
   '@triptyk/nfw-core': link:../nfw-core
   typescript: 4.4.4
-  uuidv4: 6.2.12
+  uuid: 8.3.2
 
 devDependencies:
   '@types/koa': 2.13.4
@@ -407,10 +407,6 @@ packages:
   /@types/strip-json-comments/0.0.30:
     resolution: {integrity: sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==}
     dev: true
-
-  /@types/uuid/8.3.1:
-    resolution: {integrity: sha512-Y2mHTRAbqfFkpjldbkHGY8JIzRN6XqYRliG8/24FcHm2D2PwW24fl5xMRTVGdrb7iMrwCaIEbLWerGIkXuFWVg==}
-    dev: false
 
   /@typescript-eslint/eslint-plugin/5.1.0_cceb079e15b82e20823304bc01a340f0:
     resolution: {integrity: sha512-bekODL3Tqf36Yz8u+ilha4zGxL9mdB6LIsIoMAvvC5FAuWo4NpZYXtCbv7B2CeR1LhI/lLtLk+q4tbtxuoVuCg==}
@@ -3021,13 +3017,6 @@ packages:
   /uuid/8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
-    dev: false
-
-  /uuidv4/6.2.12:
-    resolution: {integrity: sha512-UnN4ThIYWhv3ZUE8UwDnnCvh4JafCNu+sQkxmLyjCVwK3rjLfkg3DYiEv6oCMDIAIVEDP4INg4kX/C5hKaRzZA==}
-    dependencies:
-      '@types/uuid': 8.3.1
-      uuid: 8.3.2
     dev: false
 
   /v8-compile-cache/2.3.0:
