@@ -20,7 +20,7 @@ import { JsonResponsehandler } from '../response-handlers/json.response-handler.
 }))
 @UseErrorHandler(DefaultErrorHandler)
 @injectable()
-@UseGuard(AuthGuard, true)
+@UseGuard(AuthGuard, false)
 export class UserController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: EntityRepository<UserModel>) {}

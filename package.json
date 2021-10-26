@@ -24,7 +24,7 @@
     "@mikro-orm/mysql": "^4.5.9",
     "@triptyk/nfw-core": "../nfw-core/",
     "typescript": "^4.4.4",
-    "uuidv4": "^6.2.12"
+    "uuid": "^8.3.2"
   },
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
