@@ -1,6 +1,10 @@
 import { MikroORM } from '@mikro-orm/core'
 import createApplication from '@triptyk/nfw-core'
+import KoaRatelimit from 'koa-ratelimit';
 import { UserController } from './controllers/user.controller.js'
+import { DefaultErrorHandler } from './error-handler/default.error-handler.js';
+import { AuthGuard } from './guards/auth.guard.js';
+import { NotFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { UserModel } from './models/user.model.js';
 
 (async () => {
@@ -20,6 +24,23 @@ import { UserModel } from './models/user.model.js';
 
   const koaApp = await createApplication({
     controllers: [UserController],
+    globalGuards: [{
+      guard: AuthGuard,
+      args: [false]
+    }],
+    globalMiddlewares: [
+      KoaRatelimit({
+        driver: 'memory',
+        db: new Map(),
+        duration: 5000,
+        max: 2,
+        throw: true,
+        errorMessage: 'Sometimes You Just Have to Slow Down.',
+        id: (ctx) => ctx.ip
+      })
+    ],
+    globalErrorhandler: DefaultErrorHandler,
+    globalNotFoundMiddleware: NotFoundMiddleware,
     mikroORMConnection: orm,
     baseRoute: '/api/v1'
   });

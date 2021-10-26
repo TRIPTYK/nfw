@@ -6,7 +6,7 @@ export function createLogMiddleware (isIp: boolean) {
   return class LogMiddleware implements MiddlewareInteface {
     async use (context: RouterContext, next: Next) {
       console.log('pass', context.ip, 'into', context.origin, isIp)
-      await next()
+      await next();
     }
   }
 }
