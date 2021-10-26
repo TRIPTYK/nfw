@@ -15,6 +15,7 @@ specifiers:
   eslint-plugin-import: ^2.25.2
   eslint-plugin-node: ^11.1.0
   eslint-plugin-promise: ^5.1.1
+  eslint-plugin-unused-imports: ^1.1.5
   koa-ratelimit: ^5.0.1
   ts-node: ^10.4.0
   ts-node-dev: ^1.1.8
@@ -40,6 +41,7 @@ devDependencies:
   eslint-plugin-import: 2.25.2_eslint@7.32.0
   eslint-plugin-node: 11.1.0_eslint@7.32.0
   eslint-plugin-promise: 5.1.1_eslint@7.32.0
+  eslint-plugin-unused-imports: 1.1.5_7c883a95cbf857d337c3a5c0b5b14818
   koa-ratelimit: 5.0.1
   ts-node: 10.4.0_bada05a3e1cd24c0fc5f82f6eaa2ca15
   ts-node-dev: 1.1.8_typescript@4.4.4
@@ -1138,6 +1140,26 @@ packages:
       eslint: ^7.0.0
     dependencies:
       eslint: 7.32.0
+    dev: true
+
+  /eslint-plugin-unused-imports/1.1.5_7c883a95cbf857d337c3a5c0b5b14818:
+    resolution: {integrity: sha512-TeV8l8zkLQrq9LBeYFCQmYVIXMjfHgdRQLw7dEZp4ZB3PeR10Y5Uif11heCsHRmhdRIYMoewr1d9ouUHLbLHew==}
+    engines: {node: ^10.12.0 || >=12.0.0}
+    peerDependencies:
+      '@typescript-eslint/eslint-plugin': ^4.14.2
+      eslint: ^6.0.0 || ^7.0.0
+    peerDependenciesMeta:
+      '@typescript-eslint/eslint-plugin':
+        optional: true
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 5.1.0_cceb079e15b82e20823304bc01a340f0
+      eslint: 7.32.0
+      eslint-rule-composer: 0.3.0
+    dev: true
+
+  /eslint-rule-composer/0.3.0:
+    resolution: {integrity: sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==}
+    engines: {node: '>=4.0.0'}
     dev: true
 
   /eslint-scope/5.1.1:

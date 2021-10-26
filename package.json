@@ -39,6 +39,7 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
+    "eslint-plugin-unused-imports": "^1.1.5",
     "koa-ratelimit": "^5.0.1",
     "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8"

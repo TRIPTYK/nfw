@@ -12,11 +12,18 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "unused-imports"
     ],
     "rules": {
         "semi":"off",
+        "no-console": "warn",
         "no-return-assign": "off",
+        "unused-imports/no-unused-imports": "error",
+		"unused-imports/no-unused-vars": [
+			"warn",
+			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+		],
         "@typescript-eslint/member-delimiter-style": ["error", {
             "multiline": {
               "delimiter": "comma",    // 'none' or 'semi' or 'comma'

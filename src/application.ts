@@ -1,5 +1,5 @@
 import { MikroORM } from '@mikro-orm/core'
-import { createApplication } from '@triptyk/nfw-core'
+import createApplication from '@triptyk/nfw-core'
 import { UserController } from './controllers/user.controller.js'
 import { UserModel } from './models/user.model.js';
 
@@ -10,13 +10,19 @@ import { UserModel } from './models/user.model.js';
     user: 'root',
     password: 'test123*',
     type: 'mysql'
-  })
+  });
+
+  // const generator = orm.getSchemaGenerator();
+
+  // await generator.dropSchema();
+  // await generator.createSchema();
+  // await generator.updateSchema();
 
   const koaApp = await createApplication({
     controllers: [UserController],
     mikroORMConnection: orm,
     baseRoute: '/api/v1'
-  })
+  });
 
   const port = 8000
 
