@@ -23,11 +23,14 @@
     "@mikro-orm/core": "^4.5.9",
     "@mikro-orm/mysql": "^4.5.9",
     "@triptyk/nfw-core": "../nfw-core/",
+    "http-errors": "^1.8.0",
+    "joi": "^17.4.2",
     "typescript": "^4.4.4",
     "uuid": "^8.3.2"
   },
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
+    "@types/http-errors": "^1.8.1",
     "@types/koa": "^2.13.4",
     "@types/koa-ratelimit": "^4.2.3",
     "@types/koa__router": "^8.0.8",

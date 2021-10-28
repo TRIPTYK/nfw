@@ -1,8 +1,8 @@
 import { RouterContext } from '@koa/router'
-import { MiddlewareInteface } from '@triptyk/nfw-core'
+import { MiddlewareInterface } from '@triptyk/nfw-core'
 
-export class NotFoundMiddleware implements MiddlewareInteface {
-  async use (context: RouterContext, next) {
+export class NotFoundMiddleware implements MiddlewareInterface {
+  async use (context: RouterContext) {
     context.body = 'Not found maman';
   }
 }

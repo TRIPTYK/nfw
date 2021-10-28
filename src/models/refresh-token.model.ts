@@ -2,18 +2,15 @@ import { PrimaryKey, Entity, BaseEntity, Property } from '@mikro-orm/core'
 import { v4 } from 'uuid'
 
 @Entity({
-  tableName: 'users'
+  tableName: 'refresh-token'
 })
-export class UserModel extends BaseEntity<any, any> {
+export class RefreshTokenModel extends BaseEntity<any, any> {
   @PrimaryKey()
   id: string = v4();
 
   @Property()
-  declare firstName: string;
+  declare token: string;
 
   @Property()
-  declare lastName: string;
-
-  @Property()
-  declare password: string;
+  declare expires: Date;
 }
