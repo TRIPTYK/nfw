@@ -31,4 +31,9 @@ export class UserModel extends BaseEntity<any, any> {
     mappedBy: 'user'
   })
   declare refreshToken: RefreshTokenModel;
+
+
+  public generateAccessToken(): string {
+    return 'banane';   
+  }
 }
