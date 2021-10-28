@@ -1,4 +1,4 @@
-import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler } from '@triptyk/nfw-core'
+import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, inject } from '@triptyk/nfw-core'
 import { JsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { UserModel } from '../models/user.model.js';
 import { UserQueryParamsSchema } from '../query-params-schema/user.schema.js';

@@ -1,12 +1,13 @@
 import { EntityRepository } from '@mikro-orm/core'
-import { Body, Controller, GET, injectable, InjectRepository } from '@triptyk/nfw-core'
+import { Body, Controller, GET, injectable, InjectRepository, inject } from '@triptyk/nfw-core'
+import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
 
 @Controller('/auth')
 @injectable()
 export class AuthController {
   // eslint-disable-next-line no-useless-constructor
-  constructor (@InjectRepository(UserModel) private userRepository: EntityRepository<UserModel>) {}
+  constructor (@InjectRepository(UserModel) private userRepository: EntityRepository<UserModel>, @inject(ConfigurationService) configurationService: ConfigurationService) {}
 
   @GET('/register')
   public async register (
