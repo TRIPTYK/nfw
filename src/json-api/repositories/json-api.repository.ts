@@ -17,7 +17,7 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
       this.handleIncludes(queryBuilder, params.include);
     }
 
-    return queryBuilder.execute('all');
+    return queryBuilder;
   }
 
   private handleIncludes (queryBuilder: QueryBuilder<T>, includes: string[]) {

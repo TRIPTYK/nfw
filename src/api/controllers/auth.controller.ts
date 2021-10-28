@@ -1,6 +1,6 @@
 import { EntityRepository } from '@mikro-orm/core'
 import { Body, Controller, GET, injectable, InjectRepository } from '@triptyk/nfw-core'
-import { UserModel } from '../models/user.model.js'
+import { UserModel } from '../models/user.model.js';
 
 @Controller('/auth')
 @injectable()
