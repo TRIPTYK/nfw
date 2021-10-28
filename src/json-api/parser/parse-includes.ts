@@ -1,5 +1,5 @@
 export function parseIncludes (includes?: string) {
-  if (!includes) return;
+  if (!includes) return [];
   return includes.split(',');
 }
 

@@ -3,10 +3,13 @@ import {
   Entity,
   BaseEntity,
   Property,
-  OneToOne
+  OneToOne,
+  OneToMany,
+  Collection
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import { UserRepository } from '../repositories/user.repository.js';
+import { ArticleModel } from './article.model.js';
 import { RefreshTokenModel } from './refresh-token.model.js';
 
 @Entity({
@@ -31,4 +34,7 @@ export class UserModel extends BaseEntity<any, any> {
     mappedBy: 'user'
   })
   declare refreshToken: RefreshTokenModel;
+
+  @OneToMany(() => ArticleModel, article => article.owner)
+  declare articles: Collection<ArticleModel>;
 }
