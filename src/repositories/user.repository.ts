@@ -1,11 +1,5 @@
-import { Repository } from "@mikro-orm/core";
+import { UserModel } from '../models/user.model.js';
+import { JsonApiRepository } from './json-api.repository.js';
 
-@Repository(Author)
-export class CustomAuthorRepository extends EntityRepository<Author> {
-
-  // your custom methods...
-  public findAndUpdate(...) {
-    // ...
-  }
-
+export class UserRepository extends JsonApiRepository<UserModel> {
 }

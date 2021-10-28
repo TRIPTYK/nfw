@@ -1,8 +1,17 @@
-import { PrimaryKey, Entity, BaseEntity, Property } from '@mikro-orm/core'
-import { v4 } from 'uuid'
+import {
+  PrimaryKey,
+  Entity,
+  BaseEntity,
+  Property,
+  OneToOne
+} from '@mikro-orm/core';
+import { v4 } from 'uuid';
+import { UserRepository } from '../repositories/user.repository.js';
+import { RefreshTokenModel } from './refresh-token.model.js';
 
 @Entity({
-  tableName: 'users'
+  tableName: 'users',
+  customRepository: () => UserRepository
 })
 export class UserModel extends BaseEntity<any, any> {
   @PrimaryKey()
@@ -16,4 +25,10 @@ export class UserModel extends BaseEntity<any, any> {
 
   @Property()
   declare password: string;
+
+  @OneToOne({
+    entity: () => RefreshTokenModel,
+    mappedBy: 'user'
+  })
+  declare refreshToken: RefreshTokenModel;
 }

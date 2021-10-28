@@ -21,7 +21,7 @@ import { UserModel } from './models/user.model.js';
   const generator = orm.getSchemaGenerator();
 
   // await generator.dropSchema();
-  await generator.createSchema();
+  // await generator.createSchema();
   await generator.updateSchema();
 
   const koaApp = await createApplication({
@@ -35,7 +35,7 @@ import { UserModel } from './models/user.model.js';
         driver: 'memory',
         db: new Map(),
         duration: 5000,
-        max: 2,
+        max: 5,
         throw: true,
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip

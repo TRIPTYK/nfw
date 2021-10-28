@@ -11,17 +11,10 @@ const validationSchema = Joi.object({
   filters: [Joi.string().alphanum(), Joi.object()]
 })
 
-export interface ValidatedJsonApiParams {
-    include?: string,
-    sort?: string,
-    fields?: Record<string, unknown>,
-    filters?: Record<string, unknown>,
-}
-
 export function JsonApiQueryParams () {
   return createCustomDecorator(async (context: ControllerParamsContext) => {
     try {
-      const { fields, sort, include } = await validationSchema.validateAsync(context.ctx.query) as ValidatedJsonApiParams
+      const { fields, sort, include } = await validationSchema.validateAsync(context.ctx.query);
 
       return { fields: parseFields(fields), sort: parseSort(sort), include: parseIncludes(include) }
     } catch (error: any) {
