@@ -3,9 +3,9 @@ import { injectable, singleton } from '@triptyk/nfw-core';
 export interface Configuration {
   jwt: {
     secret: string,
-    accessExpirationMinutes: number,
-    refreshExpirationMinutes: number,
-  },
+    accessExpires: number,
+    refreshExpires: number,
+  };
 }
 
 @injectable()
@@ -21,8 +21,9 @@ export class ConfigurationService<T = Configuration> {
     this.loadConfiguration();
   }
 
-  private async loadConfiguration () {
-    this._config = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`).catch(err => console.log(err));
+  private async loadConfiguration() {
+    const { Configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
+    this._config = Configuration;
   }
 
   public getKey (key: keyof T) {

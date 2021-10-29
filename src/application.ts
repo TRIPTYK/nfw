@@ -1,6 +1,8 @@
 import { MikroORM } from '@mikro-orm/core'
 import createApplication from '@triptyk/nfw-core'
+import koaBody from 'koa-body';
 import KoaRatelimit from 'koa-ratelimit';
+import koaBody from 'koa-body';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';

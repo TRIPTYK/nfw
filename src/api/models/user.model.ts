@@ -13,6 +13,7 @@ import { Roles } from '../enums/roles.enum.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import { ArticleModel } from './article.model.js';
 import { RefreshTokenModel } from './refresh-token.model.js';
+import bcrypt from 'bcrypt';
 
 @Entity({
   tableName: 'users',
@@ -29,6 +30,9 @@ export class UserModel extends BaseEntity<any, any> {
   declare lastName: string;
 
   @Property()
+  declare email: string;
+
+  @Property()
   declare password: string;
 
   @Enum(() => Roles)
@@ -40,10 +44,11 @@ export class UserModel extends BaseEntity<any, any> {
   })
   declare refreshToken: RefreshTokenModel;
 
-  public generateAccessToken (): string {
-    return 'banane';
-  }
-
   @OneToMany(() => ArticleModel, article => article.owner)
   declare articles: Collection<ArticleModel>;
+
+
+  public passwordMatches(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }

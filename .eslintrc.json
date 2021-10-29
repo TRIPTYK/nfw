@@ -20,6 +20,7 @@
         "no-console": "warn",
         "no-return-assign": "off",
         "unused-imports/no-unused-imports": "error",
+        "comma-dangle": ["error", "always-multiline"],
 		"unused-imports/no-unused-vars": [
 			"warn",
 			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
