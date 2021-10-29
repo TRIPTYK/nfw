@@ -2,7 +2,7 @@ import { Email, Schema, SchemaBase, String} from "fastest-validator-decorators";
 import { UserModel } from "../models/user.model.js";
 
 @Schema()
- class createUserValidationSchema extends SchemaBase {
+ export class ValidatedUser extends SchemaBase {
     @String()
     public firstName!: string;
 

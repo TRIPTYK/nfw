@@ -8,6 +8,8 @@ import { UserSerializer } from '../serializer/user.serializer.js';
 import { AclService } from '../services/acl.service.js';
 import { deserialize } from '../middlewares/deserialize.middleware.js';
 import { UserDeserializer } from '../deserializer/user.deserializer.js';
+import { ValidatedUser } from '../validators/user.valitors.js';
+import { ValidatedBody } from '../decorators/validated-body.decorator.js';
 
 @Controller('/users')
 @injectable()
@@ -24,7 +26,8 @@ export class UsersController {
 
    @POST('/')
    @UseMiddleware(deserialize(UserDeserializer))
-    create (@Body() body: any) {
+   
+    create (@ValidatedBody(ValidatedUser)body: ValidatedUser) {
     console.log(body)
   }
 

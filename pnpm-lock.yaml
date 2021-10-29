@@ -26,10 +26,7 @@ specifiers:
   http-errors: ^1.8.0
   joi: ^17.4.2
   json-api-serializer: ^2.6.6
-<<<<<<< HEAD
-=======
   jwt-simple: ^0.5.6
->>>>>>> fbfb88a5f236028fd0bd0a0a2a00e597ad29d251
   koa-body: ^4.2.0
   koa-ratelimit: ^5.0.1
   ts-node: ^10.4.0
@@ -42,19 +39,13 @@ dependencies:
   '@mikro-orm/core': 4.5.9_@mikro-orm+mysql@4.5.9
   '@mikro-orm/mysql': 4.5.9_@mikro-orm+core@4.5.9
   '@triptyk/nfw-core': link:../nfw-core
-<<<<<<< HEAD
+  '@types/bcrypt': 5.0.0
+  bcrypt: 5.0.1
   fastest-validator-decorators: 1.2.1
   http-errors: 1.8.0
   joi: 17.4.2
   json-api-serializer: 2.6.6
-=======
-  '@types/bcrypt': 5.0.0
-  bcrypt: 5.0.1
-  http-errors: 1.8.0
-  joi: 17.4.2
-  json-api-serializer: 2.6.6
   jwt-simple: 0.5.6
->>>>>>> fbfb88a5f236028fd0bd0a0a2a00e597ad29d251
   koa-body: 4.2.0
   typescript: 4.4.4
   uuid: 8.3.2
@@ -1926,8 +1917,6 @@ packages:
       toidentifier: 1.0.0
     dev: false
 
-<<<<<<< HEAD
-=======
   /https-proxy-agent/5.0.0:
     resolution: {integrity: sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==}
     engines: {node: '>= 6'}
@@ -1938,7 +1927,6 @@ packages:
       - supports-color
     dev: false
 
->>>>>>> fbfb88a5f236028fd0bd0a0a2a00e597ad29d251
   /iconv-lite/0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -2870,8 +2858,6 @@ packages:
       unpipe: 1.0.0
     dev: false
 
-<<<<<<< HEAD
-=======
   /readable-stream/3.6.0:
     resolution: {integrity: sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==}
     engines: {node: '>= 6'}
@@ -2881,7 +2867,6 @@ packages:
       util-deprecate: 1.0.2
     dev: false
 
->>>>>>> fbfb88a5f236028fd0bd0a0a2a00e597ad29d251
   /readdirp/3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
@@ -3052,13 +3037,10 @@ packages:
       call-bind: 1.0.2
       get-intrinsic: 1.1.1
       object-inspect: 1.11.0
-<<<<<<< HEAD
-=======
 
   /signal-exit/3.0.5:
     resolution: {integrity: sha512-KWcOiKeQj6ZyXx7zq4YxSMgHRlod4czeBQZrPb8OKcohcqAXShm7E20kEMle9WBt26hFcAf0qLOcp5zmY7kOqQ==}
     dev: false
->>>>>>> fbfb88a5f236028fd0bd0a0a2a00e597ad29d251
 
   /slash/3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
