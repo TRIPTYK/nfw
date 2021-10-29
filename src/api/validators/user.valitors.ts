@@ -14,7 +14,7 @@ import { UserModel } from "../models/user.model.js";
 
 
 export const validateCreateUser = (user: UserModel) => {
-    console.log(user.data.attributes);
+    // console.log(user.data.attributes);
 
     // const entityToValidate = new createUserValidationSchema({user.firstName, lastName});
     // console.log(entityToValidate.validate())

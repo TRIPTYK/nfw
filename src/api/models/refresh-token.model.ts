@@ -1,9 +1,11 @@
 import { PrimaryKey, Entity, BaseEntity, Property, OneToOne } from '@mikro-orm/core'
 import { v4 } from 'uuid'
+import {RefreshTokenRepository} from '../repositories/refresh-token.repository.js';
 import type { UserModel } from './user.model.js';
 
 @Entity({
-  tableName: 'refresh-token'
+  tableName: 'refresh-token',
+  customRepository: () => RefreshTokenRepository
 })
 export class RefreshTokenModel extends BaseEntity<any, any> {
   @PrimaryKey()

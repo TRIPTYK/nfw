@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src/**/*.ts",
     "start": "",
-    "start:dev": "node --loader ts-node/esm ./src/application.ts"
+    "start:dev": "node --loader ts-node/esm ./src/application.ts",
+    "clean": "npx mikro-orm schema:drop && npx mikro-orm schema:sync && pnpm start:dev"
   },
   "type": "module",
   "repository": {
@@ -20,13 +21,23 @@
     "url": "https://github.com/TRIPTYK/nfw/issues"
   },
   "dependencies": {
+    "@casl/ability": "^5.4.3",
     "@mikro-orm/core": "^4.5.9",
     "@mikro-orm/mysql": "^4.5.9",
     "@triptyk/nfw-core": "../nfw-core/",
+<<<<<<< HEAD
     "fastest-validator-decorators": "^1.2.1",
     "http-errors": "^1.8.0",
     "joi": "^17.4.2",
     "json-api-serializer": "^2.6.6",
+=======
+    "@types/bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
+    "http-errors": "^1.8.0",
+    "joi": "^17.4.2",
+    "json-api-serializer": "^2.6.6",
+    "jwt-simple": "^0.5.6",
+>>>>>>> fbfb88a5f236028fd0bd0a0a2a00e597ad29d251
     "koa-body": "^4.2.0",
     "typescript": "^4.4.4",
     "uuid": "^8.3.2"
@@ -36,6 +47,7 @@
     "@types/http-errors": "^1.8.1",
     "@types/json-api-serializer": "^2.6.3",
     "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^4.3.3",
     "@types/koa-ratelimit": "^4.2.3",
     "@types/koa__router": "^8.0.8",
     "@types/node": "^16.11.4",
