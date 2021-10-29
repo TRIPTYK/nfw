@@ -7,7 +7,7 @@ export class DefaultErrorHandler implements ErrorHandlerInterface {
     if (isHttpError(error)) {
       context.response.status = error.statusCode;
       context.response.body = {
-        message: error.message
+        message: error.message,
       }
     } else {
       context.response.status = 500;
