@@ -10,37 +10,54 @@ import { RefreshTokenRepository } from '../repositories/refresh-token.repository
 @injectable()
 export class AuthController {
   // eslint-disable-next-line no-useless-constructor
-  constructor (@InjectRepository(UserModel) private userRepository: UserRepository, 
-               @inject(ConfigurationService) private configurationService: ConfigurationService,
-               @InjectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository) {}
+  constructor (@inject(ConfigurationService) private configurationService: ConfigurationService,
+               @InjectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
+               @InjectRepository(UserModel) private userRepository: UserRepository,
+  ) {}
 
   @POST('/register')
   public async register (
-    @Body() body : UserModel
+    @Body() body : UserModel,
   ) {
-    const allUsers = this.userRepository.create(body);
-    this.userRepository.persist(allUsers);
-    await this.userRepository.hashPassword(allUsers, body.password);
+    const user = this.userRepository.create(body);
+    this.userRepository.persist(user);
+    await this.userRepository.hashPassword(user, body.password);
     this.userRepository.flush();
 
-    return allUsers;
+    return user;
   }
 
   @POST('/login')
   public async login (@Body() body: any) {
     const { jwt } = this.configurationService.config;
     const user = await this.userRepository.findOne({ email: body.email });
-    console.log(user, await user?.passwordMatches(body.password));
+
     if (!user || !await user.passwordMatches(body.password)) {
       throw createError(417, 'Votre email ou mot de passe est incorrecte');
     }
+
     const accessToken = this.userRepository.generateAccessToken(user, jwt.accessExpires, jwt.secret);
-    const refreshToken = this.refreshTokenRepository.generateRefreshToken(user, jwt.refreshExpires);
+    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(user, jwt.refreshExpires);
+
+    this.refreshTokenRepository.flush();
     return { accessToken, refreshToken };
   }
 
-  @GET('/refresh-token')
-  public async refreshToken () {
-    return 'refresh';
+  @POST('/refresh-token')
+  public async refreshToken (@Body() body: any) {
+    const { jwt } = this.configurationService.config;
+    const refresh = await this.refreshTokenRepository.findOne({ token: body.refreshToken });
+
+    if (!refresh) {
+      throw createError(417, 'Invalid refresh token');
+    }
+
+    const accessToken = this.userRepository.generateAccessToken(refresh.user, jwt.accessExpires, jwt.secret);
+    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(refresh.user, jwt.refreshExpires);
+
+    this.refreshTokenRepository.remove(refresh);
+    this.refreshTokenRepository.flush();
+
+    return { accessToken, refreshToken };
   }
 }

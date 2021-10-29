@@ -5,7 +5,7 @@ import { unixTimestamp } from '../utils/date-utils.js';
 import { RefreshTokenModel } from '../models/refresh-token.model.js';
 
 export class RefreshTokenRepository extends JsonApiRepository<RefreshTokenModel> {
-  public async generateRefreshToken(user: UserModel, refreshExpires: number): Promise<RefreshTokenModel> {
+  public async generateRefreshToken(user: UserModel, refreshExpires: number): Promise<string> {
     const token = v4();
     const expires = unixTimestamp() + refreshExpires * 60;
     const refreshToken = this.create({
@@ -13,7 +13,6 @@ export class RefreshTokenRepository extends JsonApiRepository<RefreshTokenModel>
       user,
       expires,
     });
-    await this.persistAndFlush(refreshToken);
-    return refreshToken
+    return token;
   }
 }

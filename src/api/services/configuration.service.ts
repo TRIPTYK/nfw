@@ -22,7 +22,7 @@ export class ConfigurationService<T = Configuration>{
   }
 
   private async loadConfiguration() {
-    const { Configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`).catch(err => console.log(err));
+    const { Configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
     this._config = Configuration;
   }
 

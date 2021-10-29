@@ -1,7 +1,7 @@
 import { MikroORM } from '@mikro-orm/core'
 import createApplication from '@triptyk/nfw-core'
-import bodyParser from 'koa-bodyparser';
 import KoaRatelimit from 'koa-ratelimit';
+import koaBody from 'koa-body';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
@@ -42,7 +42,7 @@ import { UserModel } from './api/models/user.model.js';
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip
       }),
-      bodyParser()
+      koaBody()
     ],
     globalErrorhandler: DefaultErrorHandler,
     globalNotFoundMiddleware: NotFoundMiddleware,

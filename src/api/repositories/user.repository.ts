@@ -16,7 +16,7 @@ export class UserRepository extends JsonApiRepository<UserModel> {
   }
 
   public async hashPassword(user: UserModel, password: string): Promise<UserModel> {
-    if (user.password && !await user.passwordMatches(password)) {
+    if (!(user.password && await user.passwordMatches(password))) {
       user.password = await bcrypt.hash(password, 10);
     }
     return user;
