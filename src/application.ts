@@ -32,6 +32,7 @@ import { UserModel } from './api/models/user.model.js';
       args: [true]
     }],
     globalMiddlewares: [
+
       KoaRatelimit({
         driver: 'memory',
         db: new Map(),
@@ -45,6 +46,7 @@ import { UserModel } from './api/models/user.model.js';
     globalErrorhandler: DefaultErrorHandler,
     globalNotFoundMiddleware: NotFoundMiddleware,
     mikroORMConnection: orm,
+    mikroORMContext: true,
     baseRoute: '/api/v1'
   });
 
