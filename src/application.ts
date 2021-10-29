@@ -9,6 +9,7 @@ import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
+import koaBody from 'koa-body'
 
 (async () => {
   const orm = await MikroORM.init({
@@ -32,7 +33,7 @@ import { UserModel } from './api/models/user.model.js';
       args: [true]
     }],
     globalMiddlewares: [
-
+      koaBody(),
       KoaRatelimit({
         driver: 'memory',
         db: new Map(),
@@ -50,9 +51,9 @@ import { UserModel } from './api/models/user.model.js';
     baseRoute: '/api/v1'
   });
 
-  const port = 8001
+  const port = 8000
 
-  koaApp.listen(8001, () => {
+  koaApp.listen(port, () => {
     console.log(`Listening on port ${port}`)
   })
 })()

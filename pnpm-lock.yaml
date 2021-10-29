@@ -23,6 +23,7 @@ specifiers:
   http-errors: ^1.8.0
   joi: ^17.4.2
   json-api-serializer: ^2.6.6
+  koa-body: ^4.2.0
   koa-bodyparser: ^4.3.0
   koa-ratelimit: ^5.0.1
   ts-node: ^10.4.0
@@ -38,6 +39,7 @@ dependencies:
   http-errors: 1.8.0
   joi: 17.4.2
   json-api-serializer: 2.6.6
+  koa-body: 4.2.0
   koa-bodyparser: 4.3.0
   typescript: 4.4.4
   uuid: 8.3.2
@@ -358,6 +360,12 @@ packages:
       '@types/serve-static': 1.13.10
     dev: true
 
+  /@types/formidable/1.2.4:
+    resolution: {integrity: sha512-Z+ICLPV/BPYK5pHYDryNKRk26etA9WCicg620XZM0Uqto5gOv6XySMIlXQ3Ae6V3tS7CZNpE8UdHuuxOZxWVfw==}
+    dependencies:
+      '@types/node': 16.11.4
+    dev: false
+
   /@types/http-assert/1.5.3:
     resolution: {integrity: sha512-FyAOrDuQmBi8/or3ns4rwPno7/9tJTijVW6aQQjK02+kOQ8zmoNg2XJtAuQhvQcy1ASJq38wirX5//9J1EqoUA==}
     dev: true
@@ -433,7 +441,6 @@ packages:
 
   /@types/node/16.11.4:
     resolution: {integrity: sha512-TMgXmy0v2xWyuCSCJM6NCna2snndD8yvQF67J29ipdzMcsPa9u+o0tjF5+EQNdhcuZplYuouYqpc4zcd5I6amQ==}
-    dev: true
 
   /@types/qs/6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
@@ -889,6 +896,15 @@ packages:
   /clone/2.1.2:
     resolution: {integrity: sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=}
     engines: {node: '>=0.8'}
+    dev: false
+
+  /co-body/5.2.0:
+    resolution: {integrity: sha512-sX/LQ7LqUhgyaxzbe7IqwPeTr2yfpfUIQ/dgpKo6ZI4y4lpQA0YxAomWIY+7I7rHWcG02PG+OuPREzMW/5tszQ==}
+    dependencies:
+      inflation: 2.0.0
+      qs: 6.10.1
+      raw-body: 2.4.1
+      type-is: 1.6.18
     dev: false
 
   /co-body/6.1.0:
@@ -1558,6 +1574,10 @@ packages:
       for-in: 1.0.2
     dev: false
 
+  /formidable/1.2.2:
+    resolution: {integrity: sha512-V8gLm+41I/8kguQ4/o1D3RIHRmhYFG4pnNyonvua+40rqcEmT4+V71yaZ3B457xbbgCsCfjSPi65u/W6vK1U5Q==}
+    dev: false
+
   /fragment-cache/0.2.1:
     resolution: {integrity: sha1-QpD60n8T6Jvn8zeZxrxaCr//DRk=}
     engines: {node: '>=0.10.0'}
@@ -2200,6 +2220,14 @@ packages:
       v8flags: 3.2.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /koa-body/4.2.0:
+    resolution: {integrity: sha512-wdGu7b9amk4Fnk/ytH8GuWwfs4fsB5iNkY8kZPpgQVb04QZSv85T0M8reb+cJmvLE8cjPYvBzRikD3s6qz8OoA==}
+    dependencies:
+      '@types/formidable': 1.2.4
+      co-body: 5.2.0
+      formidable: 1.2.2
     dev: false
 
   /koa-bodyparser/4.3.0:
