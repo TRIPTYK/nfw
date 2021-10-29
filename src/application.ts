@@ -9,6 +9,7 @@ import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
+import bodyParser from 'koa-bodyparser';
 
 (async () => {
   const orm = await MikroORM.init({
@@ -41,7 +42,8 @@ import { UserModel } from './api/models/user.model.js';
         throw: true,
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip
-      })
+      }),
+      bodyParser(),
     ],
     globalErrorhandler: DefaultErrorHandler,
     globalNotFoundMiddleware: NotFoundMiddleware,
@@ -51,8 +53,12 @@ import { UserModel } from './api/models/user.model.js';
   });
 
   const port = 8001
+  koaApp.use(async ctx => {
+    console.log('ctx', ctx);
+    ctx.body = 'Hello World';
+  });
 
-  koaApp.listen(8001, () => {
+  koaApp.listen(port, () => {
     console.log(`Listening on port ${port}`)
   })
 })()

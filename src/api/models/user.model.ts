@@ -27,6 +27,9 @@ export class UserModel extends BaseEntity<any, any> {
   declare lastName: string;
 
   @Property()
+  declare email: string;
+
+  @Property()
   declare password: string;
 
   @OneToOne({
@@ -35,9 +38,6 @@ export class UserModel extends BaseEntity<any, any> {
   })
   declare refreshToken: RefreshTokenModel;
 
-  public generateAccessToken(): string {
-    return 'banane';   
-  }
   @OneToMany(() => ArticleModel, article => article.owner)
   declare articles: Collection<ArticleModel>;
 }

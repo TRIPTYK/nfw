@@ -3,8 +3,8 @@ import { injectable, singleton } from '@triptyk/nfw-core';
 export interface Configuration {
   jwt: {
     secret: string,
-    accessExpirationMinutes: number,
-    refreshExpirationMinutes: number,
+    accessExpires: number,
+    refreshExpires: number,
   };
 }
 
