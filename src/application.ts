@@ -50,9 +50,9 @@ import { UserModel } from './api/models/user.model.js';
     baseRoute: '/api/v1'
   });
 
-  const port = 8000
+  const port = 8001
 
-  koaApp.listen(8000, () => {
+  koaApp.listen(8001, () => {
     console.log(`Listening on port ${port}`)
   })
 })()
