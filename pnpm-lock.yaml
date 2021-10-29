@@ -28,6 +28,7 @@ specifiers:
   json-api-serializer: ^2.6.6
   jwt-simple: ^0.5.6
   koa-body: ^4.2.0
+  koa-bodyparser: ^4.3.0
   koa-ratelimit: ^5.0.1
   ts-node: ^10.4.0
   ts-node-dev: ^1.1.8
@@ -47,6 +48,7 @@ dependencies:
   json-api-serializer: 2.6.6
   jwt-simple: 0.5.6
   koa-body: 4.2.0
+  koa-bodyparser: 4.3.0
   typescript: 4.4.4
   uuid: 8.3.2
 
@@ -979,6 +981,15 @@ packages:
       type-is: 1.6.18
     dev: false
 
+  /co-body/6.1.0:
+    resolution: {integrity: sha512-m7pOT6CdLN7FuXUcpuz/8lfQ/L77x8SchHCF4G0RBTJO20Wzmhn5Sp4/5WsKy8OSpifBSUrmg83qEqaDHdyFuQ==}
+    dependencies:
+      inflation: 2.0.0
+      qs: 6.10.1
+      raw-body: 2.4.1
+      type-is: 1.6.18
+    dev: false
+
   /collection-visit/1.0.0:
     resolution: {integrity: sha1-S8A3PBZLwykbTTaMgpzxqApZ3KA=}
     engines: {node: '>=0.10.0'}
@@ -1036,6 +1047,10 @@ packages:
   /copy-descriptor/0.1.1:
     resolution: {integrity: sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /copy-to/2.0.1:
+    resolution: {integrity: sha1-JoD7uAaKSNCGVrYJgJK9r8kG9KU=}
     dev: false
 
   /create-require/1.1.1:
@@ -2356,6 +2371,14 @@ packages:
       '@types/formidable': 1.2.4
       co-body: 5.2.0
       formidable: 1.2.2
+    dev: false
+
+  /koa-bodyparser/4.3.0:
+    resolution: {integrity: sha512-uyV8G29KAGwZc4q/0WUAjH+Tsmuv9ImfBUF2oZVyZtaeo0husInagyn/JH85xMSxM0hEk/mbCII5ubLDuqW/Rw==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      co-body: 6.1.0
+      copy-to: 2.0.1
     dev: false
 
   /koa-ratelimit/5.0.1:

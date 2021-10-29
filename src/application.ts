@@ -1,8 +1,6 @@
 import { MikroORM } from '@mikro-orm/core'
 import createApplication from '@triptyk/nfw-core'
-
 import KoaRatelimit from 'koa-ratelimit';
-import koaBody from 'koa-body';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
@@ -11,6 +9,7 @@ import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
+import koaBody from 'koa-body'
 
 (async () => {
   const orm = await MikroORM.init({
@@ -34,6 +33,7 @@ import { UserModel } from './api/models/user.model.js';
       args: [true]
     }],
     globalMiddlewares: [
+      koaBody(),
       KoaRatelimit({
         driver: 'memory',
         db: new Map(),
@@ -42,8 +42,7 @@ import { UserModel } from './api/models/user.model.js';
         throw: true,
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip
-      }),
-      koaBody()
+      })
     ],
     globalErrorhandler: DefaultErrorHandler,
     globalNotFoundMiddleware: NotFoundMiddleware,
@@ -52,7 +51,7 @@ import { UserModel } from './api/models/user.model.js';
     baseRoute: '/api/v1'
   });
 
-  const port = 8001
+  const port = 8000
 
   koaApp.listen(port, () => {
     console.log(`Listening on port ${port}`)

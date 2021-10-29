@@ -10,14 +10,14 @@ export interface Configuration {
 
 @injectable()
 @singleton()
-export class ConfigurationService<T = Configuration>{
+export class ConfigurationService<T = Configuration> {
   private _config!: T;
 
-  public get config(): T {
+  public get config (): T {
     return this._config;
   }
 
-  public constructor() {
+  public constructor () {
     this.loadConfiguration();
   }
 
@@ -26,7 +26,7 @@ export class ConfigurationService<T = Configuration>{
     this._config = Configuration;
   }
 
-  public getKey(key: keyof T) {
+  public getKey (key: keyof T) {
     return this._config[key];
   }
 }
