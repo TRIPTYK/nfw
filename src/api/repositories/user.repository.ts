@@ -1,7 +1,8 @@
 import { UserModel } from '../models/user.model.js';
 import { JsonApiRepository } from '../../json-api/repositories/json-api.repository.js';
 import { unixTimestamp } from '../utils/date-utils.js';
-import * as Jwt from 'jwt-simple';
+import Jwt from 'jwt-simple';
+import bcrypt from 'bcrypt';
 
 export class UserRepository extends JsonApiRepository<UserModel> {
   public generateAccessToken(user: UserModel, accessExpires: number, secret: string): string {
@@ -11,6 +12,13 @@ export class UserRepository extends JsonApiRepository<UserModel> {
       sub: user.id
     }
 
-    return Jwt.encode(payload, secret);   
+    return Jwt.encode(payload, secret, 'HS512');   
+  }
+
+  public async hashPassword(user: UserModel, password: string): Promise<UserModel> {
+    if (user.password && !await user.passwordMatches(password)) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    return user;
   }
 }

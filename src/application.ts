@@ -1,5 +1,6 @@
 import { MikroORM } from '@mikro-orm/core'
 import createApplication from '@triptyk/nfw-core'
+import bodyParser from 'koa-bodyparser';
 import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
@@ -9,7 +10,6 @@ import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
-import bodyParser from 'koa-bodyparser';
 
 (async () => {
   const orm = await MikroORM.init({
@@ -33,7 +33,6 @@ import bodyParser from 'koa-bodyparser';
       args: [true]
     }],
     globalMiddlewares: [
-
       KoaRatelimit({
         driver: 'memory',
         db: new Map(),
@@ -43,7 +42,7 @@ import bodyParser from 'koa-bodyparser';
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip
       }),
-      bodyParser(),
+      bodyParser()
     ],
     globalErrorhandler: DefaultErrorHandler,
     globalNotFoundMiddleware: NotFoundMiddleware,
@@ -53,10 +52,6 @@ import bodyParser from 'koa-bodyparser';
   });
 
   const port = 8001
-  koaApp.use(async ctx => {
-    console.log('ctx', ctx);
-    ctx.body = 'Hello World';
-  });
 
   koaApp.listen(port, () => {
     console.log(`Listening on port ${port}`)

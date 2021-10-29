@@ -3,9 +3,7 @@ import { JsonApiRepository } from '../../json-api/repositories/json-api.reposito
 import { v4 } from 'uuid';
 import { unixTimestamp } from '../utils/date-utils.js';
 import { RefreshTokenModel } from '../models/refresh-token.model.js';
-import { autoInjectable } from '@triptyk/nfw-core';
 
-@autoInjectable()
 export class RefreshTokenRepository extends JsonApiRepository<RefreshTokenModel> {
   public async generateRefreshToken(user: UserModel, refreshExpires: number): Promise<RefreshTokenModel> {
     const token = v4();
@@ -14,7 +12,7 @@ export class RefreshTokenRepository extends JsonApiRepository<RefreshTokenModel>
       token,
       user,
       expires,
-    })
+    });
     await this.persistAndFlush(refreshToken);
     return refreshToken
   }

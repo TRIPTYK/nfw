@@ -22,8 +22,8 @@ export class ConfigurationService<T = Configuration>{
   }
 
   private async loadConfiguration() {
-    this._config = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`).catch(err => console.log(err));
-    console.log(this._config);
+    const { Configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`).catch(err => console.log(err));
+    this._config = Configuration;
   }
 
   public getKey(key: keyof T) {

@@ -14,22 +14,25 @@ export class AuthController {
                @inject(ConfigurationService) private configurationService: ConfigurationService,
                @InjectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository) {}
 
-  @GET('/register')
+  @POST('/register')
   public async register (
     @Body() body : UserModel
   ) {
     const allUsers = this.userRepository.create(body);
+    this.userRepository.persist(allUsers);
+    await this.userRepository.hashPassword(allUsers, body.password);
+    this.userRepository.flush();
 
     return allUsers;
   }
 
   @POST('/login')
   public async login (@Body() body: any) {
-    console.log(body);
     const { jwt } = this.configurationService.config;
     const user = await this.userRepository.findOne({ email: body.email });
-    if (!user) {
-      throw createError(417, 'User not found'); 
+    console.log(user, await user?.passwordMatches(body.password));
+    if (!user || !await user.passwordMatches(body.password)) {
+      throw createError(417, 'Votre email ou mot de passe est incorrecte');
     }
     const accessToken = this.userRepository.generateAccessToken(user, jwt.accessExpires, jwt.secret);
     const refreshToken = this.refreshTokenRepository.generateRefreshToken(user, jwt.refreshExpires);
