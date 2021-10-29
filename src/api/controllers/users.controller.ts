@@ -18,17 +18,14 @@ export class UsersController {
 
   @GET('/:id')
   get () {
-    
+
   }
 
    @POST('/')
    @UseMiddleware(deserialize(UserDeserializer))
-    create (@Body() body: any) {
+  create (@Body() body: any) {
     console.log(body)
   }
-
-
-  
 
   @PATCH('/')
    update () {

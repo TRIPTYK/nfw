@@ -11,12 +11,12 @@ const rolePermissions: Record<Roles | 'anonymous', DefinePermissions> = {
   user (user, { can }) {
     can('read', 'user');
     can(['create', 'update', 'delete'], 'user', {
-      id: user!.id
+      id: user!.id,
     });
   },
   admin (user, { can }) {
     can(['read', 'create', 'update', 'delete'], 'all');
-  }
+  },
 };
 
 export function defineAbilityFor (user: UserModel | null) {

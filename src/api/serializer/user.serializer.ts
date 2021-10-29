@@ -20,25 +20,25 @@ export class UserSerializer {
         beforeSerialize (data: any) {
           extractCollections(data);
           return data;
-        }
+        },
       });
 
       this.serializer.register('user', {
         whitelist: ['firstName', 'lastName'],
         relationships: {
           articles: {
-            type: 'article'
+            type: 'article',
           },
           refreshToken: {
-            type: 'refresh-token'
-          }
-        }
+            type: 'refresh-token',
+          },
+        },
       });
       this.serializer.register('article', {
-        whitelist: ['title']
+        whitelist: ['title'],
       });
       this.serializer.register('refresh-token', {
-        whitelist: ['token']
+        whitelist: ['token'],
       });
     }
 

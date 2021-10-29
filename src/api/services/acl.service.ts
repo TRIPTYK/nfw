@@ -8,9 +8,7 @@ import { UserModel } from '../models/user.model.js';
 @singleton()
 export class AclService {
   // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM) {
-
-  }
+  public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM) {}
 
   public enforce (sub: UserModel | null, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any>) {
     const ability = defineAbilityFor(sub);
