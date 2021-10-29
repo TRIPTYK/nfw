@@ -5,9 +5,11 @@ import {
   Property,
   OneToOne,
   OneToMany,
-  Collection
+  Collection,
+  Enum
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
+import { Roles } from '../enums/roles.enum.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import { ArticleModel } from './article.model.js';
 import { RefreshTokenModel } from './refresh-token.model.js';
@@ -32,6 +34,9 @@ export class UserModel extends BaseEntity<any, any> {
 
   @Property()
   declare password: string;
+
+  @Enum(() => Roles)
+  declare role: Roles;
 
   @OneToOne({
     entity: () => RefreshTokenModel,

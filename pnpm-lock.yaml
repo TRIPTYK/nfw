@@ -22,11 +22,13 @@ specifiers:
   eslint-plugin-node: ^11.1.0
   eslint-plugin-promise: ^5.1.1
   eslint-plugin-unused-imports: ^1.1.5
+  fastest-validator-decorators: ^1.2.1
   http-errors: ^1.8.0
   joi: ^17.4.2
   json-api-serializer: ^2.6.6
   jwt-simple: ^0.5.6
   koa-body: ^4.2.0
+  koa-bodyparser: ^4.3.0
   koa-ratelimit: ^5.0.1
   ts-node: ^10.4.0
   ts-node-dev: ^1.1.8
@@ -40,11 +42,13 @@ dependencies:
   '@triptyk/nfw-core': link:../nfw-core
   '@types/bcrypt': 5.0.0
   bcrypt: 5.0.1
+  fastest-validator-decorators: 1.2.1
   http-errors: 1.8.0
   joi: 17.4.2
   json-api-serializer: 2.6.6
   jwt-simple: 0.5.6
   koa-body: 4.2.0
+  koa-bodyparser: 4.3.0
   typescript: 4.4.4
   uuid: 8.3.2
 
@@ -977,6 +981,15 @@ packages:
       type-is: 1.6.18
     dev: false
 
+  /co-body/6.1.0:
+    resolution: {integrity: sha512-m7pOT6CdLN7FuXUcpuz/8lfQ/L77x8SchHCF4G0RBTJO20Wzmhn5Sp4/5WsKy8OSpifBSUrmg83qEqaDHdyFuQ==}
+    dependencies:
+      inflation: 2.0.0
+      qs: 6.10.1
+      raw-body: 2.4.1
+      type-is: 1.6.18
+    dev: false
+
   /collection-visit/1.0.0:
     resolution: {integrity: sha1-S8A3PBZLwykbTTaMgpzxqApZ3KA=}
     engines: {node: '>=0.10.0'}
@@ -1034,6 +1047,10 @@ packages:
   /copy-descriptor/0.1.1:
     resolution: {integrity: sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /copy-to/2.0.1:
+    resolution: {integrity: sha1-JoD7uAaKSNCGVrYJgJK9r8kG9KU=}
     dev: false
 
   /create-require/1.1.1:
@@ -1561,6 +1578,17 @@ packages:
   /fast-levenshtein/2.0.6:
     resolution: {integrity: sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=}
     dev: true
+
+  /fastest-validator-decorators/1.2.1:
+    resolution: {integrity: sha512-Qs4ABSc9Mb/AwYfqtPf3C1f+JkvA/xmYpMv6I+QiQZEgPThw8N02YuT3nUk/M4mYNIUuBQ7LxvPM6MDV1f6pPQ==}
+    dependencies:
+      fastest-validator: 1.12.0
+      reflect-metadata: 0.1.13
+    dev: false
+
+  /fastest-validator/1.12.0:
+    resolution: {integrity: sha512-Qc7oCVO9hAPz5GUONmToIoa95YWzoe7SLsrjIXTfCFf6HFQXxxWePXe8D+Kp/XCrr5H/pMJwP2xprW07wYv/BQ==}
+    dev: false
 
   /fastq/1.13.0:
     resolution: {integrity: sha512-YpkpUnK8od0o1hmeSc7UUs/eB/vIPWJYjKck2QKIzAf71Vm1AAQ3EbuZB3g2JIy+pg+ERD0vqI79KyZiB2e2Nw==}
@@ -2343,6 +2371,14 @@ packages:
       '@types/formidable': 1.2.4
       co-body: 5.2.0
       formidable: 1.2.2
+    dev: false
+
+  /koa-bodyparser/4.3.0:
+    resolution: {integrity: sha512-uyV8G29KAGwZc4q/0WUAjH+Tsmuv9ImfBUF2oZVyZtaeo0husInagyn/JH85xMSxM0hEk/mbCII5ubLDuqW/Rw==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      co-body: 6.1.0
+      copy-to: 2.0.1
     dev: false
 
   /koa-ratelimit/5.0.1:
