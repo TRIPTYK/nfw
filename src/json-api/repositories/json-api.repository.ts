@@ -1,3 +1,4 @@
+import { QueryFlag } from '@mikro-orm/core';
 import { EntityRepository, QueryBuilder } from '@mikro-orm/mysql';
 
 export interface JsonApiParams {
@@ -16,6 +17,10 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
     if (params.include.length) {
       this.handleIncludes(queryBuilder, params.include);
     }
+
+    queryBuilder.setFlag(QueryFlag.PAGINATE)
+      .offset(0)
+      .limit(10);
 
     return queryBuilder;
   }

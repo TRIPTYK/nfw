@@ -4,7 +4,6 @@ import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
-import { AuthGuard } from './api/guards/auth.guard.js';
 import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
@@ -18,6 +17,7 @@ import koaBody from 'koa-body'
     user: 'root',
     password: 'test123*',
     type: 'mysql',
+    debug: true,
   });
 
   const generator = orm.getSchemaGenerator();
@@ -26,19 +26,25 @@ import koaBody from 'koa-body'
   // await generator.createSchema();
   await generator.updateSchema();
 
+  // const users = await new UserFactory(orm.em).create(100);
+  // const articles = new ArticleFactory(orm.em).make(1000)
+
+  // articles.forEach((article) => {
+  //   article.owner = faker.random.arrayElement(users)
+  // });
+
+  // await orm.em.persistAndFlush(articles);
+
   const koaApp = await createApplication({
     controllers: [AuthController, UsersController],
-    globalGuards: [{
-      guard: AuthGuard,
-      args: [true],
-    }],
+    globalGuards: [],
     globalMiddlewares: [
       koaBody(),
       KoaRatelimit({
         driver: 'memory',
         db: new Map(),
-        duration: 5000,
-        max: 5,
+        duration: 10000,
+        max: 25,
         throw: true,
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip,

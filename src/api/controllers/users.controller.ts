@@ -25,7 +25,7 @@ export class UsersController {
 
    @POST('/')
    @UseMiddleware(deserialize(UserDeserializer))
-  create (@ValidatedBody(ValidatedUser)body: ValidatedUser) {
+  create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
     return { message: 'User created' };
   }
 

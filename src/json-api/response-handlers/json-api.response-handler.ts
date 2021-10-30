@@ -1,7 +1,8 @@
-import { BaseEntity, Collection } from '@mikro-orm/core';
+import { BaseEntity, Collection, MikroORM } from '@mikro-orm/core';
 import {
   Class,
   container,
+  databaseInjectionToken,
   inject,
   injectable,
   ResponseHandlerContext,
@@ -11,29 +12,33 @@ import { UserSerializer } from '../../api/serializer/user.serializer.js';
 import { AclService } from '../../api/services/acl.service.js';
 import createHttpErrors from 'http-errors';
 import { UserModel } from '../../api/models/user.model.js';
+import { EntityAbility } from '../../api/abilities/base.js';
 
 @injectable()
 export class JsonApiResponsehandler implements ResponseHandlerInterface {
   // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(AclService) private aclService: AclService) {}
+  public constructor (@inject(AclService) private aclService: AclService, @inject(databaseInjectionToken) private databaseConnection: MikroORM) {}
 
-  private walkCollection (data: BaseEntity<any, any> | BaseEntity<any, any>[], currentUser: UserModel | null, action: string, walkedBy: Collection<unknown>[]): void {
+  private async walkCollection (data: BaseEntity<any, any> | BaseEntity<any, any>[], currentUser: UserModel | null, action: string, walkedBy: Collection<unknown>[]): Promise<void> {
     if (Array.isArray(data) && data.every((e) => e instanceof BaseEntity)) {
       for (const el of data) {
-        this.walkCollection(el, currentUser, action, walkedBy)
+        await this.walkCollection(el, currentUser, action, walkedBy)
       }
       return;
     }
 
     if (data instanceof BaseEntity) {
-      this.aclService.enforce(currentUser, action as any, data);
+      const ability = (data.constructor as any).ability as EntityAbility<any> | undefined;
+      if (!ability) {
+        throw new Error(`Ability not defined for ${data.constructor.name}`);
+      }
+      await this.aclService.enforce(ability, currentUser, action as any, data);
       for (const [_key, value] of Object.entries(data)) {
         if (value instanceof Collection && !walkedBy.includes(value) && value.isInitialized()) {
-          console.log('pass', value)
           walkedBy.push(value);
-          this.walkCollection(value.getItems(), currentUser, action, walkedBy);
+          await this.walkCollection(value.getItems(), currentUser, action, walkedBy);
         } else {
-          this.walkCollection(value, currentUser, action, walkedBy);
+          await this.walkCollection(value, currentUser, action, walkedBy);
         }
       }
     }
@@ -44,14 +49,14 @@ export class JsonApiResponsehandler implements ResponseHandlerInterface {
       return;
     }
 
-    if (ctx.request.method === 'GET') {
-      controllerAction = 'read';
-    }
-
-    try {
-      this.walkCollection(controllerResponse, null, 'read', []);
-    } catch (e: any) {
-      throw createHttpErrors(403, e);
+    if (ctx.method === 'GET') {
+      const contextEm = this.databaseConnection.em.getContext();
+      const currentUser = await contextEm.getRepository(UserModel).findOne({ id: '026d606a-0d51-45a4-9ec4-c3ed856c12f9' });
+      try {
+        await this.walkCollection(controllerResponse, currentUser, controllerAction, []);
+      } catch (e: any) {
+        throw createHttpErrors(403, e);
+      }
     }
 
     const [serializer] = args as [Class<UserSerializer>];
