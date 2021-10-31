@@ -5,7 +5,7 @@ export interface Configuration {
     secret: string,
     accessExpires: number,
     refreshExpires: number,
-  };
+  },
 }
 
 @injectable()
@@ -21,7 +21,7 @@ export class ConfigurationService<T = Configuration> {
     this.loadConfiguration();
   }
 
-  private async loadConfiguration() {
+  private async loadConfiguration () {
     const { Configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
     this._config = Configuration;
   }

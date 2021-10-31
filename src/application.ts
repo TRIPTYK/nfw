@@ -9,6 +9,7 @@ import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import koaBody from 'koa-body'
+import KoaQS from 'koa-qs';
 
 (async () => {
   const orm = await MikroORM.init({
@@ -56,6 +57,8 @@ import koaBody from 'koa-body'
     mikroORMContext: true,
     baseRoute: '/api/v1',
   });
+
+  KoaQS(koaApp);
 
   const port = 8000
 
