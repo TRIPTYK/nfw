@@ -1,5 +1,5 @@
 import { RouterContext } from '@koa/router'
-import { inject, injectable, InjectRepository, MiddlewareInterface } from '@triptyk/nfw-core'
+import { injectable, InjectRepository, MiddlewareInterface } from '@triptyk/nfw-core'
 import * as Jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.model.js';
 import { UserRepository } from '../repositories/user.repository.js';
@@ -8,7 +8,7 @@ import { UserRepository } from '../repositories/user.repository.js';
 export class CurrentUserMiddleware implements MiddlewareInterface {
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository) {}
 
-  async use (context: RouterContext) {
+  async use (context: RouterContext, next: any) {
     if (context.header.authorization) {
       const bearerToken = context.header.authorization.split(' ');
       if (bearerToken[0] === 'Bearer') {
@@ -17,5 +17,6 @@ export class CurrentUserMiddleware implements MiddlewareInterface {
         context.state.user = user;
       }
     }
+    await next();
   }
 }

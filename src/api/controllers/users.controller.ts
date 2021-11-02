@@ -22,11 +22,10 @@ export class UsersController {
 
   @GET('/:id')
   get () {
-
   }
 
-   @POST('/')
-   @UseMiddleware(deserialize(UserDeserializer))
+  @POST('/')
+  @UseMiddleware(deserialize(UserDeserializer))
   create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
     return { message: 'User created' };
   }

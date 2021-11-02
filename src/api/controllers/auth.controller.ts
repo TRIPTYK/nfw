@@ -1,13 +1,16 @@
-import { Body, Controller, injectable, InjectRepository, inject, POST } from '@triptyk/nfw-core'
+import { Body, Controller, injectable, InjectRepository, inject, POST, GET, UseMiddleware } from '@triptyk/nfw-core'
 import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import createError from 'http-errors';
 import { RefreshTokenModel } from '../models/refresh-token.model.js';
 import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
+import { CurrentUser } from '../../json-api/decorators/current-user.js';
+import { CurrentUserMiddleware } from '../middlewares/current-user.middleware.js';
 
 @Controller('/auth')
 @injectable()
+@UseMiddleware(CurrentUserMiddleware)
 export class AuthController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@inject(ConfigurationService) private configurationService: ConfigurationService,
