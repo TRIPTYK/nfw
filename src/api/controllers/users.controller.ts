@@ -1,5 +1,5 @@
-import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Body } from '@triptyk/nfw-core'
-import { JsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
+import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware } from '@triptyk/nfw-core'
+import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { UserModel } from '../models/user.model.js';
 import { UserQueryParamsSchema } from '../query-params-schema/user.schema.js';
 import { UserRepository } from '../repositories/user.repository.js';
@@ -8,6 +8,8 @@ import { UserSerializer } from '../serializer/user.serializer.js';
 import { deserialize } from '../middlewares/deserialize.middleware.js';
 import { UserDeserializer } from '../deserializer/user.deserializer.js';
 import { CurrentUserMiddleware } from '../middlewares/current-user.middleware.js';
+import { ValidatedUser } from '../validators/user.validators.js';
+import { ValidatedBody } from '../decorators/validated-body.decorator.js';
 
 @Controller('/users')
 @injectable()
@@ -23,10 +25,10 @@ export class UsersController {
 
   }
 
-  @POST('/')
-  @UseMiddleware(deserialize(UserDeserializer))
-  create (@Body() body: any) {
-    console.log(body)
+   @POST('/')
+   @UseMiddleware(deserialize(UserDeserializer))
+  create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
+    return { message: 'User created' };
   }
 
   @PATCH('/')
@@ -41,8 +43,9 @@ export class UsersController {
 
   @GET('/')
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
-  public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: any) {
-    const users = await this.userRepository.jsonApiRequest(queryParams).getResultList();
+  public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams) {
+    const currentUser = await this.userRepository.findOne({ id: '026d606a-0d51-45a4-9ec4-c3ed856c12f9' });
+    const users = await this.userRepository.jsonApiRequest(queryParams, currentUser).getResultList();
     return users;
   }
 }

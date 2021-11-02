@@ -5,7 +5,7 @@ export interface Configuration {
     secret: string,
     accessExpires: number,
     refreshExpires: number,
-  };
+  },
 }
 
 @injectable()

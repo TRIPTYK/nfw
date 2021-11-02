@@ -1,4 +1,4 @@
-import { Body, Controller, GET, injectable, InjectRepository, inject, POST, UseMiddleware } from '@triptyk/nfw-core'
+import { Body, Controller, injectable, InjectRepository, inject, POST } from '@triptyk/nfw-core'
 import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
 import { UserRepository } from '../repositories/user.repository.js';
@@ -20,10 +20,8 @@ export class AuthController {
     @Body() body : UserModel,
   ) {
     const user = this.userRepository.create(body);
-    this.userRepository.persist(user);
-    await this.userRepository.hashPassword(user, body.password);
-    this.userRepository.flush();
-
+    user.password = await this.userRepository.hashPassword(body.password);
+    await this.userRepository.persistAndFlush(user);
     return user;
   }
 
@@ -33,13 +31,13 @@ export class AuthController {
     const user = await this.userRepository.findOne({ email: body.email });
 
     if (!user || !await user.passwordMatches(body.password)) {
-      throw createError(417, 'Votre email ou mot de passe est incorrecte');
+      throw createError(417, 'Votre email ou mot de passe est incorrect');
     }
 
     const accessToken = this.userRepository.generateAccessToken(user, jwt.accessExpires, jwt.secret);
     const refreshToken = await this.refreshTokenRepository.generateRefreshToken(user, jwt.refreshExpires);
+    await this.refreshTokenRepository.flush();
 
-    this.refreshTokenRepository.flush();
     return { accessToken, refreshToken };
   }
 
@@ -56,8 +54,8 @@ export class AuthController {
     const refreshToken = await this.refreshTokenRepository.generateRefreshToken(refresh.user, jwt.refreshExpires);
 
     this.refreshTokenRepository.remove(refresh);
-    this.refreshTokenRepository.flush();
+    await this.refreshTokenRepository.flush();
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken: refreshToken.token };
   }
 }

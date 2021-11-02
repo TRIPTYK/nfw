@@ -10,7 +10,7 @@ export interface QueryParamsSchemaInterface {
 @injectable()
 export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
   allowedIncludes (context: ControllerParamsContext): string[] | Promise<string[]> {
-    return ['refreshToken', 'articles'];
+    return ['refreshToken', 'articles', 'articles.owner'];
   }
 
   allowedFields (context: ControllerParamsContext): string[] | Promise<string[]> {
