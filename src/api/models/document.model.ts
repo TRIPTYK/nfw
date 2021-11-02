@@ -1,10 +1,10 @@
-import { Entity, ManyToOne, PrimaryKey, Property, BaseEntity, Enum, ManyToMany } from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, BaseEntity, Enum, ManyToMany } from '@mikro-orm/core';
 import { v4 } from 'uuid';
-import {MimeTypes} from '../enums/mime-type.enum.js';
+import { MimeTypes } from '../enums/mime-type.enum.js';
 import type { UserModel } from './user.model.js';
 
 @Entity({
-  tableName: 'documents'
+  tableName: 'documents',
 })
 export class DocumentModel extends BaseEntity<any, any> {
     @PrimaryKey()

@@ -56,6 +56,6 @@ export class AuthController {
     this.refreshTokenRepository.remove(refresh);
     await this.refreshTokenRepository.flush();
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken: refreshToken.token };
   }
 }
