@@ -38,7 +38,7 @@ export class AuthController {
     const refreshToken = await this.refreshTokenRepository.generateRefreshToken(user, jwt.refreshExpires);
     await this.refreshTokenRepository.flush();
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken: refreshToken.token };
   }
 
   @POST('/refresh-token')
