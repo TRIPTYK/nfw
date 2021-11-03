@@ -10,10 +10,12 @@ import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import koaBody from 'koa-body'
 import KoaQS from 'koa-qs';
+import { DocumentModel } from './api/models/document.model.js';
+import {DocumentController} from './api/controllers/documents.controller.js';
 
 (async () => {
   const orm = await MikroORM.init({
-    entities: [UserModel, RefreshTokenModel, ArticleModel],
+    entities: [UserModel, RefreshTokenModel, ArticleModel, DocumentModel],
     dbName: 'nfw',
     user: 'root',
     password: 'test123*',
@@ -37,10 +39,17 @@ import KoaQS from 'koa-qs';
   // await orm.em.persistAndFlush(articles);
 
   const koaApp = await createApplication({
-    controllers: [AuthController, UsersController],
+    controllers: [AuthController, UsersController, DocumentController],
     globalGuards: [],
     globalMiddlewares: [
-      koaBody(),
+      koaBody({
+        formidable: {
+          uploadDir: './uploads',
+          keepExtensions: true,
+        },
+        multipart: true,
+        urlencoded: true,
+      }),
       KoaRatelimit({
         driver: 'memory',
         db: new Map(),
