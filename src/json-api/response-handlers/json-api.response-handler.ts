@@ -1,8 +1,7 @@
-import { BaseEntity, Collection, MikroORM } from '@mikro-orm/core';
+import { BaseEntity, Collection } from '@mikro-orm/core';
 import {
   Class,
   container,
-  databaseInjectionToken,
   inject,
   injectable,
   ResponseHandlerContext,
@@ -17,9 +16,9 @@ import { EntityAbility } from '../../api/abilities/base.js';
 @injectable()
 export class JsonApiResponsehandler implements ResponseHandlerInterface {
   // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(AclService) private aclService: AclService, @inject(databaseInjectionToken) private databaseConnection: MikroORM) {}
+  public constructor (@inject(AclService) private aclService: AclService) {}
 
-  private async walkCollection (data: BaseEntity<any, any> | BaseEntity<any, any>[], currentUser: UserModel | null, action: string, walkedBy: Collection<unknown>[]): Promise<void> {
+  private async walkCollection (data: BaseEntity<any, any> | BaseEntity<any, any>[], currentUser: UserModel | null | undefined, action: string, walkedBy: Collection<unknown>[]): Promise<void> {
     if (Array.isArray(data) && data.every((e) => e instanceof BaseEntity)) {
       for (const el of data) {
         await this.walkCollection(el, currentUser, action, walkedBy)
@@ -50,8 +49,7 @@ export class JsonApiResponsehandler implements ResponseHandlerInterface {
     }
 
     if (ctx.method === 'GET') {
-      const contextEm = this.databaseConnection.em.getContext();
-      const currentUser = await contextEm.getRepository(UserModel).findOne({ id: '0a8c29e0-c290-41e8-be40-1756cedecbfe' });
+      const currentUser = ctx.state.currentUser as UserModel | undefined;
       try {
         await this.walkCollection(controllerResponse, currentUser, controllerAction, []);
       } catch (e: any) {

@@ -10,6 +10,7 @@ export class DefaultErrorHandler implements ErrorHandlerInterface {
         message: error.message,
       }
     } else {
+      console.error(error);
       context.response.status = 500;
       context.response.body = 'Internal server error';
     }

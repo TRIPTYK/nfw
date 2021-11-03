@@ -11,7 +11,9 @@ const userAccessPermissions: AccessPermisions = {
       'owner.id': user!.id,
     });
   },
-  anonymous: () => {},
+  anonymous: (_, { can }) => {
+    can('list', 'article');
+  },
 }
 
 /**

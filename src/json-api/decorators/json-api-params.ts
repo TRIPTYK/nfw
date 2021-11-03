@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 import { ControllerParamsContext } from '@triptyk/nfw-core/dist/storages/metadata/use-params.metadata';
 import { parseFields, parseIncludes, parseSort } from '../parser/parse-includes.js';
 import { QueryParamsSchemaInterface } from '../../api/query-params-schema/user.schema.js';
-import { Nested, Number, Schema, SchemaBase, String, validateOrReject } from 'fastest-validator-decorators';
+import { Field, Nested, Number, Schema, SchemaBase, String, validateOrReject } from 'fastest-validator-decorators';
 
 @Schema(true)
 class ValidatedJsonApiQueryParamsPagination extends SchemaBase {
@@ -31,11 +31,15 @@ export class ValidatedJsonApiQueryParams extends SchemaBase {
     })
     public page?: ValidatedJsonApiQueryParamsPagination;
 
-    @Nested({
+    @Field({
+      type: 'multi',
       optional: true,
+      rules: [
+        { type: 'object' },
+        { type: 'string' },
+      ],
     })
-    @String()
-    public fields?: string[] | Record<string, string[]>;
+    public fields?: Record<string, any>;
 
     @Nested({
       optional: true,
@@ -69,7 +73,6 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
 
       return params;
     } catch (error: any) {
-      console.log(error)
       throw createHttpError(400, error);
     }
   });

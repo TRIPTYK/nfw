@@ -12,7 +12,7 @@ export class AclService {
   // eslint-disable-next-line no-useless-constructor
   public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM) {}
 
-  public async enforce (ability: EntityAbility<any>, sub: UserModel | null, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any>) {
+  public async enforce (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any>) {
     const transformedModelName = obj.constructor.name.replace('Model', '').toLowerCase();
     const subjectAlias = subject(transformedModelName, obj);
 
@@ -43,7 +43,7 @@ export class AclService {
     const can = loadedAbility.can(act, subjectAlias);
 
     if (!can) {
-      throw new Error(`Cannot ${act} ${transformedModelName} ${(obj as any).id ?? '#'}`);
+      throw new Error(`Cannot ${act} ${transformedModelName} ${(obj as any).id ?? '#'} as ${sub?.role}`);
     }
 
     /**
