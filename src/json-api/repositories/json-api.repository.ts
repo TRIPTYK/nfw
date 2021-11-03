@@ -82,9 +82,8 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
       const entity = this.create(model);
       await this.persistAndFlush(entity);
       return entity;
-    } catch (e) {
-      console.log(e);
-      throw e;
+    } catch (e:any) {
+      throw new Error(e);
     }
   }
 }
