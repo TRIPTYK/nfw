@@ -42,8 +42,7 @@ export class UsersController {
   @GET('/')
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams) {
-    const currentUser = await this.userRepository.findOne({ id: '026d606a-0d51-45a4-9ec4-c3ed856c12f9' });
-    const users = await this.userRepository.jsonApiRequest(queryParams, currentUser).getResultList();
+    const users = await this.userRepository.jsonApiRequest(queryParams).getResultList();
     return users;
   }
 }

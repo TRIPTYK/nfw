@@ -51,7 +51,7 @@ export class JsonApiResponsehandler implements ResponseHandlerInterface {
 
     if (ctx.method === 'GET') {
       const contextEm = this.databaseConnection.em.getContext();
-      const currentUser = await contextEm.getRepository(UserModel).findOne({ id: '026d606a-0d51-45a4-9ec4-c3ed856c12f9' });
+      const currentUser = await contextEm.getRepository(UserModel).findOne({ id: '0a8c29e0-c290-41e8-be40-1756cedecbfe' });
       try {
         await this.walkCollection(controllerResponse, currentUser, controllerAction, []);
       } catch (e: any) {

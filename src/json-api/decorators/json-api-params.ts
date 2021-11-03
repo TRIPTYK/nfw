@@ -34,7 +34,8 @@ export class ValidatedJsonApiQueryParams extends SchemaBase {
     @Nested({
       optional: true,
     })
-    public fields?: any;
+    @String()
+    public fields?: string[] | Record<string, string[]>;
 
     @Nested({
       optional: true,
@@ -46,7 +47,6 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
   return createCustomDecorator(async (context: ControllerParamsContext) => {
     const schemaInstance = container.resolve(paramsSchema);
     try {
-      console.log(context.ctx.query)
       const params = new ValidatedJsonApiQueryParams(context.ctx.query);
       await validateOrReject(params);
 
@@ -54,7 +54,7 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
       params.sort = parseSort(params.sort as any);
       params.include = parseIncludes(params.include as any);
 
-      const [allowedFields, allowedIncludes, allowedSortFields] = await Promise.all([schemaInstance.allowedFields(context), schemaInstance.allowedIncludes(context), schemaInstance.allowedSortFields(context)]);
+      const [, allowedIncludes, allowedSortFields] = await Promise.all([schemaInstance.allowedFields(context), schemaInstance.allowedIncludes(context), schemaInstance.allowedSortFields(context)]);
 
       /**
        * If one include does not match
@@ -63,8 +63,13 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
         throw createHttpError(400, `Cannot include ${params.include}`);
       }
 
+      if (params.sort.some((include) => !allowedSortFields.includes(include))) {
+        throw createHttpError(400, `Cannot sort on ${params.sort}`);
+      }
+
       return params;
     } catch (error: any) {
+      console.log(error)
       throw createHttpError(400, error);
     }
   });

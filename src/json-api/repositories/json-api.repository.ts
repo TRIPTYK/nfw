@@ -1,36 +1,46 @@
 import { BaseEntity, QueryFlag } from '@mikro-orm/core';
 import { EntityRepository, QueryBuilder } from '@mikro-orm/mysql';
-import { UserModel } from '../../api/models/user.model.js';
-
-export interface JsonApiParams {
-    include?: string[],
-    sort?: string[],
-    fields?: string[],
-    filters?: Record<string, string[]>,
-    page?: {
-      size: number,
-      number: number,
-    },
-}
+import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 
 export class JsonApiRepository<T> extends EntityRepository<T> {
-  public jsonApiRequest (params : JsonApiParams, accessedBy: UserModel | null) {
+  public jsonApiRequest (params : ValidatedJsonApiQueryParams) {
     const queryBuilder = this.createQueryBuilder();
 
     queryBuilder.select('*');
 
     if (params.include?.length) {
-      this.handleIncludes(queryBuilder, params.include, [], accessedBy);
+      this.handleIncludes(queryBuilder, params.include, []);
+    }
+
+    if (params.sort?.length) {
+      this.handleSorting(queryBuilder, params.sort);
+    }
+
+    if (params.fields?.length) {
+      this.handleSparseFields(queryBuilder, params.fields);
     }
 
     queryBuilder.setFlag(QueryFlag.PAGINATE)
       .offset(params.page?.number)
-      .limit(params.page?.size ?? 10);
+      .limit(Math.min(params.page?.size ?? 10, 30)); // by default limit 10
 
     return queryBuilder;
   }
 
-  private handleIncludes (queryBuilder: QueryBuilder<T>, includes: string[], included: string[], accessedBy: UserModel | null, parentEntity?: BaseEntity<any, any>) {
+  private handleSorting (queryBuilder: QueryBuilder<T>, sorts: string[]) {
+    for (const sort of sorts) {
+      const sortInfos = sort.startsWith('-') ? { field: sort.substring(1), order: 'DESC' } : { field: sort, order: 'ASC' };
+      queryBuilder.orderBy({
+        [sortInfos.field]: sortInfos.order as 'ASC' | 'DESC',
+      });
+    }
+  }
+
+  private handleSparseFields (queryBuilder: QueryBuilder<T>, fields: string[] | Record<string, unknown>) {
+    console.log(fields);
+  }
+
+  private handleIncludes (queryBuilder: QueryBuilder<T>, includes: string[], included: string[], parentEntity?: BaseEntity<any, any>) {
     const entityMeta = this.em.getMetadata().find(parentEntity?.constructor.name ?? this.entityName.toString());
 
     for (const includePath of includes) {
@@ -48,15 +58,9 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
           throw new Error('Relation does not exists');
         }
 
-        const baseClass = entityMeta?.class as any;
-
-        console.log(`${rootInclude}Conditions`);
-
-        console.log(baseClass[`${rootInclude}Conditions`]);
-
-        queryBuilder.leftJoinAndSelect(rootInclude, included?.concat([rootInclude]).join('-') ?? rootInclude, baseClass[`${rootInclude}Conditions`]?.(accessedBy, rootInclude, queryBuilder));
+        queryBuilder.leftJoinAndSelect(rootInclude, included?.concat([rootInclude]).join('-') ?? rootInclude);
         included?.push(rootInclude);
-        this.handleIncludes(queryBuilder, rest, included, accessedBy, relationMeta.entity() as any);
+        this.handleIncludes(queryBuilder, rest, included, relationMeta.entity() as any);
       }
     }
   }
