@@ -4,9 +4,8 @@ import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 
 export class JsonApiRepository<T> extends EntityRepository<T> {
   public jsonApiRequest (params : ValidatedJsonApiQueryParams) {
-    const queryBuilder = this.createQueryBuilder();
-
-    queryBuilder.select('*');
+    const transformedModelName = (this.entityName as string).replace('Model', '').toLowerCase();
+    const queryBuilder = this.createQueryBuilder(transformedModelName);
 
     if (params.include?.length) {
       this.handleIncludes(queryBuilder, params.include, []);
@@ -16,8 +15,10 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
       this.handleSorting(queryBuilder, params.sort);
     }
 
-    if (params.fields?.length) {
+    if (params.fields && Object.keys(params.fields).length > 0) {
       this.handleSparseFields(queryBuilder, params.fields);
+    } else {
+      queryBuilder.select('*');
     }
 
     queryBuilder.setFlag(QueryFlag.PAGINATE)
@@ -36,8 +37,19 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
     }
   }
 
-  private handleSparseFields (queryBuilder: QueryBuilder<T>, fields: string[] | Record<string, unknown>) {
-    console.log(fields);
+  private handleSparseFields (queryBuilder: QueryBuilder<T>, fields: Record<string, string[] | Record<string, string[]>>) {
+    if (fields.$$default) {
+      queryBuilder.addSelect(fields.$$default as string[]);
+      return;
+    }
+
+    for (const [key, value] of Object.entries(fields)) {
+      if (Array.isArray(value)) {
+        queryBuilder.addSelect(value.map(e => `${key}.${e}`));
+      } else {
+        this.handleSparseFields(queryBuilder, value);
+      }
+    }
   }
 
   private handleIncludes (queryBuilder: QueryBuilder<T>, includes: string[], included: string[], parentEntity?: BaseEntity<any, any>) {
@@ -58,7 +70,7 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
           throw new Error('Relation does not exists');
         }
 
-        queryBuilder.leftJoinAndSelect(rootInclude, included?.concat([rootInclude]).join('-') ?? rootInclude);
+        queryBuilder.leftJoin(rootInclude, included?.concat([rootInclude]).join('-') ?? rootInclude);
         included?.push(rootInclude);
         this.handleIncludes(queryBuilder, rest, included, relationMeta.entity() as any);
       }

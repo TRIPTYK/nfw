@@ -11,7 +11,8 @@ const userAccessPermissions: AccessPermisions = {
     // });
     can('read', 'user');
   },
-  anonymous: () => {
+  anonymous: (_, { can }) => {
+    can('list', 'user');
   },
 }
 
