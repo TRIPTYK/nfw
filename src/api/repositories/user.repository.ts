@@ -1,7 +1,7 @@
 import { UserModel } from '../models/user.model.js';
 import { JsonApiRepository } from '../../json-api/repositories/json-api.repository.js';
 import { unixTimestamp } from '../utils/date-utils.js';
-import Jwt from 'jwt-simple';
+import Jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 export class UserRepository extends JsonApiRepository<UserModel> {
@@ -12,7 +12,7 @@ export class UserRepository extends JsonApiRepository<UserModel> {
       sub: user.id,
     }
 
-    return Jwt.encode(payload, secret, 'HS512');
+    return Jwt.sign(payload, secret, { algorithm: 'HS512' });
   }
 
   public hashPassword (password: string): Promise<string> {

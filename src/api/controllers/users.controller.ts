@@ -7,11 +7,13 @@ import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-ap
 import { UserSerializer } from '../serializer/user.serializer.js';
 import { deserialize } from '../middlewares/deserialize.middleware.js';
 import { UserDeserializer } from '../deserializer/user.deserializer.js';
+import { CurrentUserMiddleware } from '../middlewares/current-user.middleware.js';
 import { ValidatedUser } from '../validators/user.validators.js';
 import { ValidatedBody } from '../decorators/validated-body.decorator.js';
 
 @Controller('/users')
 @injectable()
+@UseMiddleware(CurrentUserMiddleware)
 export class UsersController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository) {
@@ -20,19 +22,18 @@ export class UsersController {
 
   @GET('/:id')
   get () {
-
   }
 
-   @POST('/')
-   @UseMiddleware(deserialize(UserDeserializer))
+  @POST('/')
+  @UseMiddleware(deserialize(UserDeserializer))
   create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
     return { message: 'User created' };
   }
 
   @PATCH('/')
-   update () {
+  update () {
 
-   }
+  }
 
   @DELETE('/')
   delete () {
