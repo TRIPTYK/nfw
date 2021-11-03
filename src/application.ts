@@ -10,7 +10,9 @@ import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import koaBody from 'koa-body'
 import KoaQS from 'koa-qs';
-
+// import { UserFactory } from './database/factories/user.factory.js';
+// import { ArticleFactory } from './database/factories/article.factory.js';
+// import faker from 'faker';
 (async () => {
   const orm = await MikroORM.init({
     entities: [UserModel, RefreshTokenModel, ArticleModel],

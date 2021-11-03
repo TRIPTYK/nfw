@@ -64,4 +64,15 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
       }
     }
   }
+
+  public async jsonApiCreate (model: Partial<T>): Promise<T> {
+    try {
+      const entity = this.create(model);
+      await this.persistAndFlush(entity);
+      return entity;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
 }
