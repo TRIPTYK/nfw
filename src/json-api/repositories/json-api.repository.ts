@@ -58,8 +58,8 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
   }
 
   public async jsonApiRemove (filterQuery:FilterQuery<T>): Promise<undefined> {
-    // const entity = await this.findOneOrFail(filterQuery);
-    // await this.removeAndFlush(entity);
+    const entity = await this.findOneOrFail(filterQuery);
+    await this.removeAndFlush(entity);
     return undefined;
   }
 }
