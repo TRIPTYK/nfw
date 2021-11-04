@@ -5,6 +5,7 @@ import { databaseInjectionToken, inject, injectable, singleton } from '@triptyk/
 import { EntityAbility } from '../abilities/base.js';
 import { UserModel } from '../models/user.model.js';
 import { permittedFieldsOf } from '@casl/ability/extra';
+import { modelToName } from '../../json-api/utils/model-to-name.js';
 
 @injectable()
 @singleton()
@@ -13,7 +14,7 @@ export class AclService {
   public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM) {}
 
   public async enforce (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any>) {
-    const transformedModelName = obj.constructor.name.replace('Model', '').toLowerCase();
+    const transformedModelName = modelToName(obj, false);
     const subjectAlias = subject(transformedModelName, obj);
 
     /**

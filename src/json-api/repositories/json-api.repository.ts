@@ -3,12 +3,9 @@ import { EntityRepository } from '@mikro-orm/mysql';
 import { dotToObject } from '../../api/utils/dot-to-object.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 import { SortObject } from '../parser/parse-includes.js';
+import { modelToName } from '../utils/model-to-name.js';
 
 export abstract class JsonApiRepository<T> extends EntityRepository<T> {
-  get jsonApiEntityName () {
-    return (this.entityName as string).replace('Model', '').toLowerCase();
-  }
-
   public jsonApiFindOne (idConditions: Record<string, unknown>, params : ValidatedJsonApiQueryParams) {
     return this.findOneOrFail(idConditions, this.getFindOptionsFromParams(params));
   }
@@ -21,12 +18,13 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
   }
 
   private getFindOptionsFromParams (params : ValidatedJsonApiQueryParams) {
+    const entityName = modelToName(this.entityName);
     const size = Math.min(params.page?.size ?? 10, 30);
 
     /**
      * Do not specify root entity, remove it
      */
-    const fields = params.fields?.map((field) => field.startsWith(`${this.jsonApiEntityName}.`) ? field.replace(`${this.jsonApiEntityName}.`, '') : field);
+    const fields = params.fields?.map((field) => field.startsWith(`${entityName}.`) ? field.replace(`${entityName}.`, '') : field);
 
     /**
      * Transform into nested object with order specified
