@@ -14,3 +14,21 @@ export class ValidatedUser extends SchemaBase {
     @String()
     public password!: string;
 }
+
+@Schema()
+export class ValidatedUserUpdate extends SchemaBase {
+    @String()
+    public id!:string;
+
+    @String({ optional: true })
+    public firstName!: string;
+
+    @String({ optional: true })
+    public lastName!: string;
+
+    @Email({ optional: true })
+    public email!: string;
+
+    @String({ optional: true })
+    public password!: string;
+}

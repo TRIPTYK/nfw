@@ -43,7 +43,7 @@ import { LogMiddleware } from './api/middlewares/log.middleware.js';
 
   // articles.forEach((article) => {
   //   article.owner = faker.random.arrayElement(users)
-  // });
+  // // });
 
   // await orm.em.persistAndFlush(articles);
 
