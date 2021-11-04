@@ -37,4 +37,14 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
       offset: params.page?.number ? params.page.number * size : undefined,
     });
   }
+
+  public async jsonApiCreate (model: Partial<T>): Promise<T> {
+    try {
+      const entity = this.create(model);
+      await this.persistAndFlush(entity);
+      return entity;
+    } catch (e:any) {
+      throw new Error(e);
+    }
+  }
 }

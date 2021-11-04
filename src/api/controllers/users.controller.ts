@@ -26,8 +26,9 @@ export class UsersController {
 
   @POST('/')
   @UseMiddleware(deserialize(UserDeserializer))
+  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
-    return { message: 'User created' };
+    return this.userRepository.jsonApiCreate(body);
   }
 
   @PATCH('/')
