@@ -1,4 +1,4 @@
-import { BaseEntity, QueryFlag } from '@mikro-orm/core';
+import { BaseEntity, FilterQuery, QueryFlag, wrap } from '@mikro-orm/core';
 import { EntityRepository, QueryBuilder } from '@mikro-orm/mysql';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 
@@ -78,12 +78,15 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
   }
 
   public async jsonApiCreate (model: Partial<T>): Promise<T> {
-    try {
-      const entity = this.create(model);
-      await this.persistAndFlush(entity);
-      return entity;
-    } catch (e:any) {
-      throw new Error(e);
-    }
+    const entity = this.create(model);
+    await this.persistAndFlush(entity);
+    return entity;
+  }
+
+  public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T>): Promise<T> {
+    const entity = await this.findOneOrFail(filterQuery, ['articles']);
+    await wrap(entity).assign(model);
+    await this.persistAndFlush(entity);
+    return entity;
   }
 }

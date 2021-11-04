@@ -1,4 +1,4 @@
-import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware } from '@triptyk/nfw-core'
+import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Param } from '@triptyk/nfw-core'
 import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { UserModel } from '../models/user.model.js';
 import { UserQueryParamsSchema } from '../query-params-schema/user.schema.js';
@@ -8,7 +8,7 @@ import { UserSerializer } from '../serializer/user.serializer.js';
 import { deserialize } from '../middlewares/deserialize.middleware.js';
 import { UserDeserializer } from '../deserializer/user.deserializer.js';
 import { CurrentUserMiddleware } from '../middlewares/current-user.middleware.js';
-import { ValidatedUser } from '../validators/user.validators.js';
+import { ValidatedUser, ValidatedUserUpdate } from '../validators/user.validators.js';
 import { ValidatedBody } from '../decorators/validated-body.decorator.js';
 
 @Controller('/users')
@@ -31,9 +31,11 @@ export class UsersController {
     return this.userRepository.jsonApiCreate(body);
   }
 
-  @PATCH('/')
-  update () {
-
+  @PATCH('/:id')
+  @UseMiddleware(deserialize(UserDeserializer))
+  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
+  update (@ValidatedBody(ValidatedUserUpdate) body: ValidatedUserUpdate, @Param('id') id: string) {
+    return this.userRepository.jsonApiUpdate(body, { id: id });
   }
 
   @DELETE('/')
