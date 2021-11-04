@@ -3,17 +3,14 @@ export function parseIncludes (includes?: string) {
   return includes.split(',');
 }
 
-export function parseSort (sorts?: string) {
-  if (!sorts) return {};
+export interface SortObject {
+  [x: string] : SortObject | ('ASC' | 'DESC'),
+}
 
-  const ret = {} as Record<string, 'DESC' | 'ASC'>;
+export function parseSort (sorts?: string): string[] {
+  if (!sorts) return [];
 
-  for (const sort of sorts.split(',')) {
-    const order = sort.startsWith('-') ? 'DESC' : 'ASC';
-    ret[order === 'ASC' ? sort : sort.slice(1)] = order;
-  }
-
-  return ret;
+  return sorts.split(',');
 }
 
 export function parseFields (fields?: string | Record<string, any>, parserResult?: string[]) : string[] {

@@ -24,7 +24,7 @@ export class ValidatedJsonApiQueryParams extends SchemaBase {
     @String({
       optional: true,
     })
-    public sort?: Record<string, 'ASC' | 'DESC'>;
+    public sort?: string[];
 
     @Nested({
       optional: true,

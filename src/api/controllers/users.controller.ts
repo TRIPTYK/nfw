@@ -1,4 +1,4 @@
-import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware } from '@triptyk/nfw-core'
+import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Param } from '@triptyk/nfw-core'
 import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { UserModel } from '../models/user.model.js';
 import { UserQueryParamsSchema } from '../query-params-schema/user.schema.js';
@@ -21,7 +21,12 @@ export class UsersController {
   }
 
   @GET('/:id')
-  get () {
+  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
+  async get (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @Param('id') id : string) {
+    const user = await this.userRepository.jsonApiFindOne({
+      id,
+    }, queryParams);
+    return user;
   }
 
   @POST('/')
@@ -44,17 +49,7 @@ export class UsersController {
   @GET('/')
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams) {
-    const users = await this.userRepository.jsonApiRequest(queryParams);
-
-    // .getResultList();
-    // const usersL = await this.userRepository.createQueryBuilder('user')
-    //   .select('*')
-    //   .setFlag(QueryFlag.PAGINATE)
-    //   .offset(undefined)
-    //   .limit(Math.min(10)) // by default limit 10
-    //   .leftJoinAndSelect('user.articles', 'articles')
-    //   .getResultList();
-
+    const users = await this.userRepository.jsonApiFind(queryParams);
     return users;
   }
 }
