@@ -4,6 +4,10 @@ export default {
     accessExpires: 5,
     refreshExpires: 1440,
   },
+  logger: {
+    logToConsole: true,
+    dir: 'dist/logs/',
+  },
   baseURL: '/api/v1',
   port: 8000,
   database: {

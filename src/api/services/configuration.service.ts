@@ -15,6 +15,11 @@ export interface Configuration {
     database: string,
     port: number,
   },
+  logger: {
+    logToFile: boolean,
+    logToConsole: boolean,
+    dir: string,
+  },
 }
 
 @injectable()

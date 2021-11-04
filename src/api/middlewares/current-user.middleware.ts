@@ -6,6 +6,7 @@ import { UserRepository } from '../repositories/user.repository.js';
 
 @injectable()
 export class CurrentUserMiddleware implements MiddlewareInterface {
+  // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository) {}
 
   async use (context: RouterContext, next: any) {

@@ -11,6 +11,8 @@ import { UserModel } from './api/models/user.model.js';
 import koaBody from 'koa-body'
 import KoaQS from 'koa-qs';
 import { ConfigurationService } from './api/services/configuration.service.js';
+import { LogMiddleware } from './api/middlewares/log.middleware.js';
+
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
 // import faker from 'faker';
@@ -49,8 +51,7 @@ import { ConfigurationService } from './api/services/configuration.service.js';
     controllers: [AuthController, UsersController],
     globalGuards: [],
     globalMiddlewares: [
-      koaBody(),
-      KoaRatelimit({
+      KoaRatelimit({ // first, the rate limit
         driver: 'memory',
         db: new Map(),
         duration: 10000,
@@ -59,6 +60,8 @@ import { ConfigurationService } from './api/services/configuration.service.js';
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip,
       }),
+      koaBody(),
+      LogMiddleware,
     ],
     globalErrorhandler: DefaultErrorHandler,
     globalNotFoundMiddleware: NotFoundMiddleware,

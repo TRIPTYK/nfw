@@ -60,16 +60,16 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
 
       const [, allowedIncludes, allowedSortFields] = await Promise.all([schemaInstance.allowedFields(context), schemaInstance.allowedIncludes(context), schemaInstance.allowedSortFields(context)]);
 
-      // /**
-      //  * If one include does not match
-      //  */
-      // if (params.include.some((include) => !allowedIncludes.includes(include))) {
-      //   throw createHttpError(400, `Cannot include ${params.include}`);
-      // }
+      /**
+       * If one include does not match
+       */
+      if (params.include.some((include) => !allowedIncludes.includes(include))) {
+        throw createHttpError(400, `Cannot include ${params.include}`);
+      }
 
-      // if (params.sort.some((include) => !allowedSortFields.includes(include))) {
-      //   throw createHttpError(400, `Cannot sort on ${params.sort}`);
-      // }
+      if (params.sort.some((include) => !allowedSortFields.includes(include))) {
+        throw createHttpError(400, `Cannot sort on ${params.sort}`);
+      }
 
       return params;
     } catch (error: any) {
