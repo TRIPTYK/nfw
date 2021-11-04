@@ -14,6 +14,9 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
   }
 
   public jsonApiFind (params : ValidatedJsonApiQueryParams) {
+    if (params.page) {
+      return this.findAndCount({}, this.getFindOptionsFromParams(params));
+    }
     return this.find({}, this.getFindOptionsFromParams(params));
   }
 
