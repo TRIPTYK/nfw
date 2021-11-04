@@ -15,12 +15,13 @@ import { ArticleModel } from './article.model.js';
 import { RefreshTokenModel } from './refresh-token.model.js';
 import bcrypt from 'bcrypt';
 import { defineAbilityForUser } from '../abilities/user.js';
+import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 
 @Entity({
   tableName: 'users',
   customRepository: () => UserRepository,
 })
-export class UserModel extends BaseEntity<any, any> {
+export class UserModel extends BaseEntity<any, any> implements JsonApiModelInterface {
   public static ability = defineAbilityForUser;
 
   @PrimaryKey()

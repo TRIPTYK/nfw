@@ -53,7 +53,11 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
   }
 
   async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, { ctx, controllerAction, args }: ResponseHandlerContext): Promise<void> {
+    ctx.response.type = 'application/vnd.api+json';
+
     if (!controllerResponse) {
+      ctx.status = 204;
+      ctx.body = undefined;
       return;
     }
 
@@ -66,7 +70,6 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
     const [serializer] = args as [Class<JsonApiSerializerInterface<T>>];
     let paginationData;
     const serializerInstance = container.resolve(serializer);
-    ctx.response.type = 'application/vnd.api+json';
 
     /**
      * Pagination response [T[], number]
@@ -74,7 +77,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
     if (queryParams.page && Array.isArray(payload) && payload.length === 2 && typeof payload[1] === 'number') {
       paginationData = {
         totalRecords: payload[1],
-        pageNumber: queryParams.page.number,
+        pageNumber: queryParams.page,
         pageSize: queryParams.page.size,
       };
       payload = payload[0];

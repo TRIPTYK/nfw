@@ -4,7 +4,7 @@ import { dotToObject } from '../../api/utils/dot-to-object.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 import { SortObject } from '../parser/parse-includes.js';
 
-export class JsonApiRepository<T> extends EntityRepository<T> {
+export abstract class JsonApiRepository<T> extends EntityRepository<T> {
   get jsonApiEntityName () {
     return (this.entityName as string).replace('Model', '').toLowerCase();
   }

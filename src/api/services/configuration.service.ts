@@ -6,6 +6,15 @@ export interface Configuration {
     accessExpires: number,
     refreshExpires: number,
   },
+  baseURL: `/${string}`,
+  port: number,
+  database: {
+    host: string,
+    user: string,
+    password: string,
+    database: string,
+    port: number,
+  },
 }
 
 @injectable()
@@ -13,16 +22,20 @@ export interface Configuration {
 export class ConfigurationService<T = Configuration> {
   private _config!: T;
 
-  public async getConfig (): Promise<T> {
+  public async load () {
+    const { default: configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
+    return this._config = Object.seal(configuration);
+  }
+
+  public get config (): T {
     if (!this._config) {
-      const { Configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
-      this._config = Configuration;
+      throw new Error('Please use load() before app launch');
     }
 
     return this._config;
   }
 
-  public getKey (key: keyof T) {
+  public getKey<K extends keyof T> (key: K): T[K] {
     return this._config[key];
   }
 }
