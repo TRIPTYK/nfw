@@ -7,9 +7,7 @@ import { UserModel } from '../models/user.model.js';
 @injectable()
 export class LogMiddleware implements MiddlewareInterface {
   // eslint-disable-next-line no-useless-constructor
-  constructor (@inject(LoggerService) private loggerService: LoggerService) {
-
-  }
+  constructor (@inject(LoggerService) private loggerService: LoggerService) {}
 
   async use (context: RouterContext, next: Next) {
     this.loggerService.logger.log(context.method, context.url, (context.state.currentUser as UserModel)?.id ?? 'anonymous', context.ip);

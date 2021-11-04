@@ -20,6 +20,7 @@ export interface Configuration {
     logToConsole: boolean,
     dir: string,
   },
+  debug: boolean,
 }
 
 @injectable()

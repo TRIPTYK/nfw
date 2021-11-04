@@ -29,7 +29,7 @@ import { LogMiddleware } from './api/middlewares/log.middleware.js';
     user: database.user,
     password: database.password,
     type: 'mysql',
-    debug: true,
+    debug: database.debug,
   });
 
   const generator = orm.getSchemaGenerator();
