@@ -43,7 +43,17 @@ export class UsersController {
   @GET('/')
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams) {
-    const users = await this.userRepository.jsonApiRequest(queryParams).getResultList();
+    const users = await this.userRepository.jsonApiRequest(queryParams);
+
+    // .getResultList();
+    // const usersL = await this.userRepository.createQueryBuilder('user')
+    //   .select('*')
+    //   .setFlag(QueryFlag.PAGINATE)
+    //   .offset(undefined)
+    //   .limit(Math.min(10)) // by default limit 10
+    //   .leftJoinAndSelect('user.articles', 'articles')
+    //   .getResultList();
+
     return users;
   }
 }
