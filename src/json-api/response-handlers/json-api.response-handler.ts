@@ -18,7 +18,7 @@ type JsonApiPayload<T> = T | T[] | [T[], number];
 
 export interface JsonApiPayloadInterface<T> {
   payload?: JsonApiPayload<T>,
-  queryParams: ValidatedJsonApiQueryParams,
+  queryParams?: ValidatedJsonApiQueryParams,
 }
 
 @injectable()
@@ -26,6 +26,10 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
   // eslint-disable-next-line no-useless-constructor
   public constructor (@inject(AclService) private aclService: AclService) {}
 
+  /**
+   * Iterate through all objects if the response to check permissions
+   * Heavy perf usage
+   */
   private async walkCollection (data: T | T[], currentUser: UserModel | null | undefined, action: string, walkedBy: Collection<T>[]): Promise<void> {
     if (Array.isArray(data) && data.every((e) => e instanceof BaseEntity)) {
       for (const el of data) {
@@ -52,18 +56,29 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
     }
   }
 
+  /**
+   * Handle-all function to serialize and check returned controller data
+   */
   async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, { ctx, controllerAction, args }: ResponseHandlerContext): Promise<void> {
     ctx.response.type = 'application/vnd.api+json';
 
-    if (!controllerResponse) {
-      ctx.status = 204;
-      ctx.body = undefined;
-      return;
+    /**
+     * For lazy developpers, when no response object is passed, we assign the response as the payload of the response object
+     */
+    if ((Array.isArray(controllerResponse) && controllerResponse.every((e) => e instanceof BaseEntity)) || controllerResponse instanceof BaseEntity) {
+      controllerResponse = {
+        payload: controllerResponse as T | T[],
+      }
     }
 
-    let { payload, queryParams } = controllerResponse;
+    let { payload, queryParams } = controllerResponse ?? {}; // assign empty object as default payload if undefined or null
 
+    /**
+     * If still undefined
+     */
     if (!payload) {
+      ctx.status = 204;
+      ctx.body = undefined;
       return;
     }
 
@@ -74,7 +89,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
     /**
      * Pagination response [T[], number]
      */
-    if (queryParams.page && Array.isArray(payload) && payload.length === 2 && typeof payload[1] === 'number') {
+    if (queryParams?.page && Array.isArray(payload) && payload.length === 2 && typeof payload[1] === 'number') {
       paginationData = {
         totalRecords: payload[1],
         pageNumber: queryParams.page,
@@ -83,14 +98,24 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
       payload = payload[0];
     }
 
+    /**
+     * We check the access of the data in the response, useless in post requests because we could not revert a created entity
+     */
     if (ctx.method === 'GET') {
       const currentUser = ctx.state.currentUser as UserModel | undefined;
       try {
         await this.walkCollection(payload as T | T[], currentUser, controllerAction, []);
       } catch (e: any) {
+        /**
+         * if not authorized, transform the error to HTTP error
+         */
         throw createHttpErrors(403, e);
       }
     }
+
+    /**
+     * Serialize with extraData
+     */
     ctx.response.body = await serializerInstance.serialize(payload as T | T[], {
       queryParams,
       url: ctx.url,
