@@ -12,6 +12,9 @@ import koaBody from 'koa-body'
 import KoaQS from 'koa-qs';
 import { DocumentModel } from './api/models/document.model.js';
 import {DocumentController} from './api/controllers/documents.controller.js';
+// import { UserFactory } from './database/factories/user.factory.js';
+// import { ArticleFactory } from './database/factories/article.factory.js';
+// import faker from 'faker';
 
 (async () => {
   const orm = await MikroORM.init({

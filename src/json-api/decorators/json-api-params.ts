@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 import { ControllerParamsContext } from '@triptyk/nfw-core/dist/storages/metadata/use-params.metadata';
 import { parseFields, parseIncludes, parseSort } from '../parser/parse-includes.js';
 import { QueryParamsSchemaInterface } from '../../api/query-params-schema/user.schema.js';
-import { Nested, Number, Schema, SchemaBase, String, validateOrReject } from 'fastest-validator-decorators';
+import { Field, Nested, Number, Schema, SchemaBase, String, validateOrReject } from 'fastest-validator-decorators';
 
 @Schema(true)
 class ValidatedJsonApiQueryParamsPagination extends SchemaBase {
@@ -24,17 +24,22 @@ export class ValidatedJsonApiQueryParams extends SchemaBase {
     @String({
       optional: true,
     })
-    public sort?: string[];
+    public sort?: Record<string, 'ASC' | 'DESC'>;
 
     @Nested({
       optional: true,
     })
     public page?: ValidatedJsonApiQueryParamsPagination;
 
-    @Nested({
+    @Field({
+      type: 'multi',
       optional: true,
+      rules: [
+        { type: 'object' },
+        { type: 'string' },
+      ],
     })
-    public fields?: any;
+    public fields?: string[];
 
     @Nested({
       optional: true,
@@ -46,7 +51,6 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
   return createCustomDecorator(async (context: ControllerParamsContext) => {
     const schemaInstance = container.resolve(paramsSchema);
     try {
-      console.log(context.ctx.query)
       const params = new ValidatedJsonApiQueryParams(context.ctx.query);
       await validateOrReject(params);
 
@@ -54,14 +58,18 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
       params.sort = parseSort(params.sort as any);
       params.include = parseIncludes(params.include as any);
 
-      const [allowedFields, allowedIncludes, allowedSortFields] = await Promise.all([schemaInstance.allowedFields(context), schemaInstance.allowedIncludes(context), schemaInstance.allowedSortFields(context)]);
+      const [, allowedIncludes, allowedSortFields] = await Promise.all([schemaInstance.allowedFields(context), schemaInstance.allowedIncludes(context), schemaInstance.allowedSortFields(context)]);
 
-      /**
-       * If one include does not match
-       */
-      if (params.include.some((include) => !allowedIncludes.includes(include))) {
-        throw createHttpError(400, `Cannot include ${params.include}`);
-      }
+      // /**
+      //  * If one include does not match
+      //  */
+      // if (params.include.some((include) => !allowedIncludes.includes(include))) {
+      //   throw createHttpError(400, `Cannot include ${params.include}`);
+      // }
+
+      // if (params.sort.some((include) => !allowedSortFields.includes(include))) {
+      //   throw createHttpError(400, `Cannot sort on ${params.sort}`);
+      // }
 
       return params;
     } catch (error: any) {

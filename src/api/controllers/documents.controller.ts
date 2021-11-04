@@ -20,7 +20,7 @@ export class DocumentController {
   @POST('/')
   @UseMiddleware(FileUploadMiddleware)
   async create (@Body() body: unknown) {
-    const doc = this.documentRepository.create(body as EntityData<DocumentModel>);
+    const doc = this.documentRepository.jsonApiCreate(body as EntityData<DocumentModel>);
     await this.documentRepository.persistAndFlush(doc).catch(err => console.log(err));
     return doc;
   }
@@ -28,7 +28,6 @@ export class DocumentController {
   @PATCH('/:id')
   async update (@Param('id') id: string, @Body() body: unknown) {
     await this.documentRepository.nativeUpdate({ id }, body as EntityData<DocumentModel>)
-                                    .catch(err => console.log(err));
     return this.documentRepository.findOne({ id });
   }
 

@@ -14,7 +14,7 @@ export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
   }
 
   allowedFields (context: ControllerParamsContext): string[] | Promise<string[]> {
-    return [];
+    return ['id'];
   }
 
   allowedSortFields (context: ControllerParamsContext): string[] | Promise<string[]> {

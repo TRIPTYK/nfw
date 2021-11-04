@@ -26,8 +26,9 @@ export class UsersController {
 
   @POST('/')
   @UseMiddleware(deserialize(UserDeserializer))
+  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
-    return { message: 'User created' };
+    return this.userRepository.jsonApiCreate(body);
   }
 
   @PATCH('/')
@@ -43,8 +44,17 @@ export class UsersController {
   @GET('/')
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams) {
-    const currentUser = await this.userRepository.findOne({ id: '026d606a-0d51-45a4-9ec4-c3ed856c12f9' });
-    const users = await this.userRepository.jsonApiRequest(queryParams, currentUser).getResultList();
+    const users = await this.userRepository.jsonApiRequest(queryParams);
+
+    // .getResultList();
+    // const usersL = await this.userRepository.createQueryBuilder('user')
+    //   .select('*')
+    //   .setFlag(QueryFlag.PAGINATE)
+    //   .offset(undefined)
+    //   .limit(Math.min(10)) // by default limit 10
+    //   .leftJoinAndSelect('user.articles', 'articles')
+    //   .getResultList();
+
     return users;
   }
 }
