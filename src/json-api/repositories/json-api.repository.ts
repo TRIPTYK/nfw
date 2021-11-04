@@ -4,7 +4,7 @@ import { dotToObject } from '../../api/utils/dot-to-object.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 import { SortObject } from '../parser/parse-includes.js';
 
-export class JsonApiRepository<T> extends EntityRepository<T> {
+export abstract class JsonApiRepository<T> extends EntityRepository<T> {
   get jsonApiEntityName () {
     return (this.entityName as string).replace('Model', '').toLowerCase();
   }
@@ -14,6 +14,9 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
   }
 
   public jsonApiFind (params : ValidatedJsonApiQueryParams) {
+    if (params.page) {
+      return this.findAndCount({}, this.getFindOptionsFromParams(params));
+    }
     return this.find({}, this.getFindOptionsFromParams(params));
   }
 

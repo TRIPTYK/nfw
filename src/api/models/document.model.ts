@@ -1,12 +1,13 @@
 import { Entity, PrimaryKey, Property, BaseEntity, Enum, ManyToMany } from '@mikro-orm/core';
 import { v4 } from 'uuid';
+import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import { MimeTypes } from '../enums/mime-type.enum.js';
 import type { UserModel } from './user.model.js';
 
 @Entity({
   tableName: 'documents',
 })
-export class DocumentModel extends BaseEntity<any, any> {
+export class DocumentModel extends BaseEntity<any, any> implements JsonApiModelInterface {
     @PrimaryKey()
     id: string = v4();
 
