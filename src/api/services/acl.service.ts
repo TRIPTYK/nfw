@@ -41,9 +41,10 @@ export class AclService {
      * Check permissions
      */
     const can = loadedAbility.can(act, subjectAlias);
+    const userRole = sub?.role ?? 'anonymous';
 
     if (!can) {
-      throw new Error(`Cannot ${act} ${transformedModelName} ${(obj as any).id ?? '#'} as ${sub?.role}`);
+      throw new Error(`Cannot ${act} ${transformedModelName} ${(obj as any).id ?? '#'} as ${userRole}`);
     }
 
     /**

@@ -21,7 +21,12 @@ export class UsersController {
   }
 
   @GET('/:id')
-  get () {
+  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
+  async get (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @Param('id') id : string) {
+    const user = await this.userRepository.jsonApiFindOne({
+      id,
+    }, queryParams);
+    return user;
   }
 
   @POST('/')
@@ -38,15 +43,16 @@ export class UsersController {
     return this.userRepository.jsonApiUpdate(body, { id: id });
   }
 
-  @DELETE('/')
-  delete () {
-
+  @DELETE('/:id')
+  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
+  delete (@Param('id') id: string) {
+    return this.userRepository.jsonApiRemove({ id: id });
   }
 
   @GET('/')
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams) {
-    const users = await this.userRepository.jsonApiRequest(queryParams).getResultList();
+    const users = await this.userRepository.jsonApiFind(queryParams);
     return users;
   }
 }

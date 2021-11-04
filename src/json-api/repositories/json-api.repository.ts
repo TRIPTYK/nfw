@@ -1,79 +1,43 @@
-import { BaseEntity, FilterQuery, QueryFlag, wrap } from '@mikro-orm/core';
-import { EntityRepository, QueryBuilder } from '@mikro-orm/mysql';
+import { FilterQuery, LoadStrategy, wrap } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/mysql';
+import { dotToObject } from '../../api/utils/dot-to-object.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
+import { SortObject } from '../parser/parse-includes.js';
 
 export class JsonApiRepository<T> extends EntityRepository<T> {
-  public jsonApiRequest (params : ValidatedJsonApiQueryParams) {
-    const transformedModelName = (this.entityName as string).replace('Model', '').toLowerCase();
-    const queryBuilder = this.createQueryBuilder(transformedModelName);
-
-    if (params.include?.length) {
-      this.handleIncludes(queryBuilder, params.include, []);
-    }
-
-    if (params.sort?.length) {
-      this.handleSorting(queryBuilder, params.sort);
-    }
-
-    if (params.fields && Object.keys(params.fields).length > 0) {
-      this.handleSparseFields(queryBuilder, params.fields);
-    } else {
-      queryBuilder.select('*');
-    }
-
-    queryBuilder.setFlag(QueryFlag.PAGINATE)
-      .offset(params.page?.number)
-      .limit(Math.min(params.page?.size ?? 10, 30)); // by default limit 10
-
-    return queryBuilder;
+  get jsonApiEntityName () {
+    return (this.entityName as string).replace('Model', '').toLowerCase();
   }
 
-  private handleSorting (queryBuilder: QueryBuilder<T>, sorts: string[]) {
-    for (const sort of sorts) {
-      const sortInfos = sort.startsWith('-') ? { field: sort.substring(1), order: 'DESC' } : { field: sort, order: 'ASC' };
-      queryBuilder.orderBy({
-        [sortInfos.field]: sortInfos.order as 'ASC' | 'DESC',
-      });
-    }
+  public jsonApiFindOne (idConditions: Record<string, unknown>, params : ValidatedJsonApiQueryParams) {
+    return this.findOneOrFail(idConditions, this.getFindOptionsFromParams(params));
   }
 
-  private handleSparseFields (queryBuilder: QueryBuilder<T>, fields: Record<string, string[] | Record<string, string[]>>) {
-    if (fields.$$default) {
-      queryBuilder.addSelect(fields.$$default as string[]);
-      return;
-    }
-
-    for (const [key, value] of Object.entries(fields)) {
-      if (Array.isArray(value)) {
-        queryBuilder.addSelect(value.map(e => `${key}.${e}`));
-      } else {
-        this.handleSparseFields(queryBuilder, value);
-      }
-    }
+  public jsonApiFind (params : ValidatedJsonApiQueryParams) {
+    return this.find({}, this.getFindOptionsFromParams(params));
   }
 
-  private handleIncludes (queryBuilder: QueryBuilder<T>, includes: string[], included: string[], parentEntity?: BaseEntity<any, any>) {
-    const entityMeta = this.em.getMetadata().find(parentEntity?.constructor.name ?? this.entityName.toString());
+  private getFindOptionsFromParams (params : ValidatedJsonApiQueryParams) {
+    const size = Math.min(params.page?.size ?? 10, 30);
 
-    for (const includePath of includes) {
-      const includeSplitted = includePath.split('.');
-      const rootInclude = includeSplitted.shift();
-      const rest = includeSplitted.slice(1);
-      if (rootInclude) {
-        if (included?.includes(rootInclude)) {
-          continue;
-        }
+    /**
+     * Do not specify root entity, remove it
+     */
+    const fields = params.fields?.map((field) => field.startsWith(`${this.jsonApiEntityName}.`) ? field.replace(`${this.jsonApiEntityName}.`, '') : field);
 
-        const relationMeta = entityMeta?.relations.find((e) => e.name === rootInclude);
+    /**
+     * Transform into nested object with order specified
+     */
+    const orderBy = params.sort?.reduce((p, c) => p = { ...p, ...dotToObject(c) as SortObject }, {} as SortObject);
 
-        if (!relationMeta) {
-          throw new Error('Relation does not exists');
-        }
-
-        queryBuilder.leftJoin(rootInclude, included?.concat([rootInclude]).join('-') ?? rootInclude);
-        included?.push(rootInclude);
-        this.handleIncludes(queryBuilder, rest, included, relationMeta.entity() as any);
-      }
+    return {
+      fields,
+      disableIdentityMap: true,
+      populate: params.include ?? [],
+      strategy: LoadStrategy.SELECT_IN,
+      limit: size,
+      orderBy,
+      offset: params.page?.number ? params.page.number * size : undefined,
     }
   }
 
@@ -84,9 +48,15 @@ export class JsonApiRepository<T> extends EntityRepository<T> {
   }
 
   public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T>): Promise<T> {
-    const entity = await this.findOneOrFail(filterQuery, ['articles']);
+    const entity = await this.findOneOrFail(filterQuery);
     await wrap(entity).assign(model);
     await this.persistAndFlush(entity);
     return entity;
+  }
+
+  public async jsonApiRemove (filterQuery:FilterQuery<T>): Promise<undefined> {
+    // const entity = await this.findOneOrFail(filterQuery);
+    // await this.removeAndFlush(entity);
+    return undefined;
   }
 }

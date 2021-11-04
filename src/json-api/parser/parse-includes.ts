@@ -3,27 +3,31 @@ export function parseIncludes (includes?: string) {
   return includes.split(',');
 }
 
-export function parseSort (includes?: string) {
-  if (!includes) return [];
-  return includes.split(',');
+export interface SortObject {
+  [x: string] : SortObject | ('ASC' | 'DESC'),
 }
 
-export function parseFields (fields?: string | Record<string, any>, parserResult?: Record<string, any>) : Record<string, any> {
-  if (fields === undefined) return {};
+export function parseSort (sorts?: string): string[] {
+  if (!sorts) return [];
+
+  return sorts.split(',');
+}
+
+export function parseFields (fields?: string | Record<string, any>, parserResult?: string[]) : string[] {
+  if (fields === undefined) return [];
 
   if (parserResult === undefined) {
-    parserResult = {};
     if (typeof fields === 'string') {
-      parserResult.$$default = fields.split(',');
-      return parserResult;
+      return fields.split(',');
     }
+    parserResult = [];
   }
 
-  for (const [key, value] of Object.entries(fields).filter(([key, value]) => key !== '$$default')) {
+  for (const [key, value] of Object.entries(fields)) {
     if (typeof value === 'object') {
-      parserResult[key] = parseFields(value, parserResult[key]);
+      parseFields(value, parserResult);
     } else {
-      parserResult[key] = value.split(',');
+      parserResult.push(...value.split(',').map((e: string) => `${key}.${e}`));
     }
   }
 
