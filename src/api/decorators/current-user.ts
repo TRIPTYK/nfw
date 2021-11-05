@@ -6,9 +6,7 @@ export function CurrentUser () {
       target,
       propertyName: propertyKey,
       index,
-      handle: (context) => {
-        return context.ctx.state.user;
-      },
+      handle: (context) => context.ctx.state.user,
     });
-  }
+  };
 }

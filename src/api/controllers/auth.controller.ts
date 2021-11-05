@@ -27,15 +27,15 @@ export class AuthController {
 
   @POST('/login')
   public async login (@Body() body: any) {
-    const { jwt } = await this.configurationService.getConfig();
+    const { accessExpires, refreshExpires, secret } = this.configurationService.getKey('jwt');
     const user = await this.userRepository.findOne({ email: body.email });
 
     if (!user || !await user.passwordMatches(body.password)) {
       throw createError(417, 'Votre email ou mot de passe est incorrect');
     }
 
-    const accessToken = this.userRepository.generateAccessToken(user, jwt.accessExpires, jwt.secret);
-    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(user, jwt.refreshExpires);
+    const accessToken = this.userRepository.generateAccessToken(user, accessExpires, secret);
+    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(user, refreshExpires);
     await this.refreshTokenRepository.flush();
 
     return { accessToken, refreshToken: refreshToken.token };
@@ -43,7 +43,7 @@ export class AuthController {
 
   @POST('/refresh-token')
   public async refreshToken (@Body() body: any) {
-    const { jwt } = await this.configurationService.getConfig();
+    const jwt = this.configurationService.getKey('jwt');
     const refresh = await this.refreshTokenRepository.findOne({ token: body.refreshToken });
 
     if (!refresh) {

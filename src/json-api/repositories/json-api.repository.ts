@@ -1,50 +1,63 @@
-import { LoadStrategy } from '@mikro-orm/core';
+import { FilterQuery, LoadStrategy, wrap } from '@mikro-orm/core';
 import { EntityRepository } from '@mikro-orm/mysql';
+import { dotToObject } from '../../api/utils/dot-to-object.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
+import { SortObject } from '../parser/parse-includes.js';
+import { modelToName } from '../utils/model-to-name.js';
 
-export class JsonApiRepository<T> extends EntityRepository<T> {
-  get jsonApiEntityName () {
-    return (this.entityName as string).replace('Model', '').toLowerCase();
+export abstract class JsonApiRepository<T> extends EntityRepository<T> {
+  public jsonApiFindOne (idConditions: Record<string, unknown>, params : ValidatedJsonApiQueryParams) {
+    return this.findOneOrFail(idConditions, this.getFindOptionsFromParams(params));
   }
 
-  public jsonApiRequest (params : ValidatedJsonApiQueryParams) {
+  public jsonApiFind (params : ValidatedJsonApiQueryParams) {
+    if (params.page) {
+      return this.findAndCount({}, this.getFindOptionsFromParams(params));
+    }
+    return this.find({}, this.getFindOptionsFromParams(params));
+  }
+
+  private getFindOptionsFromParams (params : ValidatedJsonApiQueryParams) {
+    const entityName = modelToName(this.entityName);
     const size = Math.min(params.page?.size ?? 10, 30);
 
     /**
-     * Do not specify root entity
+     * Do not specify root entity, remove it
      */
-    (params.fields ?? []).forEach((field, idx, arr) => {
-      if (field.startsWith(`${this.jsonApiEntityName}.`)) {
-        arr[idx] = field.replace(`${this.jsonApiEntityName}.`, '')
-      }
-    });
+    const fields = params.fields?.map((field) => field.startsWith(`${entityName}.`) ? field.replace(`${entityName}.`, '') : field);
 
-    console.log({
-      fields: params.fields,
-      disableIdentityMap: true,
-      populate: params.include ?? [],
-      limit: size,
-      offset: params.page?.number ? params.page.number * size : undefined,
-    }, params.sort)
+    /**
+     * Transform into nested object with order specified
+     */
+    const orderBy = params.sort?.reduce((p, c) => p = { ...p, ...dotToObject(c) as SortObject }, {} as SortObject);
 
-    return this.find({}, {
-      fields: params.fields,
+    return {
+      fields,
       disableIdentityMap: true,
       populate: params.include ?? [],
       strategy: LoadStrategy.SELECT_IN,
       limit: size,
-      orderBy: params.sort,
+      orderBy,
       offset: params.page?.number ? params.page.number * size : undefined,
-    });
+    }
   }
 
   public async jsonApiCreate (model: Partial<T>): Promise<T> {
-    try {
-      const entity = this.create(model);
-      await this.persistAndFlush(entity);
-      return entity;
-    } catch (e:any) {
-      throw new Error(e);
-    }
+    const entity = this.create(model);
+    await this.persistAndFlush(entity);
+    return entity;
+  }
+
+  public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T>): Promise<T> {
+    const entity = await this.findOneOrFail(filterQuery);
+    await wrap(entity).assign(model);
+    await this.persistAndFlush(entity);
+    return entity;
+  }
+
+  public async jsonApiRemove (filterQuery:FilterQuery<T>): Promise<undefined> {
+    const entity = await this.findOneOrFail(filterQuery);
+    await this.removeAndFlush(entity);
+    return undefined;
   }
 }

@@ -10,7 +10,7 @@ import {
   BeforeDelete,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
-import { defineAbilityForDocument } from '../abilities/document.js';
+import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import { MimeTypes } from '../enums/mime-type.enum.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
 import * as Fs from 'fs/promises';
@@ -20,8 +20,9 @@ import type { UserModel } from './user.model.js';
   tableName: 'documents',
   customRepository: () => DocumentRepository,
 })
-export class DocumentModel extends BaseEntity<any, any> {
-  public static ability = defineAbilityForDocument;
+export class DocumentModel
+  extends BaseEntity<any, any>
+  implements JsonApiModelInterface {
   @PrimaryKey()
   id: string = v4();
 
