@@ -1,5 +1,5 @@
-import { MikroORM } from '@mikro-orm/core'
-import createApplication from '@triptyk/nfw-core'
+import { MikroORM } from '@mikro-orm/core';
+import createApplication from '@triptyk/nfw-core';
 import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
@@ -8,10 +8,10 @@ import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
-import koaBody from 'koa-body'
+import koaBody from 'koa-body';
 import KoaQS from 'koa-qs';
 import { DocumentModel } from './api/models/document.model.js';
-import {DocumentController} from './api/controllers/documents.controller.js';
+import { DocumentController } from './api/controllers/documents.controller.js';
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
 // import faker from 'faker';
@@ -47,8 +47,19 @@ import {DocumentController} from './api/controllers/documents.controller.js';
     globalMiddlewares: [
       koaBody({
         formidable: {
-          uploadDir: './uploads',
+          uploadDir: './dist/uploads',
+          multiples: true,
           keepExtensions: true,
+          onFileBegin: (name, file) => {
+            const dir = './dist/uploads';
+            let filename = file.name.split('.');
+            file.originalName = file.name;
+            filename = `${filename.slice(0, -1).join('.')}-${Date.now()}.${
+              filename[filename.length - 1]
+            }`;
+            file.name = filename;
+            file.path = `${dir}/${filename}`;
+          },
         },
         multipart: true,
         urlencoded: true,
@@ -72,9 +83,9 @@ import {DocumentController} from './api/controllers/documents.controller.js';
 
   KoaQS(koaApp);
 
-  const port = 8000
+  const port = 8000;
 
   koaApp.listen(port, () => {
-    console.log(`Listening on port ${port}`)
-  })
-})()
+    console.log(`Listening on port ${port}`);
+  });
+})();

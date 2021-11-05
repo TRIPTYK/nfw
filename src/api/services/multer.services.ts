@@ -1,6 +1,6 @@
 import { autoInjectable, singleton } from '@triptyk/nfw-core';
 import { mkdirSync } from 'fs';
-import Multer from 'multer';
+import Multer from '@koa/multer';
 
 export enum StorageType {
   MEMORY,
@@ -21,37 +21,38 @@ export class MulterService {
 
   public makeMulter (
     type: StorageType,
-    name: string,
+    destination: string,
     validate: any,
     maxFileSize: number,
   ): any {
-    if (this.multers[type][name]) {
-      return this.multers[type][name];
+    if (this.multers[type][destination]) {
+      return this.multers[type][destination];
     }
 
     if (type === StorageType.DISK) {
-      mkdirSync(name, { recursive: true })
+      mkdirSync(destination, { recursive: true })
     }
-
     const storage =
       type === StorageType.DISK
         ? Multer.diskStorage({
-          destination (
+          destination: function (
             req,
             file,
             next,
           ) {
-            next(null, name);
+            next(null, destination);
           },
-          filename (
+          filename: function (
             req,
             file,
             next,
           ) {
+            console.log('file');
             next(null, `${file.originalname}-${Date.now()}`)
           },
         })
         : Multer.memoryStorage();
+
 
     const built = Multer({
       fileFilter: validate,
@@ -61,6 +62,6 @@ export class MulterService {
       storage,
     });
 
-    return (this.multers[type][name] = built)
+    return (this.multers[type][destination] = built)
   }
 }
