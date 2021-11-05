@@ -8,7 +8,14 @@ export class UserDeserializer {
 
     constructor () {
       this.deserializer = new JSONAPIDeSerializer();
-      this.deserializer.register('user', {});
+      this.deserializer.register('user', {
+        relationships: {
+          articles: {
+            type: 'articles',
+          },
+        },
+      });
+      this.deserializer.register('articles');
     }
 
     public deserialize (data:any) : any {

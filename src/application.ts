@@ -12,6 +12,7 @@ import koaBody from 'koa-body'
 import KoaQS from 'koa-qs';
 import { ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
+import { LoggerService } from './api/services/logger.service.js';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -21,6 +22,7 @@ import { LogMiddleware } from './api/middlewares/log.middleware.js';
    * Load the config service first
    */
   const { database, port } = await container.resolve<ConfigurationService>(ConfigurationService).load();
+  const logger = container.resolve(LoggerService);
 
   const orm = await MikroORM.init({
     entities: [UserModel, RefreshTokenModel, ArticleModel],
@@ -73,6 +75,6 @@ import { LogMiddleware } from './api/middlewares/log.middleware.js';
   KoaQS(koaApp);
 
   koaApp.listen(port, () => {
-    console.log(`Listening on port ${port}`)
+    logger.logger.info(`Listening on port ${port}`)
   })
 })()

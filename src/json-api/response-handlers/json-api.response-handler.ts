@@ -104,7 +104,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
     if (ctx.method === 'GET') {
       const currentUser = ctx.state.currentUser as UserModel | undefined;
       try {
-        await this.walkCollection(payload as T | T[], currentUser, controllerAction, []);
+        await this.walkCollection(payload as T | T[], currentUser, 'read', []);
       } catch (e: any) {
         /**
          * if not authorized, transform the error to HTTP error
