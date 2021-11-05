@@ -1,23 +1,22 @@
 import { ControllerParamsContext, injectable, singleton } from '@triptyk/nfw-core';
-
-export interface QueryParamsSchemaInterface {
-    allowedIncludes(context: ControllerParamsContext): Promise<string[]> | string[],
-    allowedFields(context: ControllerParamsContext): Promise<string[]> | string[],
-    allowedSortFields(context: ControllerParamsContext): Promise<string[]> | string[],
-}
+import { CheckTypes, QueryParamsSchemaInterface } from '../../json-api/interfaces/query-params.interface.js';
 
 @singleton()
 @injectable()
 export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
-  allowedIncludes (context: ControllerParamsContext): string[] | Promise<string[]> {
-    return ['refreshToken', 'articles', 'articles.owner'];
+  allowedIncludes (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
+    return ['refreshToken', /^articles(\.\w+)?$/];
   }
 
-  allowedFields (context: ControllerParamsContext): string[] | Promise<string[]> {
+  allowedFields (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
+    return ['id'];
+  }
+
+  allowedSortFields (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
     return [];
   }
 
-  allowedSortFields (context: ControllerParamsContext): string[] | Promise<string[]> {
-    return [];
+  allowedFilters (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
+    return ['id.$eq'];
   }
 }

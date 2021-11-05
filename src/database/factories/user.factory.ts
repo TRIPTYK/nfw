@@ -5,7 +5,7 @@ import { UserModel } from '../../api/models/user.model.js';
 export class UserFactory extends Factory<UserModel> {
   model = UserModel;
 
-  definition (faker: typeof Faker): Partial<UserModel> {
+  definition (): Partial<UserModel> {
     return {
       firstName: Faker.name.firstName(),
       lastName: Faker.name.lastName(),
