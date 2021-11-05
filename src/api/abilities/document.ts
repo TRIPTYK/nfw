@@ -12,12 +12,14 @@ const documentAccessPermissions: AccessPermisions = {
   anonymous: (_, { can }) => {
     can('manage', 'all');
   },
-}
+};
 
 /**
  * @param userReq the use who emits the request
  * @param user the target
  */
-export const defineAbilityForDocument: EntityAbility<DocumentModel> = async (userReq: UserModel | undefined | null) => {
+export const defineAbilityForDocument: EntityAbility<DocumentModel> = async (
+  userReq: UserModel | undefined | null,
+) => {
   return baseAbilityFor(userReq, documentAccessPermissions);
-}
+};

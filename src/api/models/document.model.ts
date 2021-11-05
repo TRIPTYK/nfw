@@ -5,8 +5,6 @@ import {
   BaseEntity,
   Enum,
   ManyToMany,
-  BeforeCreate,
-  BeforeUpdate,
   BeforeDelete,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
@@ -44,14 +42,8 @@ export class DocumentModel
   @ManyToMany('UserModel')
   declare user: UserModel[];
 
-  @BeforeCreate()
-  @BeforeUpdate()
-  public updatePath (): void {
-    // this.path = Path.dirname(this.path.toString());
-  }
-
   @BeforeDelete()
   public removeFromDisk (): Promise<void> {
-    return Fs.unlink(`${this.path}/${this.filename}`);
+    return Fs.unlink(this.path);
   }
 }

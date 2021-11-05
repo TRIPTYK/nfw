@@ -13,6 +13,7 @@ import KoaQS from 'koa-qs';
 import { DocumentController } from './api/controllers/documents.controller.js';
 import { ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
+import { DocumentModel } from './api/models/document.model.js';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -27,7 +28,7 @@ import { LogMiddleware } from './api/middlewares/log.middleware.js';
     .load();
 
   const orm = await MikroORM.init({
-    entities: [UserModel, RefreshTokenModel, ArticleModel],
+    entities: [UserModel, RefreshTokenModel, ArticleModel, DocumentModel],
     dbName: database.database,
     host: database.host,
     user: database.user,

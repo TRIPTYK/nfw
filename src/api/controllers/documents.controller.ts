@@ -1,4 +1,3 @@
-import { EntityData } from '@mikro-orm/core';
 import {
   Controller,
   DELETE,
@@ -14,9 +13,14 @@ import {
   Uploaded,
   IUploaded,
 } from '@triptyk/nfw-core';
+import {
+  JsonApiQueryParams,
+  ValidatedJsonApiQueryParams,
+} from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
 import { FileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
+import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
 import { DocumentSerializer } from '../serializer/document.serializer.js';
 
@@ -31,8 +35,12 @@ export class DocumentController {
 
   @GET('/:id')
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
-  get (@Param('id') id: string) {
-    return this.documentRepository.findOne({ id });
+  get (
+    @Param('id') id: string,
+    @JsonApiQueryParams(DocumentQueryParamsSchema)
+      queryParams: ValidatedJsonApiQueryParams,
+  ) {
+    return this.documentRepository.jsonApiFindOne({ id }, queryParams);
   }
 
   @POST('/')
@@ -52,23 +60,21 @@ export class DocumentController {
   @PATCH('/:id')
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async update (@Param('id') id: string, @Body() body: unknown) {
-    await this.documentRepository.nativeUpdate(
-      { id },
-      body as EntityData<DocumentModel>,
-    );
-    return this.documentRepository.findOne({ id });
+    return this.documentRepository.jsonApiUpdate(body as DocumentModel, { id });
   }
 
   @DELETE('/:id')
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async delete (@Param('id') id: string) {
-    await this.documentRepository.nativeDelete({ id });
-    return {};
+    return this.documentRepository.jsonApiRemove({ id });
   }
 
   @GET('/')
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
-  public async list () {
-    return this.documentRepository.findAll();
+  public async list (
+    @JsonApiQueryParams(DocumentQueryParamsSchema)
+      queryParams: ValidatedJsonApiQueryParams,
+  ) {
+    return this.documentRepository.jsonApiFind(queryParams);
   }
 }
