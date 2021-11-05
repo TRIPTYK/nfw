@@ -7,7 +7,6 @@ import {
   PATCH,
   POST,
   UseMiddleware,
-  Body,
   Param,
   UseResponseHandler,
   Uploaded,
@@ -18,11 +17,13 @@ import {
   ValidatedJsonApiQueryParams,
 } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
+import { ValidatedBody } from '../decorators/validated-body.decorator.js';
 import { FileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
 import { DocumentSerializer } from '../serializer/document.serializer.js';
+import { ValidatedDocumentUpdate } from '../validators/document.validator.js';
 
 @Controller('/documents')
 @injectable()
@@ -59,8 +60,11 @@ export class DocumentController {
 
   @PATCH('/:id')
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
-  async update (@Param('id') id: string, @Body() body: unknown) {
-    return this.documentRepository.jsonApiUpdate(body as DocumentModel, { id });
+  async update (
+    @Param('id') id: string,
+    @ValidatedBody(ValidatedDocumentUpdate) body: ValidatedDocumentUpdate,
+  ) {
+    return this.documentRepository.jsonApiUpdate(body, { id });
   }
 
   @DELETE('/:id')

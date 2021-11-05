@@ -3,7 +3,10 @@ import {
   injectable,
   singleton,
 } from '@triptyk/nfw-core';
-import { QueryParamsSchemaInterface } from './user.schema';
+import {
+  CheckTypes,
+  QueryParamsSchemaInterface,
+} from '../../json-api/interfaces/query-params.interface';
 
 @singleton()
 @injectable()
@@ -24,5 +27,11 @@ export class DocumentQueryParamsSchema implements QueryParamsSchemaInterface {
     context: ControllerParamsContext,
   ): string[] | Promise<string[]> {
     return [];
+  }
+
+  allowedFilters (
+    context: ControllerParamsContext,
+  ): CheckTypes[] | Promise<CheckTypes[]> {
+    return ['id.$eq'];
   }
 }

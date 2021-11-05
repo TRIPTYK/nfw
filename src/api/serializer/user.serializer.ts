@@ -6,7 +6,9 @@ import { ConfigurationService } from '../services/configuration.service.js';
 @injectable()
 @singleton()
 export class UserSerializer extends BaseJsonApiSerializer<UserModel> {
-  constructor (@inject(ConfigurationService) configurationService: ConfigurationService) {
+  constructor (
+    @inject(ConfigurationService) configurationService: ConfigurationService,
+  ) {
     super(configurationService);
 
     this.serializer.register('users', {
@@ -28,7 +30,14 @@ export class UserSerializer extends BaseJsonApiSerializer<UserModel> {
     });
   }
 
-  serialize (data: UserModel[] | UserModel, extraData?: Record<string, unknown>) {
-    return this.serializer.serializeAsync('users', data, extraData ?? {} as any);
+  serialize (
+    data: UserModel[] | UserModel,
+    extraData?: Record<string, unknown>,
+  ) {
+    return this.serializer.serializeAsync(
+      'users',
+      data,
+      extraData ?? ({} as any),
+    );
   }
 }

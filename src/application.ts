@@ -13,11 +13,8 @@ import KoaQS from 'koa-qs';
 import { DocumentController } from './api/controllers/documents.controller.js';
 import { ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
-<<<<<<< HEAD
 import { DocumentModel } from './api/models/document.model.js';
-=======
 import { LoggerService } from './api/services/logger.service.js';
->>>>>>> 4ab1720736d0f51050c52efbcbbc647d07984641
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -27,14 +24,10 @@ import { LoggerService } from './api/services/logger.service.js';
   /**
    * Load the config service first
    */
-<<<<<<< HEAD
   const { database, port } = await container
     .resolve<ConfigurationService>(ConfigurationService)
     .load();
-=======
-  const { database, port } = await container.resolve<ConfigurationService>(ConfigurationService).load();
   const logger = container.resolve(LoggerService);
->>>>>>> 4ab1720736d0f51050c52efbcbbc647d07984641
 
   const orm = await MikroORM.init({
     entities: [UserModel, RefreshTokenModel, ArticleModel, DocumentModel],
@@ -70,6 +63,7 @@ import { LoggerService } from './api/services/logger.service.js';
           uploadDir: './dist/uploads',
           multiples: true,
           keepExtensions: true,
+          maxFileSize: 1 * 1024 * 1024, // 1MB
           onFileBegin: (name, file) => {
             const dir = './dist/uploads';
             let filename = file.name.split('.');
@@ -107,12 +101,6 @@ import { LoggerService } from './api/services/logger.service.js';
   KoaQS(koaApp);
 
   koaApp.listen(port, () => {
-<<<<<<< HEAD
-    console.log(`Listening on port ${port}`);
+    logger.logger.info(`Listening on port ${port}`);
   });
 })();
-=======
-    logger.logger.info(`Listening on port ${port}`)
-  })
-})()
->>>>>>> 4ab1720736d0f51050c52efbcbbc647d07984641
