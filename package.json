@@ -39,6 +39,7 @@
     "jwt-simple": "^0.5.6",
     "koa-body": "^4.2.0",
     "koa-qs": "^3.0.0",
+    "node-dotify": "^1.1.0",
     "param-case": "^3.0.4",
     "pluralize": "^8.0.0",
     "tracer": "^1.1.5",

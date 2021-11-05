@@ -9,6 +9,7 @@ import {
   UseResponseHandler,
   UseMiddleware,
   Param,
+  UseGuard,
 } from '@triptyk/nfw-core';
 import {
   JsonApiQueryParams,
@@ -27,6 +28,7 @@ import {
   ValidatedUserUpdate,
 } from '../validators/user.validators.js';
 import { ValidatedBody } from '../decorators/validated-body.decorator.js';
+import { GuardCreate } from '../../json-api/guards/create.guard.js';
 
 @Controller('/users')
 @injectable()
@@ -69,6 +71,7 @@ export class UsersController {
 
   @POST('/')
   @UseMiddleware(deserialize(UserDeserializer))
+  @UseGuard(GuardCreate, UserModel)
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
     return this.userRepository.jsonApiCreate(body);
