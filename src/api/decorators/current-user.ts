@@ -8,5 +8,5 @@ export function CurrentUser () {
       index,
       handle: (context) => context.ctx.state.user,
     });
-  }
+  };
 }
