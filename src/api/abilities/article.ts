@@ -7,7 +7,7 @@ const userAccessPermissions: AccessPermisions = {
     can('manage', 'all');
   },
   user: (user, { can }) => {
-    can(['read', 'create', 'update', 'delete'], 'article', {
+    can(['read', 'update', 'delete'], 'article', {
       'owner.id': user!.id,
     });
     can('create', 'article');

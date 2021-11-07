@@ -10,7 +10,11 @@ export class GuardCreate implements GuardInterface {
   constructor (@inject(AclService) private aclService: AclService, @inject(databaseInjectionToken) private mikroORM: MikroORM) {}
 
   async can (context: ControllerGuardContext): Promise<boolean> {
+    const currentUser = context.ctx.state.currentUser;
     const entity = context.args[0] as Class<BaseEntity<any, any>>;
+
+    await this.aclService.enforce((entity as any).ability, currentUser, context.controllerAction as 'create' | 'update', entity.name)
+
     const entityMetadata = this.mikroORM.getMetadata().find(entity.name);
 
     if (!entityMetadata) {
@@ -27,7 +31,6 @@ export class GuardCreate implements GuardInterface {
     });
 
     for (const { relMeta, value } of relationsInBody) {
-    //   const relEntityMeta = this.mikroORM.getMetadata().find();
       const ability = (relMeta.entity() as any).ability as EntityAbility<any> | undefined;
       if (!ability) throw new Error(`Entity ability not found for ${relMeta.entity().constructor}`);
       const repo = this.mikroORM.em.getContext().getRepository(relMeta.entity()) as SqlEntityRepository<any>;
@@ -43,13 +46,13 @@ export class GuardCreate implements GuardInterface {
           throw new Error('Not found');
         }
 
-        await Promise.all(fetched.map((e) => this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', e)));
+        await Promise.all(fetched.map((e) => this.aclService.enforce(ability, currentUser, 'read', e)));
       } else {
         const fetched = await repo.findOneOrFail({
           id: value,
         });
 
-        await this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', fetched);
+        await this.aclService.enforce(ability, currentUser, 'read', fetched);
       }
     }
 
