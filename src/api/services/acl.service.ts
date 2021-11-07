@@ -13,9 +13,9 @@ export class AclService {
   // eslint-disable-next-line no-useless-constructor
   public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM) {}
 
-  public async enforce (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any>) {
+  public async enforce (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any> | string) {
     const transformedModelName = modelToName(obj, false);
-    const subjectAlias = subject(transformedModelName, obj);
+    const subjectAlias = subject(transformedModelName, typeof obj === 'string' ? {} : obj);
 
     /**
      * Get sql entityManager of current request
@@ -30,7 +30,9 @@ export class AclService {
     /**
      * Find attributes in entity metadatas
      */
-    const perms = contextEntityManager.getMetadata().find(obj.constructor.name)!;
+    const perms = contextEntityManager.getMetadata().find(typeof obj === 'string' ? obj : obj.constructor.name);
+
+    if (!perms) { throw Error(`Metadata not found for ${obj}`) }
 
     /**
      * Get all fields of entity
