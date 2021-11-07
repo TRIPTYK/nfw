@@ -15,7 +15,10 @@ export class GuardCreate implements GuardInterface {
     const currentUser = context.ctx.state;
 
     try {
-      await this.aclService.enforce((entity as any).ability, currentUser, 'create', entity.name);
+      await this.aclService.enforce((entity as any).ability, currentUser, 'create', {
+        name: entity.name,
+        body: context.ctx.body as Record<string, unknown>,
+      });
     } catch (e) {
       return false;
     }
