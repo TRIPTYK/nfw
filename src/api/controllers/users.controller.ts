@@ -79,6 +79,7 @@ export class UsersController {
 
   @PATCH('/:id')
   @UseMiddleware(deserialize(UserDeserializer))
+  @UseGuard(GuardCreate, UserModel)
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   update (
     @ValidatedBody(ValidatedUserUpdate) body: ValidatedUserUpdate,

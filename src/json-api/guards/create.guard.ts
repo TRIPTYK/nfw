@@ -3,6 +3,7 @@ import { BaseEntity, MikroORM } from '@mikro-orm/core';
 import { Class, ControllerGuardContext, databaseInjectionToken, GuardInterface, inject, injectable } from '@triptyk/nfw-core';
 import { EntityAbility } from '../../api/abilities/base.js';
 import { AclService } from '../../api/services/acl.service.js';
+import createHttpError from 'http-errors';
 
 @injectable()
 export class GuardCreate implements GuardInterface {
@@ -15,12 +16,12 @@ export class GuardCreate implements GuardInterface {
     const currentUser = context.ctx.state;
 
     try {
-      await this.aclService.enforce((entity as any).ability, currentUser, 'create', {
+      await this.aclService.enforce((entity as any).ability, currentUser, context.ctx.method === 'POST' ? 'create' : 'update', {
         name: entity.name,
         body: context.ctx.body as Record<string, unknown>,
       });
-    } catch (e) {
-      return false;
+    } catch (e: any) {
+      throw createHttpError(403, e.message);
     }
 
     if (!entityMetadata) {
@@ -42,28 +43,32 @@ export class GuardCreate implements GuardInterface {
       if (!ability) throw new Error(`Entity ability not found for ${relMeta.entity().constructor}`);
       const repo = this.mikroORM.em.getContext().getRepository(relMeta.entity()) as SqlEntityRepository<any>;
 
-      try {
-        if (Array.isArray(value)) {
-          const fetched = await repo.find({
-            id: {
-              $in: value,
-            },
-          });
+      if (Array.isArray(value)) {
+        const fetched = await repo.find({
+          id: {
+            $in: value,
+          },
+        });
 
-          if (fetched.length !== value.length) {
-            throw new Error('Not found');
-          }
-
-          await Promise.all(fetched.map((e) => this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', e)));
-        } else {
-          const fetched = await repo.findOneOrFail({
-            id: value,
-          });
-
-          await this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', fetched);
+        if (fetched.length !== value.length) {
+          throw new Error('Not found');
         }
-      } catch (e) {
-        return false;
+
+        try {
+          await Promise.all(fetched.map((e) => this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', e)));
+        } catch (e: any) {
+          throw createHttpError(403, e.message);
+        }
+      } else {
+        const fetched = await repo.findOneOrFail({
+          id: value,
+        });
+
+        try {
+          await this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', fetched);
+        } catch (e: any) {
+          throw createHttpError(403, e.message);
+        }
       }
     }
 

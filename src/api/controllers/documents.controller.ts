@@ -12,6 +12,7 @@ import {
   Uploaded,
   IUploaded,
 } from '@triptyk/nfw-core';
+import koaBody from 'koa-body';
 import {
   JsonApiQueryParams,
   ValidatedJsonApiQueryParams,
@@ -26,6 +27,26 @@ import { DocumentSerializer } from '../serializer/document.serializer.js';
 import { ValidatedDocumentUpdate } from '../validators/document.validator.js';
 
 @Controller('/documents')
+@UseMiddleware(koaBody({
+  formidable: {
+    uploadDir: './dist/uploads',
+    multiples: true,
+    keepExtensions: true,
+    maxFileSize: 1 * 1024 * 1024, // 1MB
+    onFileBegin: (name, file) => {
+      const dir = './dist/uploads';
+      let filename = file.name.split('.');
+      file.originalName = file.name;
+      filename = `${filename.slice(0, -1).join('.')}-${Date.now()}.${
+        filename[filename.length - 1]
+      }`;
+      file.name = filename;
+      file.path = `${dir}/${filename}`;
+    },
+  },
+  multipart: true,
+  urlencoded: true,
+}))
 @injectable()
 export class DocumentController {
   // eslint-disable-next-line no-useless-constructor

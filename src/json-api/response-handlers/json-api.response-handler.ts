@@ -59,7 +59,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
   /**
    * Handle-all function to serialize and check returned controller data
    */
-  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, { ctx, controllerAction, args }: ResponseHandlerContext): Promise<void> {
+  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, { ctx, args }: ResponseHandlerContext): Promise<void> {
     ctx.response.type = 'application/vnd.api+json';
 
     /**
