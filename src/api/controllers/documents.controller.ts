@@ -6,7 +6,6 @@ import {
   InjectRepository,
   PATCH,
   POST,
-  UseMiddleware,
   Param,
   UseResponseHandler,
   Uploaded,
@@ -17,12 +16,10 @@ import {
   ValidatedJsonApiQueryParams,
 } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
-import { ValidatedBody } from '../decorators/validated-body.decorator.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
 import { DocumentSerializer } from '../serializer/document.serializer.js';
-import { ValidatedDocumentUpdate } from '../validators/document.validator.js';
 
 @Controller('/documents')
 @injectable()
@@ -40,15 +37,12 @@ export class DocumentController {
     @JsonApiQueryParams(DocumentQueryParamsSchema)
       queryParams: ValidatedJsonApiQueryParams,
   ) {
-    return {
-      payload: await this.documentRepository.jsonApiFindOne(
-        {
-          id,
-        },
-        queryParams,
-      ),
+    return this.documentRepository.jsonApiFindOne(
+      {
+        id,
+      },
       queryParams,
-    }
+    )
   }
 
   @POST('/')
@@ -68,7 +62,7 @@ export class DocumentController {
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async update (
     @Param('id') id: string,
-    @Uploaded('file') file: IUploaded
+    @Uploaded('file') file: IUploaded,
   ) {
     this.documentRepository.findOne({ id }).then(file => file?.removeFromDisk());
     const data = {
