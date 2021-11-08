@@ -17,6 +17,7 @@ import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
 import cors from '@koa/cors';
 import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
+import createHttpError from 'http-errors';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -40,6 +41,9 @@ import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware
     type: 'mysql',
     loadStrategy: LoadStrategy.SELECT_IN,
     debug: database.debug,
+    findOneOrFailHandler: (_entityName: string) => {
+      return createHttpError(404, 'Not found');
+    },
   });
 
   const generator = orm.getSchemaGenerator();
