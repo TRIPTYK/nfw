@@ -25,12 +25,11 @@ import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface
 @Filter({ name: 'admin_access', args: false, cond: args => {} })
 @Filter({
   name: 'user_access',
-  args: false,
   cond: args => {
-    return {}
+    return { id: args.user.id }
   },
 })
-@Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
+@Filter({ name: 'anonymous_access', args: false, cond: args => ({ 1: 0 }) })
 export class UserModel extends BaseEntity<any, any> implements JsonApiModelInterface {
   public static ability = defineAbilityForUser;
 

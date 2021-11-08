@@ -6,7 +6,10 @@ const userAccessPermissions: AccessPermisions = {
     can('manage', 'all');
   },
   user: (user, { can }) => {
-    can('manage', 'all');
+    can('create', 'user', ['id', 'password', 'lastName', 'firstName', 'email']);
+    can('delete', 'user', {
+      owner: user,
+    })
   },
   anonymous: (_, { can }) => {
     can('read', 'user');

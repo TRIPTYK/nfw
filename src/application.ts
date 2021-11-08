@@ -1,4 +1,4 @@
-import { MikroORM } from '@mikro-orm/core'
+import { LoadStrategy, MikroORM } from '@mikro-orm/core'
 import createApplication, { container } from '@triptyk/nfw-core'
 import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
@@ -13,7 +13,6 @@ import KoaQS from 'koa-qs';
 import { ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { LoggerService } from './api/services/logger.service.js';
-import { ArticlesController } from './api/controllers/articles.controller.js';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -32,6 +31,7 @@ import { ArticlesController } from './api/controllers/articles.controller.js';
     user: database.user,
     password: database.password,
     type: 'mysql',
+    loadStrategy: LoadStrategy.SELECT_IN,
     debug: database.debug,
   });
 
@@ -51,7 +51,7 @@ import { ArticlesController } from './api/controllers/articles.controller.js';
   // await orm.em.persistAndFlush(articles);
 
   const koaApp = await createApplication({
-    controllers: [AuthController, UsersController, ArticlesController],
+    controllers: [AuthController, UsersController],
     globalGuards: [],
     globalMiddlewares: [
       KoaRatelimit({ // first, the rate limit

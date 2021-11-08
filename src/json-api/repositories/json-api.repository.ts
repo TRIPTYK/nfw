@@ -7,8 +7,8 @@ import { SortObject } from '../parser/parse-includes.js';
 import { modelToName } from '../utils/model-to-name.js';
 
 export abstract class JsonApiRepository<T> extends EntityRepository<T> {
-  public jsonApiFindOne (idConditions: Record<string, unknown>, params : ValidatedJsonApiQueryParams) {
-    return this.findOneOrFail(idConditions, this.getFindOptionsFromParams(params));
+  public jsonApiFindOne (idConditions: Record<string, unknown>, params : ValidatedJsonApiQueryParams, user?: UserModel) {
+    return this.findOneOrFail(idConditions, this.getFindOptionsFromParams(params, user));
   }
 
   public jsonApiFind (params : ValidatedJsonApiQueryParams, user?: UserModel) {
@@ -32,18 +32,21 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
      */
     const orderBy = params.sort?.reduce((p, c) => p = { ...p, ...dotToObject(c) as SortObject }, {} as SortObject);
 
-    console.log(`${user?.role ?? 'anonymous'}_access`)
     return {
       fields,
       disableIdentityMap: true,
       populate: params.include ?? [],
       strategy: LoadStrategy.SELECT_IN,
       limit: size,
-      filters: {
-        [`${user?.role ?? 'anonymous'}_access`]: { user },
-      },
+      filters: this.getFiltersForUser(user),
       orderBy,
       offset: params.page?.number ? params.page.number * size : undefined,
+    }
+  }
+
+  public getFiltersForUser (user?: UserModel) {
+    return {
+      [`${user?.role ?? 'anonymous'}_access`]: { user },
     }
   }
 
@@ -53,15 +56,19 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     return entity;
   }
 
-  public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T>): Promise<T> {
-    const entity = await this.findOneOrFail(filterQuery);
-    await wrap(entity).assign(model);
+  public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T>, user?: UserModel): Promise<T> {
+    const entity = await this.findOneOrFail(filterQuery, {
+      filters: this.getFiltersForUser(user),
+    });
+    wrap(entity).assign(model);
     await this.persistAndFlush(entity);
     return entity;
   }
 
-  public async jsonApiRemove (filterQuery:FilterQuery<T>): Promise<undefined> {
-    const entity = await this.findOneOrFail(filterQuery);
+  public async jsonApiRemove (filterQuery:FilterQuery<T>, user?: UserModel): Promise<undefined> {
+    const entity = await this.findOneOrFail(filterQuery, {
+      filters: this.getFiltersForUser(user),
+    });
     await this.removeAndFlush(entity);
     return undefined;
   }
