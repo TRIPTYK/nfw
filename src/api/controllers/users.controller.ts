@@ -7,7 +7,6 @@ import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-ap
 import { UserSerializer } from '../serializer/user.serializer.js';
 import { deserialize } from '../middlewares/deserialize.middleware.js';
 import { UserDeserializer } from '../deserializer/user.deserializer.js';
-import { CurrentUserMiddleware } from '../middlewares/current-user.middleware.js';
 import { ValidatedUser, ValidatedUserUpdate } from '../validators/user.validators.js';
 import { CurrentUser } from '../decorators/current-user.js';
 import { EntityFromBody } from '../decorators/entity-from-body.decorator.js';
@@ -16,7 +15,6 @@ import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';
 
 @Controller('/users')
 @injectable()
-@UseMiddleware(CurrentUserMiddleware)
 export class UsersController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository, @inject(AclService) private aclService: AclService) {}

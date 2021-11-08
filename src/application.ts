@@ -16,6 +16,7 @@ import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
 import cors from '@koa/cors';
+import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -74,6 +75,7 @@ import cors from '@koa/cors';
         id: (ctx) => ctx.ip,
       }),
       koaBody(),
+      CurrentUserMiddleware,
       LogMiddleware,
     ],
     globalErrorhandler: DefaultErrorHandler,

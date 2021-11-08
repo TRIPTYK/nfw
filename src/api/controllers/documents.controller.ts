@@ -18,6 +18,7 @@ import {
   ValidatedJsonApiQueryParams,
 } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
+import { EntityFromBody } from '../decorators/entity-from-body.decorator.js';
 import { FileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
@@ -82,7 +83,7 @@ export class DocumentController {
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async update (
     @Param('id') id: string,
-    @ValidatedBody(ValidatedDocumentUpdate) body: ValidatedDocumentUpdate,
+    @EntityFromBody(ValidatedDocumentUpdate, DocumentModel) body: DocumentModel,
   ) {
     return this.documentRepository.jsonApiUpdate(body, { id });
   }
