@@ -7,9 +7,7 @@ const userAccessPermissions: AccessPermisions = {
     can('manage', 'all');
   },
   user: (user, { can }) => {
-    can(['read', 'create', 'update', 'delete'], 'article', {
-      'owner.id': user!.id,
-    });
+    can('manage', 'all');
   },
   anonymous: (_, { can }) => {
     can('read', 'article');
@@ -21,10 +19,5 @@ const userAccessPermissions: AccessPermisions = {
  * @param user the target
  */
 export const defineAbilityForArticle: EntityAbility<ArticleModel> = async (userReq: UserModel | undefined | null, entity) => {
-  // preload relations for ACL
-  if (!entity.owner.isInitialized()) {
-    await entity.owner.init();
-  }
-
   return baseAbilityFor(userReq, userAccessPermissions);
 }

@@ -1,5 +1,5 @@
-import { MikroORM } from '@mikro-orm/core';
-import createApplication, { container } from '@triptyk/nfw-core';
+import { LoadStrategy, MikroORM } from '@mikro-orm/core'
+import createApplication, { container } from '@triptyk/nfw-core'
 import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
@@ -37,6 +37,7 @@ import cors from '@koa/cors';
     user: database.user,
     password: database.password,
     type: 'mysql',
+    loadStrategy: LoadStrategy.SELECT_IN,
     debug: database.debug,
   });
 

@@ -10,7 +10,7 @@ export class LogMiddleware implements MiddlewareInterface {
   constructor (@inject(LoggerService) private loggerService: LoggerService) {}
 
   async use (context: RouterContext, next: Next) {
-    this.loggerService.logger.log(context.method, context.url, (context.state.currentUser as UserModel)?.id ?? 'anonymous', context.ip);
+    this.loggerService.logger.log(context.method, context.url, (context.state.user as UserModel)?.id ?? 'anonymous', context.ip);
     await next();
   }
 }

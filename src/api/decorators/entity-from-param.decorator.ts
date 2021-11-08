@@ -1,19 +1,13 @@
-import { MikroORM } from '@mikro-orm/core';
+import { SqlEntityRepository } from '.pnpm/@mikro-orm+knex@4.5.9_357d0c55e72fe1e68b8c6f7ea14d2277/node_modules/@mikro-orm/knex';
+import { BaseEntity, MikroORM } from '@mikro-orm/core';
 import { Class, container, ControllerParamsContext, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core'
-import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js'
-import { AclService } from '../services/acl.service.js';
 
-export function EntityFromParam (param: string, model : Class<JsonApiModelInterface>) {
+export function EntityFromParam<K extends BaseEntity<any, any>> (param: keyof K, EntityModel: Class<K>) {
   return createCustomDecorator(
     async (controllerContext:ControllerParamsContext) => {
-      const connexion = container.resolve<MikroORM>(databaseInjectionToken);
-      const aclService = container.resolve<AclService>(AclService);
-      const repo = connexion.em.getContext().getRepository(model);
-      const entity = await repo.findOneOrFail({
-        id: controllerContext.ctx.params[param],
-      });
-      await aclService.enforce((model as any).ability, controllerContext.ctx.state.user, controllerContext.controllerAction as any, entity);
-      return entity;
+      const databaseConnection = container.resolve<MikroORM>(databaseInjectionToken);
+      const context = databaseConnection.em.getContext();
+      return (context.getRepository(EntityModel) as SqlEntityRepository<K>).findOneOrFail({ [param]: (controllerContext.ctx.params as Record<any, unknown>)[param] });
     },
   )
 }
