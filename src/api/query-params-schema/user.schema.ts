@@ -4,19 +4,19 @@ import { CheckTypes, QueryParamsSchemaInterface } from '../../json-api/interface
 @singleton()
 @injectable()
 export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
-  allowedIncludes (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
+  allowedIncludes (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
     return ['refreshToken', /^articles(\.\w+)?$/];
   }
 
-  allowedFields (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
+  allowedFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
     return ['id'];
   }
 
-  allowedSortFields (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
+  allowedSortFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
     return [];
   }
 
-  allowedFilters (context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
+  allowedFilters (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
     return ['id.$eq'];
   }
 }

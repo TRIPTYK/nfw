@@ -12,25 +12,25 @@ import {
 @injectable()
 export class DocumentQueryParamsSchema implements QueryParamsSchemaInterface {
   allowedIncludes (
-    context: ControllerParamsContext,
+    _context: ControllerParamsContext,
   ): string[] | Promise<string[]> {
     return ['users'];
   }
 
   allowedFields (
-    context: ControllerParamsContext,
+    _context: ControllerParamsContext,
   ): string[] | Promise<string[]> {
     return ['path', 'filename', 'originalName', 'size', 'id', 'mimetype'];
   }
 
   allowedSortFields (
-    context: ControllerParamsContext,
+    _context: ControllerParamsContext,
   ): string[] | Promise<string[]> {
     return [];
   }
 
   allowedFilters (
-    context: ControllerParamsContext,
+    _context: ControllerParamsContext,
   ): CheckTypes[] | Promise<CheckTypes[]> {
     return ['id.$eq'];
   }

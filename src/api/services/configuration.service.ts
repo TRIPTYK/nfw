@@ -21,6 +21,9 @@ export interface Configuration {
     dir: string,
   },
   debug: boolean,
+  cors : {
+    origin: string[],
+  },
 }
 
 @injectable()

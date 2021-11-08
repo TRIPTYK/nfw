@@ -1,5 +1,5 @@
-import { MikroORM } from '@mikro-orm/core';
-import createApplication, { container } from '@triptyk/nfw-core';
+import { LoadStrategy, MikroORM } from '@mikro-orm/core'
+import createApplication, { container } from '@triptyk/nfw-core'
 import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
@@ -16,6 +16,8 @@ import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
 import * as fs from 'fs';
+import cors from '@koa/cors';
+import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -25,7 +27,7 @@ import * as fs from 'fs';
   /**
    * Load the config service first
    */
-  const { database, port } = await container
+  const { database, port, cors: corsConfig } = await container
     .resolve<ConfigurationService>(ConfigurationService)
     .load();
   const logger = container.resolve(LoggerService);
@@ -37,6 +39,7 @@ import * as fs from 'fs';
     user: database.user,
     password: database.password,
     type: 'mysql',
+    loadStrategy: LoadStrategy.SELECT_IN,
     debug: database.debug,
   });
 
@@ -85,6 +88,9 @@ import * as fs from 'fs';
         multipart: true,
         urlencoded: true,
       }),
+      cors({
+        origin: corsConfig.origin,
+      }),
       KoaRatelimit({
         // first, the rate limit
         driver: 'memory',
@@ -95,7 +101,7 @@ import * as fs from 'fs';
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip,
       }),
-      koaBody(),
+      CurrentUserMiddleware,
       LogMiddleware,
     ],
     globalErrorhandler: DefaultErrorHandler,
