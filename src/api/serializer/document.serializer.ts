@@ -25,7 +25,10 @@ export class DocumentSerializer extends BaseJsonApiSerializer<DocumentModel> {
     });
   }
 
-  serialize (data: any) {
-    return this.serializer.serializeAsync('documents', data);
+  serialize (
+    data: DocumentModel[] | DocumentModel,
+    extraData?: Record<string, unknown>,
+  ) {
+    return this.serializer.serializeAsync('documents', data, extraData ?? ({} as any));
   }
 }
