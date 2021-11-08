@@ -12,6 +12,16 @@ export class GuardCreate implements GuardInterface {
   async can (context: ControllerGuardContext): Promise<boolean> {
     const entity = context.args[0] as Class<BaseEntity<any, any>>;
     const entityMetadata = this.mikroORM.getMetadata().find(entity.name);
+    const currentUser = context.ctx.state;
+
+    try {
+      await this.aclService.enforce((entity as any).ability, currentUser, 'create', {
+        name: entity.name,
+        body: context.ctx.body as Record<string, unknown>,
+      });
+    } catch (e) {
+      return false;
+    }
 
     if (!entityMetadata) {
       throw new Error(`Entity metadata not found for ${entity.name}`);
@@ -32,24 +42,28 @@ export class GuardCreate implements GuardInterface {
       if (!ability) throw new Error(`Entity ability not found for ${relMeta.entity().constructor}`);
       const repo = this.mikroORM.em.getContext().getRepository(relMeta.entity()) as SqlEntityRepository<any>;
 
-      if (Array.isArray(value)) {
-        const fetched = await repo.find({
-          id: {
-            $in: value,
-          },
-        });
+      try {
+        if (Array.isArray(value)) {
+          const fetched = await repo.find({
+            id: {
+              $in: value,
+            },
+          });
 
-        if (fetched.length !== value.length) {
-          throw new Error('Not found');
+          if (fetched.length !== value.length) {
+            throw new Error('Not found');
+          }
+
+          await Promise.all(fetched.map((e) => this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', e)));
+        } else {
+          const fetched = await repo.findOneOrFail({
+            id: value,
+          });
+
+          await this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', fetched);
         }
-
-        await Promise.all(fetched.map((e) => this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', e)));
-      } else {
-        const fetched = await repo.findOneOrFail({
-          id: value,
-        });
-
-        await this.aclService.enforce(ability, context.ctx.state.currentUser, 'read', fetched);
+      } catch (e) {
+        return false;
       }
     }
 

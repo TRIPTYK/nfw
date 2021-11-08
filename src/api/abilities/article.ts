@@ -12,7 +12,7 @@ const userAccessPermissions: AccessPermisions = {
     });
   },
   anonymous: (_, { can }) => {
-
+    can('read', 'article');
   },
 }
 
