@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, BaseEntity, Enum, ManyToMany, Filter } from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, BaseEntity, Enum, ManyToMany, Filter, BeforeDelete } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import { MimeTypes } from '../enums/mime-type.enum.js';

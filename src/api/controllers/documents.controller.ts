@@ -18,7 +18,6 @@ import {
   ValidatedJsonApiQueryParams,
 } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
-import { ValidatedBody } from '../decorators/validated-body.decorator.js';
 import { FileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
