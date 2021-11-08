@@ -50,7 +50,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
 
   public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T>): Promise<T> {
     const entity = await this.findOneOrFail(filterQuery);
-    await wrap(entity).assign(model);
+    wrap(entity).assign(model);
     await this.persistAndFlush(entity);
     return entity;
   }
