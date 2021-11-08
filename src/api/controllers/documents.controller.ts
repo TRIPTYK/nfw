@@ -18,7 +18,6 @@ import {
 } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
 import { ValidatedBody } from '../decorators/validated-body.decorator.js';
-import { FileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
@@ -36,16 +35,23 @@ export class DocumentController {
 
   @GET('/:id')
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
-  get (
+  async get (
     @Param('id') id: string,
     @JsonApiQueryParams(DocumentQueryParamsSchema)
       queryParams: ValidatedJsonApiQueryParams,
   ) {
-    return this.documentRepository.jsonApiFindOne({ id }, queryParams);
+    return {
+      payload: await this.documentRepository.jsonApiFindOne(
+        {
+          id,
+        },
+        queryParams,
+      ),
+      queryParams,
+    }
   }
 
   @POST('/')
-  @UseMiddleware(FileUploadMiddleware)
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async create (@Uploaded('file') file: IUploaded) {
     const data = {
@@ -62,9 +68,17 @@ export class DocumentController {
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async update (
     @Param('id') id: string,
-    @ValidatedBody(ValidatedDocumentUpdate) body: ValidatedDocumentUpdate,
+    @Uploaded('file') file: IUploaded
   ) {
-    return this.documentRepository.jsonApiUpdate(body, { id });
+    this.documentRepository.findOne({ id }).then(file => file?.removeFromDisk());
+    const data = {
+      filename: file.name,
+      mimetype: file.type,
+      path: file.path,
+      size: file.size,
+      originalName: file.originalName,
+    };
+    return this.documentRepository.jsonApiUpdate(data as DocumentModel, { id });
   }
 
   @DELETE('/:id')

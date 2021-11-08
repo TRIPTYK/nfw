@@ -6,6 +6,7 @@ import {
   Enum,
   ManyToMany,
   BeforeDelete,
+  BeforeUpdate,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
