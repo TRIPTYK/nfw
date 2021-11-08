@@ -13,6 +13,7 @@ import KoaQS from 'koa-qs';
 import { ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { LoggerService } from './api/services/logger.service.js';
+import { ArticlesController } from './api/controllers/articles.controller.js';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -50,7 +51,7 @@ import { LoggerService } from './api/services/logger.service.js';
   // await orm.em.persistAndFlush(articles);
 
   const koaApp = await createApplication({
-    controllers: [AuthController, UsersController],
+    controllers: [AuthController, UsersController, ArticlesController],
     globalGuards: [],
     globalMiddlewares: [
       KoaRatelimit({ // first, the rate limit

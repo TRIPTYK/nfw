@@ -7,6 +7,7 @@ import {
   OneToMany,
   Collection,
   Enum,
+  Filter,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import { Roles } from '../enums/roles.enum.js';
@@ -21,6 +22,15 @@ import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface
   tableName: 'users',
   customRepository: () => UserRepository,
 })
+@Filter({ name: 'admin_access', args: false, cond: args => {} })
+@Filter({
+  name: 'user_access',
+  args: false,
+  cond: args => {
+    return {}
+  },
+})
+@Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
 export class UserModel extends BaseEntity<any, any> implements JsonApiModelInterface {
   public static ability = defineAbilityForUser;
 

@@ -16,6 +16,6 @@ export default {
     password: 'test123*',
     database: 'nfw',
     port: 3306,
-    debug: false,
+    debug: true,
   },
 }

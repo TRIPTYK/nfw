@@ -102,7 +102,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
      * We check the access of the data in the response, useless in post requests because we could not revert a created entity
      */
     if (ctx.method === 'GET') {
-      const currentUser = ctx.state.currentUser as UserModel | undefined;
+      const currentUser = ctx.state.user as UserModel | undefined;
       try {
         await this.walkCollection(payload as T | T[], currentUser, 'read', []);
       } catch (e: any) {
