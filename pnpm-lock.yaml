@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@casl/ability': ^5.4.3
+  '@koa/cors': ^3.1.0
   '@mikro-orm/core': ^4.5.9
   '@mikro-orm/mysql': ^4.5.9
   '@mikro-orm/seeder': ^5.0.0-dev.112
@@ -16,6 +17,7 @@ specifiers:
   '@types/koa-bodyparser': ^4.3.3
   '@types/koa-qs': ^2.0.0
   '@types/koa-ratelimit': ^4.2.3
+  '@types/koa__cors': ^3.0.3
   '@types/koa__router': ^8.0.8
   '@types/node': ^16.11.4
   '@types/pluralize': ^0.0.29
@@ -52,6 +54,7 @@ specifiers:
 
 dependencies:
   '@casl/ability': 5.4.3
+  '@koa/cors': 3.1.0
   '@mikro-orm/core': 4.5.9_@mikro-orm+mysql@4.5.9
   '@mikro-orm/mysql': 4.5.9_@mikro-orm+core@4.5.9
   '@mikro-orm/seeder': 5.0.0-dev.112_@mikro-orm+core@4.5.9
@@ -85,6 +88,7 @@ devDependencies:
   '@types/koa': 2.13.4
   '@types/koa-bodyparser': 4.3.3
   '@types/koa-ratelimit': 4.2.3
+  '@types/koa__cors': 3.0.3
   '@types/koa__router': 8.0.8
   '@types/node': 16.11.4
   '@types/pluralize': 0.0.29
@@ -183,6 +187,13 @@ packages:
   /@humanwhocodes/object-schema/1.2.0:
     resolution: {integrity: sha512-wdppn25U8z/2yiaT6YGquE6X8sSv7hNMWSXYSSU1jGv/yd6XqjXgTDJ8KP4NgjTXfJ3GbRjeeb8RTV7a/VpM+w==}
     dev: true
+
+  /@koa/cors/3.1.0:
+    resolution: {integrity: sha512-7ulRC1da/rBa6kj6P4g2aJfnET3z8Uf3SWu60cjbtxTA5g8lxRdX/Bd2P92EagGwwAhANeNw8T8if99rJliR6Q==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      vary: 1.1.2
+    dev: false
 
   /@mapbox/node-pre-gyp/1.0.6:
     resolution: {integrity: sha512-qK1ECws8UxuPqOA8F5LFD90vyVU33W7N3hGfgsOVfrJaRVc8McC3JClTDHpeSbL9CBrOHly/4GsNPAvIgNZE+g==}
@@ -506,6 +517,12 @@ packages:
       '@types/keygrip': 1.0.2
       '@types/koa-compose': 3.2.5
       '@types/node': 16.11.4
+
+  /@types/koa__cors/3.0.3:
+    resolution: {integrity: sha512-74Xb4hJOPGKlrQ4PRBk1A/p0gfLpgbnpT0o67OMVbwyeMXvlBN+ZCRztAAmkKZs+8hKbgMutUlZVbA52Hr/0IA==}
+    dependencies:
+      '@types/koa': 2.13.4
+    dev: true
 
   /@types/koa__router/8.0.8:
     resolution: {integrity: sha512-9pGCaDtzCsj4HJ8HmGuqzk8+s57sPj4njWd08GG5o92n5Xp9io2snc40CPpXFhoKcZ8OKhuu6ht4gNou9e1C2w==}
@@ -3955,6 +3972,11 @@ packages:
     engines: {node: '>= 0.10'}
     dependencies:
       homedir-polyfill: 1.0.3
+    dev: false
+
+  /vary/1.1.2:
+    resolution: {integrity: sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=}
+    engines: {node: '>= 0.8'}
     dev: false
 
   /vue-eslint-parser/7.1.1_eslint@7.32.0:

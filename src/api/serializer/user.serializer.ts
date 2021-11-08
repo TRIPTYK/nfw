@@ -17,16 +17,10 @@ export class UserSerializer extends BaseJsonApiSerializer<UserModel> {
         articles: {
           type: 'articles',
         },
-        refreshToken: {
-          type: 'refresh-tokens',
-        },
       },
     });
     this.serializer.register('articles', {
       whitelist: ['title'],
-    });
-    this.serializer.register('refresh-tokens', {
-      whitelist: ['token'],
     });
   }
 

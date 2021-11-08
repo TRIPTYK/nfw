@@ -15,6 +15,7 @@ import { ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
+import cors from '@koa/cors';
 
 // import { UserFactory } from './database/factories/user.factory.js';
 // import { ArticleFactory } from './database/factories/article.factory.js';
@@ -24,7 +25,7 @@ import { LoggerService } from './api/services/logger.service.js';
   /**
    * Load the config service first
    */
-  const { database, port } = await container
+  const { database, port, cors: corsConfig } = await container
     .resolve<ConfigurationService>(ConfigurationService)
     .load();
   const logger = container.resolve(LoggerService);
@@ -58,6 +59,9 @@ import { LoggerService } from './api/services/logger.service.js';
     controllers: [AuthController, UsersController, DocumentController],
     globalGuards: [],
     globalMiddlewares: [
+      cors({
+        origin: corsConfig.origin,
+      }),
       koaBody({
         formidable: {
           uploadDir: './dist/uploads',

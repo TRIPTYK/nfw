@@ -1,3 +1,5 @@
+const port = 8000;
+
 export default {
   jwt: {
     secret: 'h8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROV',
@@ -9,7 +11,7 @@ export default {
     dir: 'dist/logs/',
   },
   baseURL: '/api/v1',
-  port: 8000,
+  port,
   database: {
     host: 'localhost',
     user: 'root',
@@ -17,5 +19,8 @@ export default {
     database: 'nfw',
     port: 3306,
     debug: false,
+  },
+  cors: {
+    origin: [`http://localhost:${port}`, 'http://localhost:4200'],
   },
 }
