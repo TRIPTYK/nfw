@@ -1,4 +1,4 @@
-import { FilterQuery, LoadStrategy, wrap } from '@mikro-orm/core';
+import { BaseEntity, FilterQuery, LoadStrategy, wrap } from '@mikro-orm/core';
 import { EntityRepository } from '@mikro-orm/mysql';
 import { dotToObject } from '../../api/utils/dot-to-object.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
@@ -42,17 +42,17 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     }
   }
 
-  public async jsonApiCreate (model: Partial<T>): Promise<T> {
-    const entity = this.create(model);
+  public async jsonApiCreate (model: Partial<T> | T): Promise<T> {
+    const entity = model instanceof BaseEntity ? model : this.create(model);
     await this.persistAndFlush(entity);
-    return entity;
+    return entity as T;
   }
 
-  public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T>): Promise<T> {
-    const entity = await this.findOneOrFail(filterQuery);
+  public async jsonApiUpdate (model: Partial<T>, filterQuery:FilterQuery<T> | T): Promise<T> {
+    const entity = filterQuery instanceof BaseEntity ? filterQuery : await this.findOneOrFail(filterQuery);
     wrap(entity).assign(model);
     await this.persistAndFlush(entity);
-    return entity;
+    return entity as T;
   }
 
   public async jsonApiRemove (filterQuery:FilterQuery<T>): Promise<undefined> {

@@ -18,6 +18,15 @@ export class AclService {
   // eslint-disable-next-line no-useless-constructor
   public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM) {}
 
+  public async can (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any> | UnknownObject) {
+    try {
+      await this.enforce(ability, sub, act, obj);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   public async enforce (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any> | UnknownObject) {
     const transformedModelName = modelToName(obj instanceof BaseEntity ? obj : obj.name, false);
     const subjectAlias = subject(transformedModelName,

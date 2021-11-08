@@ -6,7 +6,7 @@ import { AclService } from '../../api/services/acl.service.js';
 import createHttpError from 'http-errors';
 
 @injectable()
-export class GuardCreate implements GuardInterface {
+export class ACLGuard implements GuardInterface {
   // eslint-disable-next-line no-useless-constructor
   constructor (@inject(AclService) private aclService: AclService, @inject(databaseInjectionToken) private mikroORM: MikroORM) {}
 
@@ -16,12 +16,16 @@ export class GuardCreate implements GuardInterface {
     const currentUser = context.ctx.state;
 
     try {
-      await this.aclService.enforce((entity as any).ability, currentUser, context.ctx.method === 'POST' ? 'create' : 'update', {
+      await this.aclService.enforce((entity as any).ability, currentUser, context.controllerAction as any, {
         name: entity.name,
         body: context.ctx.body as Record<string, unknown>,
       });
     } catch (e: any) {
       throw createHttpError(403, e.message);
+    }
+
+    if (context.ctx.request.body === undefined) {
+      return true;
     }
 
     if (!entityMetadata) {

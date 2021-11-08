@@ -13,7 +13,9 @@ const userAccessPermissions: AccessPermisions = {
   },
   anonymous: (_, { can }) => {
     can('read', 'user');
+    can('update', 'user');
     can('get', 'user');
+    can('delete', 'user');
   },
 }
 

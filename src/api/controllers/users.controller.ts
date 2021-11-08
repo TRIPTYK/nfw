@@ -9,7 +9,7 @@ import {
   UseResponseHandler,
   UseMiddleware,
   Param,
-  UseGuard,
+  inject,
 } from '@triptyk/nfw-core';
 import {
   JsonApiQueryParams,
@@ -27,8 +27,10 @@ import {
   ValidatedUser,
   ValidatedUserUpdate,
 } from '../validators/user.validators.js';
+import { EntityFromBody } from '../decorators/entity-from-body.decorator.js';
+import { AclService } from '../services/acl.service.js';
+import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';
 import { ValidatedBody } from '../decorators/validated-body.decorator.js';
-import { GuardCreate } from '../../json-api/guards/create.guard.js';
 
 @Controller('/users')
 @injectable()
@@ -37,6 +39,7 @@ export class UsersController {
   // eslint-disable-next-line no-useless-constructor
   constructor (
     @InjectRepository(UserModel) private userRepository: UserRepository,
+    @inject(AclService) private aclService: AclService,
   ) {}
 
   @GET('/')
@@ -71,26 +74,24 @@ export class UsersController {
 
   @POST('/')
   @UseMiddleware(deserialize(UserDeserializer))
-  @UseGuard(GuardCreate, UserModel)
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
-  create (@ValidatedBody(ValidatedUser) body: ValidatedUser) {
+  create (@EntityFromBody(ValidatedUser, UserModel) body: UserModel) {
     return this.userRepository.jsonApiCreate(body);
   }
 
   @PATCH('/:id')
   @UseMiddleware(deserialize(UserDeserializer))
-  @UseGuard(GuardCreate, UserModel)
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
-  update (
+  async update (
     @ValidatedBody(ValidatedUserUpdate) body: ValidatedUserUpdate,
-    @Param('id') id: string,
+    @EntityFromParam('id', UserModel) entity: UserModel,
   ) {
-    return this.userRepository.jsonApiUpdate(body, { id: id });
+    return this.userRepository.jsonApiUpdate(body, entity);
   }
 
   @DELETE('/:id')
   @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
-  delete (@Param('id') id: string) {
-    return this.userRepository.jsonApiRemove({ id });
+  async delete (@EntityFromParam('id', UserModel) entity: UserModel) {
+    await this.userRepository.removeAndFlush(entity);
   }
 }

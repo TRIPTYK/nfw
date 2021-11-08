@@ -91,7 +91,7 @@ export class DocumentController {
   @DELETE('/:id')
   @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async delete (@Param('id') id: string) {
-    return this.documentRepository.jsonApiRemove({ id });
+  //
   }
 
   @GET('/')
