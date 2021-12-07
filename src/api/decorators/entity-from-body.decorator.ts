@@ -32,6 +32,5 @@ export function EntityFromBody<T extends SchemaBase, K extends BaseEntity<any, a
       const newEntity = new EntityModel();
       wrap(newEntity).assign(validatedBody);
       return newEntity;
-    },
-  )
+    }, 'entity-from-body')
 }

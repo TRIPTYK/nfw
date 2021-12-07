@@ -8,6 +8,5 @@ export function EntityFromParam<K extends BaseEntity<any, any>> (param: keyof K,
       const databaseConnection = container.resolve<MikroORM>(databaseInjectionToken);
       const context = databaseConnection.em.getContext();
       return (context.getRepository(EntityModel) as SqlEntityRepository<K>).findOneOrFail({ [param]: (controllerContext.ctx.params as Record<any, unknown>)[param] });
-    },
-  )
+    }, 'entity-from-param');
 }

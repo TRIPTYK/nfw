@@ -53,6 +53,11 @@ import createHttpError from 'http-errors';
   // await generator.createSchema();
   await generator.updateSchema();
 
+  // const authUser = await new UserFactory(orm.em).createOne({
+  //   password: await (orm.em.getRepository(UserModel) as UserRepository).hashPassword('test123*'),
+  //   email: 'amaury.deflorenne@gmail.com',
+  // })
+
   // const users = await new UserFactory(orm.em).create(100);
   // const articles = new ArticleFactory(orm.em).make(1000)
 
@@ -76,7 +81,7 @@ import createHttpError from 'http-errors';
             const dir = './dist/uploads';
             console.log('here');
 
-            if(!fs.existsSync(dir)) {
+            if (!fs.existsSync(dir)) {
               fs.mkdirSync(dir, { recursive: true });
             }
 

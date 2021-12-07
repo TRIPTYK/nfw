@@ -18,7 +18,7 @@ export default {
     password: 'test123*',
     database: 'nfw',
     port: 3306,
-    debug: true,
+    debug: false,
   },
   cors: {
     origin: [`http://localhost:${port}`, 'http://localhost:4200'],

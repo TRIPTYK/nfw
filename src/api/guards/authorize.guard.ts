@@ -1,20 +1,11 @@
-import { ControllerGuardContext, GuardInterface, injectable } from '@triptyk/nfw-core';
+import { Args, ControllerContext, ControllerContextObject, GuardInterface, injectable } from '@triptyk/nfw-core';
+import { CurrentUser } from '../decorators/current-user.js';
 import { Roles } from '../enums/roles.enum.js';
 import { UserModel } from '../models/user.model.js';
 
 @injectable()
 export class AuthorizeGuard implements GuardInterface {
-  can (context: ControllerGuardContext): boolean {
-    const authorized = context.args[0] as Roles[];
-
-    if (!authorized) {
-      throw new Error('Please provide a role to be authorized');
-    }
-
-    if (context.ctx.state.user) {
-      return authorized.includes((context.ctx.state.user as UserModel).role);
-    } else {
-      return false;
-    }
+  can (@CurrentUser() user: UserModel | undefined, @Args() args: unknown[], @ControllerContext() controllerCtx: ControllerContextObject): boolean {
+    return user?.role === Roles.ADMIN;
   }
 }

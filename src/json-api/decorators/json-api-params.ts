@@ -94,5 +94,5 @@ export function JsonApiQueryParams (paramsSchema: Class<QueryParamsSchemaInterfa
     } catch (error: any) {
       throw createHttpError(400, error);
     }
-  });
+  }, 'json-api-params');
 }
