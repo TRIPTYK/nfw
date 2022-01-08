@@ -1,15 +1,15 @@
 import { BaseEntity } from '@mikro-orm/core';
 import {
+  Args,
   Class,
   container,
-  inject,
+  Ctx,
   injectable,
-  ResponseHandlerContext,
   ResponseHandlerInterface,
 } from '@triptyk/nfw-core';
-import { AclService } from '../../api/services/acl.service.js';
 import { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
+import { RouterContext } from '@koa/router';
 
 type JsonApiPayload<T> = T | T[] | [T[], number];
 
@@ -20,13 +20,10 @@ export interface JsonApiPayloadInterface<T> {
 
 @injectable()
 export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements ResponseHandlerInterface {
-  // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(AclService) private aclService: AclService) {}
-
   /**
    * Handle-all function to serialize and check returned controller data
    */
-  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, { ctx, args }: ResponseHandlerContext): Promise<void> {
+  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, @Ctx() ctx: RouterContext, @Args() args: [any]): Promise<void> {
     ctx.response.type = 'application/vnd.api+json';
 
     /**

@@ -1,4 +1,5 @@
-import { RouterContext } from '@koa/router'
+import { RouterContext } from '@koa/router';
+import { Next } from 'koa';
 import { injectable, InjectRepository, MiddlewareInterface } from '@triptyk/nfw-core'
 import * as Jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.model.js';
@@ -22,7 +23,7 @@ export class CurrentUserMiddleware implements MiddlewareInterface {
   // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository) {}
 
-  async use (context: RouterContext, next: any) {
+  async use (context: RouterContext, next: Next) {
     context.state.user = await loadUserFromContext(context, this.userRepository);
     await next();
   }

@@ -1,6 +1,5 @@
-import { Class, container, createCustomDecorator } from '@triptyk/nfw-core';
+import { Class, container, ControllerParamsContext, createCustomDecorator } from '@triptyk/nfw-core';
 import createHttpError from 'http-errors';
-import { ControllerParamsContext } from '@triptyk/nfw-core/dist/storages/metadata/use-params.metadata';
 import { parseFields, parseIncludes, parseSort } from '../parser/parse-includes.js';
 import { Field, Nested, Number, Schema, SchemaBase, String, validateOrReject } from 'fastest-validator-decorators';
 // @ts-expect-error
@@ -21,7 +20,7 @@ export class ValidatedJsonApiQueryParams extends SchemaBase {
     @String({
       optional: true,
     })
-    public include?: string[];
+  public include?: string[];
 
     @String({
       optional: true,
