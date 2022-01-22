@@ -1,34 +1,39 @@
-import { Email, Schema, SchemaBase, String } from 'fastest-validator-decorators';
+import {
+  Email,
+  Schema,
+  SchemaBase,
+  String,
+} from 'fastest-validator-decorators';
 
 @Schema()
 export class ValidatedUser extends SchemaBase {
-    @String()
-  public firstName!: string;
+  @String()
+  public declare firstName: string;
 
-    @String()
-    public lastName!: string;
+  @String()
+  public declare lastName: string;
 
-    @Email()
-    public email!: string;
+  @Email()
+  public declare email: string;
 
-    @String()
-    public password!: string;
+  @String()
+  public declare password: string;
 }
 
 @Schema()
 export class ValidatedUserUpdate extends SchemaBase {
-    @String()
-  public id!:string;
+  @String()
+  public declare id: string;
 
-    @String({ optional: true })
-    public firstName!: string;
+  @String({ optional: true })
+  public declare firstName: string;
 
-    @String({ optional: true })
-    public lastName!: string;
+  @String({ optional: true })
+  public declare lastName: string;
 
-    @Email({ optional: true })
-    public email!: string;
+  @Email({ optional: true })
+  public declare email: string;
 
-    @String({ optional: true })
-    public password!: string;
+  @String({ optional: true })
+  public declare password: string;
 }

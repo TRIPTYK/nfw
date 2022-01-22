@@ -1,4 +1,4 @@
-import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Param, inject, UseGuard } from '@triptyk/nfw-core'
+import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Param, inject, UseGuard, UseErrorHandler } from '@triptyk/nfw-core'
 import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { UserModel } from '../models/user.model.js';
 import { UserQueryParamsSchema } from '../query-params-schema/user.schema.js';
@@ -13,9 +13,11 @@ import { EntityFromBody } from '../decorators/entity-from-body.decorator.js';
 import { AclService } from '../services/acl.service.js';
 import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';
 import { AuthorizeGuard } from '../guards/authorize.guard.js';
+import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 
 @Controller('/users')
 @UseGuard(AuthorizeGuard, 'hello')
+@UseErrorHandler(JsonApiErrorHandler)
 @injectable()
 export class UsersController {
   // eslint-disable-next-line no-useless-constructor

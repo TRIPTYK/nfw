@@ -7,11 +7,13 @@ import {
   Param,
   POST,
   PUT,
+  UseErrorHandler,
   UseMiddleware,
   UseResponseHandler,
 } from '@triptyk/nfw-core';
 import formidable from 'formidable';
 import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
+import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
 import { File } from '../decorators/file.decorator.js';
 import { fileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
@@ -22,6 +24,7 @@ import { DocumentSerializer } from '../serializer/document.serializer.js';
 
 @Controller('/documents')
 @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
+@UseErrorHandler(JsonApiErrorHandler)
 @injectable()
 export class DocumentController {
   // eslint-disable-next-line no-useless-constructor
