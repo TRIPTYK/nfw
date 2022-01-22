@@ -16,7 +16,7 @@ import { AuthorizeGuard } from '../guards/authorize.guard.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 
 @Controller('/users')
-@UseGuard(AuthorizeGuard, 'hello')
+@UseGuard(AuthorizeGuard)
 @UseErrorHandler(JsonApiErrorHandler)
 @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
 @injectable()

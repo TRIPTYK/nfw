@@ -59,7 +59,7 @@ export class ValidatedJsonApiQueryParams extends SchemaBase {
   @Nested({
     optional: true,
   })
-  public filters?: any;
+  public filter?: any;
 }
 
 const doesMatch = (array: string[], allowed: (string | RegExp)[]) => {
@@ -119,10 +119,10 @@ export function JsonApiQueryParams (
         });
       }
 
-      const matchableFilters = dot(params.filters);
+      const matchableFilters = dot(params.filter);
 
       if (!doesMatch(Object.keys(matchableFilters), allowedFilters)) {
-        throw createHttpError(400, `Cannot filters ${params.filters}`, {
+        throw createHttpError(400, `Cannot filters ${params.filter}`, {
           name: 'FilterError',
         });
       }
