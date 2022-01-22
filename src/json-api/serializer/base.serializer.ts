@@ -3,10 +3,11 @@ import JSONAPISerializer, { JSONAPIDocument } from 'json-api-serializer';
 import { URLSearchParams } from 'url';
 import { ConfigurationService } from '../../api/services/configuration.service.js';
 import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
+import { JsonApiModelInterface } from '../interfaces/model.interface.js';
 import { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
 import { modelToName } from '../utils/model-to-name.js';
 
-const extractCollections = (data: Record<string, any>) => {
+const extractCollections = (data: Record<string, unknown>) => {
   for (const [key, value] of Object.entries(data)) {
     if (value instanceof Collection && value.isInitialized()) {
       data[key] = value.getItems();
@@ -40,7 +41,7 @@ implements JsonApiSerializerInterface<T> {
         const entity = data as BaseEntity<any, any>;
 
         const links = {
-          self: `${baseURL}/${modelToName(entity)}/${(entity as any).id}`,
+          self: `${baseURL}/${modelToName(entity)}/${(entity as Partial<JsonApiModelInterface>).id}`,
         } as Record<string, string>;
 
         return links;

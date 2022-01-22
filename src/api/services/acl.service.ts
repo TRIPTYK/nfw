@@ -7,10 +7,11 @@ import { UserModel } from '../models/user.model.js';
 import { permittedFieldsOf } from '@casl/ability/extra';
 import { modelToName } from '../../json-api/utils/model-to-name.js';
 import createHttpError from 'http-errors';
+import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 
 interface UnknownObject {
   name : string,
-  body : Record<string, any>,
+  body : Record<string, unknown>,
 }
 
 @injectable()
@@ -63,7 +64,7 @@ export class AclService {
     const userRole = sub?.role ?? 'anonymous';
 
     if (!can) {
-      throw createHttpError(403, `Cannot ${act} ${transformedModelName} ${(obj as any).id ?? '#'} as ${userRole}`);
+      throw createHttpError(403, `Cannot ${act} ${transformedModelName} ${(obj as Partial<JsonApiModelInterface>).id ?? '#'} as ${userRole}`);
     }
 
     /**
