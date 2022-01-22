@@ -20,6 +20,7 @@ export default {
     port: 3306,
     debug: false,
   },
+  env: 'development',
   cors: {
     origin: [`http://localhost:${port}`, 'http://localhost:4200'],
   },

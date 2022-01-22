@@ -21,10 +21,10 @@ import type { UserModel } from './user.model.js';
 })
 @Filter({ name: 'admin_access', cond: args => {} })
 @Filter({ name: 'user_access', cond: args => ({ owner_id: args.user.id }) })
-@Filter({ name: 'anonymous_access', args : false,  cond: args => ({}) })
+@Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
 export class DocumentModel extends BaseEntity<any, any> implements JsonApiModelInterface {
   @PrimaryKey()
-  id: string = v4();
+    id: string = v4();
 
   @Property()
   declare filename: string;

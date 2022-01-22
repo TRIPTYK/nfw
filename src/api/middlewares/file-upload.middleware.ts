@@ -1,12 +1,11 @@
-import { RouterContext } from '@koa/router'
-import { injectable, MiddlewareInterface } from '@triptyk/nfw-core'
+import koaBody from 'koa-body';
 
-@injectable()
-export class FileUploadMiddleware implements MiddlewareInterface {
-  async use (
-    context: RouterContext,
-    next: any,
-  ) {
-    await next();
-  }
-}
+export const fileUploadMiddleware = koaBody({
+  formidable: {
+    uploadDir: './dist/uploads',
+    multiples: false,
+    keepExtensions: true,
+    maxFileSize: 1 * 1024 * 1024, // 1MB
+  },
+  multipart: true,
+});

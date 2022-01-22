@@ -19,7 +19,7 @@ import type { UserModel } from './user.model.js';
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
 export class RefreshTokenModel extends BaseEntity<any, any> implements JsonApiModelInterface {
   @PrimaryKey()
-  id: string = v4();
+    id: string = v4();
 
   @Property()
   declare token: string;

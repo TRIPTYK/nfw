@@ -3,7 +3,7 @@ import { Email, Schema, SchemaBase, String } from 'fastest-validator-decorators'
 @Schema()
 export class ValidatedUser extends SchemaBase {
     @String()
-    public firstName!: string;
+  public firstName!: string;
 
     @String()
     public lastName!: string;
@@ -18,7 +18,7 @@ export class ValidatedUser extends SchemaBase {
 @Schema()
 export class ValidatedUserUpdate extends SchemaBase {
     @String()
-    public id!:string;
+  public id!:string;
 
     @String({ optional: true })
     public firstName!: string;

@@ -34,7 +34,7 @@ export class UserModel extends BaseEntity<any, any> implements JsonApiModelInter
   public static ability = defineAbilityForUser;
 
   @PrimaryKey()
-  id: string = v4();
+    id: string = v4();
 
   @Property()
   declare firstName: string;

@@ -1,6 +1,7 @@
 import { injectable, singleton } from '@triptyk/nfw-core';
 
 export interface Configuration {
+  env: string,
   jwt: {
     secret: string,
     accessExpires: number,
@@ -44,7 +45,7 @@ export class ConfigurationService<T = Configuration> {
     return this._config;
   }
 
-  public getKey<K extends keyof T> (key: K): T[K] {
-    return this._config[key];
+  public getKey<K extends keyof T> (key: K, defaultValue?: any): T[K] {
+    return (this._config[key] === undefined) ? defaultValue : this._config[key];
   }
 }

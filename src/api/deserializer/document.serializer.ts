@@ -4,14 +4,14 @@ import JSONAPIDeSerializer from 'json-api-serializer';
 @injectable()
 @singleton()
 export class DocumentDeserializer {
-    private deserializer : JSONAPIDeSerializer;
+  private deserializer : JSONAPIDeSerializer;
 
-    constructor () {
-      this.deserializer = new JSONAPIDeSerializer();
-      this.deserializer.register('document', {});
-    }
+  constructor () {
+    this.deserializer = new JSONAPIDeSerializer();
+    this.deserializer.register('document', {});
+  }
 
-    public deserialize (data:any) : any {
-      return this.deserializer.deserialize('document', data);
-    }
+  public deserialize (data:any) : any {
+    return this.deserializer.deserialize('document', data);
+  }
 }

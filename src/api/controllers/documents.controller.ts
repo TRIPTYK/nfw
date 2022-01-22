@@ -11,24 +11,14 @@ import {
   UseResponseHandler,
 } from '@triptyk/nfw-core';
 import formidable from 'formidable';
-import koaBody from 'koa-body';
 import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
 import { File } from '../decorators/file.decorator.js';
+import { fileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
 import { DocumentSerializer } from '../serializer/document.serializer.js';
-
-const koaBodyMiddleware = koaBody({
-  formidable: {
-    uploadDir: './dist/uploads',
-    multiples: true,
-    keepExtensions: true,
-    maxFileSize: 1 * 1024 * 1024, // 1MB
-  },
-  multipart: true,
-});
 
 @Controller('/documents')
 @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
@@ -55,7 +45,7 @@ export class DocumentController {
   }
 
   @POST('/')
-  @UseMiddleware(koaBodyMiddleware)
+  @UseMiddleware(fileUploadMiddleware)
   async create (@File('file') file: formidable.File) {
     const data = {
       filename: file.path.split('/').pop(),
@@ -68,7 +58,7 @@ export class DocumentController {
   }
 
   @PUT('/:id')
-  @UseMiddleware(koaBodyMiddleware)
+  @UseMiddleware(fileUploadMiddleware)
   async replace (
     @Param('id') id: string,
     @File('file') file: formidable.File,

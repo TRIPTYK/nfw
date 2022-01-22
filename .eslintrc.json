@@ -25,6 +25,7 @@
 			"warn",
 			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
 		],
+        "@typescript-eslint/no-explicit-any":"warn",
         "@typescript-eslint/member-delimiter-style": ["error", {
             "multiline": {
               "delimiter": "comma",    // 'none' or 'semi' or 'comma'
