@@ -7,9 +7,11 @@ import {
   Param,
   PATCH,
   POST,
+  UseMiddleware,
   UseResponseHandler,
 } from '@triptyk/nfw-core';
 import formidable from 'formidable';
+import koaBody from 'koa-body';
 import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
 import { File } from '../decorators/file.decorator.js';
@@ -18,7 +20,18 @@ import { DocumentQueryParamsSchema } from '../query-params-schema/document.schem
 import { DocumentRepository } from '../repositories/document.repository.js';
 import { DocumentSerializer } from '../serializer/document.serializer.js';
 
+const koaBodyMiddleware = koaBody({
+  formidable: {
+    uploadDir: './dist/uploads',
+    multiples: true,
+    keepExtensions: true,
+    maxFileSize: 1 * 1024 * 1024, // 1MB
+  },
+  multipart: true,
+});
+
 @Controller('/documents')
+@UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
 @injectable()
 export class DocumentController {
   // eslint-disable-next-line no-useless-constructor
@@ -28,7 +41,6 @@ export class DocumentController {
   ) {}
 
   @GET('/:id')
-  @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async get (
     @Param('id') id: string,
     @JsonApiQueryParams(DocumentQueryParamsSchema)
@@ -43,7 +55,7 @@ export class DocumentController {
   }
 
   @POST('/')
-  @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
+  @UseMiddleware(koaBodyMiddleware)
   async create (@File('file') file: formidable.File) {
     const data = {
       filename: file.path.split('/').pop(),
@@ -56,7 +68,7 @@ export class DocumentController {
   }
 
   @PATCH('/:id')
-  @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
+  @UseMiddleware(koaBodyMiddleware)
   async update (
     @Param('id') id: string,
     @File('file') file: formidable.File,
@@ -73,13 +85,11 @@ export class DocumentController {
   }
 
   @DELETE('/:id')
-  @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   async delete (@Param('id') id: string) {
     return this.documentRepository.jsonApiRemove({ id });
   }
 
   @GET('/')
-  @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
   public async list (
     @JsonApiQueryParams(DocumentQueryParamsSchema)
       queryParams: ValidatedJsonApiQueryParams,

@@ -8,7 +8,6 @@ import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
-import koaBody from 'koa-body';
 import KoaQS from 'koa-qs';
 import { DocumentController } from './api/controllers/documents.controller.js';
 import { ConfigurationService } from './api/services/configuration.service.js';
@@ -70,21 +69,10 @@ import createHttpError from 'http-errors';
     controllers: [AuthController, UsersController, DocumentController],
     globalGuards: [],
     globalMiddlewares: [
-      koaBody({
-        formidable: {
-          uploadDir: './dist/uploads',
-          multiples: true,
-          keepExtensions: true,
-          maxFileSize: 1 * 1024 * 1024, // 1MB
-        },
-        multipart: true,
-        urlencoded: true,
-      }),
       cors({
         origin: corsConfig.origin,
       }),
       KoaRatelimit({
-        // first, the rate limit
         driver: 'memory',
         db: new Map(),
         duration: 10000,

@@ -38,7 +38,7 @@
     "json-api-serializer": "^2.6.6",
     "jsonwebtoken": "^8.5.1",
     "jwt-simple": "^0.5.6",
-    "koa-body": "^4.2.0",
+    "koa-body":  "4.2.0",
     "koa-qs": "^3.0.0",
     "node-dotify": "^1.1.0",
     "param-case": "^3.0.4",
