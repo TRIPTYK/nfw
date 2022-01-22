@@ -50,7 +50,7 @@
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
     "@types/faker": "^5.5.9",
-    "@types/formidable": "^2.0.3",
+    "@types/formidable": "^1.2.3",
     "@types/http-errors": "^1.8.1",
     "@types/json-api-serializer": "^2.6.3",
     "@types/jsonwebtoken": "^8.5.6",
