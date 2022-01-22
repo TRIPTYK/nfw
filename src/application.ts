@@ -5,7 +5,6 @@ import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
 import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
-import { ArticleModel } from './api/models/article.model.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
@@ -17,10 +16,7 @@ import { LoggerService } from './api/services/logger.service.js';
 import cors from '@koa/cors';
 import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
 import createHttpError from 'http-errors';
-
-// import { UserFactory } from './database/factories/user.factory.js';
-// import { ArticleFactory } from './database/factories/article.factory.js';
-// import faker from 'faker';
+import koaBody from 'koa-body';
 
 (async () => {
   /**
@@ -32,7 +28,7 @@ import createHttpError from 'http-errors';
   const logger = container.resolve(LoggerService);
 
   const orm = await MikroORM.init({
-    entities: [UserModel, RefreshTokenModel, ArticleModel, DocumentModel],
+    entities: [UserModel, RefreshTokenModel, DocumentModel],
     dbName: database.database,
     host: database.host,
     user: database.user,
@@ -44,26 +40,6 @@ import createHttpError from 'http-errors';
       return createHttpError(404, 'Not found');
     },
   });
-
-  const generator = orm.getSchemaGenerator();
-
-  // await generator.dropSchema();
-  // await generator.createSchema();
-  await generator.updateSchema();
-
-  // const authUser = await new UserFactory(orm.em).createOne({
-  //   password: await (orm.em.getRepository(UserModel) as UserRepository).hashPassword('test123*'),
-  //   email: 'amaury.deflorenne@gmail.com',
-  // })
-
-  // const users = await new UserFactory(orm.em).create(100);
-  // const articles = new ArticleFactory(orm.em).make(1000)
-
-  // articles.forEach((article) => {
-  //   article.owner = faker.random.arrayElement(users)
-  // // });
-
-  // await orm.em.persistAndFlush(articles);
 
   const koaApp = await createApplication({
     controllers: [AuthController, UsersController, DocumentController],
@@ -80,6 +56,11 @@ import createHttpError from 'http-errors';
         throw: true,
         errorMessage: 'Sometimes You Just Have to Slow Down.',
         id: (ctx) => ctx.ip,
+      }),
+      koaBody({
+        onError: (err) => {
+          throw createHttpError(400, err.message);
+        },
       }),
       CurrentUserMiddleware,
       LogMiddleware,

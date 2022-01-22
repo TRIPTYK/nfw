@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@casl/ability': ^5.4.3
+  '@faker-js/faker': 6.0.0-alpha.3
   '@koa/cors': ^3.1.0
   '@mikro-orm/core': ^4.5.10
   '@mikro-orm/mysql': ^4.5.10
@@ -31,7 +32,6 @@ specifiers:
   eslint-plugin-node: ^11.1.0
   eslint-plugin-promise: ^6.0.0
   eslint-plugin-unused-imports: ^2.0.0
-  faker: ^6.6.6
   fastest-validator-decorators: ^1.2.1
   formidable: ^2.0.1
   http-errors: ^2.0.0
@@ -55,6 +55,7 @@ specifiers:
 
 dependencies:
   '@casl/ability': 5.4.3
+  '@faker-js/faker': 6.0.0-alpha.3
   '@koa/cors': 3.1.0
   '@mikro-orm/core': 4.5.10_@mikro-orm+mysql@4.5.10
   '@mikro-orm/mysql': 4.5.10_@mikro-orm+core@4.5.10
@@ -63,7 +64,6 @@ dependencies:
   '@types/bcrypt': 5.0.0
   '@types/koa-qs': 2.0.0
   bcrypt: 5.0.1
-  faker: 6.6.6
   fastest-validator-decorators: 1.2.1
   formidable: 2.0.1
   http-errors: 2.0.0
@@ -181,6 +181,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@faker-js/faker/6.0.0-alpha.3:
+    resolution: {integrity: sha512-8B+7Jlwb9ogcoluzxB6AaSRZn2gnoewTA/WygAYhWNxkrFKjQL0TDXK6AW6uJlASMKl7qG/qbEVtpjLByuL0ZQ==}
+    dev: false
 
   /@hapi/hoek/9.2.1:
     resolution: {integrity: sha512-gfta+H8aziZsm8pZa0vj04KO6biEiisppNgA1kbJvFrrWu9Vm7eaUEy76DIxsuTaWvti5fkJVhllWc6ZTE+Mdw==}
@@ -2131,10 +2135,6 @@ packages:
 
   /faker/5.4.0:
     resolution: {integrity: sha512-Y9n/Ky/xZx/Bj8DePvXspUYRtHl/rGQytoIT5LaxmNwSe3wWyOeOXb3lT6Dpipq240PVpeFaGKzScz/5fvff2g==}
-    dev: false
-
-  /faker/6.6.6:
-    resolution: {integrity: sha512-9tCqYEDHI5RYFQigXFwF1hnCwcWCOJl/hmll0lr5D2Ljjb0o4wphb69wikeJDz5qCEzXCoPvG6ss5SDP6IfOdg==}
     dev: false
 
   /fast-deep-equal/3.1.3:

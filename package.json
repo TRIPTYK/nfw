@@ -31,7 +31,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/koa-qs": "^2.0.0",
     "bcrypt": "^5.0.1",
-    "faker": "^6.6.6",
+    "@faker-js/faker": "6.0.0-alpha.3",
     "fastest-validator-decorators": "^1.2.1",
     "formidable": "^2.0.1",
     "http-errors": "^2.0.0",

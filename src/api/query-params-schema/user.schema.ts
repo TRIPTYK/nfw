@@ -5,7 +5,7 @@ import { CheckTypes, QueryParamsSchemaInterface } from '../../json-api/interface
 @injectable()
 export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
   allowedIncludes (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
-    return ['refreshToken', /^articles(\.\w+)?$/];
+    return ['refreshToken'];
   }
 
   allowedFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
