@@ -26,7 +26,7 @@ export class AuthController {
   }
 
   @POST('/login')
-  public async login (@Body() body: any) {
+  public async login (@Body() body: Record<'email'| 'password', string>) {
     const { accessExpires, refreshExpires, secret } = this.configurationService.getKey('jwt');
     const user = await this.userRepository.findOne({ email: body.email });
 
@@ -42,7 +42,7 @@ export class AuthController {
   }
 
   @POST('/refresh-token')
-  public async refreshToken (@Body() body: any) {
+  public async refreshToken (@Body() body: Record<'refreshToken', string>) {
     const jwt = this.configurationService.getKey('jwt');
     const refresh = await this.refreshTokenRepository.findOne({ token: body.refreshToken });
 

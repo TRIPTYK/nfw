@@ -18,13 +18,13 @@ import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error
 @Controller('/users')
 @UseGuard(AuthorizeGuard, 'hello')
 @UseErrorHandler(JsonApiErrorHandler)
+@UseResponseHandler(JsonApiResponsehandler, UserSerializer)
 @injectable()
 export class UsersController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository, @inject(AclService) private aclService: AclService) {}
 
   @GET('/')
-  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @CurrentUser() currentUser?: UserModel) {
     return {
       payload: await this.userRepository.jsonApiFind(queryParams, currentUser),
@@ -33,7 +33,6 @@ export class UsersController {
   }
 
   @GET('/:id')
-  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   async get (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @Param('id') id : string, @CurrentUser() currentUser?: UserModel) {
     return {
       payload: await this.userRepository.jsonApiFindOne({
@@ -45,7 +44,6 @@ export class UsersController {
 
   @POST('/')
   @UseMiddleware(deserialize(UserDeserializer))
-  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   async create (@EntityFromBody(ValidatedUser, UserModel) body: UserModel, @CurrentUser() currentUser?: UserModel) {
     await this.aclService.enforce(UserModel.ability, currentUser, 'create', body);
     return this.userRepository.jsonApiCreate(body);
@@ -53,14 +51,12 @@ export class UsersController {
 
   @PATCH('/:id')
   @UseMiddleware(deserialize(UserDeserializer))
-  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   async update (@EntityFromBody(ValidatedUserUpdate, UserModel) user: UserModel, @Param('id') id: string, @CurrentUser() currentUser?: UserModel) {
     await this.aclService.enforce(UserModel.ability, currentUser, 'update', user);
     return this.userRepository.jsonApiUpdate(user, { id: id }, currentUser);
   }
 
   @DELETE('/:id')
-  @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
   async delete (@EntityFromParam('id', UserModel) user: UserModel, @CurrentUser() currentUser?: UserModel) {
     await this.aclService.enforce(UserModel.ability, currentUser, 'delete', user);
     return this.userRepository.jsonApiRemove({ id: user.id }, currentUser);
