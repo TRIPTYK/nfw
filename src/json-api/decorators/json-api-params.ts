@@ -25,10 +25,15 @@ import { QueryParamsSchemaInterface } from '../interfaces/query-params.interface
 
 @Schema(true)
 class ValidatedJsonApiQueryParamsPagination extends SchemaBase {
-  @Number()
+  @Number({
+    min: 1,
+  })
   declare number: number;
 
-  @Number()
+  @Number({
+    min: 1,
+    max: 20,
+  })
   declare size: number;
 }
 
@@ -59,7 +64,7 @@ export class ValidatedJsonApiQueryParams extends SchemaBase {
   @Nested({
     optional: true,
   })
-  public filter?: any;
+  public filter?: Record<string, unknown>;
 }
 
 const doesMatch = (array: string[], allowed: (string | RegExp)[]) => {
@@ -82,9 +87,9 @@ export function JsonApiQueryParams (
       const params = new ValidatedJsonApiQueryParams(context.ctx.query);
       await validateOrReject(params);
 
-      params.fields = parseFields(params.fields as any);
-      params.sort = parseSort(params.sort as any);
-      params.include = parseIncludes(params.include as any);
+      params.fields = parseFields(params.fields);
+      params.sort = parseSort(params.sort as unknown as string);
+      params.include = parseIncludes(params.include as unknown as string);
 
       const [
         allowedFields,
@@ -128,6 +133,7 @@ export function JsonApiQueryParams (
       }
 
       return params;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       throw createHttpError(400, error);
     }
