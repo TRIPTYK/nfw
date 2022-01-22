@@ -1,5 +1,5 @@
-import { LoadStrategy, MikroORM } from '@mikro-orm/core'
-import createApplication, { container } from '@triptyk/nfw-core'
+import { LoadStrategy, MikroORM } from '@mikro-orm/core';
+import createApplication, { container } from '@triptyk/nfw-core';
 import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';

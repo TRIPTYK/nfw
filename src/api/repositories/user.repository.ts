@@ -10,7 +10,7 @@ export class UserRepository extends JsonApiRepository<UserModel> {
       exp: unixTimestamp() + accessExpires * 60,
       iat: unixTimestamp(),
       sub: user.id,
-    }
+    };
 
     return Jwt.sign(payload, secret, { algorithm: 'HS512' });
   }

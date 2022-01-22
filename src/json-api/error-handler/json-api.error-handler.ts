@@ -25,7 +25,7 @@ export class JsonApiErrorHandler implements ErrorHandlerInterface {
           message: e.message,
           meta: e,
           status: '400',
-        }
+        };
       });
       context.response.body = this.jsonApiErrorSerializer.serializeError(errors);
       return;

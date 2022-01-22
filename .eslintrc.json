@@ -16,7 +16,7 @@
         "unused-imports"
     ],
     "rules": {
-        "semi":"off",
+        "semi": [2, "always"],
         "no-console": "warn",
         "no-return-assign": "off",
         "unused-imports/no-unused-imports": "error",

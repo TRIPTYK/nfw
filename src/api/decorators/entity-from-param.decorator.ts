@@ -1,6 +1,6 @@
 import { BaseEntity, MikroORM } from '@mikro-orm/core';
 import { SqlEntityRepository } from '@mikro-orm/mysql';
-import { Class, container, ControllerParamsContext, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core'
+import { Class, container, ControllerParamsContext, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core';
 
 export function EntityFromParam<K extends BaseEntity<any, any>> (param: keyof K, EntityModel: Class<K>) {
   return createCustomDecorator(

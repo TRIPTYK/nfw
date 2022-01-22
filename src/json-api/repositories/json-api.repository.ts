@@ -41,13 +41,13 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
       filters: this.getFiltersForUser(user),
       orderBy,
       offset: params.page?.number ? params.page.number * size : undefined,
-    }
+    };
   }
 
   public getFiltersForUser (user?: UserModel) {
     return {
       [`${user?.role ?? 'anonymous'}_access`]: { user },
-    }
+    };
   }
 
   public async jsonApiCreate (model: Partial<T>): Promise<T> {

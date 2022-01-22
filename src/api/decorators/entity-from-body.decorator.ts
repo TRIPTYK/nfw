@@ -1,5 +1,5 @@
 import { BaseEntity, MikroORM, ReferenceType, wrap } from '@mikro-orm/core';
-import { Class, container, ControllerParamsContext, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core'
+import { Class, container, ControllerParamsContext, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core';
 import { SchemaBase } from 'fastest-validator-decorators';
 
 export function EntityFromBody<T extends SchemaBase, K extends BaseEntity<any, any>> (ValidationClass : Class<T>, EntityModel: Class<K>) {
@@ -32,5 +32,5 @@ export function EntityFromBody<T extends SchemaBase, K extends BaseEntity<any, a
       const newEntity = new EntityModel();
       wrap(newEntity).assign(validatedBody);
       return newEntity;
-    }, 'entity-from-body')
+    }, 'entity-from-body');
 }

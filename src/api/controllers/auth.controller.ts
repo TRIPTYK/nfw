@@ -1,4 +1,4 @@
-import { Body, Controller, injectable, InjectRepository, inject, POST } from '@triptyk/nfw-core'
+import { Body, Controller, injectable, InjectRepository, inject, POST } from '@triptyk/nfw-core';
 import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
 import { UserRepository } from '../repositories/user.repository.js';

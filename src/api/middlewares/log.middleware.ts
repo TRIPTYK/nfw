@@ -1,4 +1,4 @@
-import { RouterContext } from '@koa/router'
+import { RouterContext } from '@koa/router';
 import { inject, injectable, MiddlewareInterface } from '@triptyk/nfw-core';
 import { LoggerService } from '../services/logger.service.js';
 import { Next } from 'koa';

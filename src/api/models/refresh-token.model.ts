@@ -1,5 +1,5 @@
-import { PrimaryKey, Entity, BaseEntity, Property, OneToOne, Filter } from '@mikro-orm/core'
-import { v4 } from 'uuid'
+import { PrimaryKey, Entity, BaseEntity, Property, OneToOne, Filter } from '@mikro-orm/core';
+import { v4 } from 'uuid';
 import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
 import type { UserModel } from './user.model.js';
@@ -13,7 +13,7 @@ import type { UserModel } from './user.model.js';
   name: 'user_access',
   args: false,
   cond: args => {
-    return {}
+    return {};
   },
 })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })

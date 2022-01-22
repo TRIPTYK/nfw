@@ -49,7 +49,7 @@ export class AclService {
      */
     const perms = contextEntityManager.getMetadata().find(obj instanceof BaseEntity ? obj.constructor.name : obj.name);
 
-    if (!perms) { throw Error(`Metadata not found for ${obj}`) }
+    if (!perms) { throw Error(`Metadata not found for ${obj}`); }
 
     /**
      * Get all fields of entity
@@ -79,7 +79,7 @@ export class AclService {
 
     if (forbiddenKeys.length) {
       const forbiddenKeysNames = forbiddenKeys.map(([key]) => key);
-      throw createHttpError(403, `Cannot access ${forbiddenKeysNames} of ${transformedModelName}`)
+      throw createHttpError(403, `Cannot access ${forbiddenKeysNames} of ${transformedModelName}`);
     }
   }
 }

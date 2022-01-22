@@ -32,7 +32,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
     if ((Array.isArray(controllerResponse) && controllerResponse.every((e) => e instanceof BaseEntity)) || controllerResponse instanceof BaseEntity) {
       controllerResponse = {
         payload: controllerResponse as T | T[],
-      }
+      };
     }
 
     let { payload, queryParams } = controllerResponse ?? {}; // assign empty object as default payload if undefined or null

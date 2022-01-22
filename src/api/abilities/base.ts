@@ -23,4 +23,4 @@ export const baseAbilityFor = (userReq: UserModel | undefined | null, accessPerm
   }
 
   throw new Error(`Unknown role ${role}`);
-}
+};

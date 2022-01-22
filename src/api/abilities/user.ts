@@ -9,7 +9,7 @@ const userAccessPermissions: AccessPermisions = {
     can('create', 'user', ['id', 'password', 'lastName', 'firstName', 'email']);
     can('delete', 'user', {
       owner: user,
-    })
+    });
   },
   anonymous: (_, { can }) => {
     can('read', 'user');
@@ -17,7 +17,7 @@ const userAccessPermissions: AccessPermisions = {
     can('get', 'user');
     can('delete', 'user');
   },
-}
+};
 
 /**
  * @param userReq the use who emits the request
@@ -25,4 +25,4 @@ const userAccessPermissions: AccessPermisions = {
  */
 export const defineAbilityForUser: EntityAbility<UserModel> = async (userReq: UserModel | undefined | null) => {
   return baseAbilityFor(userReq, userAccessPermissions);
-}
+};

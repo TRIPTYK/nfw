@@ -23,7 +23,7 @@ import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface
 @Filter({
   name: 'user_access',
   cond: args => {
-    return { id: args.user.id }
+    return { id: args.user.id };
   },
 })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({ 1: 0 }) })

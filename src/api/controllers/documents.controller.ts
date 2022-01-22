@@ -44,7 +44,7 @@ export class DocumentController {
         id,
       },
       queryParams,
-    )
+    );
   }
 
   @POST('/')

@@ -18,7 +18,7 @@ export class LoggerService {
         // eslint-disable-next-line no-console
         if (logConfig.logToConsole) { console.info(data.output); }
       },
-    })
+    });
   }
 
   public get logger () {

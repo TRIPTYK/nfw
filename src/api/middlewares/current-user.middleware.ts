@@ -1,6 +1,6 @@
 import { RouterContext } from '@koa/router';
 import { Next } from 'koa';
-import { injectable, InjectRepository, MiddlewareInterface } from '@triptyk/nfw-core'
+import { injectable, InjectRepository, MiddlewareInterface } from '@triptyk/nfw-core';
 import * as Jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.model.js';
 import { UserRepository } from '../repositories/user.repository.js';
@@ -10,7 +10,7 @@ export async function loadUserFromContext (context: RouterContext, userRepo: Use
     const bearerToken = context.header.authorization.split(' ');
     if (bearerToken[0] === 'Bearer') {
       const decrypted = Jwt.decode(bearerToken[1], { complete: true });
-      const user = await userRepo.findOne({ id: decrypted?.payload.sub })
+      const user = await userRepo.findOne({ id: decrypted?.payload.sub });
       return user;
     } else {
       throw new Error('Invalid token');
