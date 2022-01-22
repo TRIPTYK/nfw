@@ -2,7 +2,6 @@
 
 # NFW a node Typescript boilerplate
 
-![Build](https://github.com/TRIPTYK/nfw/workflows/Build/badge.svg?branch=master)
 ![Test](https://github.com/TRIPTYK/nfw/workflows/Test/badge.svg?branch=master)
 ![Lint](https://github.com/TRIPTYK/nfw/workflows/Lint/badge.svg?branch=master)
 [![CodeQL](https://github.com/TRIPTYK/nfw/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/TRIPTYK/nfw/actions/workflows/codeql-analysis.yml)
