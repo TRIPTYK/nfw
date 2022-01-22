@@ -1,51 +1,25 @@
-import {
-    BaseJsonApiRepository,
-    ConfigurationService,
-    EntityRepository
-} from "@triptyk/nfw-core";
-import * as Crypto from "crypto";
-import * as Moment from "moment-timezone";
-import { autoInjectable, container } from "tsyringe";
-import { RefreshToken } from "../models/refresh-token.model";
-import { User } from "../models/user.model";
+import { UserModel } from '../models/user.model.js';
+import { JsonApiRepository } from '../../json-api/repositories/json-api.repository.js';
+import { v4 } from 'uuid';
+import { unixTimestamp } from '../utils/date-utils.js';
+import { RefreshTokenModel } from '../models/refresh-token.model.js';
 
-@EntityRepository(RefreshToken)
-@autoInjectable()
-export class RefreshTokenRepository extends BaseJsonApiRepository<RefreshToken> {
-    /**
-     *
-     * @param user
-     * @param ip
-     */
-    public generate(user: User): Promise<RefreshToken> {
-        const token = `${user.id}.${Crypto.randomBytes(40).toString("hex")}`;
-        const expires = Moment()
-            .add(
-                container.resolve<ConfigurationService>(ConfigurationService)
-                    .config.jwt.refreshExpires,
-                "minutes"
-            )
-            .toDate();
+export class RefreshTokenRepository extends JsonApiRepository<RefreshTokenModel> {
+  public async generateRefreshToken (user: UserModel, refreshExpires: number): Promise<RefreshTokenModel> {
+    const token = v4();
+    const expires = unixTimestamp() + refreshExpires * 60;
 
-        const tokenObject = this.create({ refreshToken: token, user, expires });
+    const oldToken = await user.refreshToken.init();
 
-        return this.save(tokenObject);
+    if (oldToken) {
+      await this.removeAndFlush(oldToken);
     }
 
-    /**
-     *
-     * @param user
-     * @param accessToken
-     * @param ip
-     */
-    public async generateNewRefreshToken(user: User): Promise<RefreshToken> {
-        const oldToken = await this.findOne({ where: { user } });
-
-        if (oldToken) {
-            await this.remove(oldToken);
-        }
-
-        const token = await this.generate(user);
-        return token;
-    }
+    const refreshToken = this.create({
+      token,
+      user,
+      expires,
+    });
+    return refreshToken;
+  }
 }

@@ -1,4 +1,5 @@
-import { BaseJsonApiRepository } from "@triptyk/nfw-core";
-import { Document } from "../models/document.model";
+import { JsonApiRepository } from '../../json-api/repositories/json-api.repository.js';
+import { DocumentModel } from '../models/document.model.js';
 
-export class DocumentRepository extends BaseJsonApiRepository<Document> {}
+export class DocumentRepository extends JsonApiRepository<DocumentModel> {
+}

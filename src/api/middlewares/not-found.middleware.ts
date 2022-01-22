@@ -1,25 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { BaseMiddleware } from "@triptyk/nfw-core";
-import { Request, Response } from "express";
-import * as JSONAPISerializer from "json-api-serializer";
-import { singleton } from "tsyringe";
+import { RouterContext } from '@koa/router';
+import { MiddlewareInterface } from '@triptyk/nfw-core';
 
-@singleton()
-export class NotFoundMiddleware extends BaseMiddleware {
-    private serializer = new JSONAPISerializer();
-
-    public use(
-        req: Request,
-        res: Response,
-        next: (err?: any) => void,
-        args: any
-    ) {
-        res.status(404);
-        res.json(
-            this.serializer.serializeError({
-                detail: "Not found",
-                status: "404"
-            })
-        );
-    }
+export class NotFoundMiddleware implements MiddlewareInterface {
+  async use (context: RouterContext) {
+    context.body = {
+      message: 'Not found',
+      code: 404,
+    };
+  }
 }

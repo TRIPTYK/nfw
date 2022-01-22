@@ -1,156 +1,60 @@
-import * as Boom from "@hapi/boom";
 import {
-    BeforeInsert,
-    BeforeUpdate,
-    Column,
-    ConfigurationService,
-    DeleteDateColumn,
-    JoinColumn,
-    JoinTable,
-    JsonApiEntity,
-    JsonApiModel,
-    ManyToMany,
-    OneToOne
-} from "@triptyk/nfw-core";
-import * as Bcrypt from "bcrypt";
-import * as Jwt from "jwt-simple";
-import * as Moment from "moment-timezone";
-import { Permission } from "role-acl";
-import { container } from "tsyringe";
-import { Environments } from "../enums/environments.enum";
-import { ImageMimeTypes } from "../enums/mime-type.enum";
-import { Roles } from "../enums/role.enum";
-import { UserRepository } from "../repositories/user.repository";
-import { UserSerializer } from "../serializers/user.serializer";
-import { ACLService } from "../services/acl.service";
-import * as UserValidator from "../validations/user.validation";
-import { Document } from "./document.model";
+  PrimaryKey,
+  Entity,
+  BaseEntity,
+  Property,
+  OneToOne,
+  Enum,
+  Filter,
+} from '@mikro-orm/core';
+import { v4 } from 'uuid';
+import { Roles } from '../enums/roles.enum.js';
+import { UserRepository } from '../repositories/user.repository.js';
+import { RefreshTokenModel } from './refresh-token.model.js';
+import bcrypt from 'bcrypt';
+import { defineAbilityForUser } from '../abilities/user.js';
+import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 
-export interface UserInterface {
-    password: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    username: string;
-    role: Roles;
-    deleted_at: any;
-    documents: Document[];
-    avatar: Document;
-}
-
-@JsonApiEntity("users", {
-    serializer: UserSerializer,
-    repository: UserRepository,
-    validator: UserValidator
+@Entity({
+  tableName: 'users',
+  customRepository: () => UserRepository,
 })
-export class User extends JsonApiModel<User> implements UserInterface {
-    @Column({
-        default: "User",
-        length: 32,
-        nullable: false
-    })
-    public username: string;
+@Filter({ name: 'admin_access', args: false, cond: args => {} })
+@Filter({
+  name: 'user_access',
+  cond: args => {
+    return { id: args.user.id };
+  },
+})
+@Filter({ name: 'anonymous_access', args: false, cond: args => ({ 1: 0 }) })
+export class UserModel extends BaseEntity<any, any> implements JsonApiModelInterface {
+  public static ability = defineAbilityForUser;
 
-    @Column({
-        length: 128,
-        nullable: false
-    })
-    public password: string;
+  @PrimaryKey()
+    id: string = v4();
 
-    @Column({
-        length: 128,
-        nullable: false,
-        unique: true
-    })
-    public email: string;
+  @Property()
+  declare firstName: string;
 
-    @Column({
-        length: 32,
-        nullable: false
-    })
-    public first_name: string;
+  @Property()
+  declare lastName: string;
 
-    @Column({
-        length: 32,
-        nullable: false
-    })
-    public last_name: string;
+  @Property()
+  declare email: string;
 
-    @Column({
-        default: Roles.Ghost,
-        enum: Roles,
-        type: "simple-enum"
-    })
-    public role: Roles;
+  @Property()
+  declare password: string;
 
-    @JoinTable()
-    @ManyToMany(() => Document, (document) => document.users)
-    public documents: Document[];
+  @Enum(() => Roles)
+  declare role: Roles;
 
-    @OneToOne(() => Document, (document) => document.user_avatar)
-    @JoinColumn()
-    public avatar: Document;
+  @OneToOne({
+    entity: () => RefreshTokenModel,
+    mappedBy: 'user',
+  })
+  declare refreshToken: RefreshTokenModel;
 
-    @DeleteDateColumn()
-    public deleted_at;
-
-    public constructor(payload: Partial<User> = {}) {
-        super();
-        Object.assign(this, payload);
-    }
-
-    @BeforeUpdate()
-    @BeforeInsert()
-    public checkAvatar(): void {
-        if (this.avatar) {
-            if (!(this.avatar.mimetype in ImageMimeTypes)) {
-                throw Boom.notAcceptable("Wrong document type");
-            }
-        }
-    }
-
-    @BeforeInsert()
-    @BeforeUpdate()
-    public async hashPassword(): Promise<boolean> {
-        try {
-            const rounds =
-                container.resolve<ConfigurationService>(ConfigurationService)
-                    .config.env === Environments.Test
-                    ? 1
-                    : 10;
-            this.password = await Bcrypt.hash(this.password, rounds);
-            return true;
-        } catch (error) {
-            throw Boom.badImplementation(error.message);
-        }
-    }
-
-    public generateAccessToken(): string {
-        const {
-            jwt: { accessExpires, secret }
-        } = container.resolve<ConfigurationService>(
-            ConfigurationService
-        ).config;
-
-        const payload = {
-            exp: Moment().add(accessExpires, "minutes").unix(),
-            iat: Moment().unix(),
-            sub: this.id
-        };
-
-        return Jwt.encode(payload, secret);
-    }
-
-    public passwordMatches(password: string): Promise<boolean> {
-        return Bcrypt.compare(password, this.password);
-    }
-
-    public can(
-        method: string,
-        context: any,
-        resource: string
-    ): Promise<Permission> {
-        const aclService = container.resolve(ACLService);
-        return aclService.can(this, method, context, resource);
-    }
+  public passwordMatches (password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }
