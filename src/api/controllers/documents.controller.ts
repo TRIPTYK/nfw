@@ -5,8 +5,8 @@ import {
   injectable,
   InjectRepository,
   Param,
-  PATCH,
   POST,
+  PUT,
   UseMiddleware,
   UseResponseHandler,
 } from '@triptyk/nfw-core';
@@ -67,13 +67,13 @@ export class DocumentController {
     return this.documentRepository.jsonApiCreate(data as DocumentModel);
   }
 
-  @PATCH('/:id')
+  @PUT('/:id')
   @UseMiddleware(koaBodyMiddleware)
-  async update (
+  async replace (
     @Param('id') id: string,
     @File('file') file: formidable.File,
   ) {
-    this.documentRepository.findOne({ id }).then(file => file?.removeFromDisk());
+    await this.documentRepository.findOneOrFail({ id }).then(file => file?.removeFromDisk());
     const data = {
       filename: file.path.split('/').pop(),
       mimetype: file.type,
