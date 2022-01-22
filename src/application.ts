@@ -15,7 +15,6 @@ import { ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
-import * as fs from 'fs';
 import cors from '@koa/cors';
 import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
 import createHttpError from 'http-errors';
@@ -77,22 +76,6 @@ import createHttpError from 'http-errors';
           multiples: true,
           keepExtensions: true,
           maxFileSize: 1 * 1024 * 1024, // 1MB
-          onFileBegin: (name, file) => {
-            const dir = './dist/uploads';
-            console.log('here');
-
-            if (!fs.existsSync(dir)) {
-              fs.mkdirSync(dir, { recursive: true });
-            }
-
-            let filename = file.name.split('.');
-            file.originalName = file.name;
-            filename = `${filename.slice(0, -1).join('.')}-${Date.now()}.${
-              filename[filename.length - 1]
-            }`;
-            file.name = filename;
-            file.path = `${dir}/${filename}`;
-          },
         },
         multipart: true,
         urlencoded: true,
