@@ -8,7 +8,7 @@ import { UserSerializer } from '../serializer/user.serializer.js';
 import { deserialize } from '../middlewares/deserialize.middleware.js';
 import { UserDeserializer } from '../deserializer/user.deserializer.js';
 import { ValidatedUser, ValidatedUserUpdate } from '../validators/user.validators.js';
-import { CurrentUser } from '../decorators/current-user.js';
+import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { EntityFromBody } from '../decorators/entity-from-body.decorator.js';
 import { AclService } from '../services/acl.service.js';
 import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';

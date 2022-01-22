@@ -1,5 +1,5 @@
 import { GuardInterface, injectable } from '@triptyk/nfw-core';
-import { CurrentUser } from '../decorators/current-user.js';
+import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { Roles } from '../enums/roles.enum.js';
 import { UserModel } from '../models/user.model.js';
 
