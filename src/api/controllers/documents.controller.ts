@@ -11,7 +11,7 @@ import {
   UseMiddleware,
   UseResponseHandler,
 } from '@triptyk/nfw-core';
-import formidable from 'formidable';
+import type formidable from 'formidable';
 import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
