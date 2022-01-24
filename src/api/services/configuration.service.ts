@@ -15,15 +15,16 @@ export interface Configuration {
     password: string,
     database: string,
     port: number,
+    type: 'mysql' | 'sqlite',
+    debug: boolean,
   },
   logger: {
     logToFile: boolean,
     logToConsole: boolean,
     dir: string,
   },
-  debug: boolean,
   cors : {
-    origin: string[],
+    origin: string,
   },
 }
 
@@ -32,7 +33,7 @@ export interface Configuration {
 export class ConfigurationService<T = Configuration> {
   private _config!: T;
 
-  public async load () {
+  public async load () : Promise<T> {
     const { default: configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
     return this._config = Object.seal(configuration);
   }

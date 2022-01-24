@@ -9,7 +9,7 @@ import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
 import { DocumentController } from './api/controllers/documents.controller.js';
-import { ConfigurationService } from './api/services/configuration.service.js';
+import { Configuration, ConfigurationService } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
@@ -17,13 +17,15 @@ import cors from '@koa/cors';
 import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
 import createHttpError from 'http-errors';
 import koaBody from 'koa-body';
+import { TestSeeder } from './database/seeder/test.seeder.js';
+import { SqlEntityManager } from '@mikro-orm/mysql';
 
-(async () => {
+export async function runApplication () {
   /**
    * Load the config service first
    */
-  const { database, port, cors: corsConfig } = await container
-    .resolve<ConfigurationService>(ConfigurationService)
+  const { database, port, cors: corsConfig, env } = await container
+    .resolve<ConfigurationService<Configuration>>(ConfigurationService)
     .load();
   const logger = container.resolve(LoggerService);
 
@@ -33,13 +35,21 @@ import koaBody from 'koa-body';
     host: database.host,
     user: database.user,
     password: database.password,
-    type: 'mysql',
+    type: database.type,
     loadStrategy: LoadStrategy.SELECT_IN,
     debug: database.debug,
     findOneOrFailHandler: (_entityName: string) => {
       return createHttpError(404, 'Not found');
     },
   });
+
+  if (env === 'test') {
+    const generator = orm.getSchemaGenerator();
+    await generator.dropSchema();
+    await generator.createSchema();
+    await generator.updateSchema();
+    await new TestSeeder().run(orm.em as SqlEntityManager);
+  }
 
   const koaApp = await createApplication({
     controllers: [AuthController, UsersController, DocumentController],
@@ -74,7 +84,9 @@ import koaBody from 'koa-body';
 
   KoaQS(koaApp);
 
-  koaApp.listen(port, () => {
+  const httpServer = koaApp.listen(port, () => {
     logger.logger.info(`Listening on port ${port}`);
   });
-})();
+
+  return httpServer;
+};

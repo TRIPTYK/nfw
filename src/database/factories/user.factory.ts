@@ -1,5 +1,5 @@
 import { Factory } from '@mikro-orm/seeder';
-import Faker from 'faker';
+// eslint-disable-next-line import/no-named-default
 import { UserModel } from '../../api/models/user.model.js';
 
 export class UserFactory extends Factory<UserModel> {
@@ -7,10 +7,10 @@ export class UserFactory extends Factory<UserModel> {
 
   definition (): Partial<UserModel> {
     return {
-      firstName: Faker.name.firstName(),
-      lastName: Faker.name.lastName(),
-      password: Faker.internet.password(),
-      email: Faker.internet.exampleEmail(),
+      firstName: '',
+      lastName: '',
+      password: '',
+      email: '',
     };
   }
 }

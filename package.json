@@ -4,10 +4,10 @@
   "description": "![alt text](https://repository-images.githubusercontent.com/166414581/dc0a1b80-a1a0-11e9-805b-cf8be46b5507)",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsc && NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
-    "start:dev": "nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.ts",
+    "start:dev": "nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
     "clean": "npx mikro-orm schema:drop && npx mikro-orm schema:sync && pnpm start:dev"
   },
   "type": "module",
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@casl/ability": "^5.4.3",
+    "@faker-js/faker": "6.0.0-alpha.3",
     "@koa/cors": "^3.1.0",
     "@mikro-orm/core": "^4.5.10",
     "@mikro-orm/mysql": "^4.5.10",
@@ -30,13 +31,12 @@
     "@types/bcrypt": "^5.0.0",
     "@types/koa-qs": "^2.0.0",
     "bcrypt": "^5.0.1",
-    "@faker-js/faker": "6.0.0-alpha.3",
     "fastest-validator-decorators": "^1.2.1",
     "http-errors": "^2.0.0",
     "json-api-serializer": "^2.6.6",
     "jsonwebtoken": "^8.5.1",
     "jwt-simple": "^0.5.6",
-    "koa-body":  "4.2.0",
+    "koa-body": "4.2.0",
     "koa-qs": "^3.0.0",
     "node-dotify": "^1.1.0",
     "param-case": "^3.0.4",
@@ -47,9 +47,11 @@
   },
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
+    "@mikro-orm/sqlite": "^4.5.10",
     "@types/faker": "^5.5.9",
     "@types/formidable": "^1.2.3",
     "@types/http-errors": "^1.8.1",
+    "@types/jest": "^27.4.0",
     "@types/json-api-serializer": "^2.6.3",
     "@types/jsonwebtoken": "^8.5.6",
     "@types/koa": "^2.13.4",
@@ -68,10 +70,15 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "jest": "^27.4.7",
     "koa-ratelimit": "^5.0.1",
+    "node-fetch": "^3.2.0",
     "nodemon": "^2.0.15",
     "prettier-eslint": "^13.0.0",
     "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8"
+  },
+  "volta": {
+    "node": "17.4.0"
   }
 }
