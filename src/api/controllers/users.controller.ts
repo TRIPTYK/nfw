@@ -53,7 +53,7 @@ export class UsersController {
   @UseMiddleware(deserialize(UserDeserializer))
   async update (@EntityFromBody(ValidatedUserUpdate, UserModel) user: UserModel, @Param('id') id: string, @CurrentUser() currentUser?: UserModel) {
     await this.aclService.enforce(UserModel.ability, currentUser, 'update', user);
-    return this.userRepository.jsonApiUpdate(user, { id: id }, currentUser);
+    return this.userRepository.jsonApiUpdate(user, { id }, currentUser);
   }
 
   @DELETE('/:id')

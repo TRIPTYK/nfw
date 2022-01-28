@@ -9,7 +9,10 @@ import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
 import { DocumentController } from './api/controllers/documents.controller.js';
-import { Configuration, ConfigurationService } from './api/services/configuration.service.js';
+import {
+  Configuration,
+  ConfigurationService,
+} from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
@@ -24,7 +27,12 @@ export async function runApplication () {
   /**
    * Load the config service first
    */
-  const { database, port, cors: corsConfig, env } = await container
+  const {
+    database,
+    port,
+    cors: corsConfig,
+    env,
+  } = await container
     .resolve<ConfigurationService<Configuration>>(ConfigurationService)
     .load();
   const logger = container.resolve(LoggerService);
@@ -42,6 +50,12 @@ export async function runApplication () {
       return createHttpError(404, 'Not found');
     },
   });
+
+  const isConnected = await orm.isConnected();
+
+  if (!isConnected) {
+    throw new Error('Failed to connect to database');
+  }
 
   if (env === 'test') {
     const generator = orm.getSchemaGenerator();
@@ -89,4 +103,4 @@ export async function runApplication () {
   });
 
   return httpServer;
-};
+}
