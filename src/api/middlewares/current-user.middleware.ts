@@ -10,7 +10,7 @@ export async function loadUserFromContext (context: RouterContext, userRepo: Use
     const bearerToken = context.header.authorization.split(' ');
     if (bearerToken[0] === 'Bearer') {
       const decrypted = Jwt.decode(bearerToken[1], { complete: true });
-      const user = await userRepo.findOne({ id: decrypted?.payload.sub });
+      const user = await userRepo.findOne({ id: decrypted?.payload.sub as string });
       return user;
     } else {
       throw new Error('Invalid token');
