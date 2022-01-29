@@ -1,10 +1,16 @@
-import { Body, Controller, injectable, InjectRepository, inject, POST } from '@triptyk/nfw-core';
+import { Controller, injectable, InjectRepository, inject, POST, UseMiddleware, Ctx } from '@triptyk/nfw-core';
 import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import createError from 'http-errors';
 import { RefreshTokenModel } from '../models/refresh-token.model.js';
 import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
+import { ValidatedBody } from '../decorators/validated-body.js';
+import { ValidatedLoginBody, ValidatedRegisteredUserBody } from '../validators/auth.validator.js';
+import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
+import { ValidatedRefreshBody } from '../validators/auth.validator';
+import { Roles } from '../enums/roles.enum.js';
+import { RouterContext } from '@koa/router';
 
 @Controller('/auth')
 @injectable()
@@ -16,17 +22,28 @@ export class AuthController {
   ) {}
 
   @POST('/register')
+  @UseMiddleware(createRateLimitMiddleware(1000 * 60 * 15, 2, 'Please wait before creating another account'))
   public async register (
-    @Body() body : UserModel,
+    @ValidatedBody(ValidatedRegisteredUserBody) body : ValidatedRegisteredUserBody,
+    @Ctx() ctx: RouterContext,
   ) {
     const user = this.userRepository.create(body);
+    user.role = Roles.USER;
     user.password = await this.userRepository.hashPassword(body.password);
     await this.userRepository.persistAndFlush(user);
-    return user;
+
+    // override status
+    ctx.response.status = 201;
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    };
   }
 
   @POST('/login')
-  public async login (@Body() body: Record<'email'| 'password', string>) {
+  public async login (@ValidatedBody(ValidatedLoginBody) body: ValidatedLoginBody) {
     const { accessExpires, refreshExpires, secret } = this.configurationService.getKey('jwt');
     const user = await this.userRepository.findOne({ email: body.email });
 
@@ -42,7 +59,7 @@ export class AuthController {
   }
 
   @POST('/refresh-token')
-  public async refreshToken (@Body() body: Record<'refreshToken', string>) {
+  public async refreshToken (@ValidatedBody(ValidatedRefreshBody) body: ValidatedRefreshBody) {
     const jwt = this.configurationService.getKey('jwt');
     const refresh = await this.refreshTokenRepository.findOne({ token: body.refreshToken });
 

@@ -1,6 +1,5 @@
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import createApplication, { container } from '@triptyk/nfw-core';
-import KoaRatelimit from 'koa-ratelimit';
 import { AuthController } from './api/controllers/auth.controller.js';
 import { UsersController } from './api/controllers/users.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
@@ -22,6 +21,8 @@ import createHttpError from 'http-errors';
 import koaBody from 'koa-body';
 import { TestSeeder } from './database/seeder/test.seeder.js';
 import { SqlEntityManager } from '@mikro-orm/mysql';
+import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
+import helmet from 'koa-helmet';
 
 export async function runApplication () {
   /**
@@ -69,18 +70,11 @@ export async function runApplication () {
     controllers: [AuthController, UsersController, DocumentController],
     globalGuards: [],
     globalMiddlewares: [
+      helmet(),
       cors({
         origin: corsConfig.origin,
       }),
-      KoaRatelimit({
-        driver: 'memory',
-        db: new Map(),
-        duration: 10000,
-        max: 25,
-        throw: true,
-        errorMessage: 'Sometimes You Just Have to Slow Down.',
-        id: (ctx) => ctx.ip,
-      }),
+      createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'),
       koaBody({
         onError: (err) => {
           throw createHttpError(400, err.message);

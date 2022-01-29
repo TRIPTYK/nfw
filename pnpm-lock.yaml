@@ -10,7 +10,6 @@ specifiers:
   '@mikro-orm/sqlite': ^4.5.10
   '@triptyk/nfw-core': ^2.3.3
   '@types/bcrypt': ^5.0.0
-  '@types/faker': ^6.6.9
   '@types/formidable': ^1.2.3
   '@types/http-errors': ^1.8.2
   '@types/jest': ^27.4.0
@@ -42,14 +41,16 @@ specifiers:
   jsonwebtoken: ^8.5.1
   jwt-simple: ^0.5.6
   koa-body: 4.2.0
+  koa-helmet: ^6.1.0
   koa-qs: ^3.0.0
   koa-ratelimit: ^5.0.1
   node-dotify: ^1.1.0
-  node-fetch: ^3.2.0
+  node-fetch: ^3.0.0
   nodemon: ^2.0.15
   param-case: ^3.0.4
   pluralize: ^8.0.0
   prettier-eslint: ^13.0.0
+  reflect-metadata: ^0.1.13
   tracer: ^1.1.5
   ts-node: ^10.4.0
   ts-node-dev: ^1.1.8
@@ -73,17 +74,18 @@ dependencies:
   jsonwebtoken: 8.5.1
   jwt-simple: 0.5.6
   koa-body: 4.2.0
+  koa-helmet: 6.1.0
   koa-qs: 3.0.0
   node-dotify: 1.1.0
   param-case: 3.0.4
   pluralize: 8.0.0
+  reflect-metadata: 0.1.13
   tracer: 1.1.5
   typescript: 4.5.5
   uuid: 8.3.2
 
 devDependencies:
   '@mikro-orm/sqlite': 4.5.10_@mikro-orm+core@4.5.10
-  '@types/faker': 6.6.9
   '@types/formidable': 1.2.5
   '@types/http-errors': 1.8.2
   '@types/jest': 27.4.0
@@ -1137,13 +1139,6 @@ packages:
       '@types/express-serve-static-core': 4.17.24
       '@types/qs': 6.9.7
       '@types/serve-static': 1.13.10
-
-  /@types/faker/6.6.9:
-    resolution: {integrity: sha512-Y9YYm5L//8ooiiknO++4Gr539zzdI0j3aXnOBjo1Vk+kTvffY10GuE2wn78AFPECwZ5MYGTjiDVw1naLLdDimw==}
-    deprecated: This is a stub types definition. faker provides its own type definitions, so you do not need this installed.
-    dependencies:
-      faker: 6.6.6
-    dev: true
 
   /@types/formidable/1.2.5:
     resolution: {integrity: sha512-zu3mQJa4hDNubEMViSj937602XdDGzK7Q5pJ5QmLUbNxclbo9tZGt5jtwM352ssZ+pqo5V4H14TBvT/ALqQQcA==}
@@ -3181,10 +3176,6 @@ packages:
     resolution: {integrity: sha512-Y9n/Ky/xZx/Bj8DePvXspUYRtHl/rGQytoIT5LaxmNwSe3wWyOeOXb3lT6Dpipq240PVpeFaGKzScz/5fvff2g==}
     dev: false
 
-  /faker/6.6.6:
-    resolution: {integrity: sha512-9tCqYEDHI5RYFQigXFwF1hnCwcWCOJl/hmll0lr5D2Ljjb0o4wphb69wikeJDz5qCEzXCoPvG6ss5SDP6IfOdg==}
-    dev: true
-
   /fast-deep-equal/3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
     dev: true
@@ -3709,6 +3700,11 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+
+  /helmet/4.6.0:
+    resolution: {integrity: sha512-HVqALKZlR95ROkrnesdhbbZJFi/rIVSoNq6f3jA/9u6MIbTsPh3xZwihjeI5+DO/2sOV6HMHooXcEOuwskHpTg==}
+    engines: {node: '>=10.0.0'}
+    dev: false
 
   /homedir-polyfill/1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
@@ -5019,6 +5015,13 @@ packages:
     dependencies:
       co: 4.6.0
       koa-compose: 4.1.0
+    dev: false
+
+  /koa-helmet/6.1.0:
+    resolution: {integrity: sha512-WymEv4qo/7ghh15t+1qTjvZBmZkmVlTtfnpe5oxn8m8mO2Q2rKJ3eMvWuQGW/6yVxN9+hQ75evuWcg3XBbFLbg==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      helmet: 4.6.0
     dev: false
 
   /koa-qs/3.0.0:

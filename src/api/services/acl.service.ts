@@ -4,7 +4,7 @@ import { SqlEntityManager } from '@mikro-orm/mysql';
 import { databaseInjectionToken, inject, injectable, singleton } from '@triptyk/nfw-core';
 import { EntityAbility } from '../abilities/base.js';
 import { UserModel } from '../models/user.model.js';
-import { permittedFieldsOf } from '@casl/ability/extra';
+import * as abilites from '@casl/ability/extra'; // must use all because jest error
 import { modelToName } from '../../json-api/utils/model-to-name.js';
 import createHttpError from 'http-errors';
 import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
@@ -70,7 +70,7 @@ export class AclService {
     /**
      * Check fields permissions
      */
-    const permitted = permittedFieldsOf(loadedAbility, act, obj, { fieldsFrom: (rule) => rule.fields || defaultProps.map((e) => e.name) });
+    const permitted = abilites.permittedFieldsOf(loadedAbility, act, obj, { fieldsFrom: (rule) => rule.fields || defaultProps.map((e) => e.name) });
 
     /**
      * Find not allowed keys in object's attributes

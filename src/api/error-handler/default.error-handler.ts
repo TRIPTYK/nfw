@@ -14,8 +14,15 @@ export class DefaultErrorHandler implements ErrorHandlerInterface {
     this.loggerService.logger.trace(error);
 
     if (Array.isArray(error)) {
-      context.response.status = 500;
-      context.response.body = error;
+      context.response.status = 400;
+      context.response.body = error.map((e) => {
+        return {
+          title: 'validationError',
+          message: e.message,
+          meta: e,
+          status: '400',
+        };
+      });
       return;
     }
 

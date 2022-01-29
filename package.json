@@ -4,7 +4,7 @@
   "description": "![alt text](https://repository-images.githubusercontent.com/166414581/dc0a1b80-a1a0-11e9-805b-cf8be46b5507)",
   "main": "dist/index.js",
   "scripts": {
-    "test": "tsc && NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "test": "tsc && NODE_ENV=test node --expose-gc --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
     "start:dev": "nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
@@ -37,10 +37,12 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-simple": "^0.5.6",
     "koa-body": "4.2.0",
+    "koa-helmet": "^6.1.0",
     "koa-qs": "^3.0.0",
     "node-dotify": "^1.1.0",
     "param-case": "^3.0.4",
     "pluralize": "^8.0.0",
+    "reflect-metadata": "^0.1.13",
     "tracer": "^1.1.5",
     "typescript": "^4.5.5",
     "uuid": "^8.3.2"
@@ -48,7 +50,6 @@
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
     "@mikro-orm/sqlite": "^4.5.10",
-    "@types/faker": "^6.6.9",
     "@types/formidable": "^1.2.3",
     "@types/http-errors": "^1.8.2",
     "@types/jest": "^27.4.0",
@@ -73,7 +74,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "jest": "^27.4.7",
     "koa-ratelimit": "^5.0.1",
-    "node-fetch": "^3.2.0",
+    "node-fetch": "^3.0.0",
     "nodemon": "^2.0.15",
     "prettier-eslint": "^13.0.0",
     "ts-node": "^10.4.0",

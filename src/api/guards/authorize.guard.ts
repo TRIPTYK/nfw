@@ -10,4 +10,6 @@ export class AuthorizeGuard implements GuardInterface {
     }
     return roles.includes(user?.role ?? '');
   }
+
+  code = 401;
 }

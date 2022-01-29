@@ -7,7 +7,7 @@ export default {
     refreshExpires: 1440,
   },
   logger: {
-    logToConsole: true,
+    logToConsole: false,
     dir: 'dist/logs/',
   },
   baseURL: '/api/v1',
@@ -19,7 +19,7 @@ export default {
     database: ':memory:',
     type: 'sqlite',
     port: 3306,
-    debug: true,
+    debug: false,
   },
   env: 'test',
   cors: {

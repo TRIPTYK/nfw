@@ -19,7 +19,6 @@ export interface Configuration {
     debug: boolean,
   },
   logger: {
-    logToFile: boolean,
     logToConsole: boolean,
     dir: string,
   },

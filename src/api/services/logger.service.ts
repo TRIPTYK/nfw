@@ -15,8 +15,10 @@ export class LoggerService {
       root: logConfig.dir,
       maxLogFiles: 10,
       transport: function (data) {
-        // eslint-disable-next-line no-console
-        if (logConfig.logToConsole) { console.info(data.output); }
+        if (logConfig.logToConsole) {
+          // eslint-disable-next-line no-console
+          console.info(data.level, data.output);
+        }
       },
     });
   }

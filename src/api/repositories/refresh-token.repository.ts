@@ -9,7 +9,9 @@ export class RefreshTokenRepository extends JsonApiRepository<RefreshTokenModel>
     const token = v4();
     const expires = unixTimestamp() + refreshExpires * 60;
 
-    const oldToken = await user.refreshToken.init();
+    const oldToken = await this.findOne({
+      user,
+    });
 
     if (oldToken) {
       await this.removeAndFlush(oldToken);
