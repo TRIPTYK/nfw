@@ -6,9 +6,8 @@ import createError from 'http-errors';
 import { RefreshTokenModel } from '../models/refresh-token.model.js';
 import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
 import { ValidatedBody } from '../decorators/validated-body.js';
-import { ValidatedLoginBody, ValidatedRegisteredUserBody } from '../validators/auth.validator.js';
+import { ValidatedLoginBody, ValidatedRefreshBody, ValidatedRegisteredUserBody } from '../validators/auth.validator.js';
 import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
-import { ValidatedRefreshBody } from '../validators/auth.validator';
 import { Roles } from '../enums/roles.enum.js';
 import { RouterContext } from '@koa/router';
 
