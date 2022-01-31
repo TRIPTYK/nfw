@@ -42,6 +42,7 @@ export async function runApplication () {
     entities: [UserModel, RefreshTokenModel, DocumentModel],
     dbName: database.database,
     host: database.host,
+    port: database.port,
     user: database.user,
     password: database.password,
     type: database.type,
