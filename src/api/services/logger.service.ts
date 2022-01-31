@@ -17,7 +17,7 @@ export class LoggerService {
       transport: function (data) {
         if (logConfig.logToConsole) {
           // eslint-disable-next-line no-console
-          console.info(data.level, data.output);
+          console.info(data.output);
         }
       },
     });
