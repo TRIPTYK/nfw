@@ -1,4 +1,4 @@
-import { UserModel } from '../models/user.model.js';
+import type { UserModel } from '../models/user.model.js';
 import { JsonApiRepository } from '../../json-api/repositories/json-api.repository.js';
 import { unixTimestamp } from '../utils/date-utils.js';
 import Jwt from 'jsonwebtoken';

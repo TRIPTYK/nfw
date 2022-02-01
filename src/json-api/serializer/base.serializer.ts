@@ -1,10 +1,12 @@
-import { BaseEntity, Collection } from '@mikro-orm/core';
-import JSONAPISerializer, { JSONAPIDocument } from 'json-api-serializer';
+import type { BaseEntity } from '@mikro-orm/core';
+import { Collection } from '@mikro-orm/core';
+import type { JSONAPIDocument } from 'json-api-serializer';
+import JSONAPISerializer from 'json-api-serializer';
 import { URLSearchParams } from 'url';
-import { ConfigurationService } from '../../api/services/configuration.service.js';
-import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
-import { JsonApiModelInterface } from '../interfaces/model.interface.js';
-import { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
+import type { ConfigurationService } from '../../api/services/configuration.service.js';
+import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
+import type { JsonApiModelInterface } from '../interfaces/model.interface.js';
+import type { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
 import { modelToName } from '../utils/model-to-name.js';
 
 const extractCollections = (data: Record<string, unknown>) => {

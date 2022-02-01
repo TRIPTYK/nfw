@@ -1,15 +1,15 @@
 import { Controller, injectable, InjectRepository, inject, POST, UseMiddleware, Ctx } from '@triptyk/nfw-core';
 import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
-import { UserRepository } from '../repositories/user.repository.js';
+import type { UserRepository } from '../repositories/user.repository.js';
 import createError from 'http-errors';
 import { RefreshTokenModel } from '../models/refresh-token.model.js';
-import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
+import type { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
 import { ValidatedBody } from '../decorators/validated-body.js';
 import { ValidatedLoginBody, ValidatedRefreshBody, ValidatedRegisteredUserBody } from '../validators/auth.validator.js';
 import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
 import { Roles } from '../enums/roles.enum.js';
-import { RouterContext } from '@koa/router';
+import type { RouterContext } from '@koa/router';
 
 @Controller('/auth')
 @injectable()

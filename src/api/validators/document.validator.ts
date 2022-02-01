@@ -6,8 +6,8 @@ import {
   Number,
   Array,
 } from 'fastest-validator-decorators';
-import { MimeTypes } from '../enums/mime-type.enum.js';
-import { UserModel } from '../models/user.model.js';
+import type { MimeTypes } from '../enums/mime-type.enum.js';
+import type { UserModel } from '../models/user.model.js';
 
 @Schema()
 export class ValidatedDocument extends SchemaBase {

@@ -1,7 +1,8 @@
-import { RouterContext } from '@koa/router';
-import { Next } from 'koa';
+import type { RouterContext } from '@koa/router';
+import type { Next } from 'koa';
 
-import { Class, container } from '@triptyk/nfw-core';
+import type { Class } from '@triptyk/nfw-core';
+import { container } from '@triptyk/nfw-core';
 interface DeserializerInterface {
     deserialize(ctx: unknown): Promise<void>,
 }

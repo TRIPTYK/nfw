@@ -1,13 +1,14 @@
 import { subject } from '@casl/ability';
-import { BaseEntity, MikroORM } from '@mikro-orm/core';
-import { SqlEntityManager } from '@mikro-orm/mysql';
+import type { MikroORM } from '@mikro-orm/core';
+import { BaseEntity } from '@mikro-orm/core';
+import type { SqlEntityManager } from '@mikro-orm/mysql';
 import { databaseInjectionToken, inject, injectable, singleton } from '@triptyk/nfw-core';
-import { EntityAbility } from '../abilities/base.js';
-import { UserModel } from '../models/user.model.js';
+import type { EntityAbility } from '../abilities/base.js';
+import type { UserModel } from '../models/user.model.js';
 import * as abilites from '@casl/ability/extra'; // must use all because jest error
 import { modelToName } from '../../json-api/utils/model-to-name.js';
 import createHttpError from 'http-errors';
-import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
+import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 
 interface UnknownObject {
   name : string,

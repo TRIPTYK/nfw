@@ -8,8 +8,8 @@ import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
 import { DocumentController } from './api/controllers/documents.controller.js';
+import type { Configuration } from './api/services/configuration.service.js';
 import {
-  Configuration,
   ConfigurationService,
 } from './api/services/configuration.service.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
@@ -20,7 +20,7 @@ import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware
 import createHttpError from 'http-errors';
 import koaBody from 'koa-body';
 import { TestSeeder } from './database/seeder/test.seeder.js';
-import { SqlEntityManager } from '@mikro-orm/mysql';
+import type { SqlEntityManager } from '@mikro-orm/mysql';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 import helmet from 'koa-helmet';
 

@@ -1,9 +1,10 @@
-import { RouterContext } from '@koa/router';
-import { Next } from 'koa';
-import { injectable, InjectRepository, MiddlewareInterface } from '@triptyk/nfw-core';
+import type { RouterContext } from '@koa/router';
+import type { Next } from 'koa';
+import type { MiddlewareInterface } from '@triptyk/nfw-core';
+import { injectable, InjectRepository } from '@triptyk/nfw-core';
 import * as Jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.model.js';
-import { UserRepository } from '../repositories/user.repository.js';
+import type { UserRepository } from '../repositories/user.repository.js';
 
 export async function loadUserFromContext (context: RouterContext, userRepo: UserRepository) {
   if (context.header.authorization) {

@@ -1,6 +1,6 @@
 import { PrimaryKey, Entity, BaseEntity, Property, OneToOne, Filter } from '@mikro-orm/core';
 import { v4 } from 'uuid';
-import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
+import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
 import type { UserModel } from './user.model.js';
 

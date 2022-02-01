@@ -1,6 +1,8 @@
-import { RouterContext } from '@koa/router';
-import { ErrorHandlerInterface, inject, injectable } from '@triptyk/nfw-core';
-import { HttpError, isHttpError } from 'http-errors';
+import type { RouterContext } from '@koa/router';
+import type { ErrorHandlerInterface } from '@triptyk/nfw-core';
+import { inject, injectable } from '@triptyk/nfw-core';
+import type { HttpError } from 'http-errors';
+import { isHttpError } from 'http-errors';
 import JSONAPISerializer from 'json-api-serializer';
 import { ConfigurationService } from '../../api/services/configuration.service.js';
 import { LoggerService } from '../../api/services/logger.service.js';

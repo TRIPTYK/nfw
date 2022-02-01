@@ -13,7 +13,7 @@ import { UserRepository } from '../repositories/user.repository.js';
 import { RefreshTokenModel } from './refresh-token.model.js';
 import bcrypt from 'bcrypt';
 import { defineAbilityForUser } from '../abilities/user.js';
-import { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
+import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 
 @Entity({
   tableName: 'users',

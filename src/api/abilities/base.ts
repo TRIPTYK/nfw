@@ -1,8 +1,8 @@
 import { Ability, AbilityBuilder, createAliasResolver } from '@casl/ability';
-import { BaseEntity } from '@mikro-orm/core';
-import { EntityManager } from '@mikro-orm/mysql';
-import { Roles } from '../enums/roles.enum.js';
-import { UserModel } from '../models/user.model.js';
+import type { BaseEntity } from '@mikro-orm/core';
+import type { EntityManager } from '@mikro-orm/mysql';
+import type { Roles } from '../enums/roles.enum.js';
+import type { UserModel } from '../models/user.model.js';
 
 type DefinePermissions = (user: UserModel | null | undefined, builder: AbilityBuilder<Ability>) => void;
 export type AccessPermisions = Record<Roles | 'anonymous', DefinePermissions>;

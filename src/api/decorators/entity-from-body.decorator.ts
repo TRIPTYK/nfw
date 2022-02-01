@@ -1,6 +1,8 @@
-import { BaseEntity, MikroORM, ReferenceType, wrap } from '@mikro-orm/core';
-import { Class, container, ControllerParamsContext, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core';
-import { SchemaBase } from 'fastest-validator-decorators';
+import type { BaseEntity, MikroORM } from '@mikro-orm/core';
+import { ReferenceType, wrap } from '@mikro-orm/core';
+import type { Class, ControllerParamsContext } from '@triptyk/nfw-core';
+import { container, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core';
+import type { SchemaBase } from 'fastest-validator-decorators';
 
 export function EntityFromBody<T extends SchemaBase, K extends BaseEntity<any, any>> (ValidationClass : Class<T>, EntityModel: Class<K>) {
   return createCustomDecorator(

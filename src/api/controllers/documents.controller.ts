@@ -12,14 +12,15 @@ import {
   UseResponseHandler,
 } from '@triptyk/nfw-core';
 import type formidable from 'formidable';
-import { JsonApiQueryParams, ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
+import type { ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
+import { JsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
 import { File } from '../decorators/file.decorator.js';
 import { fileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
-import { DocumentRepository } from '../repositories/document.repository.js';
+import type { DocumentRepository } from '../repositories/document.repository.js';
 import { DocumentSerializer } from '../serializer/document.serializer.js';
 
 @Controller('/documents')

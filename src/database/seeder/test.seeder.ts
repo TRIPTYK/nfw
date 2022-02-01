@@ -1,8 +1,8 @@
-import { EntityManager } from '@mikro-orm/mysql';
+import type { EntityManager } from '@mikro-orm/mysql';
 import { Seeder } from '@mikro-orm/seeder';
 import { Roles } from '../../api/enums/roles.enum.js';
 import { UserModel } from '../../api/models/user.model.js';
-import { UserRepository } from '../../api/repositories/user.repository.js';
+import type { UserRepository } from '../../api/repositories/user.repository.js';
 import { UserFactory } from '../factories/user.factory.js';
 
 export class TestSeeder extends Seeder {

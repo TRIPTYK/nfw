@@ -1,5 +1,6 @@
-import { UserModel } from '../models/user.model.js';
-import { AccessPermisions, baseAbilityFor, EntityAbility } from './base.js';
+import type { UserModel } from '../models/user.model.js';
+import type { AccessPermisions, EntityAbility } from './base.js';
+import { baseAbilityFor } from './base.js';
 
 const userAccessPermissions: AccessPermisions = {
   admin: (user, { can }) => {

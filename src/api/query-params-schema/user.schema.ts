@@ -1,5 +1,6 @@
-import { ControllerParamsContext, injectable, singleton } from '@triptyk/nfw-core';
-import { CheckTypes, QueryParamsSchemaInterface } from '../../json-api/interfaces/query-params.interface.js';
+import type { ControllerParamsContext } from '@triptyk/nfw-core';
+import { injectable, singleton } from '@triptyk/nfw-core';
+import type { CheckTypes, QueryParamsSchemaInterface } from '../../json-api/interfaces/query-params.interface.js';
 
 @singleton()
 @injectable()

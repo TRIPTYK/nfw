@@ -1,9 +1,10 @@
-import { FilterQuery, LoadStrategy, wrap } from '@mikro-orm/core';
+import type { FilterQuery } from '@mikro-orm/core';
+import { LoadStrategy, wrap } from '@mikro-orm/core';
 import { EntityRepository } from '@mikro-orm/mysql';
-import { UserModel } from '../../api/models/user.model.js';
+import type { UserModel } from '../../api/models/user.model.js';
 import { dotToObject } from '../../api/utils/dot-to-object.js';
-import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
-import { SortObject } from '../parser/parse-includes.js';
+import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
+import type { SortObject } from '../parser/parse-includes.js';
 import { modelToName } from '../utils/model-to-name.js';
 
 export abstract class JsonApiRepository<T> extends EntityRepository<T> {

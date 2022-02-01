@@ -1,7 +1,9 @@
-import {
+import type {
   Class,
-  container,
   ControllerParamsContext,
+} from '@triptyk/nfw-core';
+import {
+  container,
   createCustomDecorator,
 } from '@triptyk/nfw-core';
 import createHttpError from 'http-errors';
@@ -21,7 +23,7 @@ import {
 } from 'fastest-validator-decorators';
 // @ts-expect-error
 import dot from 'node-dotify';
-import { QueryParamsSchemaInterface } from '../interfaces/query-params.interface.js';
+import type { QueryParamsSchemaInterface } from '../interfaces/query-params.interface.js';
 
 @Schema(true)
 class ValidatedJsonApiQueryParamsPagination extends SchemaBase {

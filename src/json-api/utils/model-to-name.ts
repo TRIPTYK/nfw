@@ -1,4 +1,4 @@
-import { BaseEntity, EntityName } from '@mikro-orm/core';
+import type { BaseEntity, EntityName } from '@mikro-orm/core';
 import { paramCase } from 'param-case';
 import pluralize from 'pluralize';
 

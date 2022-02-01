@@ -1,15 +1,17 @@
 import { BaseEntity } from '@mikro-orm/core';
+import type {
+  Class,
+  ResponseHandlerInterface,
+} from '@triptyk/nfw-core';
 import {
   Args,
-  Class,
   container,
   Ctx,
   injectable,
-  ResponseHandlerInterface,
 } from '@triptyk/nfw-core';
-import { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
-import { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
-import { RouterContext } from '@koa/router';
+import type { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
+import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
+import type { RouterContext } from '@koa/router';
 
 type JsonApiPayload<T> = T | T[] | [T[], number];
 

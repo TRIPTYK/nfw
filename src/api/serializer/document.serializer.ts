@@ -1,6 +1,6 @@
 import { inject, injectable, singleton } from '@triptyk/nfw-core';
 import { BaseJsonApiSerializer } from '../../json-api/serializer/base.serializer.js';
-import { DocumentModel } from '../models/document.model.js';
+import type { DocumentModel } from '../models/document.model.js';
 import { ConfigurationService } from '../services/configuration.service.js';
 
 @injectable()

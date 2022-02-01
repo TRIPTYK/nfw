@@ -1,4 +1,4 @@
-import { ControllerParamsContext } from '@triptyk/nfw-core';
+import type { ControllerParamsContext } from '@triptyk/nfw-core';
 
 export type CheckTypes = string | RegExp;
 

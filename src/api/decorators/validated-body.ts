@@ -1,5 +1,6 @@
-import { Class, ControllerParamsContext, createCustomDecorator } from '@triptyk/nfw-core';
-import { SchemaBase } from 'fastest-validator-decorators';
+import type { Class, ControllerParamsContext } from '@triptyk/nfw-core';
+import { createCustomDecorator } from '@triptyk/nfw-core';
+import type { SchemaBase } from 'fastest-validator-decorators';
 
 export function ValidatedBody<T extends SchemaBase> (ValidationClass : Class<T>) {
   return createCustomDecorator(
