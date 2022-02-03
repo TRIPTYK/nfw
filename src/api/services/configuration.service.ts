@@ -3,7 +3,9 @@ import { injectable, singleton } from '@triptyk/nfw-core';
 export interface Configuration {
   env: string,
   jwt: {
+    iss: string,
     secret: string,
+    audience: string,
     accessExpires: number,
     refreshExpires: number,
   },

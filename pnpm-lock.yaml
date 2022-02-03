@@ -8,7 +8,7 @@ specifiers:
   '@mikro-orm/mysql': ^4.5.10
   '@mikro-orm/seeder': ^5.0.0-dev.112
   '@mikro-orm/sqlite': ^4.5.10
-  '@triptyk/nfw-core': ^2.3.3
+  '@triptyk/nfw-core': ^2.3.4
   '@types/bcrypt': ^5.0.0
   '@types/formidable': ^1.2.3
   '@types/http-errors': ^1.8.2
@@ -64,7 +64,7 @@ dependencies:
   '@mikro-orm/core': 4.5.10_5c946fa699de5f74adb0f957847e5200
   '@mikro-orm/mysql': 4.5.10_@mikro-orm+core@4.5.10
   '@mikro-orm/seeder': 5.0.0-dev.112_@mikro-orm+core@4.5.10
-  '@triptyk/nfw-core': 2.3.3_5c946fa699de5f74adb0f957847e5200
+  '@triptyk/nfw-core': 2.3.4_5c946fa699de5f74adb0f957847e5200
   '@types/bcrypt': 5.0.0
   '@types/koa-qs': 2.0.0
   bcrypt: 5.0.1
@@ -1021,8 +1021,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /@triptyk/nfw-core/2.3.3_5c946fa699de5f74adb0f957847e5200:
-    resolution: {integrity: sha512-+syxDGurEJ4UkLlFD//97AP5tXEpyvWfFpKdBrTDo1XdegRnLfKvFI9mOknOBoqfDa6JTJU81oLCHHm4sVxp6Q==}
+  /@triptyk/nfw-core/2.3.4_5c946fa699de5f74adb0f957847e5200:
+    resolution: {integrity: sha512-/lNjQ5r9w5FItKxK535jxDNCATw3MazvYIrTU5z8tUjd0PbA5MT/pgdeFT72VOZB1PajpGv2S06obz+GmaR1HA==}
     engines: {node: '>=16.3.1'}
     dependencies:
       '@koa/router': 10.1.1

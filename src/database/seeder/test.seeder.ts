@@ -9,6 +9,7 @@ export class TestSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
     const password = await (em.getRepository(UserModel) as UserRepository).hashPassword('123');
     await new UserFactory(em).createOne({
+      id: '12345678910abcdef',
       email: 'amaury@localhost.com',
       password,
       firstName: 'amaury',

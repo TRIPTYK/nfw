@@ -5,14 +5,15 @@ import Jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 export class UserRepository extends JsonApiRepository<UserModel> {
-  public generateAccessToken (user: UserModel, accessExpires: number, secret: string): string {
+  public generateAccessToken (user: UserModel, accessExpires: number, secret: string, iss: string, audience: string): string {
+    const now = unixTimestamp();
     const payload = {
-      exp: unixTimestamp() + accessExpires * 60,
-      iat: unixTimestamp(),
+      exp: now + accessExpires * 60,
+      iat: now,
       sub: user.id,
     };
 
-    return Jwt.sign(payload, secret, { algorithm: 'HS512' });
+    return Jwt.sign(payload, secret, { algorithm: 'HS512', issuer: iss, notBefore: 0, audience });
   }
 
   public hashPassword (password: string): Promise<string> {

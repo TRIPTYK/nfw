@@ -1,13 +1,13 @@
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import createApplication, { container } from '@triptyk/nfw-core';
 import { AuthController } from './api/controllers/auth.controller.js';
-import { UsersController } from './api/controllers/users.controller.js';
+import { UsersController } from './api/controllers/user.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
 import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
-import { DocumentController } from './api/controllers/documents.controller.js';
+import { DocumentController } from './api/controllers/document.controller.js';
 import type { Configuration } from './api/services/configuration.service.js';
 import {
   ConfigurationService,
@@ -18,11 +18,11 @@ import { LoggerService } from './api/services/logger.service.js';
 import cors from '@koa/cors';
 import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
 import createHttpError from 'http-errors';
-import koaBody from 'koa-body';
 import { TestSeeder } from './database/seeder/test.seeder.js';
 import type { SqlEntityManager } from '@mikro-orm/mysql';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 import helmet from 'koa-helmet';
+import koaBody from 'koa-body';
 
 export async function runApplication () {
   /**
@@ -77,7 +77,13 @@ export async function runApplication () {
       }),
       createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'),
       koaBody({
-        onError: (err) => {
+        jsonLimit: '128kb',
+        text: false,
+        urlencoded: false,
+        onError: (err: Error) => {
+          if (err.name === 'PayloadTooLargeError') {
+            throw createHttpError(413, err.message);
+          }
           throw createHttpError(400, err.message);
         },
       }),

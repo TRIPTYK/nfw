@@ -15,15 +15,23 @@ import { AclService } from '../services/acl.service.js';
 import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';
 import { AuthorizeGuard } from '../guards/authorize.guard.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
+import { ContentGuard } from '../../json-api/guards/content.guard.js';
 
 @Controller('/users')
-@UseGuard(AuthorizeGuard)
 @UseErrorHandler(JsonApiErrorHandler)
+@UseGuard(ContentGuard)
+@UseGuard(AuthorizeGuard)
 @UseResponseHandler(JsonApiResponsehandler, UserSerializer)
 @injectable()
 export class UsersController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository, @inject(AclService) private aclService: AclService) {}
+
+  
+  @GET('/profile')
+  public async profile (@CurrentUser() currentUser: UserModel) {
+    return currentUser;
+  }
 
   @GET('/')
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @CurrentUser() currentUser?: UserModel) {

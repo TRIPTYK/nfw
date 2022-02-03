@@ -5,6 +5,9 @@ export default {
     secret: 'h8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROV',
     accessExpires: 5,
     refreshExpires: 1440,
+    iss: `http://localhost:${port}`,
+    audience: `http://localhost:${port}`,
+
   },
   logger: {
     logToConsole: false,

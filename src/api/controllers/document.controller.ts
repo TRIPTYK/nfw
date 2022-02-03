@@ -8,6 +8,7 @@ import {
   POST,
   PUT,
   UseErrorHandler,
+  UseGuard,
   UseMiddleware,
   UseResponseHandler,
 } from '@triptyk/nfw-core';
@@ -15,6 +16,7 @@ import type formidable from 'formidable';
 import type { ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
+import { ContentGuard } from '../../json-api/guards/content.guard.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
 import { File } from '../decorators/file.decorator.js';
 import { fileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
@@ -24,8 +26,9 @@ import type { DocumentRepository } from '../repositories/document.repository.js'
 import { DocumentSerializer } from '../serializer/document.serializer.js';
 
 @Controller('/documents')
-@UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
 @UseErrorHandler(JsonApiErrorHandler)
+@UseGuard(ContentGuard)
+@UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
 @injectable()
 export class DocumentController {
   // eslint-disable-next-line no-useless-constructor

@@ -27,7 +27,7 @@
     "@mikro-orm/core": "^4.5.10",
     "@mikro-orm/mysql": "^4.5.10",
     "@mikro-orm/seeder": "^5.0.0-dev.112",
-    "@triptyk/nfw-core": "^2.3.3",
+    "@triptyk/nfw-core": "^2.3.4",
     "@types/bcrypt": "^5.0.0",
     "@types/koa-qs": "^2.0.0",
     "bcrypt": "^5.0.1",
