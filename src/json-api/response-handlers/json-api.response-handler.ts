@@ -1,6 +1,8 @@
 import { BaseEntity } from '@mikro-orm/core';
-import type {
+import {
   Class,
+  ControllerContext,
+  ControllerContextInterface,
   ResponseHandlerInterface,
 } from '@triptyk/nfw-core';
 import {
@@ -25,7 +27,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
   /**
    * Handle-all function to serialize and check returned controller data
    */
-  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, @Ctx() ctx: RouterContext, @Args() args: [any]): Promise<void> {
+  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, @Ctx() ctx: RouterContext, @Args() args: [any], @ControllerContext() controllerContext: ControllerContextInterface ): Promise<void> {
     ctx.response.type = 'application/vnd.api+json';
 
     /**
@@ -46,6 +48,10 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
       ctx.status = 204;
       ctx.body = undefined;
       return;
+    }
+
+    if (controllerContext.controllerAction === "create") {
+      ctx.status = 201;
     }
 
     const [serializer] = args as [Class<JsonApiSerializerInterface<T>>];

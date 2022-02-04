@@ -5,10 +5,12 @@ import type { SqlEntityManager } from '@mikro-orm/mysql';
 import { databaseInjectionToken, inject, injectable, singleton } from '@triptyk/nfw-core';
 import type { EntityAbility } from '../abilities/base.js';
 import type { UserModel } from '../models/user.model.js';
-import * as abilites from '@casl/ability/extra'; // must use all because jest error
+import * as abilities from '@casl/ability/extra'; // must use all because jest error
 import { modelToName } from '../../json-api/utils/model-to-name.js';
 import createHttpError from 'http-errors';
 import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
+import { ConfigurationService } from './configuration.service.js';
+import type { permittedFieldsOf } from '@casl/ability/extra';
 
 interface UnknownObject {
   name : string,
@@ -19,7 +21,7 @@ interface UnknownObject {
 @singleton()
 export class AclService {
   // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM) {}
+  public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService ) {}
 
   public async can (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any> | UnknownObject) {
     try {
@@ -68,10 +70,16 @@ export class AclService {
       throw createHttpError(403, `Cannot ${act} ${transformedModelName} ${(obj as Partial<JsonApiModelInterface>).id ?? '#'} as ${userRole}`);
     }
 
+
+    /**
+     * permittedFieldsOf seems to be transformed when using jest, we must fix it manually in code
+     */
+    const permittedFix : typeof permittedFieldsOf = this.configService.getKey("env","development") === "test" ? (abilities as any).default.permittedFieldsOf : abilities.permittedFieldsOf;
+    
     /**
      * Check fields permissions
      */
-    const permitted = abilites.permittedFieldsOf(loadedAbility, act, obj, { fieldsFrom: (rule) => rule.fields || defaultProps.map((e) => e.name) });
+    const permitted = permittedFix(loadedAbility, act, obj, { fieldsFrom: (rule) => rule.fields || defaultProps.map((e) => e.name) });
 
     /**
      * Find not allowed keys in object's attributes

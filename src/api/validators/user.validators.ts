@@ -5,13 +5,19 @@ import {
   String,
 } from 'fastest-validator-decorators';
 
-@Schema()
+@Schema(true)
 export class ValidatedUser extends SchemaBase {
-  @String()
+  @String({ optional: true })
+  public declare id: string;
+
+  @String({ max : 64 })
   public declare firstName: string;
 
-  @String()
+  @String({ max : 64 })
   public declare lastName: string;
+
+  @String()
+  public declare role: string;
 
   @Email()
   public declare email: string;
@@ -20,13 +26,16 @@ export class ValidatedUser extends SchemaBase {
   public declare password: string;
 }
 
-@Schema()
+@Schema(true)
 export class ValidatedUserUpdate extends SchemaBase {
-  @String()
+  @String({ optional: true })
   public declare id: string;
 
   @String({ optional: true })
   public declare firstName: string;
+
+  @String({ optional: true })
+  public declare role: string;
 
   @String({ optional: true })
   public declare lastName: string;
