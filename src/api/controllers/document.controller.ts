@@ -12,22 +12,22 @@ import {
   UseMiddleware,
   UseResponseHandler,
 } from '@triptyk/nfw-core';
-import type formidable from 'formidable';
 import type { ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 import { ContentGuard } from '../../json-api/guards/content.guard.js';
 import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
-import { File } from '../decorators/file.decorator.js';
+import { ValidatedFile } from '../decorators/file.decorator.js';
 import { fileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
 import { DocumentModel } from '../models/document.model.js';
 import { DocumentQueryParamsSchema } from '../query-params-schema/document.schema.js';
 import type { DocumentRepository } from '../repositories/document.repository.js';
 import { DocumentSerializer } from '../serializer/document.serializer.js';
+import { ValidatedDocument } from '../validators/document.validator.js';
 
 @Controller('/documents')
 @UseErrorHandler(JsonApiErrorHandler)
-@UseGuard(ContentGuard)
+@UseGuard(ContentGuard, true)
 @UseResponseHandler(JsonApiResponsehandler, DocumentSerializer)
 @injectable()
 export class DocumentController {
@@ -53,32 +53,19 @@ export class DocumentController {
 
   @POST('/')
   @UseMiddleware(fileUploadMiddleware)
-  async create (@File('file') file: formidable.File) {
-    const data = {
-      filename: file.path.split('/').pop(),
-      mimetype: file.type,
-      path: file.path,
-      size: file.size,
-      originalName: file.name,
-    };
-    return this.documentRepository.jsonApiCreate(data as DocumentModel);
+  async create (@ValidatedFile('file', ValidatedDocument) file: ValidatedDocument) {
+    return this.documentRepository.jsonApiCreate(file);
   }
 
   @PUT('/:id')
   @UseMiddleware(fileUploadMiddleware)
   async replace (
     @Param('id') id: string,
-    @File('file') file: formidable.File,
+    @ValidatedFile('file', ValidatedDocument) document: ValidatedDocument,
   ) {
     await this.documentRepository.findOneOrFail({ id }).then(file => file?.removeFromDisk());
-    const data = {
-      filename: file.path.split('/').pop(),
-      mimetype: file.type,
-      path: file.path,
-      size: file.size,
-      originalName: file.name,
-    };
-    return this.documentRepository.jsonApiUpdate(data as DocumentModel, { id });
+    const up = await this.documentRepository.jsonApiUpdate(document, { id });
+    return up;
   }
 
   @DELETE('/:id')

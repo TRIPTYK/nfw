@@ -7,8 +7,8 @@
     "test": "tsc && NODE_ENV=test node --expose-gc --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
-    "start:dev": "nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
-    "clean": "npx mikro-orm schema:drop && npx mikro-orm schema:sync && pnpm start:dev"
+    "start:dev": "NODE_ENV=development nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
+    "start:test": "NODE_ENV=test nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts"
   },
   "type": "module",
   "repository": {
@@ -68,10 +68,13 @@
     "eslint": "^8.7.0",
     "eslint-config-standard": "17.0.0-0",
     "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^26.1.0",
     "eslint-plugin-n": "^14.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "fetch-blob": "^3.1.4",
+    "formdata-polyfill": "^4.0.10",
     "jest": "^27.4.7",
     "koa-ratelimit": "^5.0.1",
     "node-fetch": "^3.0.0",

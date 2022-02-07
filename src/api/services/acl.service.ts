@@ -21,7 +21,7 @@ interface UnknownObject {
 @singleton()
 export class AclService {
   // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService ) {}
+  public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService) {}
 
   public async can (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any> | UnknownObject) {
     try {
@@ -70,12 +70,11 @@ export class AclService {
       throw createHttpError(403, `Cannot ${act} ${transformedModelName} ${(obj as Partial<JsonApiModelInterface>).id ?? '#'} as ${userRole}`);
     }
 
-
     /**
      * permittedFieldsOf seems to be transformed when using jest, we must fix it manually in code
      */
-    const permittedFix : typeof permittedFieldsOf = this.configService.getKey("env","development") === "test" ? (abilities as any).default.permittedFieldsOf : abilities.permittedFieldsOf;
-    
+    const permittedFix : typeof permittedFieldsOf = this.configService.getKey('env', 'development') === 'test' ? (abilities as any).default.permittedFieldsOf : abilities.permittedFieldsOf;
+
     /**
      * Check fields permissions
      */

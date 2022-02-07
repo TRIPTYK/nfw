@@ -14,7 +14,8 @@
     },
     "plugins": [
         "@typescript-eslint",
-        "unused-imports"
+        "unused-imports",
+        "jest"
     ],
     "rules": {
         "semi": [2, "always"],

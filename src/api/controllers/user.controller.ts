@@ -27,7 +27,6 @@ export class UsersController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@InjectRepository(UserModel) private userRepository: UserRepository, @inject(AclService) private aclService: AclService) {}
 
-  
   @GET('/profile')
   public async profile (@CurrentUser() currentUser: UserModel) {
     return currentUser;

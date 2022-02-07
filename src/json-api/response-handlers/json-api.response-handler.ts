@@ -1,11 +1,11 @@
 import { BaseEntity } from '@mikro-orm/core';
-import {
+import type {
   Class,
-  ControllerContext,
   ControllerContextInterface,
   ResponseHandlerInterface,
 } from '@triptyk/nfw-core';
 import {
+  ControllerContext,
   Args,
   container,
   Ctx,
@@ -27,7 +27,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
   /**
    * Handle-all function to serialize and check returned controller data
    */
-  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, @Ctx() ctx: RouterContext, @Args() args: [any], @ControllerContext() controllerContext: ControllerContextInterface ): Promise<void> {
+  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, @Ctx() ctx: RouterContext, @Args() args: [any], @ControllerContext() controllerContext: ControllerContextInterface): Promise<void> {
     ctx.response.type = 'application/vnd.api+json';
 
     /**
@@ -50,7 +50,7 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
       return;
     }
 
-    if (controllerContext.controllerAction === "create") {
+    if (controllerContext.controllerAction === 'create') {
       ctx.status = 201;
     }
 

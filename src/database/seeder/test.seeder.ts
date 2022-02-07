@@ -1,8 +1,10 @@
 import type { EntityManager } from '@mikro-orm/mysql';
 import { Seeder } from '@mikro-orm/seeder';
+import { writeFile, mkdir } from 'fs/promises';
 import { Roles } from '../../api/enums/roles.enum.js';
 import { UserModel } from '../../api/models/user.model.js';
 import type { UserRepository } from '../../api/repositories/user.repository.js';
+import { DocumentFactory } from '../factories/document.factory.js';
 import { UserFactory } from '../factories/user.factory.js';
 
 export class TestSeeder extends Seeder {
@@ -16,5 +18,12 @@ export class TestSeeder extends Seeder {
       lastName: 'localhost',
       role: Roles.ADMIN,
     });
+    const document = await new DocumentFactory(em).createOne({
+      id: '123456789',
+    });
+    const path = document.path.split('/');
+    path.pop();
+    await mkdir(path.join('/'), { recursive: true });
+    await writeFile(document.path, 'sdfhsdkjfsdjkfsdjkfhjskd', 'utf-8');
   }
 }

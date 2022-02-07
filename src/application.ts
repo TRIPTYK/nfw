@@ -79,6 +79,7 @@ export async function runApplication () {
       koaBody({
         jsonLimit: '128kb',
         text: false,
+        multipart: false,
         urlencoded: false,
         onError: (err: Error) => {
           if (err.name === 'PayloadTooLargeError') {

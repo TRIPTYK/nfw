@@ -10,10 +10,10 @@ export class ValidatedUser extends SchemaBase {
   @String({ optional: true })
   public declare id: string;
 
-  @String({ max : 64 })
+  @String({ max: 64 })
   public declare firstName: string;
 
-  @String({ max : 64 })
+  @String({ max: 64 })
   public declare lastName: string;
 
   @String()
