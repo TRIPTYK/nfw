@@ -1,4 +1,4 @@
-import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Param, inject, UseGuard, UseErrorHandler } from '@triptyk/nfw-core';
+import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Param, inject, UseGuard, UseErrorHandler, databaseInjectionToken } from '@triptyk/nfw-core';
 import type { ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { JsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
 import { UserModel } from '../models/user.model.js';
@@ -16,6 +16,7 @@ import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';
 import { AuthorizeGuard } from '../guards/authorize.guard.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 import { ContentGuard } from '../../json-api/guards/content.guard.js';
+import type { MikroORM } from '@mikro-orm/core';
 
 @Controller('/users')
 @UseErrorHandler(JsonApiErrorHandler)
@@ -25,7 +26,7 @@ import { ContentGuard } from '../../json-api/guards/content.guard.js';
 @injectable()
 export class UsersController {
   // eslint-disable-next-line no-useless-constructor
-  constructor (@InjectRepository(UserModel) private userRepository: UserRepository, @inject(AclService) private aclService: AclService) {}
+  constructor (@InjectRepository(UserModel) private userRepository: UserRepository, @inject(databaseInjectionToken) private db: MikroORM, @inject(AclService) private aclService: AclService) {}
 
   @GET('/profile')
   public async profile (@CurrentUser() currentUser: UserModel) {
@@ -34,6 +35,7 @@ export class UsersController {
 
   @GET('/')
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @CurrentUser() currentUser?: UserModel) {
+    console.log(this.db.em.getContext());
     return {
       payload: await this.userRepository.jsonApiFind(queryParams, currentUser),
       queryParams,

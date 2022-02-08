@@ -64,7 +64,7 @@ export async function runApplication () {
     await generator.dropSchema();
     await generator.createSchema();
     await generator.updateSchema();
-    await new TestSeeder().run(orm.em as SqlEntityManager);
+    await new TestSeeder().run(orm.em.fork() as SqlEntityManager);
   }
 
   const koaApp = await createApplication({

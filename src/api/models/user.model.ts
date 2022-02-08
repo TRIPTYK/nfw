@@ -52,7 +52,7 @@ export class UserModel extends BaseEntity<any, any> implements JsonApiModelInter
     entity: () => RefreshTokenModel,
     mappedBy: 'user',
   })
-  declare refreshToken: RefreshTokenModel;
+    refreshToken?: RefreshTokenModel;
 
   public passwordMatches (password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

@@ -7,6 +7,7 @@ import {
   ManyToMany,
   BeforeDelete,
   Filter,
+  Collection,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
@@ -42,7 +43,7 @@ export class DocumentModel extends BaseEntity<any, any> implements JsonApiModelI
   declare size: number;
 
   @ManyToMany('UserModel')
-  declare users: UserModel[];
+    users = new Collection<UserModel>(this);
 
   @BeforeDelete()
   public removeFromDisk (): Promise<void> {
