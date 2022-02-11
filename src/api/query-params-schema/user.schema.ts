@@ -14,7 +14,7 @@ export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
   }
 
   allowedSortFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
-    return [];
+    return ['-id'];
   }
 
   allowedFilters (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {

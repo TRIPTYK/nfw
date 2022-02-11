@@ -56,7 +56,7 @@ export class UserModel implements JsonApiModelInterface {
   })
     refreshToken?: RefreshTokenModel;
 
-    @ManyToMany('DocumentModel', 'users', { owner: true })
+    @ManyToMany('DocumentModel')
       documents? = new Collection<DocumentModel>(this);
 
     public passwordMatches (password: string): Promise<boolean> {

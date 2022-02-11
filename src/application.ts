@@ -23,6 +23,7 @@ import type { SqlEntityManager } from '@mikro-orm/mysql';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 import helmet from 'koa-helmet';
 import koaBody from 'koa-body';
+import Koa from 'koa';
 
 export async function runApplication () {
   /**
@@ -68,6 +69,7 @@ export async function runApplication () {
   }
 
   const koaApp = await createApplication({
+    server: new Koa(),
     controllers: [AuthController, UsersController, DocumentController],
     globalGuards: [],
     globalMiddlewares: [

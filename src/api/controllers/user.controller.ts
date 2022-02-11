@@ -40,12 +40,9 @@ export class UsersController {
 
   @GET('/:id')
   async get (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @Param('id') id : string, @CurrentUser() currentUser?: UserModel) {
-    return {
-      payload: await this.userRepository.jsonApiFindOne({
-        id,
-      }, queryParams, currentUser),
-      queryParams,
-    };
+    return this.userRepository.jsonApiFindOne({
+      id,
+    }, queryParams, currentUser);
   }
 
   @POST('/')
