@@ -45,7 +45,7 @@ export class JsonApiResponsehandler<T extends AnyEntity> implements ResponseHand
     if (queryParams?.page && Array.isArray(controllerResponse) && controllerResponse.length === 2 && typeof controllerResponse[1] === 'number') {
       paginationData = {
         totalRecords: controllerResponse[1],
-        pageNumber: queryParams.page,
+        pageNumber: queryParams.page.number,
         pageSize: queryParams.page.size,
       };
       controllerResponse = controllerResponse[0];

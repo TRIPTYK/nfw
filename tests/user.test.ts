@@ -124,6 +124,44 @@ describe('JSON-API tests', () => {
     expect(data.length).toStrictEqual(2);
     expect(data[0].id).toStrictEqual('9876543210');
   });
+  test('Should refuse unknown order key', async () => {
+    const response = await fetch(
+      'http://localhost:8001/api/v1/users?sort=-ids',
+      {
+        headers: {
+          'content-type': 'application/vnd.api+json',
+          accept: 'application/vnd.api+json',
+          Authorization: `Bearer ${authorizedToken}`,
+        },
+      },
+    );
+    expect(response.status).toStrictEqual(400);
+  });
+  test('Should paginate', async () => {
+    const response = await fetch(
+      'http://localhost:8001/api/v1/users?page[size]=1&page[number]=1',
+      {
+        headers: {
+          'content-type': 'application/vnd.api+json',
+          accept: 'application/vnd.api+json',
+          Authorization: `Bearer ${authorizedToken}`,
+        },
+      },
+    );
+    const json = await response.json() as JSONAPIDocument;
+    const data = json.data as ResourceObject<unknown>[];
+    expect(response.status).toStrictEqual(200);
+    expect(data.length).toStrictEqual(1);
+    expect(json.links).toMatchObject(
+      {
+        self: '/api/v1/users?page%5Bsize%5D=1&page%5Bnumber%5D=1',
+        first: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=1',
+        last: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=2',
+        prev: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=1',
+        next: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=2',
+      },
+    );
+  });
 });
 
 test('Should create user', async () => {

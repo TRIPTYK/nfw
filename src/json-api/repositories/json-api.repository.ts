@@ -42,7 +42,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
       limit: size,
       filters: this.getFiltersForUser(user) as Dictionary<boolean | Dictionary>,
       orderBy: orderBy as QueryOrderMap<T>,
-      offset: params.page?.number ? params.page.number * size : undefined,
+      offset: params.page?.number ? (params.page.number * size) - 1 : undefined,
     };
 
     return findOptions;

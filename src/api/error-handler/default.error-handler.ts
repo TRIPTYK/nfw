@@ -34,7 +34,6 @@ export class DefaultErrorHandler implements ErrorHandlerInterface {
         message: error.message,
       };
     } else {
-      console.log(error);
       context.response.status = 500;
       context.response.body = {
         message: isDev ? error.message : 'Internal server error',
