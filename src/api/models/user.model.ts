@@ -1,11 +1,12 @@
 import {
   PrimaryKey,
   Entity,
-  BaseEntity,
   Property,
   OneToOne,
   Enum,
   Filter,
+  Collection,
+  ManyToMany,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import { Roles } from '../enums/roles.enum.js';
@@ -14,6 +15,7 @@ import { RefreshTokenModel } from './refresh-token.model.js';
 import bcrypt from 'bcrypt';
 import { defineAbilityForUser } from '../abilities/user.js';
 import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
+import type { DocumentModel } from './document.model.js';
 
 @Entity({
   tableName: 'users',
@@ -27,7 +29,7 @@ import type { JsonApiModelInterface } from '../../json-api/interfaces/model.inte
   },
 })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({ 1: 0 }) })
-export class UserModel extends BaseEntity<any, any> implements JsonApiModelInterface {
+export class UserModel implements JsonApiModelInterface {
   public static ability = defineAbilityForUser;
 
   @PrimaryKey()
@@ -54,7 +56,10 @@ export class UserModel extends BaseEntity<any, any> implements JsonApiModelInter
   })
     refreshToken?: RefreshTokenModel;
 
-  public passwordMatches (password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
+    @ManyToMany('DocumentModel', 'users', { owner: true })
+      documents? = new Collection<DocumentModel>(this);
+
+    public passwordMatches (password: string): Promise<boolean> {
+      return bcrypt.compare(password, this.password);
+    }
 }

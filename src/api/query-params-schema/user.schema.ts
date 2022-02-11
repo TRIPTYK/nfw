@@ -6,11 +6,11 @@ import type { CheckTypes, QueryParamsSchemaInterface } from '../../json-api/inte
 @injectable()
 export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
   allowedIncludes (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
-    return ['refreshToken'];
+    return ['documents'];
   }
 
   allowedFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
-    return ['id'];
+    return ['id', /users\.(.+)/, /documents\.(.+)/];
   }
 
   allowedSortFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {

@@ -35,11 +35,7 @@ export class UsersController {
 
   @GET('/')
   public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @CurrentUser() currentUser?: UserModel) {
-    console.log(this.db.em.getContext());
-    return {
-      payload: await this.userRepository.jsonApiFind(queryParams, currentUser),
-      queryParams,
-    };
+    return this.userRepository.jsonApiFind(queryParams, currentUser);
   }
 
   @GET('/:id')
@@ -63,7 +59,7 @@ export class UsersController {
   @UseMiddleware(deserialize(UserDeserializer))
   async update (@EntityFromBody(ValidatedUserUpdate, UserModel) user: UserModel, @Param('id') id: string, @CurrentUser() currentUser?: UserModel) {
     await this.aclService.enforce(UserModel.ability, currentUser, 'update', user);
-    return this.userRepository.jsonApiUpdate(user, { id }, currentUser);
+    return this.userRepository.jsonApiUpdate(user as any, { id }, currentUser);
   }
 
   @DELETE('/:id')

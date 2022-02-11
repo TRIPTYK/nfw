@@ -2,7 +2,6 @@ import {
   Entity,
   PrimaryKey,
   Property,
-  BaseEntity,
   Enum,
   ManyToMany,
   BeforeDelete,
@@ -23,7 +22,7 @@ import type { UserModel } from './user.model.js';
 @Filter({ name: 'admin_access', cond: args => {} })
 @Filter({ name: 'user_access', cond: args => ({ owner_id: args.user.id }) })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
-export class DocumentModel extends BaseEntity<any, any> implements JsonApiModelInterface {
+export class DocumentModel implements JsonApiModelInterface {
   @PrimaryKey()
     id: string = v4();
 
@@ -42,7 +41,7 @@ export class DocumentModel extends BaseEntity<any, any> implements JsonApiModelI
   @Property()
   declare size: number;
 
-  @ManyToMany('UserModel')
+  @ManyToMany('UserModel', 'documents')
     users = new Collection<UserModel>(this);
 
   @BeforeDelete()

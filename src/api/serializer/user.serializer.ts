@@ -13,6 +13,14 @@ export class UserSerializer extends BaseJsonApiSerializer<UserModel> {
 
     this.serializer.register('users', {
       whitelist: ['firstName', 'lastName'],
+      relationships: {
+        documents: {
+          type: 'documents',
+        },
+      },
+    });
+    this.serializer.register('documents', {
+
     });
   }
 

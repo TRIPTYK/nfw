@@ -1,4 +1,4 @@
-import { BaseEntity } from '@mikro-orm/core';
+import type { AnyEntity } from '@mikro-orm/core';
 import type {
   Class,
   ControllerContextInterface,
@@ -12,39 +12,21 @@ import {
   injectable,
 } from '@triptyk/nfw-core';
 import type { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
-import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 import type { RouterContext } from '@koa/router';
-
-type JsonApiPayload<T> = T | T[] | [T[], number];
-
-export interface JsonApiPayloadInterface<T> {
-  payload?: JsonApiPayload<T>,
-  queryParams?: ValidatedJsonApiQueryParams,
-}
+import { Cache } from '../../api/decorators/cache.decorator.js';
+import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params';
 
 @injectable()
-export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements ResponseHandlerInterface {
+export class JsonApiResponsehandler<T extends AnyEntity> implements ResponseHandlerInterface {
   /**
    * Handle-all function to serialize and check returned controller data
    */
-  async handle (controllerResponse: JsonApiPayloadInterface<T> | undefined | null, @Ctx() ctx: RouterContext, @Args() args: [any], @ControllerContext() controllerContext: ControllerContextInterface): Promise<void> {
+  async handle (controllerResponse: T | T[] | undefined | null, @Ctx() ctx: RouterContext, @Args() [serializer]: [Class<JsonApiSerializerInterface<T>>], @ControllerContext() controllerContext: ControllerContextInterface, @Cache('json-api-params') queryParams: ValidatedJsonApiQueryParams | undefined): Promise<void> {
     ctx.response.type = 'application/vnd.api+json';
-
-    /**
-     * For lazy developpers, when no response object is passed, we assign the response as the payload of the response object
-     */
-    if ((Array.isArray(controllerResponse) && controllerResponse.every((e) => e instanceof BaseEntity)) || controllerResponse instanceof BaseEntity) {
-      controllerResponse = {
-        payload: controllerResponse as T | T[],
-      };
-    }
-
-    let { payload, queryParams } = controllerResponse ?? {}; // assign empty object as default payload if undefined or null
-
     /**
      * If still undefined
      */
-    if (!payload) {
+    if (!controllerResponse) {
       ctx.status = 204;
       ctx.body = undefined;
       return;
@@ -54,26 +36,25 @@ export class JsonApiResponsehandler<T extends BaseEntity<any, any>> implements R
       ctx.status = 201;
     }
 
-    const [serializer] = args as [Class<JsonApiSerializerInterface<T>>];
     let paginationData;
     const serializerInstance = container.resolve(serializer);
 
     /**
      * Pagination response [T[], number]
      */
-    if (queryParams?.page && Array.isArray(payload) && payload.length === 2 && typeof payload[1] === 'number') {
+    if (queryParams?.page && Array.isArray(controllerResponse) && controllerResponse.length === 2 && typeof controllerResponse[1] === 'number') {
       paginationData = {
-        totalRecords: payload[1],
+        totalRecords: controllerResponse[1],
         pageNumber: queryParams.page,
         pageSize: queryParams.page.size,
       };
-      payload = payload[0];
+      controllerResponse = controllerResponse[0];
     }
 
     /**
      * Serialize with extraData
      */
-    ctx.response.body = await serializerInstance.serialize(payload as T | T[], {
+    ctx.response.body = await serializerInstance.serialize(controllerResponse as T | T[], {
       queryParams,
       url: ctx.url,
       paginationData,

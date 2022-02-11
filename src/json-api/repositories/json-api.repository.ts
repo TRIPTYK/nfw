@@ -34,7 +34,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
      */
     const orderBy = params.sort?.reduce((p, c) => p = { ...p, ...dotToObject(c) as SortObject }, {} as SortObject);
 
-    return {
+    const findOptions = {
       fields: fields as (keyof T)[],
       disableIdentityMap: true,
       populate: (params.include ?? []) as any,
@@ -44,6 +44,8 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
       orderBy: orderBy as QueryOrderMap<T>,
       offset: params.page?.number ? params.page.number * size : undefined,
     };
+
+    return findOptions;
   }
 
   public getFiltersForUser (user?: UserModel) {

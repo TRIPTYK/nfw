@@ -39,7 +39,7 @@ class ValidatedJsonApiQueryParamsPagination extends SchemaBase {
   declare size: number;
 }
 
-@Schema()
+@Schema(true)
 export class ValidatedJsonApiQueryParams extends SchemaBase {
   @String({
     optional: true,
@@ -81,63 +81,61 @@ const doesMatch = (array: string[], allowed: (string | RegExp)[]) => {
 };
 
 export function JsonApiQueryParams (
-  paramsSchema: Class<QueryParamsSchemaInterface>,
+  paramsSchema?: Class<QueryParamsSchemaInterface>,
 ) {
   return createCustomDecorator(async (context: ControllerParamsContext) => {
+    if (!paramsSchema) return;
     const schemaInstance = container.resolve(paramsSchema);
-    try {
-      const params = new ValidatedJsonApiQueryParams(context.ctx.query);
-      await validateOrReject(params);
+    const params = new ValidatedJsonApiQueryParams({});
+    Object.assign(params, context.ctx.query);
+    await validateOrReject(params);
 
-      params.fields = parseFields(params.fields);
-      params.sort = parseSort(params.sort as unknown as string);
-      params.include = parseIncludes(params.include as unknown as string);
+    params.fields = parseFields(params.fields);
+    params.sort = parseSort(params.sort as unknown as string);
+    params.include = parseIncludes(params.include as unknown as string);
 
-      const [
-        allowedFields,
-        allowedIncludes,
-        allowedSortFields,
-        allowedFilters,
-      ] = await Promise.all([
-        schemaInstance.allowedFields(context),
-        schemaInstance.allowedIncludes(context),
-        schemaInstance.allowedSortFields(context),
-        schemaInstance.allowedFilters(context),
-      ]);
+    const [
+      allowedFields,
+      allowedIncludes,
+      allowedSortFields,
+      allowedFilters,
+    ] = await Promise.all([
+      schemaInstance.allowedFields(context),
+      schemaInstance.allowedIncludes(context),
+      schemaInstance.allowedSortFields(context),
+      schemaInstance.allowedFilters(context),
+    ]);
 
-      /**
+    /**
        * If one include does not match
        */
-      if (!doesMatch(params.include, allowedIncludes)) {
-        throw createHttpError(400, `Cannot include ${params.include}`, {
-          name: 'IncludeError',
-        });
-      }
-
-      if (!doesMatch(params.sort, allowedSortFields)) {
-        throw createHttpError(400, `Cannot sort on ${params.sort}`, {
-          name: 'SortError',
-        });
-      }
-
-      if (!doesMatch(params.fields, allowedFields)) {
-        throw createHttpError(400, `Cannot fields ${params.fields}`, {
-          name: 'FieldsError',
-        });
-      }
-
-      const matchableFilters = dot(params.filter);
-
-      if (!doesMatch(Object.keys(matchableFilters), allowedFilters)) {
-        throw createHttpError(400, `Cannot filters ${params.filter}`, {
-          name: 'FilterError',
-        });
-      }
-
-      return params;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      throw createHttpError(400, error);
+    if (!doesMatch(params.include, allowedIncludes)) {
+      throw createHttpError(400, `Cannot include ${params.include}`, {
+        name: 'IncludeError',
+      });
     }
-  }, 'json-api-params');
+
+    if (!doesMatch(params.sort, allowedSortFields)) {
+      throw createHttpError(400, `Cannot sort on ${params.sort}`, {
+        name: 'SortError',
+      });
+    }
+
+    if (!doesMatch(params.fields, allowedFields)) {
+      throw createHttpError(400, `Cannot fields ${params.fields}`, {
+        name: 'FieldsError',
+      });
+    }
+
+    const matchableFilters = dot(params.filter);
+
+    if (!doesMatch(Object.keys(matchableFilters), allowedFilters)) {
+      throw createHttpError(400, `Cannot filters ${params.filter}`, {
+        name: 'FilterError',
+      });
+    }
+
+    return params;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }, 'json-api-params', true);
 }

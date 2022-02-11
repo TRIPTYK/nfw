@@ -10,7 +10,7 @@ import { UserFactory } from '../factories/user.factory.js';
 export class TestSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
     const password = await (em.getRepository(UserModel) as UserRepository).hashPassword('123');
-    await new UserFactory(em).createOne({
+    const user = await new UserFactory(em).createOne({
       id: '12345678910abcdef',
       email: 'amaury@localhost.com',
       password,
@@ -18,9 +18,12 @@ export class TestSeeder extends Seeder {
       lastName: 'localhost',
       role: Roles.ADMIN,
     });
-    const document = await new DocumentFactory(em).createOne({
+    const document = new DocumentFactory(em).makeOne({
       id: '123456789',
     });
+    await em.persistAndFlush(document);
+    document.users = [user] as any;
+    await em.persistAndFlush(document);
     const path = document.path.split('/');
     path.pop();
     await mkdir(path.join('/'), { recursive: true });

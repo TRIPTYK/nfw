@@ -4,7 +4,7 @@ import type { Class, ControllerParamsContext } from '@triptyk/nfw-core';
 import { container, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core';
 import type { SchemaBase } from 'fastest-validator-decorators';
 
-export function EntityFromBody<T extends SchemaBase, K extends AnyEntity<T>> (ValidationClass : Class<T>, EntityModel: Class<K>) {
+export function EntityFromBody<T extends SchemaBase, K extends AnyEntity<K>> (ValidationClass : Class<T>, EntityModel: Class<K>) {
   return createCustomDecorator(
     async (controllerContext:ControllerParamsContext) => {
       const databaseConnection = container.resolve<MikroORM>(databaseInjectionToken);

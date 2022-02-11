@@ -21,7 +21,7 @@ export default {
     database: 'nfw',
     port: 3306,
     type: 'mysql',
-    debug: false,
+    debug: true,
   },
   env: 'development',
   cors: {

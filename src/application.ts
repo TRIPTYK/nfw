@@ -59,7 +59,7 @@ export async function runApplication () {
     throw new Error('Failed to connect to database');
   }
 
-  if (env === 'test') {
+  if (env === 'test' || env === 'development') {
     const generator = orm.getSchemaGenerator();
     await generator.dropSchema();
     await generator.createSchema();

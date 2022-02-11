@@ -45,4 +45,6 @@ export class ValidatedUserUpdate extends SchemaBase {
 
   @String({ optional: true })
   public declare password: string;
+
+  public declare documents: string[];
 }
