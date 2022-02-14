@@ -8,6 +8,8 @@
 
 This repository contains a JSON-API REST API boilerplate using [NFW-CORE](https://github.com/TRIPTYK/nfw-core).
 
+:warn: : ESM only, no CommonJS modules.
+
 ## Requirements
 
 - Typescript >= 4.5.x
