@@ -53,11 +53,12 @@ export class UserModel implements JsonApiModelInterface {
   @OneToOne({
     entity: () => RefreshTokenModel,
     mappedBy: 'user',
+    nullable: true,
   })
     refreshToken?: RefreshTokenModel;
 
     @ManyToMany('DocumentModel')
-      documents? = new Collection<DocumentModel>(this);
+      documents = new Collection<DocumentModel>(this);
 
     public passwordMatches (password: string): Promise<boolean> {
       return bcrypt.compare(password, this.password);

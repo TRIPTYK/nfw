@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { randomBytes } from 'crypto';
 import type { JSONAPIDocument, Linkage, ResourceObject } from 'json-api-serializer';
+import { URL } from 'url';
 
 const authorizedToken =
   'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUwMDM5MTEwNjUsImlhdCI6MTY0MzkxMDc2NSwic3ViIjoiMTIzNDU2Nzg5MTBhYmNkZWYiLCJuYmYiOjE2NDM5MTA3NjUsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCJ9.D2AP61Td-JLzOwJqnz_YWLVqzF10pcuV3YLo_SjaStMnbpphNx8TzUnJf_ldzDjqj0q69gtLHF9czdja3Mxaxw';
@@ -152,15 +153,21 @@ describe('JSON-API tests', () => {
     const data = json.data as ResourceObject<unknown>[];
     expect(response.status).toStrictEqual(200);
     expect(data.length).toStrictEqual(1);
-    expect(json.links).toMatchObject(
-      {
-        self: '/api/v1/users?page%5Bsize%5D=1&page%5Bnumber%5D=1',
-        first: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=1',
-        last: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=2',
-        prev: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=1',
-        next: '/api/v1/userspage%5Bsize%5D=1&page%5Bnumber%5D=2',
-      },
-    );
+
+    const links = json.links as Record<'self' | 'first' | 'last' | 'prev' | 'next', string>;
+
+    // we don't care about the base URL, but it s needed
+    const self = new URL(links.self, 'http://localhost');
+    const first = new URL(links.first, 'http://localhost');
+    const last = new URL(links.last, 'http://localhost');
+    const previous = new URL(links.prev, 'http://localhost');
+    const next = new URL(links.next, 'http://localhost');
+
+    expect(self.searchParams.get('page[number]')).toStrictEqual('1');
+    expect(first.searchParams.get('page[number]')).toStrictEqual('1');
+    expect(last.searchParams.get('page[number]')).toStrictEqual('2');
+    expect(next.searchParams.get('page[number]')).toStrictEqual('2');
+    expect(previous.searchParams.get('page[number]')).toStrictEqual('1');
   });
 });
 
