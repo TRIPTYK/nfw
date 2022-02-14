@@ -1,7 +1,9 @@
 import { Schema, SchemaBase, String, Email } from 'fastest-validator-decorators';
+import type { Roles } from '../enums/roles.enum.js';
+import type { UserModel } from '../models/user.model';
 
 @Schema(true)
-export class ValidatedRegisteredUserBody extends SchemaBase {
+export class ValidatedRegisteredUserBody extends SchemaBase implements Partial<UserModel> {
   @String()
   public declare firstName: string;
 
@@ -13,6 +15,8 @@ export class ValidatedRegisteredUserBody extends SchemaBase {
 
   @String()
   public declare password: string;
+
+  public declare role: Roles;
 }
 
 @Schema(true)

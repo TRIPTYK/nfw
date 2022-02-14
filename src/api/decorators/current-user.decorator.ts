@@ -4,9 +4,9 @@ import { loadUserFromContext } from '../middlewares/current-user.middleware.js';
 import { UserModel } from '../models/user.model.js';
 
 export function CurrentUser () {
-  return createCustomDecorator(({ ctx }) => {
+  return createCustomDecorator(async ({ ctx }) => {
     const databaseConnection = container.resolve<MikroORM>(databaseInjectionToken);
-    const context = databaseConnection.em.getContext();
+    const context = databaseConnection.em;
     return loadUserFromContext(ctx, context.getRepository(UserModel));
   }, 'current-user', true);
 }

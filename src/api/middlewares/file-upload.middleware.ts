@@ -1,7 +1,8 @@
+import type { Middleware } from '@koa/router';
 import createHttpError from 'http-errors';
 import koaBody from 'koa-body';
 
-export const fileUploadMiddleware = koaBody({
+export const fileUploadMiddleware : Middleware = koaBody({
   formidable: {
     uploadDir: './dist/uploads',
     multiples: false,

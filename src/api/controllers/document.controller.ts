@@ -1,3 +1,4 @@
+import type { EntityDTO } from '@mikro-orm/core';
 import {
   Controller,
   DELETE,
@@ -61,7 +62,7 @@ export class DocumentController {
   @UseMiddleware(fileUploadMiddleware)
   async replace (
     @Param('id') id: string,
-    @ValidatedFile('file', ValidatedDocument) document: ValidatedDocument,
+    @ValidatedFile('file', ValidatedDocument) document: Partial<EntityDTO<DocumentModel>>,
   ) {
     await this.documentRepository.findOneOrFail({ id }).then(file => file?.removeFromDisk());
     const up = await this.documentRepository.jsonApiUpdate(document, { id });

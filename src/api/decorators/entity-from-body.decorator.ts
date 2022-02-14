@@ -1,10 +1,10 @@
-import type { BaseEntity, MikroORM } from '@mikro-orm/core';
+import type { AnyEntity, EntityDTO, MikroORM } from '@mikro-orm/core';
 import { ReferenceType, wrap } from '@mikro-orm/core';
 import type { Class, ControllerParamsContext } from '@triptyk/nfw-core';
 import { container, createCustomDecorator, databaseInjectionToken } from '@triptyk/nfw-core';
 import type { SchemaBase } from 'fastest-validator-decorators';
 
-export function EntityFromBody<T extends SchemaBase, K extends BaseEntity<any, any>> (ValidationClass : Class<T>, EntityModel: Class<K>) {
+export function EntityFromBody<T extends SchemaBase, K extends AnyEntity<K>> (ValidationClass : Class<T>, EntityModel: Class<K>) {
   return createCustomDecorator(
     async (controllerContext:ControllerParamsContext) => {
       const databaseConnection = container.resolve<MikroORM>(databaseInjectionToken);
@@ -32,7 +32,7 @@ export function EntityFromBody<T extends SchemaBase, K extends BaseEntity<any, a
       }
 
       const newEntity = new EntityModel();
-      wrap(newEntity).assign(validatedBody);
+      wrap(newEntity).assign(validatedBody as unknown as Partial<EntityDTO<K>>);
       return newEntity;
     }, 'entity-from-body');
 }

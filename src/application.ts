@@ -23,6 +23,7 @@ import type { SqlEntityManager } from '@mikro-orm/mysql';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 import helmet from 'koa-helmet';
 import koaBody from 'koa-body';
+import Koa from 'koa';
 
 export async function runApplication () {
   /**
@@ -59,15 +60,16 @@ export async function runApplication () {
     throw new Error('Failed to connect to database');
   }
 
-  if (env === 'test') {
+  if (env === 'test' || env === 'development') {
     const generator = orm.getSchemaGenerator();
     await generator.dropSchema();
     await generator.createSchema();
     await generator.updateSchema();
-    await new TestSeeder().run(orm.em as SqlEntityManager);
+    await new TestSeeder().run(orm.em.fork() as SqlEntityManager);
   }
 
   const koaApp = await createApplication({
+    server: new Koa(),
     controllers: [AuthController, UsersController, DocumentController],
     globalGuards: [],
     globalMiddlewares: [

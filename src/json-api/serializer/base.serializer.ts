@@ -69,7 +69,7 @@ implements JsonApiSerializerInterface<T> {
             paginationData.totalRecords / paginationData.pageSize,
           );
           const previousPage =
-            paginationData.pageNumber <= 0 ? 0 : paginationData.pageNumber - 1;
+            paginationData.pageNumber <= 1 ? 1 : paginationData.pageNumber - 1;
           const nextPage =
             paginationData.pageNumber >= lastPage
               ? lastPage
@@ -85,10 +85,10 @@ implements JsonApiSerializerInterface<T> {
           prevParsedURL.set('page[number]', previousPage.toString());
           nextParsedURL.set('page[number]', nextPage.toString());
 
-          links.first = `${baseURL}${firstParsedURL}`;
-          links.last = `${baseURL}${lastParsedURL}`;
-          links.prev = `${baseURL}${prevParsedURL}`;
-          links.next = `${baseURL}${nextParsedURL}`;
+          links.first = `${baseURL}?${firstParsedURL}`;
+          links.last = `${baseURL}?${lastParsedURL}`;
+          links.prev = `${baseURL}?${prevParsedURL}`;
+          links.next = `${baseURL}?${nextParsedURL}`;
         }
 
         return links;

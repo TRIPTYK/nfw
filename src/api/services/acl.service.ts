@@ -1,6 +1,5 @@
 import { subject } from '@casl/ability';
-import type { MikroORM } from '@mikro-orm/core';
-import { BaseEntity } from '@mikro-orm/core';
+import type { AnyEntity, MikroORM } from '@mikro-orm/core';
 import type { SqlEntityManager } from '@mikro-orm/mysql';
 import { databaseInjectionToken, inject, injectable, singleton } from '@triptyk/nfw-core';
 import type { EntityAbility } from '../abilities/base.js';
@@ -12,18 +11,13 @@ import type { JsonApiModelInterface } from '../../json-api/interfaces/model.inte
 import { ConfigurationService } from './configuration.service.js';
 import type { permittedFieldsOf } from '@casl/ability/extra';
 
-interface UnknownObject {
-  name : string,
-  body : Record<string, unknown>,
-}
-
 @injectable()
 @singleton()
 export class AclService {
   // eslint-disable-next-line no-useless-constructor
   public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService) {}
 
-  public async can (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any> | UnknownObject) {
+  public async can<T extends AnyEntity<T>> (ability: EntityAbility<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: AnyEntity) {
     try {
       await this.enforce(ability, sub, act, obj);
       return true;
@@ -32,10 +26,10 @@ export class AclService {
     }
   }
 
-  public async enforce (ability: EntityAbility<any>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: BaseEntity<any, any> | UnknownObject) {
-    const transformedModelName = modelToName(obj instanceof BaseEntity ? obj : obj.name, false);
+  public async enforce<T extends AnyEntity> (ability: EntityAbility<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: AnyEntity) {
+    const transformedModelName = modelToName(obj, false);
     const subjectAlias = subject(transformedModelName,
-      obj instanceof BaseEntity ? obj : obj.body);
+      obj);
 
     /**
      * Get sql entityManager of current request
@@ -45,12 +39,12 @@ export class AclService {
     /**
      * Preload ability
      */
-    const loadedAbility = await ability(sub, obj, contextEntityManager);
+    const loadedAbility = await ability(sub, obj as T, contextEntityManager);
 
     /**
      * Find attributes in entity metadatas
      */
-    const perms = contextEntityManager.getMetadata().find(obj instanceof BaseEntity ? obj.constructor.name : obj.name);
+    const perms = contextEntityManager.getMetadata().find(obj.constructor.name);
 
     if (!perms) { throw Error(`Metadata not found for ${obj}`); }
 
@@ -73,6 +67,7 @@ export class AclService {
     /**
      * permittedFieldsOf seems to be transformed when using jest, we must fix it manually in code
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const permittedFix : typeof permittedFieldsOf = this.configService.getKey('env', 'development') === 'test' ? (abilities as any).default.permittedFieldsOf : abilities.permittedFieldsOf;
 
     /**

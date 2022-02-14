@@ -2,9 +2,7 @@ import {
   Entity,
   PrimaryKey,
   Property,
-  BaseEntity,
   Enum,
-  ManyToMany,
   BeforeDelete,
   Filter,
 } from '@mikro-orm/core';
@@ -13,7 +11,6 @@ import type { JsonApiModelInterface } from '../../json-api/interfaces/model.inte
 import { MimeTypes } from '../enums/mime-type.enum.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
 import * as Fs from 'fs/promises';
-import type { UserModel } from './user.model.js';
 
 @Entity({
   tableName: 'documents',
@@ -22,7 +19,7 @@ import type { UserModel } from './user.model.js';
 @Filter({ name: 'admin_access', cond: args => {} })
 @Filter({ name: 'user_access', cond: args => ({ owner_id: args.user.id }) })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
-export class DocumentModel extends BaseEntity<any, any> implements JsonApiModelInterface {
+export class DocumentModel implements JsonApiModelInterface {
   @PrimaryKey()
     id: string = v4();
 
@@ -40,9 +37,6 @@ export class DocumentModel extends BaseEntity<any, any> implements JsonApiModelI
 
   @Property()
   declare size: number;
-
-  @ManyToMany('UserModel')
-  declare users: UserModel[];
 
   @BeforeDelete()
   public removeFromDisk (): Promise<void> {
