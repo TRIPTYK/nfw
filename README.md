@@ -8,6 +8,12 @@
 
 This repository contains a JSON-API REST API boilerplate using [NFW-CORE](https://github.com/TRIPTYK/nfw-core).
 
+## Requirements
+
+- Typescript >= 4.x
+- node >= 16.x
+- Pnpm
+
 ## Install
 
 ```bash
