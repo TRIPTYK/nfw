@@ -7,6 +7,7 @@
     "test": "tsc && NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
+    "mikro-orm:cli": "MIKRO_ORM_CLI_USE_TS_NODE=1 MIKRO_ORM_DYNAMIC_IMPORTS=1 node --experimental-specifier-resolution=node --loader ts-node/esm ./node_modules/@mikro-orm/cli/cli.js",
     "start:dev": "NODE_ENV=development nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
     "start:test": "NODE_ENV=test nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts"
   },
