@@ -34,9 +34,17 @@ jobs:
                   mysql user: "nfw"
                   mysql password: "test123*"
                   mysql version: "5.7" # mysqljs does not actually support mysql 8 new password auth , need to wait a release
-
-            - name: Install
-              run: npm i
-
+            - name: Cache pnpm modules
+              uses: actions/cache@v2
+              with:
+                path: ~/.pnpm-store
+                key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+                restore-keys: |
+                  ${{ runner.os }}-
+            - name: Pnpm install
+              uses: pnpm/action-setup@v2.1.0
+              with:
+                version: 6.0.2
+                run_install: true
             - name: Run test
-              run: npm run test
+              run: pnpm run test
