@@ -32,7 +32,7 @@ export function EntityFromBody<T extends SchemaBase, K extends AnyEntity<K>> (Va
       }
 
       const newEntity = new EntityModel();
-      wrap(newEntity).assign(validatedBody as unknown as Partial<EntityDTO<K>>);
+      wrap(newEntity).assign(validatedBody as unknown as Partial<EntityDTO<K>>, { em: databaseConnection.em });
       return newEntity;
     }, 'entity-from-body');
 }

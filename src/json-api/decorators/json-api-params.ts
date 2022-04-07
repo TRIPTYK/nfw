@@ -130,7 +130,7 @@ export function JsonApiQueryParams (
     const matchableFilters = dot(params.filter);
 
     if (!doesMatch(Object.keys(matchableFilters), allowedFilters)) {
-      throw createHttpError(400, `Cannot filters ${params.filter}`, {
+      throw createHttpError(400, `Cannot filters ${matchableFilters}`, {
         name: 'FilterError',
       });
     }
