@@ -1,0 +1,2 @@
+CREATE DATABASE nfw;
+CREATE DATABASE nfw_test;
