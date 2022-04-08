@@ -1,27 +1,26 @@
-import { inject, injectable, singleton } from '@triptyk/nfw-core';
+import { injectable, singleton } from '@triptyk/nfw-core';
 import { BaseJsonApiSerializer } from '../../json-api/serializer/base.serializer.js';
 import type { DocumentModel } from '../models/document.model.js';
-import { ConfigurationService } from '../services/configuration.service.js';
 import type { UserModel } from '../models/user.model';
+import { UserSerializer } from './user.serializer.js';
 
 @injectable()
 @singleton()
 export class DocumentSerializer extends BaseJsonApiSerializer<DocumentModel> {
-  constructor (
-    @inject(ConfigurationService) configurationService: ConfigurationService,
-  ) {
-    super(configurationService);
+  public static entityName = 'document';
 
-    this.serializer.register('documents', {
+  constructor () {
+    super();
+    this.serializer.register(DocumentSerializer.entityName, {
       whitelist: ['filename', 'originalName', 'mimetype', 'path', 'size'] as (keyof DocumentModel)[],
       relationships: {
         users: {
-          type: 'users',
+          type: UserSerializer.entityName,
         },
       },
     });
 
-    this.serializer.register('users', {
+    this.serializer.register(UserSerializer.entityName, {
       whitelist: ['firstName', 'lastName', 'email'] as (keyof UserModel)[],
     });
   }
@@ -30,6 +29,6 @@ export class DocumentSerializer extends BaseJsonApiSerializer<DocumentModel> {
     data: DocumentModel[] | DocumentModel,
     extraData?: Record<string, unknown>,
   ) {
-    return this.serializer.serializeAsync('documents', data, extraData ?? ({} as any));
+    return this.serializer.serializeAsync(DocumentSerializer.entityName, data, extraData ?? ({} as any));
   }
 }

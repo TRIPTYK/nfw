@@ -1,9 +1,11 @@
-import type { BaseEntity } from '@mikro-orm/core';
+import type { AnyEntity } from '@mikro-orm/core';
 import { Collection } from '@mikro-orm/core';
+import { container } from '@triptyk/nfw-core';
 import type { JSONAPIDocument } from 'json-api-serializer';
 import JSONAPISerializer from 'json-api-serializer';
 import { URLSearchParams } from 'url';
-import type { ConfigurationService } from '../../api/services/configuration.service.js';
+import type { Configuration } from '../../api/services/configuration.service.js';
+import { ConfigurationService } from '../../api/services/configuration.service.js';
 import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
 import type { JsonApiModelInterface } from '../interfaces/model.interface.js';
 import type { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
@@ -31,16 +33,16 @@ export abstract class BaseJsonApiSerializer<T>
 implements JsonApiSerializerInterface<T> {
   protected serializer: JSONAPISerializer;
 
-  constructor (configurationService: ConfigurationService) {
-    const { baseURL } = configurationService.config;
-
+  constructor () {
+    const baseURL = container.resolve<ConfigurationService<Configuration>>(ConfigurationService).getKey('baseURL');
     this.serializer = new JSONAPISerializer({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeSerialize (data: any) {
         extractCollections(data);
         return data;
       },
       links: (data: unknown) => {
-        const entity = data as BaseEntity<any, any>;
+        const entity = data as AnyEntity;
 
         const links = {
           self: `${baseURL}/${modelToName(entity)}/${(entity as Partial<JsonApiModelInterface>).id}`,

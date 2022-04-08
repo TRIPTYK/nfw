@@ -24,6 +24,7 @@ import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middlewa
 import helmet from 'koa-helmet';
 import koaBody from 'koa-body';
 import Koa from 'koa';
+import { DevelopmentSeeder } from './database/seeder/development.seeder.js';
 
 export async function runApplication () {
   /**
@@ -65,7 +66,14 @@ export async function runApplication () {
     await generator.dropSchema();
     await generator.createSchema();
     await generator.updateSchema();
+  }
+
+  if (env === 'test') {
     await new TestSeeder().run(orm.em.fork() as SqlEntityManager);
+  }
+
+  if (env === 'development') {
+    await new DevelopmentSeeder().run(orm.em.fork() as SqlEntityManager);
   }
 
   const koaApp = await createApplication({
