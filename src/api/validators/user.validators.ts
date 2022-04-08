@@ -1,4 +1,5 @@
 import {
+  Array,
   Email,
   Schema,
   SchemaBase,
@@ -24,6 +25,10 @@ export class ValidatedUser extends SchemaBase {
 
   @String()
   public declare password: string;
+
+  // eslint-disable-next-line no-array-constructor
+  @Array()
+  public declare documents: string;
 }
 
 @Schema(true)

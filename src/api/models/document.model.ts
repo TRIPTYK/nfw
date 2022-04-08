@@ -5,12 +5,15 @@ import {
   Enum,
   BeforeDelete,
   Filter,
+  ManyToMany,
+  Collection,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import { MimeTypes } from '../enums/mime-type.enum.js';
 import { DocumentRepository } from '../repositories/document.repository.js';
 import * as Fs from 'fs/promises';
+import type { UserModel } from './user.model.js';
 
 @Entity({
   tableName: 'documents',
@@ -37,6 +40,9 @@ export class DocumentModel implements JsonApiModelInterface {
 
   @Property()
   declare size: number;
+
+  @ManyToMany('UserModel')
+    users = new Collection<UserModel>(this);
 
   @BeforeDelete()
   public removeFromDisk (): Promise<void> {

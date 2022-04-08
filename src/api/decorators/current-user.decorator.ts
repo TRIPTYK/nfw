@@ -6,7 +6,6 @@ import { UserModel } from '../models/user.model.js';
 export function CurrentUser () {
   return createCustomDecorator(async ({ ctx }) => {
     const databaseConnection = container.resolve<MikroORM>(databaseInjectionToken);
-    const context = databaseConnection.em;
-    return loadUserFromContext(ctx, context.getRepository(UserModel));
+    return loadUserFromContext(ctx, databaseConnection.em.getRepository(UserModel));
   }, 'current-user', true);
 }
