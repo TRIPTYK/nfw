@@ -1,7 +1,11 @@
+import 'reflect-metadata';
 import fetch from 'node-fetch';
 import { randomBytes } from 'crypto';
 import type { JSONAPIDocument, Linkage, ResourceObject } from 'json-api-serializer';
 import { URL } from 'url';
+import type { MikroORM } from '@mikro-orm/core';
+import { DocumentModel } from '../src/api/models/document.model.js';
+import { UserModel } from '../src/api/models/user.model.js';
 
 const authorizedToken =
   'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUwMDM5MTEwNjUsImlhdCI6MTY0MzkxMDc2NSwic3ViIjoiMTIzNDU2Nzg5MTBhYmNkZWYiLCJuYmYiOjE2NDM5MTA3NjUsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCJ9.D2AP61Td-JLzOwJqnz_YWLVqzF10pcuV3YLo_SjaStMnbpphNx8TzUnJf_ldzDjqj0q69gtLHF9czdja3Mxaxw';
@@ -245,6 +249,86 @@ test('Should update user', async () => {
     },
   );
   expect(response.status).toStrictEqual(200);
+});
+
+test.only('Should update user with relationships (full override)', async () => {
+  const response = await fetch(
+    'http://localhost:8001/api/v1/users/12345678910abcdef',
+    {
+      method: 'patch',
+      body: JSON.stringify({
+        data: {
+          attributes: {
+            password: '123',
+            role: 'admin',
+            lastName: 'amaury',
+            firstName: 'amaury',
+            email: 'amaury@email.com',
+          },
+          relationships: {
+            documents: {
+              data: [{
+                type: 'documents',
+                id: '1234567891011',
+              }],
+            },
+          },
+        },
+      }),
+      headers: {
+        'content-type': 'application/vnd.api+json',
+        accept: 'application/vnd.api+json',
+        Authorization: `Bearer ${authorizedToken}`,
+      },
+    },
+  );
+  expect(response.status).toStrictEqual(200);
+  const responseJSON = await response.json() as JSONAPIDocument;
+  expect(responseJSON.included?.length).toStrictEqual(undefined);
+  const { container, databaseInjectionToken } = await import('@triptyk/nfw-core');
+  const orm = container.resolve<MikroORM>(databaseInjectionToken).em.fork();
+  const user = await orm.findOne(UserModel, { id: '12345678910abcdef' }, { populate: ['documents'] });
+  expect(user?.documents.length).toStrictEqual(2);
+});
+
+test('Should create user with relationships', async () => {
+  const response = await fetch(
+    'http://localhost:8001/api/v1/users',
+    {
+      method: 'post',
+      body: JSON.stringify({
+        data: {
+          attributes: {
+            password: '123',
+            role: 'admin',
+            lastName: 'amaury',
+            firstName: 'amaury',
+            email: 'amaury@email.com',
+          },
+          relationships: {
+            documents: {
+              data: [{
+                type: 'document',
+                id: '12345678910',
+              }],
+            },
+          },
+        },
+      }),
+      headers: {
+        'content-type': 'application/vnd.api+json',
+        accept: 'application/vnd.api+json',
+        Authorization: `Bearer ${authorizedToken}`,
+      },
+    },
+  );
+  expect(response.status).toStrictEqual(201);
+  const responseJSON = await response.json() as JSONAPIDocument;
+  expect(responseJSON.included?.length).toStrictEqual(1);
+  const { container, databaseInjectionToken } = await import('@triptyk/nfw-core');
+  const orm = container.resolve<MikroORM>(databaseInjectionToken).em.fork();
+  const doc = await orm.findOne(DocumentModel, { id: '12345678910' }, { populate: ['users'] });
+  expect(doc?.users.length).toStrictEqual(1);
 });
 
 test('Should delete user', async () => {

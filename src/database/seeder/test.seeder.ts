@@ -15,6 +15,12 @@ export class TestSeeder extends Seeder {
     const document = await new DocumentFactory(em).createOne({
       id: '123456789',
     });
+    await new DocumentFactory(em).createOne({
+      id: '1234567891011',
+    });
+    await new DocumentFactory(em).createOne({
+      id: '12345678910',
+    });
     await new UserFactory(em).createOne({
       id: '12345678910abcdef',
       email: 'amaury@localhost.com',

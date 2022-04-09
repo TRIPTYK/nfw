@@ -54,7 +54,7 @@ export class JsonApiResponsehandler<T extends AnyEntity> implements ResponseHand
     /**
      * Serialize with extraData
      */
-    ctx.response.body = await serializerInstance.serialize(controllerResponse as T | T[], {
+    ctx.response.body = await serializerInstance.serialize(Array.isArray(controllerResponse) ? controllerResponse.map((e) => e.toJSON()) : controllerResponse.toJSON(), {
       queryParams,
       url: ctx.url,
       paginationData,
