@@ -1,5 +1,4 @@
 import {
-  PrimaryKey,
   Entity,
   Property,
   OneToOne,
@@ -7,9 +6,7 @@ import {
   Filter,
   Collection,
   ManyToMany,
-  BaseEntity,
 } from '@mikro-orm/core';
-import { v4 } from 'uuid';
 import { Roles } from '../enums/roles.enum.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import type { RefreshTokenModel } from './refresh-token.model.js';
@@ -17,6 +14,7 @@ import bcrypt from 'bcrypt';
 import { defineAbilityForUser } from '../abilities/user.js';
 import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import type { DocumentModel } from './document.model.js';
+import { BaseModel } from './base.model.js';
 
 @Entity({
   tableName: 'users',
@@ -30,11 +28,8 @@ import type { DocumentModel } from './document.model.js';
   },
 })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({ 1: 0 }) })
-export class UserModel extends BaseEntity<UserModel, 'id'> implements JsonApiModelInterface {
+export class UserModel extends BaseModel<UserModel> implements JsonApiModelInterface {
   public static ability = defineAbilityForUser;
-
-  @PrimaryKey()
-    id: string = v4();
 
   @Property()
   declare firstName: string;
