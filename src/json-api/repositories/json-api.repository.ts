@@ -28,7 +28,9 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     /**
      * Do not specify root entity, remove it
      */
-    const fields = params.fields?.map((field) => field.startsWith(`${entityName}.`) ? field.replace(`${entityName}.`, '') : field);
+    const fields = params.fields?.map((field) => field.startsWith(`${entityName}.`) ? field.replace(`${entityName}.`, '') : field) ?? [];
+
+    const minimumFields = [...params.include?.map((i) => `${i}.id`) ?? [], 'id'];
 
     /**
      * Transform into nested object with order specified
@@ -36,7 +38,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     const orderBy = params.sort?.reduce((p, c) => p = { ...p, ...dotToObject(c) as SortObject }, {} as SortObject);
 
     const findOptions = {
-      fields: fields as (keyof T)[],
+      fields: [...fields, ...minimumFields] as (keyof T)[],
       disableIdentityMap: true,
       populate: params.include as AutoPath<T, never>[],
       strategy: LoadStrategy.SELECT_IN,

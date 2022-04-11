@@ -1,14 +1,8 @@
-import type { AnyEntity } from '@mikro-orm/core';
-import { container } from '@triptyk/nfw-core';
 import type { JSONAPIDocument } from 'json-api-serializer';
 import JSONAPISerializer from 'json-api-serializer';
 import { URLSearchParams } from 'url';
-import type { Configuration } from '../../api/services/configuration.service.js';
-import { ConfigurationService } from '../../api/services/configuration.service.js';
 import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.js';
-import type { JsonApiModelInterface } from '../interfaces/model.interface.js';
 import type { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
-import { modelToName } from '../utils/model-to-name.js';
 
 export interface ExtraData {
   queryParams: ValidatedJsonApiQueryParams,
@@ -25,20 +19,7 @@ implements JsonApiSerializerInterface<T> {
   protected serializer: JSONAPISerializer;
 
   constructor () {
-    const baseURL = container.resolve<ConfigurationService<Configuration>>(ConfigurationService).getKey('baseURL');
     this.serializer = new JSONAPISerializer({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      beforeSerialize (data: any) {
-        return data;
-      },
-      links: (data: unknown) => {
-        const entity = data as AnyEntity;
-        const links = {
-          self: `${baseURL}/${modelToName(entity.constructor.name)}/${(entity as Partial<JsonApiModelInterface>).id}`,
-        } as Record<string, string>;
-
-        return links;
-      },
       topLevelMeta: (_data: unknown, extraData: unknown) => {
         const { paginationData } = extraData as ExtraData;
 

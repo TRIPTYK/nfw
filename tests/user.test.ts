@@ -49,7 +49,7 @@ test('Should get user', async () => {
 describe('JSON-API tests', () => {
   test('Should get user with include documents', async () => {
     const response = await fetch(
-      'http://localhost:8001/api/v1/users/12345678910abcdef?include=documents',
+      'http://localhost:8001/api/v1/users/12345678910abcdef?include=documents&fields=documents.*',
       {
         headers: {
           'content-type': 'application/vnd.api+json',
@@ -61,7 +61,7 @@ describe('JSON-API tests', () => {
     const json = await response.json() as JSONAPIDocument;
     const data = json.data as ResourceObject<unknown>;
     expect(response.status).toStrictEqual(200);
-    expect(json.links?.self).toStrictEqual('/api/v1/users/12345678910abcdef?include=documents');
+    expect(json.links?.self).toStrictEqual('/api/v1/users/12345678910abcdef?include=documents&fields=documents.*');
     expect(data.id).toStrictEqual('12345678910abcdef');
     expect(Array.isArray(data.relationships?.documents.data)).toStrictEqual(true);
     expect((data.relationships?.documents.data as Linkage[]).length).toStrictEqual(1);

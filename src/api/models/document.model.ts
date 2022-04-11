@@ -20,8 +20,8 @@ import type { UserModel } from './user.model.js';
   tableName: 'documents',
   customRepository: () => DocumentRepository,
 })
-@Filter({ name: 'admin_access', cond: args => {} })
-@Filter({ name: 'user_access', cond: args => ({}) })
+@Filter({ name: 'admin_access', args: false, cond: args => ({}) })
+@Filter({ name: 'user_access', args: false, cond: args => ({}) })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
 export class DocumentModel extends BaseEntity<DocumentModel, 'id'> implements JsonApiModelInterface {
   @PrimaryKey()
