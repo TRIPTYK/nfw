@@ -7,6 +7,7 @@ import {
   Filter,
   ManyToMany,
   Collection,
+  BaseEntity,
 } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
@@ -22,7 +23,7 @@ import type { UserModel } from './user.model.js';
 @Filter({ name: 'admin_access', cond: args => {} })
 @Filter({ name: 'user_access', cond: args => ({ owner_id: args.user.id }) })
 @Filter({ name: 'anonymous_access', args: false, cond: args => ({}) })
-export class DocumentModel implements JsonApiModelInterface {
+export class DocumentModel extends BaseEntity<DocumentModel, 'id'> implements JsonApiModelInterface {
   @PrimaryKey()
     id: string = v4();
 
@@ -41,7 +42,10 @@ export class DocumentModel implements JsonApiModelInterface {
   @Property()
   declare size: number;
 
-  @ManyToMany('UserModel')
+  @ManyToMany({
+    entity: 'UserModel',
+    mappedBy: 'documents',
+  })
     users = new Collection<UserModel>(this);
 
   @BeforeDelete()

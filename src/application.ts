@@ -1,13 +1,10 @@
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import createApplication, { container } from '@triptyk/nfw-core';
-import { AuthController } from './api/controllers/auth.controller.js';
-import { UsersController } from './api/controllers/user.controller.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
 import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
-import { DocumentController } from './api/controllers/document.controller.js';
 import type { Configuration } from './api/services/configuration.service.js';
 import {
   ConfigurationService,
@@ -25,6 +22,7 @@ import helmet from 'koa-helmet';
 import koaBody from 'koa-body';
 import Koa from 'koa';
 import { DevelopmentSeeder } from './database/seeder/development.seeder.js';
+import { MainArea } from './api/areas/main.area.js';
 
 export async function runApplication () {
   /**
@@ -78,7 +76,7 @@ export async function runApplication () {
 
   const koaApp = await createApplication({
     server: new Koa(),
-    controllers: [AuthController, UsersController, DocumentController],
+    areas: [MainArea],
     globalGuards: [],
     globalMiddlewares: [
       helmet(),

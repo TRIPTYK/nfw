@@ -1,8 +1,8 @@
 import { subject } from '@casl/ability';
-import type { AnyEntity, MikroORM } from '@mikro-orm/core';
+import type { AnyEntity, EntityDTO, MikroORM } from '@mikro-orm/core';
 import type { SqlEntityManager } from '@mikro-orm/mysql';
+import type { Class } from '@triptyk/nfw-core';
 import { databaseInjectionToken, inject, injectable, singleton } from '@triptyk/nfw-core';
-import type { EntityAbility } from '../abilities/base.js';
 import type { UserModel } from '../models/user.model.js';
 import * as abilities from '@casl/ability/extra'; // must use all because jest error
 import { modelToName } from '../../json-api/utils/model-to-name.js';
@@ -17,7 +17,7 @@ export class AclService {
   // eslint-disable-next-line no-useless-constructor
   public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService) {}
 
-  public async can<T extends AnyEntity<T>> (ability: EntityAbility<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: AnyEntity) {
+  public async can<T extends AnyEntity<T>> (ability: Class<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: EntityDTO<T> | T) {
     try {
       await this.enforce(ability, sub, act, obj);
       return true;
@@ -26,8 +26,8 @@ export class AclService {
     }
   }
 
-  public async enforce<T extends AnyEntity> (ability: EntityAbility<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: AnyEntity) {
-    const transformedModelName = modelToName(obj, false);
+  public async enforce<T extends AnyEntity> (entity: Class<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: EntityDTO<T> | T) {
+    const transformedModelName = modelToName(entity.name, false);
     const subjectAlias = subject(transformedModelName,
       obj);
 
@@ -39,12 +39,13 @@ export class AclService {
     /**
      * Preload ability
      */
-    const loadedAbility = await ability(sub, obj as T, contextEntityManager);
+    // eslint-disable-next-line dot-notation
+    const loadedAbility = await (entity as any).ability(sub, obj as T, contextEntityManager);
 
     /**
      * Find attributes in entity metadatas
      */
-    const perms = contextEntityManager.getMetadata().find(obj.constructor.name);
+    const perms = contextEntityManager.getMetadata().find(entity.name);
 
     if (!perms) { throw Error(`Metadata not found for ${obj}`); }
 

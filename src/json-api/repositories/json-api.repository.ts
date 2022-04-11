@@ -1,5 +1,6 @@
-import type { Dictionary, EntityDTO, FilterQuery, FindOptions, Loaded, QueryOrderMap, RequiredEntityData } from '@mikro-orm/core';
+import type { Dictionary, EntityData, EntityDTO, FilterQuery, FindOptions, Loaded, QueryOrderMap, RequiredEntityData } from '@mikro-orm/core';
 import { LoadStrategy, wrap } from '@mikro-orm/core';
+import type { AutoPath } from '@mikro-orm/core/typings';
 import { EntityRepository } from '@mikro-orm/mysql';
 import type { UserModel } from '../../api/models/user.model.js';
 import { dotToObject } from '../../api/utils/dot-to-object.js';
@@ -20,7 +21,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     return this.find(filters, this.getFindOptionsFromParams(params, user));
   }
 
-  private getFindOptionsFromParams (params : ValidatedJsonApiQueryParams, user?: UserModel): FindOptions<T, string> {
+  private getFindOptionsFromParams (params : ValidatedJsonApiQueryParams, user?: UserModel): FindOptions<T, never> {
     const entityName = modelToName(this.entityName);
     const size = Math.min(params.page?.size ?? 10, 30);
 
@@ -37,7 +38,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     const findOptions = {
       fields: fields as (keyof T)[],
       disableIdentityMap: true,
-      populate: (params.include ?? []) as any,
+      populate: params.include as AutoPath<T, never>[],
       strategy: LoadStrategy.SELECT_IN,
       limit: size,
       filters: this.getFiltersForUser(user) as Dictionary<boolean | Dictionary>,
@@ -60,7 +61,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     return entity as T;
   }
 
-  public async jsonApiUpdate (model: Partial<EntityDTO<Loaded<T, never>>>, filterQuery:FilterQuery<T>, user?: UserModel): Promise<T> {
+  public async jsonApiUpdate (model: EntityData<Loaded<T, never>> | Partial<EntityDTO<Loaded<T, never>>>, filterQuery:FilterQuery<T>, user?: UserModel): Promise<T> {
     const entity = await this.findOneOrFail(filterQuery, {
       filters: this.getFiltersForUser(user),
     });

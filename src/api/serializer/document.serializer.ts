@@ -29,6 +29,6 @@ export class DocumentSerializer extends BaseJsonApiSerializer<DocumentModel> {
     data: DocumentModel[] | DocumentModel,
     extraData?: Record<string, unknown>,
   ) {
-    return this.serializer.serializeAsync(DocumentSerializer.entityName, data, extraData ?? ({} as any));
+    return this.serializer.serializeAsync(DocumentSerializer.entityName, Array.isArray(data) ? data.map(d => d.toObject()) : data.toObject(), extraData ?? ({} as any));
   }
 }

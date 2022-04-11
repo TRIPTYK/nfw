@@ -1,5 +1,4 @@
 import type { AnyEntity } from '@mikro-orm/core';
-import { Collection } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
 import type { JSONAPIDocument } from 'json-api-serializer';
 import JSONAPISerializer from 'json-api-serializer';
@@ -10,14 +9,6 @@ import type { ValidatedJsonApiQueryParams } from '../decorators/json-api-params.
 import type { JsonApiModelInterface } from '../interfaces/model.interface.js';
 import type { JsonApiSerializerInterface } from '../interfaces/serializer.interface.js';
 import { modelToName } from '../utils/model-to-name.js';
-
-const extractCollections = (data: Record<string, unknown>) => {
-  for (const [key, value] of Object.entries(data)) {
-    if (value instanceof Collection && value.isInitialized()) {
-      data[key] = value.getItems();
-    }
-  }
-};
 
 export interface ExtraData {
   queryParams: ValidatedJsonApiQueryParams,
@@ -38,14 +29,13 @@ implements JsonApiSerializerInterface<T> {
     this.serializer = new JSONAPISerializer({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeSerialize (data: any) {
-        extractCollections(data);
         return data;
       },
       links: (data: unknown) => {
         const entity = data as AnyEntity;
-
+        console.log(entity);
         const links = {
-          self: `${baseURL}/${modelToName(entity)}/${(entity as Partial<JsonApiModelInterface>).id}`,
+          self: `${baseURL}/${modelToName(entity.constructor.name)}/${(entity as Partial<JsonApiModelInterface>).id}`,
         } as Record<string, string>;
 
         return links;
@@ -59,7 +49,7 @@ implements JsonApiSerializerInterface<T> {
         const { url, paginationData } = extraData as ExtraData;
 
         const links = {
-          self: `${url}`,
+          self: url,
         } as Record<string, string>;
 
         if (paginationData) {

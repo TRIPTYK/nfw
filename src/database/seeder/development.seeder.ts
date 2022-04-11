@@ -22,6 +22,14 @@ export class DevelopmentSeeder extends Seeder {
       lastName: 'localhost',
       role: Roles.ADMIN,
     });
+    await new UserFactory(em).createOne({
+      id: '9876543210',
+      email: 'seb@localhost.com',
+      password,
+      firstName: 'sebastien',
+      lastName: 'dutrèsgrosgrosXXXLDuGras',
+      role: Roles.USER,
+    });
     const path = document.path.split('/');
     path.pop();
     await mkdir(path.join('/'), { recursive: true });

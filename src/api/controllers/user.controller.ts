@@ -16,7 +16,7 @@ import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';
 import { AuthorizeGuard } from '../guards/authorize.guard.js';
 import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
 import { ContentGuard } from '../../json-api/guards/content.guard.js';
-import type { MikroORM } from '@mikro-orm/core';
+import type { EntityDTO, MikroORM } from '@mikro-orm/core';
 
 @Controller('/users')
 @UseErrorHandler(JsonApiErrorHandler)
@@ -47,21 +47,21 @@ export class UsersController {
 
   @POST('/')
   @UseMiddleware(deserialize(UserDeserializer))
-  async create (@EntityFromBody(ValidatedUser, UserModel) body: UserModel, @CurrentUser() currentUser?: UserModel) {
-    await this.aclService.enforce(UserModel.ability, currentUser, 'create', body);
+  async create (@EntityFromBody(ValidatedUser, UserModel) body: EntityDTO<UserModel>, @CurrentUser() currentUser?: UserModel) {
+    await this.aclService.enforce(UserModel, currentUser, 'create', body);
     return this.userRepository.jsonApiCreate(body);
   }
 
   @PATCH('/:id')
   @UseMiddleware(deserialize(UserDeserializer))
-  async update (@EntityFromBody(ValidatedUserUpdate, UserModel) user: UserModel, @Param('id') id: string, @CurrentUser() currentUser?: UserModel) {
-    await this.aclService.enforce(UserModel.ability, currentUser, 'update', user);
-    return this.userRepository.jsonApiUpdate(user as any, { id }, currentUser);
+  async update (@EntityFromBody(ValidatedUserUpdate, UserModel) user: EntityDTO<UserModel>, @Param('id') id: string, @CurrentUser() currentUser?: UserModel) {
+    await this.aclService.enforce(UserModel, currentUser, 'update', user);
+    return this.userRepository.jsonApiUpdate(user, { id }, currentUser);
   }
 
   @DELETE('/:id')
   async delete (@EntityFromParam('id', UserModel) user: UserModel, @CurrentUser() currentUser?: UserModel) {
-    await this.aclService.enforce(UserModel.ability, currentUser, 'delete', user);
+    await this.aclService.enforce(UserModel, currentUser, 'delete', user);
     return this.userRepository.jsonApiRemove({ id: user.id }, currentUser);
   }
 }

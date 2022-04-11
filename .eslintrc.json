@@ -29,6 +29,8 @@
 		],
         "@typescript-eslint/consistent-type-imports": "error",
         "@typescript-eslint/no-explicit-any":"warn",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": ["error"],
         "@typescript-eslint/member-delimiter-style": ["error", {
             "multiline": {
               "delimiter": "comma",    // 'none' or 'semi' or 'comma'

@@ -10,7 +10,7 @@ export class UserQueryParamsSchema implements QueryParamsSchemaInterface {
   }
 
   allowedFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
-    return ['id', /users\.(.+)/, /documents\.(.+)/];
+    return ['id', /users\.(.+)/, /documents\.(.+)/, '*'];
   }
 
   allowedSortFields (_context: ControllerParamsContext): CheckTypes[] | Promise<CheckTypes[]> {
