@@ -33,7 +33,6 @@ implements JsonApiSerializerInterface<T> {
       },
       links: (data: unknown) => {
         const entity = data as AnyEntity;
-        console.log(entity);
         const links = {
           self: `${baseURL}/${modelToName(entity.constructor.name)}/${(entity as Partial<JsonApiModelInterface>).id}`,
         } as Record<string, string>;
