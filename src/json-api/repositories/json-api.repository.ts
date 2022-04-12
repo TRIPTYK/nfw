@@ -1,5 +1,5 @@
 import type { Dictionary, EntityData, EntityDTO, FilterQuery, FindOptions, Loaded, QueryOrderMap, RequiredEntityData } from '@mikro-orm/core';
-import { LoadStrategy, wrap } from '@mikro-orm/core';
+import { ReferenceType, LoadStrategy, wrap } from '@mikro-orm/core';
 import type { AutoPath } from '@mikro-orm/core/typings';
 import { EntityRepository } from '@mikro-orm/mysql';
 import type { UserModel } from '../../api/models/user.model.js';
@@ -46,7 +46,7 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
       filters: this.getFiltersForUser(user) as Dictionary<boolean | Dictionary>,
       orderBy: orderBy as QueryOrderMap<T>,
       offset: params.page?.number ? (params.page.number * size) - 1 : undefined,
-    };
+    } as FindOptions<T, never>;
 
     return findOptions;
   }
@@ -78,5 +78,22 @@ export abstract class JsonApiRepository<T> extends EntityRepository<T> {
     });
     await this.removeAndFlush(entity);
     return undefined;
+  }
+
+  public async jsonApiRelated (relation: string, idConditions: FilterQuery<T>, params : ValidatedJsonApiQueryParams, user?: UserModel) {
+    const targetRelation = this.em.getMetadata().find(this.entityName.toString())?.relations.find((r) => r.name === relation);
+    if (!targetRelation) {
+      throw new Error('Relation does not exists');
+    }
+
+    if (targetRelation.reference === ReferenceType.MANY_TO_ONE || targetRelation.reference === ReferenceType.ONE_TO_ONE) {
+      return (this.em.getRepository(targetRelation.entity)).jsonApiFindOne({
+        [targetRelation.inversedBy]: idConditions,
+      }, params, user);
+    } else {
+      return (this.em.getRepository(targetRelation.entity)).jsonApiFind({
+        [targetRelation.inversedBy]: idConditions,
+      }, params, user);
+    }
   }
 }

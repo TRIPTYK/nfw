@@ -1,4 +1,5 @@
 import type { RouterContext } from '@koa/router';
+import { ValidationError } from '@mikro-orm/core';
 import type { ErrorHandlerInterface } from '@triptyk/nfw-core';
 import { inject, injectable } from '@triptyk/nfw-core';
 import type { HttpError } from 'http-errors';
@@ -18,6 +19,16 @@ export class JsonApiErrorHandler implements ErrorHandlerInterface {
 
   async handle (error: Error | HttpError | Record<string, unknown>[], context: RouterContext) {
     this.loggerService.logger.trace(error);
+
+    if (error instanceof ValidationError) {
+      context.response.status = 400;
+      context.response.body = this.jsonApiErrorSerializer.serializeError({
+        title: 'validationError',
+        message: error.message,
+        status: '400',
+      });
+      return;
+    }
 
     if (Array.isArray(error)) {
       context.response.status = 400;
