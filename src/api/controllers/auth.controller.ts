@@ -1,4 +1,4 @@
-import { Controller, injectable, InjectRepository, inject, POST, UseMiddleware, Ctx } from '@triptyk/nfw-core';
+import { injectable, inject } from '@triptyk/nfw-core';
 import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
 import type { UserRepository } from '../repositories/user.repository.js';
@@ -10,14 +10,18 @@ import { ValidatedLoginBody, ValidatedRefreshBody, ValidatedRegisteredUserBody }
 import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
 import { Roles } from '../enums/roles.enum.js';
 import type { RouterContext } from '@koa/router';
+import { injectRepository } from '@triptyk/nfw-mikro-orm';
+import { Controller, Ctx, POST, UseMiddleware } from '@triptyk/nfw-http';
 
-@Controller('/auth')
+@Controller({
+  routeName: '/auth',
+})
 @injectable()
 export class AuthController {
   // eslint-disable-next-line no-useless-constructor
   constructor (@inject(ConfigurationService) private configurationService: ConfigurationService,
-               @InjectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
-               @InjectRepository(UserModel) private userRepository: UserRepository,
+               @injectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
+               @injectRepository(UserModel) private userRepository: UserRepository,
   ) {}
 
   @POST('/register')

@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import type { MikroORM } from '@mikro-orm/core';
+import { MikroORM } from '@mikro-orm/core';
 import type { Server } from 'http';
 
 let server : Server;
@@ -10,8 +10,8 @@ global.beforeEach(async () => {
 });
 
 global.afterEach(async () => {
-  const { container, databaseInjectionToken } = await import('@triptyk/nfw-core');
+  const { container } = await import('@triptyk/nfw-core');
   await new Promise((resolve, _reject) => server.close(resolve));
   // close existing database connection
-  await (container.resolve(databaseInjectionToken) as MikroORM).close(true);
+  await (container.resolve(MikroORM)).close(true);
 });

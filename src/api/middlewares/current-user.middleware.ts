@@ -1,10 +1,11 @@
 import type { RouterContext } from '@koa/router';
 import type { Next } from 'koa';
-import type { MiddlewareInterface } from '@triptyk/nfw-core';
-import { injectable, InjectRepository } from '@triptyk/nfw-core';
 import * as Jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.model.js';
 import type { UserRepository } from '../repositories/user.repository.js';
+import { injectable } from '@triptyk/nfw-core';
+import type { MiddlewareInterface } from '@triptyk/nfw-http';
+import { injectRepository } from '@triptyk/nfw-mikro-orm';
 
 export async function loadUserFromContext (context: RouterContext, userRepo: UserRepository) {
   if (context.header.authorization) {
@@ -22,7 +23,7 @@ export async function loadUserFromContext (context: RouterContext, userRepo: Use
 @injectable()
 export class CurrentUserMiddleware implements MiddlewareInterface {
   // eslint-disable-next-line no-useless-constructor
-  constructor (@InjectRepository(UserModel) private userRepository: UserRepository) {}
+  constructor (@injectRepository(UserModel) private userRepository: UserRepository) {}
 
   async use (context: RouterContext, next: Next) {
     context.state.user = await loadUserFromContext(context, this.userRepository);

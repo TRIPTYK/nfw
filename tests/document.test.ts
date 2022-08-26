@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { FormData } from 'formdata-polyfill/esm.min.js';
 import File from 'fetch-blob/file.js';
-import type { MikroORM } from '@mikro-orm/core';
+import { MikroORM } from '@mikro-orm/core';
 import { DocumentModel } from '../src/api/models/document.model.js';
 import { existsSync } from 'fs';
 
@@ -66,10 +66,10 @@ test('Create document with unknown type', async () => {
 });
 
 test('Replace document', async () => {
-  const { container, databaseInjectionToken } = await import('@triptyk/nfw-core');
+  const { container } = await import('@triptyk/nfw-core');
   const formData = new FormData();
   // We need to fork from the global entity manager otherwise it will not send the rigth value (old value)
-  const em = container.resolve<MikroORM>(databaseInjectionToken).em.fork();
+  const em = container.resolve(MikroORM).em.fork();
   const firstFile = await em.getRepository(DocumentModel).findOne({ id: '123456789' }) as DocumentModel;
   expect(firstFile.path).toStrictEqual('dist/uploads/upload_1');
   expect(existsSync(firstFile.path)).toStrictEqual(true);
@@ -77,16 +77,18 @@ test('Replace document', async () => {
   formData.append('file', new File(['abc'], 'hello-world.txt', {
     type: 'text/plain',
   }));
+  formData.append('id', '123456789');
   const response = await fetch('http://localhost:8001/api/v1/documents/123456789', {
     headers: {
       Authorization: `Bearer ${authorizedToken}`,
       accept: 'application/vnd.api+json',
     },
-    method: 'put',
+    method: 'patch',
     body: formData,
   });
 
   const newFile = await response.json() as Record<'data', Record<string, string>>;
+
   // We need to fork from the global entity manager otherwise it will not send the rigth value (old value)
   const replaced = await em.fork().getRepository(DocumentModel).findOneOrFail({ id: newFile.data.id });
   expect(existsSync(firstFile.path)).toStrictEqual(false);
@@ -97,9 +99,9 @@ test('Replace document', async () => {
 });
 
 test('Delete document', async () => {
-  const { container, databaseInjectionToken } = await import('@triptyk/nfw-core');
+  const { container } = await import('@triptyk/nfw-core');
   // We need to fork from the global entity manager otherwise it will not send the rigth value (old value)
-  const em = container.resolve<MikroORM>(databaseInjectionToken).em.fork();
+  const em = container.resolve(MikroORM).em.fork();
   const firstFile = await em.getRepository(DocumentModel).findOne({ id: '123456789' }) as DocumentModel;
   expect(firstFile.path).toStrictEqual('dist/uploads/upload_1');
   expect(existsSync(firstFile.path)).toStrictEqual(true);

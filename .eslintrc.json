@@ -21,6 +21,7 @@
         "semi": [2, "always"],
         "no-console": "warn",
         "no-return-assign": "off",
+        "no-useless-constructor": "off",
         "unused-imports/no-unused-imports": "error",
         "comma-dangle": ["error", "always-multiline"],
 		"unused-imports/no-unused-vars": [
@@ -28,6 +29,7 @@
 			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
 		],
         "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/no-useless-constructor": "error",
         "@typescript-eslint/no-explicit-any":"warn",
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": ["error"],

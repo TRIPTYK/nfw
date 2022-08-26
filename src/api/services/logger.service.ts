@@ -5,9 +5,8 @@ import { ConfigurationService } from './configuration.service.js';
 @injectable()
 @singleton()
 export class LoggerService {
-  private _logger: Tracer.Tracer.Logger;
+  private _logger: Tracer.Tracer.Logger<string>;
 
-  // eslint-disable-next-line no-useless-constructor
   public constructor (@inject(ConfigurationService) configurationService: ConfigurationService) {
     const logConfig = configurationService.getKey('logger');
 

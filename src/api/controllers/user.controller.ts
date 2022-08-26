@@ -1,67 +1,54 @@
-import { Controller, DELETE, GET, injectable, InjectRepository, PATCH, POST, UseResponseHandler, UseMiddleware, Param, inject, UseGuard, UseErrorHandler, databaseInjectionToken } from '@triptyk/nfw-core';
-import type { ValidatedJsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
-import { JsonApiQueryParams } from '../../json-api/decorators/json-api-params.js';
-import { UserModel } from '../models/user.model.js';
-import { UserQueryParamsSchema } from '../query-params-schema/user.schema.js';
-import type { UserRepository } from '../repositories/user.repository.js';
-import { JsonApiResponsehandler } from '../../json-api/response-handlers/json-api.response-handler.js';
-import { UserSerializer } from '../serializer/user.serializer.js';
-import { deserialize } from '../middlewares/deserialize.middleware.js';
-import { UserDeserializer } from '../deserializer/user.deserializer.js';
-import { ValidatedUser, ValidatedUserUpdate } from '../validators/user.validators.js';
+import { container, injectable } from '@triptyk/nfw-core';
+import type { UserModel } from '../models/user.model.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
-import { EntityFromBody } from '../decorators/entity-from-body.decorator.js';
-import { AclService } from '../services/acl.service.js';
-import { EntityFromParam } from '../decorators/entity-from-param.decorator.js';
-import { AuthorizeGuard } from '../guards/authorize.guard.js';
-import { JsonApiErrorHandler } from '../../json-api/error-handler/json-api.error-handler.js';
-import { ContentGuard } from '../../json-api/guards/content.guard.js';
-import type { EntityDTO, MikroORM } from '@mikro-orm/core';
+import { Ctx, GET } from '@triptyk/nfw-http';
+import type { JsonApiContext, ResourceSerializer } from '@triptyk/nfw-jsonapi';
+import { JsonApiGetRelationships, JsonApiGetRelated, JsonApiDelete, JsonApiCreate, JsonApiUpdate, JsonApiGet, createResourceFrom, JsonApiRegistry, JsonApiController, JsonApiList } from '@triptyk/nfw-jsonapi';
+import { UserResource } from '../resources/user.resource.js';
+import { JsonApiMethod } from '@triptyk/nfw-jsonapi/dist/src/storage/metadata/endpoint.metadata.js';
+import type { RouterContext } from '@koa/router';
+import { QueryParser } from '@triptyk/nfw-jsonapi/dist/src/query-parser/query-parser.js';
 
-@Controller('/users')
-@UseErrorHandler(JsonApiErrorHandler)
-@UseGuard(ContentGuard)
-@UseGuard(AuthorizeGuard)
-@UseResponseHandler(JsonApiResponsehandler, UserSerializer)
+@JsonApiController(UserResource)
 @injectable()
 export class UsersController {
-  // eslint-disable-next-line no-useless-constructor
-  constructor (@InjectRepository(UserModel) private userRepository: UserRepository, @inject(databaseInjectionToken) private db: MikroORM, @inject(AclService) private aclService: AclService) {}
-
   @GET('/profile')
-  public async profile (@CurrentUser() currentUser: UserModel) {
-    return currentUser;
+  public async profile (@CurrentUser() currentUser: UserModel, @Ctx() ctx: RouterContext) {
+    const registry = container.resolve(JsonApiRegistry);
+    const meta = registry.getResourceByClassName('UserResource')!;
+    const serializer = container.resolve(`serializer:${meta.name}`) as ResourceSerializer<UserModel>;
+
+    /**
+     * Creating an empty context
+     */
+    const context = {
+      koaContext: ctx,
+      method: JsonApiMethod.GET,
+      resource: meta,
+      query: new QueryParser(),
+    } as JsonApiContext<UserModel>;
+
+    return serializer.serialize(createResourceFrom(currentUser.toJSON(), meta, context), context);
   }
 
-  @GET('/')
-  public async list (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @CurrentUser() currentUser?: UserModel) {
-    return this.userRepository.jsonApiFind(queryParams, currentUser);
-  }
+  @JsonApiList()
+  public list () {}
 
-  @GET('/:id')
-  async get (@JsonApiQueryParams(UserQueryParamsSchema) queryParams: ValidatedJsonApiQueryParams, @Param('id') id : string, @CurrentUser() currentUser?: UserModel) {
-    return this.userRepository.jsonApiFindOne({
-      id,
-    }, queryParams, currentUser);
-  }
+  @JsonApiGet()
+  public get () {}
 
-  @POST('/')
-  @UseMiddleware(deserialize(UserDeserializer))
-  async create (@EntityFromBody(ValidatedUser, UserModel) body: EntityDTO<UserModel>, @CurrentUser() currentUser?: UserModel) {
-    await this.aclService.enforce(UserModel, currentUser, 'create', body);
-    return this.userRepository.jsonApiCreate(body);
-  }
+  @JsonApiCreate()
+  public create () {}
 
-  @PATCH('/:id')
-  @UseMiddleware(deserialize(UserDeserializer))
-  async update (@EntityFromBody(ValidatedUserUpdate, UserModel) user: EntityDTO<UserModel>, @Param('id') id: string, @CurrentUser() currentUser?: UserModel) {
-    await this.aclService.enforce(UserModel, currentUser, 'update', user);
-    return this.userRepository.jsonApiUpdate(user, { id }, currentUser);
-  }
+  @JsonApiUpdate()
+  public update () {}
 
-  @DELETE('/:id')
-  async delete (@EntityFromParam('id', UserModel) user: UserModel, @CurrentUser() currentUser?: UserModel) {
-    await this.aclService.enforce(UserModel, currentUser, 'delete', user);
-    return this.userRepository.jsonApiRemove({ id: user.id }, currentUser);
-  }
+  @JsonApiDelete()
+  public delete () {}
+
+  @JsonApiGetRelated()
+  public related () {}
+
+  @JsonApiGetRelationships()
+  public relationships () {}
 }

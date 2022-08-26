@@ -1,5 +1,4 @@
-import type { Collection } from '@mikro-orm/core';
-import type { EntityManager } from '@mikro-orm/mysql';
+import type { Collection, EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
 import { writeFile, mkdir } from 'fs/promises';
 import { Roles } from '../../api/enums/roles.enum.js';

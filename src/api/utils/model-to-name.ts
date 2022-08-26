@@ -5,7 +5,7 @@ import pluralize from 'pluralize';
 /**
  * Transforms model name to json-api entity name
  */
-export function modelToName<T> (model: AnyEntity<T> | EntityName<T>, pluralizeName: boolean = true) {
+export function modelToName<T extends AnyEntity<T>> (model: T | EntityName<T>, pluralizeName: boolean = true) {
   let name = typeof model === 'string' ? model.replace('Model', '') : model.constructor.name.replace('Model', '');
 
   if (pluralizeName) {

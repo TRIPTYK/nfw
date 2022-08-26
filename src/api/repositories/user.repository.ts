@@ -1,10 +1,10 @@
 import type { UserModel } from '../models/user.model.js';
-import { JsonApiRepository } from '../../json-api/repositories/json-api.repository.js';
 import { unixTimestamp } from '../utils/date-utils.js';
 import Jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { EntityRepository } from '@mikro-orm/core';
 
-export class UserRepository extends JsonApiRepository<UserModel> {
+export class UserRepository extends EntityRepository<UserModel> {
   public generateAccessToken (user: UserModel, accessExpires: number, secret: string, iss: string, audience: string): string {
     const now = unixTimestamp();
     const payload = {

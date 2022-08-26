@@ -26,9 +26,8 @@ export class ValidatedUser extends SchemaBase {
   @String()
   public declare password: string;
 
-  // eslint-disable-next-line no-array-constructor
   @Array({ optional: true })
-  public declare documents: string;
+  public declare documents: string[];
 }
 
 @Schema(true)

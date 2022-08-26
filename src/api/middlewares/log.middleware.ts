@@ -1,9 +1,9 @@
 import type { RouterContext } from '@koa/router';
-import type { MiddlewareInterface } from '@triptyk/nfw-core';
 import { inject, injectable } from '@triptyk/nfw-core';
 import { LoggerService } from '../services/logger.service.js';
 import type { Next } from 'koa';
 import type { UserModel } from '../models/user.model.js';
+import type { MiddlewareInterface } from '@triptyk/nfw-http';
 
 @injectable()
 export class LogMiddleware implements MiddlewareInterface {

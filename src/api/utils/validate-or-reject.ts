@@ -1,5 +1,6 @@
-import type { Class } from '@triptyk/nfw-core';
+
 import type { SchemaBase } from 'fastest-validator-decorators';
+import type { Class } from 'type-fest';
 
 export function validateOrReject<T extends SchemaBase> (ValidationClass: Class<T>, content: Record<string, unknown>) {
   const validatedBody = new ValidationClass(content);

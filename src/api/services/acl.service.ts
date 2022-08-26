@@ -1,21 +1,21 @@
 import { subject } from '@casl/ability';
-import type { AnyEntity, EntityDTO, MikroORM } from '@mikro-orm/core';
+import type { AnyEntity, EntityDTO } from '@mikro-orm/core';
+import { MikroORM } from '@mikro-orm/core';
 import type { SqlEntityManager } from '@mikro-orm/mysql';
-import type { Class } from '@triptyk/nfw-core';
-import { databaseInjectionToken, inject, injectable, singleton } from '@triptyk/nfw-core';
 import type { UserModel } from '../models/user.model.js';
 import * as abilities from '@casl/ability/extra'; // must use all because jest error
-import { modelToName } from '../../json-api/utils/model-to-name.js';
 import createHttpError from 'http-errors';
-import type { JsonApiModelInterface } from '../../json-api/interfaces/model.interface.js';
 import { ConfigurationService } from './configuration.service.js';
 import type { permittedFieldsOf } from '@casl/ability/extra';
+import { injectable, singleton, inject } from '@triptyk/nfw-core';
+import type { Class } from 'type-fest';
+import { modelToName } from '../utils/model-to-name.js';
 
 @injectable()
 @singleton()
 export class AclService {
   // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(databaseInjectionToken) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService) {}
+  public constructor (@inject(MikroORM) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService) {}
 
   public async can<T extends AnyEntity<T>> (ability: Class<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: EntityDTO<T> | T) {
     try {
@@ -62,7 +62,7 @@ export class AclService {
     const userRole = sub?.role ?? 'anonymous';
 
     if (!can) {
-      throw createHttpError(403, `Cannot ${act} ${transformedModelName} ${(obj as Partial<JsonApiModelInterface>).id ?? '#'} as ${userRole}`);
+      throw createHttpError(403, `Cannot ${act} ${transformedModelName} ${(obj as Partial<any>).id ?? '#'} as ${userRole}`);
     }
 
     /**

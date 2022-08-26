@@ -1,7 +1,5 @@
-import { LoadStrategy, MikroORM } from '@mikro-orm/core';
+import { LoadStrategy } from '@mikro-orm/core';
 import createApplication, { container } from '@triptyk/nfw-core';
-import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
-import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
@@ -9,20 +7,19 @@ import type { Configuration } from './api/services/configuration.service.js';
 import {
   ConfigurationService,
 } from './api/services/configuration.service.js';
-import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
-import cors from '@koa/cors';
-import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
 import createHttpError from 'http-errors';
 import { TestSeeder } from './database/seeder/test.seeder.js';
-import type { SqlEntityManager } from '@mikro-orm/mysql';
-import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
-import helmet from 'koa-helmet';
-import koaBody from 'koa-body';
 import Koa from 'koa';
 import { DevelopmentSeeder } from './database/seeder/development.seeder.js';
 import { MainArea } from './api/areas/main.area.js';
+import helmet from 'koa-helmet';
+import cors from '@koa/cors';
+import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
+import koaBody from 'koa-body';
+import { init, requestContext } from '@triptyk/nfw-mikro-orm';
+import { JsonApiRegistry } from '@triptyk/nfw-jsonapi';
 
 export async function runApplication () {
   /**
@@ -38,7 +35,7 @@ export async function runApplication () {
     .load();
   const logger = container.resolve(LoggerService);
 
-  const orm = await MikroORM.init({
+  const orm = await init({
     entities: [UserModel, RefreshTokenModel, DocumentModel],
     dbName: database.database,
     host: database.host,
@@ -67,43 +64,41 @@ export async function runApplication () {
   }
 
   if (env === 'test') {
-    await new TestSeeder().run(orm.em.fork() as SqlEntityManager);
+    await new TestSeeder().run(orm.em.fork());
   }
 
   if (env === 'development') {
-    await new DevelopmentSeeder().run(orm.em.fork() as SqlEntityManager);
+    await new DevelopmentSeeder().run(orm.em.fork());
   }
 
+  const server = new Koa();
+
+  server.use(requestContext);
+  server.use(helmet());
+  server.use(cors({
+    origin: corsConfig.origin,
+  }));
+  server.use(createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'));
+  server.use(koaBody({
+    jsonLimit: '128kb',
+    text: false,
+    multipart: false,
+    urlencoded: false,
+    onError: (err: Error) => {
+      if (err.name === 'PayloadTooLargeError') {
+        throw createHttpError(413, err.message);
+      }
+      throw createHttpError(400, err.message);
+    },
+  }));
+
+  container.resolve(JsonApiRegistry).init({
+    apiPath: '/api/v1',
+  });
+
   const koaApp = await createApplication({
-    server: new Koa(),
-    areas: [MainArea],
-    globalGuards: [],
-    globalMiddlewares: [
-      helmet(),
-      cors({
-        origin: corsConfig.origin,
-      }),
-      createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'),
-      koaBody({
-        jsonLimit: '128kb',
-        text: false,
-        multipart: false,
-        urlencoded: false,
-        onError: (err: Error) => {
-          if (err.name === 'PayloadTooLargeError') {
-            throw createHttpError(413, err.message);
-          }
-          throw createHttpError(400, err.message);
-        },
-      }),
-      CurrentUserMiddleware,
-      LogMiddleware,
-    ],
-    globalErrorhandler: DefaultErrorHandler,
-    globalNotFoundMiddleware: NotFoundMiddleware,
-    mikroORMConnection: orm,
-    mikroORMContext: true,
-    baseRoute: '/api/v1',
+    server,
+    controllers: [MainArea],
   });
 
   KoaQS(koaApp);
