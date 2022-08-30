@@ -4,7 +4,7 @@ import {
   Enum,
   Array,
   Number,
-  String,
+  String
 } from 'fastest-validator-decorators';
 import { MimeTypes } from '../enums/mime-type.enum.js';
 

@@ -15,8 +15,8 @@ test('Should list users', async () => {
     headers: {
       'content-type': 'application/vnd.api+json',
       accept: 'application/vnd.api+json',
-      Authorization: `Bearer ${authorizedToken}`,
-    },
+      Authorization: `Bearer ${authorizedToken}`
+    }
   });
   expect(response.status).toStrictEqual(200);
 });
@@ -26,8 +26,8 @@ test('Should get profile', async () => {
     headers: {
       'content-type': 'application/vnd.api+json',
       accept: 'application/vnd.api+json',
-      Authorization: `Bearer ${authorizedToken}`,
-    },
+      Authorization: `Bearer ${authorizedToken}`
+    }
   });
   expect(response.status).toStrictEqual(200);
 });
@@ -39,9 +39,9 @@ test('Should get user', async () => {
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(200);
 });
@@ -54,9 +54,9 @@ describe('JSON-API tests', () => {
         headers: {
           'content-type': 'application/vnd.api+json',
           accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${authorizedToken}`,
-        },
-      },
+          Authorization: `Bearer ${authorizedToken}`
+        }
+      }
     );
     const json = await response.json() as JSONAPIDocument;
     const data = json.data as ResourceObject<unknown>;
@@ -74,9 +74,9 @@ describe('JSON-API tests', () => {
         headers: {
           'content-type': 'application/vnd.api+json',
           accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${authorizedToken}`,
-        },
-      },
+          Authorization: `Bearer ${authorizedToken}`
+        }
+      }
     );
     expect(response.status).toStrictEqual(400);
   });
@@ -87,16 +87,16 @@ describe('JSON-API tests', () => {
         headers: {
           'content-type': 'application/vnd.api+json',
           accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${authorizedToken}`,
-        },
-      },
+          Authorization: `Bearer ${authorizedToken}`
+        }
+      }
     );
     const json = await response.json() as JSONAPIDocument;
     const data = json.data as ResourceObject<unknown>;
     expect(response.status).toStrictEqual(200);
     expect(data.id).toStrictEqual('12345678910abcdef');
     expect(data.attributes).toMatchObject({
-      firstName: 'amaury',
+      firstName: 'amaury'
     });
     expect(json.included).toBeUndefined();
   });
@@ -107,9 +107,9 @@ describe('JSON-API tests', () => {
         headers: {
           'content-type': 'application/vnd.api+json',
           accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${authorizedToken}`,
-        },
-      },
+          Authorization: `Bearer ${authorizedToken}`
+        }
+      }
     );
     expect(response.status).toStrictEqual(400);
   });
@@ -120,9 +120,9 @@ describe('JSON-API tests', () => {
         headers: {
           'content-type': 'application/vnd.api+json',
           accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${authorizedToken}`,
-        },
-      },
+          Authorization: `Bearer ${authorizedToken}`
+        }
+      }
     );
     expect(response.status).toStrictEqual(200);
     const json = await response.json() as JSONAPIDocument;
@@ -137,9 +137,9 @@ describe('JSON-API tests', () => {
         headers: {
           'content-type': 'application/vnd.api+json',
           accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${authorizedToken}`,
-        },
-      },
+          Authorization: `Bearer ${authorizedToken}`
+        }
+      }
     );
     expect(response.status).toStrictEqual(400);
   });
@@ -150,9 +150,9 @@ describe('JSON-API tests', () => {
         headers: {
           'content-type': 'application/vnd.api+json',
           accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${authorizedToken}`,
-        },
-      },
+          Authorization: `Bearer ${authorizedToken}`
+        }
+      }
     );
     const json = await response.json() as JSONAPIDocument;
     const data = json.data as ResourceObject<unknown>[];
@@ -188,16 +188,16 @@ test('Should create user', async () => {
             role: 'admin',
             lastName: 'amaury',
             firstName: 'amaury',
-            email: 'amaury@email.com',
-          },
-        },
+            email: 'amaury@email.com'
+          }
+        }
       }),
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(201);
 });
@@ -215,16 +215,16 @@ test('Create user with unknown key', async () => {
             role: 'admin',
             lastName: 'amaury',
             firstName: 'amaury',
-            email: 'amaury@email.com',
-          },
-        },
+            email: 'amaury@email.com'
+          }
+        }
       }),
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(400);
 });
@@ -239,16 +239,16 @@ test('Should update user', async () => {
           id: '12345678910abcdef',
           attributes: {
             lastName: 'amaury',
-            firstName: 'amaury',
-          },
-        },
+            firstName: 'amaury'
+          }
+        }
       }),
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(200);
 });
@@ -266,24 +266,24 @@ test('Should update user with relationships (full override)', async () => {
             role: 'admin',
             lastName: 'amaury',
             firstName: 'amaury',
-            email: 'amaury@email.com',
+            email: 'amaury@email.com'
           },
           relationships: {
             documents: {
               data: [{
                 type: 'documents',
-                id: '1234567891011',
-              }],
-            },
-          },
-        },
+                id: '1234567891011'
+              }]
+            }
+          }
+        }
       }),
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(200);
   const responseJSON = await response.json() as JSONAPIDocument;
@@ -306,24 +306,24 @@ test('Should create user with relationships', async () => {
             role: 'admin',
             lastName: 'amaury',
             firstName: 'amaury',
-            email: 'amaury@email.com',
+            email: 'amaury@email.com'
           },
           relationships: {
             documents: {
               data: [{
                 type: 'document',
-                id: '12345678910',
-              }],
-            },
-          },
-        },
+                id: '12345678910'
+              }]
+            }
+          }
+        }
       }),
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(201);
   const responseJSON = await response.json() as JSONAPIDocument;
@@ -344,9 +344,9 @@ test('Should delete user', async () => {
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(204);
 });
@@ -356,8 +356,8 @@ test('Should get unexisting user', async () => {
     headers: {
       'content-type': 'application/vnd.api+json',
       accept: 'application/vnd.api+json',
-      Authorization: `Bearer ${authorizedToken}`,
-    },
+      Authorization: `Bearer ${authorizedToken}`
+    }
   });
   expect(response.status).toStrictEqual(404);
 });
@@ -366,8 +366,8 @@ test('Should refuse wrong content-type', async () => {
   const response = await fetch('http://localhost:8001/api/v1/users', {
     headers: {
       'content-type': 'application/nd.api+json',
-      accept: 'application/vnd.api+json',
-    },
+      accept: 'application/vnd.api+json'
+    }
   });
   expect(response.status).toStrictEqual(415);
 });
@@ -376,8 +376,8 @@ test('Should refuse good content-type but with media chars', async () => {
   const response = await fetch('http://localhost:8001/api/v1/users', {
     headers: {
       'content-type': 'application/vnd.api+json; encoding=UTF-8',
-      accept: 'application/vnd.api+json',
-    },
+      accept: 'application/vnd.api+json'
+    }
   });
   expect(response.status).toStrictEqual(415);
 });
@@ -386,8 +386,8 @@ test('Should refuse wrong accept', async () => {
   const response = await fetch('http://localhost:8001/api/v1/users', {
     headers: {
       'content-type': 'application/vnd.api+json',
-      accept: 'application/json',
-    },
+      accept: 'application/json'
+    }
   });
   expect(response.status).toStrictEqual(406);
 });
@@ -398,9 +398,9 @@ test('Should deny > 128kb payloads', async () => {
     method: 'post',
     headers: {
       'content-type': 'application/vnd.api+json',
-      accept: 'application/vnd.api+json',
+      accept: 'application/vnd.api+json'
     },
-    body: JSON.stringify({ bytes: bytes.toString('hex') }),
+    body: JSON.stringify({ bytes: bytes.toString('hex') })
   });
   expect(response.status).toStrictEqual(413);
 });

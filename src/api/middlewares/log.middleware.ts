@@ -7,7 +7,6 @@ import type { MiddlewareInterface } from '@triptyk/nfw-http';
 
 @injectable()
 export class LogMiddleware implements MiddlewareInterface {
-  // eslint-disable-next-line no-useless-constructor
   constructor (@inject(LoggerService) private loggerService: LoggerService) {}
 
   async use (context: RouterContext, next: Next) {

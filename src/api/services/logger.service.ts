@@ -18,7 +18,7 @@ export class LoggerService {
           // eslint-disable-next-line no-console
           console.info(data.output);
         }
-      },
+      }
     });
   }
 

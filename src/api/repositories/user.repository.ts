@@ -10,7 +10,7 @@ export class UserRepository extends EntityRepository<UserModel> {
     const payload = {
       exp: now + accessExpires * 60,
       iat: now,
-      sub: user.id,
+      sub: user.id
     };
 
     return Jwt.sign(payload, secret, { algorithm: 'HS512', issuer: iss, notBefore: 0, audience });

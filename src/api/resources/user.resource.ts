@@ -5,14 +5,14 @@ import type { DocumentResource } from './document.resource.js';
 
 @JsonApiResource({
   entity: UserModel,
-  entityName: 'users',
+  entityName: 'users'
 })
 export class UserResource extends Resource<UserModel> {
   @Attribute({
     filterable: {
-      $eq: true,
+      $eq: true
     },
-    sortable: ['ASC', 'DESC'],
+    sortable: ['ASC', 'DESC']
   })
   declare id: string;
 
@@ -28,7 +28,7 @@ export class UserResource extends Resource<UserModel> {
   @Attribute({
     fetchable: false,
     filterable: false,
-    sortable: false,
+    sortable: false
   })
   declare password: string;
 
@@ -36,7 +36,7 @@ export class UserResource extends Resource<UserModel> {
   declare lastName: string;
 
   @Relationship({
-    otherResource: 'DocumentResource',
+    otherResource: 'DocumentResource'
   })
   declare documents: DocumentResource[];
 }

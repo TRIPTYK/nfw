@@ -13,8 +13,8 @@ test('Should list documents', async () => {
     headers: {
       'content-type': 'application/vnd.api+json',
       accept: 'application/vnd.api+json',
-      Authorization: `Bearer ${authorizedToken}`,
-    },
+      Authorization: `Bearer ${authorizedToken}`
+    }
   });
   expect(response.status).toStrictEqual(200);
 });
@@ -26,9 +26,9 @@ test('Should get document', async () => {
       headers: {
         'content-type': 'application/vnd.api+json',
         accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${authorizedToken}`,
-      },
-    },
+        Authorization: `Bearer ${authorizedToken}`
+      }
+    }
   );
   expect(response.status).toStrictEqual(200);
 });
@@ -36,15 +36,15 @@ test('Should get document', async () => {
 test('Create document', async () => {
   const formData = new FormData();
   formData.append('file', new File(['abc'], 'hello-world.txt', {
-    type: 'text/plain',
+    type: 'text/plain'
   }));
   const response = await fetch('http://localhost:8001/api/v1/documents/', {
     headers: {
       Authorization: `Bearer ${authorizedToken}`,
-      accept: 'application/vnd.api+json',
+      accept: 'application/vnd.api+json'
     },
     method: 'post',
-    body: formData,
+    body: formData
   });
   expect(response.status).toStrictEqual(201);
 });
@@ -52,17 +52,17 @@ test('Create document', async () => {
 test('Create document with unknown type', async () => {
   const formData = new FormData();
   formData.append('file', new File(['abc'], 'hello-world.gwe', {
-    type: 'text/goulagwe',
+    type: 'text/goulagwe'
   }));
   const response = await fetch('http://localhost:8001/api/v1/documents/', {
     headers: {
       Authorization: `Bearer ${authorizedToken}`,
-      accept: 'application/vnd.api+json',
+      accept: 'application/vnd.api+json'
     },
     method: 'post',
-    body: formData,
+    body: formData
   });
-  expect(response.status).toStrictEqual(422);
+  expect(response.status).toStrictEqual(400);
 });
 
 test('Replace document', async () => {
@@ -75,16 +75,16 @@ test('Replace document', async () => {
   expect(existsSync(firstFile.path)).toStrictEqual(true);
 
   formData.append('file', new File(['abc'], 'hello-world.txt', {
-    type: 'text/plain',
+    type: 'text/plain'
   }));
   formData.append('id', '123456789');
   const response = await fetch('http://localhost:8001/api/v1/documents/123456789', {
     headers: {
       Authorization: `Bearer ${authorizedToken}`,
-      accept: 'application/vnd.api+json',
+      accept: 'application/vnd.api+json'
     },
     method: 'patch',
-    body: formData,
+    body: formData
   });
 
   const newFile = await response.json() as Record<'data', Record<string, string>>;
@@ -110,9 +110,9 @@ test('Delete document', async () => {
     headers: {
       Authorization: `Bearer ${authorizedToken}`,
       'content-type': 'application/vnd.api+json',
-      accept: 'application/vnd.api+json',
+      accept: 'application/vnd.api+json'
     },
-    method: 'delete',
+    method: 'delete'
   });
 
   expect(existsSync(firstFile.path)).toStrictEqual(false);

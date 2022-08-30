@@ -34,17 +34,17 @@ export interface Configuration {
 export class ConfigurationService<T = Configuration> {
   private _config!: T;
 
-  public async load () : Promise<T> {
-    const { default: configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
-    return this._config = Object.seal(configuration);
-  }
-
   public get config (): T {
     if (!this._config) {
       throw new Error('Please use load() before app launch');
     }
 
     return this._config;
+  }
+
+  public async load () : Promise<T> {
+    const { default: configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
+    return this._config = Object.seal(configuration);
   }
 
   public getKey<K extends keyof T> (key: K, defaultValue?: any): T[K] {

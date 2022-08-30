@@ -5,7 +5,7 @@ export class NotFoundMiddleware implements MiddlewareInterface {
   async use (context: RouterContext) {
     context.body = {
       message: 'Not found',
-      code: 404,
+      code: 404
     };
   }
 }

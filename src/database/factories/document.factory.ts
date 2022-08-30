@@ -11,7 +11,7 @@ export class DocumentFactory extends Factory<DocumentModel> {
       originalName: 'file.png',
       path: 'dist/uploads/upload_1',
       mimetype: MimeTypes.PNG,
-      size: 1000,
+      size: 1000
     };
   }
 }

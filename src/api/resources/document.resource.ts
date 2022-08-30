@@ -9,12 +9,12 @@ import { DocumentResourceService } from '../services/documents.service.js';
   entity: DocumentModel,
   entityName: 'documents',
   deserializer: DocumentDeserializer,
-  service: DocumentResourceService,
+  service: DocumentResourceService
 })
 export class DocumentResource extends Resource<DocumentModel> {
   @Attribute({
     filterable: false,
-    sortable: ['ASC', 'DESC'],
+    sortable: ['ASC', 'DESC']
   })
   declare id: string;
 

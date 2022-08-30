@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ES2022"],
     "strict": true,
-    "target":"ESNext" ,
+    "target":"ES2022" ,
     "moduleResolution": "node",
-    "module":"ESNext"  ,
+    "module":"ES2022"  ,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
@@ -14,6 +14,7 @@
     "outDir": "./dist",
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": [ "dist/**/*",  "node_modules/**/*"]
+  "exclude": [ "dist/**/*",  "node_modules/**/*"],
+  "include": ["src/**/*","tests/**/*"]
 }
   

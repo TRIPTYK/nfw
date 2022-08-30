@@ -10,7 +10,7 @@ export class RefreshTokenRepository extends EntityRepository<RefreshTokenModel> 
     expires.setMinutes(expires.getMinutes() + (refreshExpires * 60));
 
     const oldToken = await this.findOne({
-      user,
+      user
     });
 
     if (oldToken) {
@@ -20,7 +20,7 @@ export class RefreshTokenRepository extends EntityRepository<RefreshTokenModel> 
     const refreshToken = this.create({
       token,
       user,
-      expires,
+      expires
     });
     return refreshToken;
   }

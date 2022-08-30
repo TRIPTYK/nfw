@@ -1,4 +1,4 @@
-import { injectable, inject } from '@triptyk/nfw-core';
+import { inject } from '@triptyk/nfw-core';
 import { ConfigurationService } from '../services/configuration.service.js';
 import { UserModel } from '../models/user.model.js';
 import type { UserRepository } from '../repositories/user.repository.js';
@@ -14,21 +14,19 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import { Controller, Ctx, POST, UseMiddleware } from '@triptyk/nfw-http';
 
 @Controller({
-  routeName: '/auth',
+  routeName: '/auth'
 })
-@injectable()
 export class AuthController {
-  // eslint-disable-next-line no-useless-constructor
   constructor (@inject(ConfigurationService) private configurationService: ConfigurationService,
                @injectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
-               @injectRepository(UserModel) private userRepository: UserRepository,
+               @injectRepository(UserModel) private userRepository: UserRepository
   ) {}
 
   @POST('/register')
   @UseMiddleware(createRateLimitMiddleware(1000 * 60 * 15, 2, 'Please wait before creating another account'))
   public async register (
     @ValidatedBody(ValidatedRegisteredUserBody) body : ValidatedRegisteredUserBody,
-    @Ctx() ctx: RouterContext,
+    @Ctx() ctx: RouterContext
   ) {
     const user = this.userRepository.create(body);
     user.role = Roles.USER;
@@ -41,7 +39,7 @@ export class AuthController {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
-      email: user.email,
+      email: user.email
     };
   }
 

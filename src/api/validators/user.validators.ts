@@ -3,7 +3,7 @@ import {
   Email,
   Schema,
   SchemaBase,
-  String,
+  String
 } from 'fastest-validator-decorators';
 
 @Schema(true)

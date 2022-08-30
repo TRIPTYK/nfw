@@ -7,12 +7,12 @@ import type { UserModel } from '../models/user.model.js';
 
 @injectable()
 export class AuthorizeGuard implements GuardInterface {
+  code = 401;
+
   can (@CurrentUser() user: UserModel | undefined, @Args() roles: string[]): boolean {
     if (user && roles.length === 0) {
       return true;
     }
     return roles.includes(user?.role ?? '');
   }
-
-  code = 401;
 }

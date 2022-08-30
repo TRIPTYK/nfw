@@ -12,13 +12,13 @@ export class TestSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
     const password = await (em.getRepository(UserModel) as UserRepository).hashPassword('123');
     const document = await new DocumentFactory(em).createOne({
-      id: '123456789',
+      id: '123456789'
     });
     await new DocumentFactory(em).createOne({
-      id: '1234567891011',
+      id: '1234567891011'
     });
     await new DocumentFactory(em).createOne({
-      id: '12345678910',
+      id: '12345678910'
     });
     await new UserFactory(em).createOne({
       id: '12345678910abcdef',
@@ -27,7 +27,7 @@ export class TestSeeder extends Seeder {
       firstName: 'amaury',
       lastName: 'localhost',
       role: Roles.ADMIN,
-      documents: [document] as unknown as Collection<DocumentModel>,
+      documents: [document] as unknown as Collection<DocumentModel>
     });
     await new UserFactory(em).createOne({
       id: '9876543210',
@@ -36,7 +36,7 @@ export class TestSeeder extends Seeder {
       firstName: 'sebastien',
       lastName: 'dutrèsgrosgrosXXXLDuGras',
       role: Roles.USER,
-      documents: [document] as unknown as Collection<DocumentModel>,
+      documents: [document] as unknown as Collection<DocumentModel>
     });
     const path = document.path.split('/');
     path.pop();

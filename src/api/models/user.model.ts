@@ -5,6 +5,7 @@ import {
   Enum,
   Collection,
   ManyToMany,
+  Filter
 } from '@mikro-orm/core';
 import { Roles } from '../enums/roles.enum.js';
 import { UserRepository } from '../repositories/user.repository.js';
@@ -15,7 +16,7 @@ import { BaseModel } from './base.model.js';
 
 @Entity({
   tableName: 'users',
-  customRepository: () => UserRepository,
+  customRepository: () => UserRepository
 })
 export class UserModel extends BaseModel<UserModel> {
   @Property()
@@ -36,14 +37,14 @@ export class UserModel extends BaseModel<UserModel> {
   @OneToOne({
     entity: 'RefreshTokenModel',
     mappedBy: 'user',
-    nullable: true,
+    nullable: true
   })
     refreshToken?: RefreshTokenModel;
 
     @ManyToMany({
       entity: 'DocumentModel',
       mappedBy: 'users',
-      owner: true,
+      owner: true
     })
       documents = new Collection<DocumentModel>(this);
 

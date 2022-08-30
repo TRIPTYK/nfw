@@ -1,16 +1,18 @@
-import { container, injectable } from '@triptyk/nfw-core';
+import { container } from '@triptyk/nfw-core';
 import type { UserModel } from '../models/user.model.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { Ctx, GET } from '@triptyk/nfw-http';
 import type { JsonApiContext, ResourceSerializer } from '@triptyk/nfw-jsonapi';
-import { JsonApiGetRelationships, JsonApiGetRelated, JsonApiDelete, JsonApiCreate, JsonApiUpdate, JsonApiGet, createResourceFrom, JsonApiRegistry, JsonApiController, JsonApiList } from '@triptyk/nfw-jsonapi';
+import { JsonApiGetRelationships, JsonApiGetRelated, JsonApiDelete, JsonApiCreate, JsonApiUpdate, JsonApiGet, createResourceFrom, JsonApiRegistry, JsonApiController, JsonApiList, JsonApiMethod } from '@triptyk/nfw-jsonapi';
 import { UserResource } from '../resources/user.resource.js';
-import { JsonApiMethod } from '@triptyk/nfw-jsonapi/dist/src/storage/metadata/endpoint.metadata.js';
 import type { RouterContext } from '@koa/router';
-import { QueryParser } from '@triptyk/nfw-jsonapi/dist/src/query-parser/query-parser.js';
+import { ValidatedUser, ValidatedUserUpdate } from '../validators/user.validators.js';
 
-@JsonApiController(UserResource)
-@injectable()
+@JsonApiController(UserResource, {
+  currentUser ({ koaContext }) {
+    return koaContext.state.user;
+  }
+})
 export class UsersController {
   @GET('/profile')
   public async profile (@CurrentUser() currentUser: UserModel, @Ctx() ctx: RouterContext) {
@@ -24,8 +26,7 @@ export class UsersController {
     const context = {
       koaContext: ctx,
       method: JsonApiMethod.GET,
-      resource: meta,
-      query: new QueryParser(),
+      resource: meta
     } as JsonApiContext<UserModel>;
 
     return serializer.serialize(createResourceFrom(currentUser.toJSON(), meta, context), context);
@@ -37,10 +38,14 @@ export class UsersController {
   @JsonApiGet()
   public get () {}
 
-  @JsonApiCreate()
+  @JsonApiCreate({
+    validation: ValidatedUser
+  })
   public create () {}
 
-  @JsonApiUpdate()
+  @JsonApiUpdate({
+    validation: ValidatedUserUpdate
+  })
   public update () {}
 
   @JsonApiDelete()

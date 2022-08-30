@@ -13,6 +13,9 @@ export async function loadUserFromContext (context: RouterContext, userRepo: Use
     if (bearerToken[0] === 'Bearer') {
       const decrypted = Jwt.decode(bearerToken[1], { complete: true });
       const user = await userRepo.findOne({ id: decrypted?.payload.sub as string });
+      if (!user) {
+        throw new Error('Invalid token');
+      }
       return user;
     } else {
       throw new Error('Invalid token');
@@ -22,7 +25,6 @@ export async function loadUserFromContext (context: RouterContext, userRepo: Use
 
 @injectable()
 export class CurrentUserMiddleware implements MiddlewareInterface {
-  // eslint-disable-next-line no-useless-constructor
   constructor (@injectRepository(UserModel) private userRepository: UserRepository) {}
 
   async use (context: RouterContext, next: Next) {

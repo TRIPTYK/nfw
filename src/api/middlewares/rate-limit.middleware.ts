@@ -8,5 +8,5 @@ export const createRateLimitMiddleware : (duration: number, max: number, message
   max,
   throw: true,
   errorMessage: message ?? 'Too many requests',
-  id: (ctx) => ctx.ip,
+  id: (ctx) => ctx.ip
 });

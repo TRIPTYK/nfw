@@ -4,7 +4,7 @@ import {
   Enum,
   BeforeDelete,
   ManyToMany,
-  Collection,
+  Collection
 } from '@mikro-orm/core';
 import { MimeTypes } from '../enums/mime-type.enum.js';
 import * as Fs from 'fs/promises';
@@ -12,7 +12,7 @@ import type { UserModel } from './user.model.js';
 import { BaseModel } from './base.model.js';
 
 @Entity({
-  tableName: 'documents',
+  tableName: 'documents'
 })
 export class DocumentModel extends BaseModel<DocumentModel> {
   @Property()
@@ -32,7 +32,7 @@ export class DocumentModel extends BaseModel<DocumentModel> {
 
   @ManyToMany({
     entity: 'UserModel',
-    mappedBy: 'documents',
+    mappedBy: 'documents'
   })
     users = new Collection<UserModel>(this);
 

@@ -8,7 +8,7 @@ import { LogMiddleware } from '../middlewares/log.middleware.js';
 
 @Controller({
   controllers: [AuthController, UsersController, DocumentController],
-  routeName: '/api/v1',
+  routeName: '/api/v1'
 })
 @UseMiddleware(DefaultErrorHandler)
 @UseMiddleware(CurrentUserMiddleware)

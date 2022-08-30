@@ -5,7 +5,7 @@ import type { UserModel } from './user.model.js';
 
 @Entity({
   tableName: 'refresh-token',
-  customRepository: () => RefreshTokenRepository,
+  customRepository: () => RefreshTokenRepository
 })
 export class RefreshTokenModel extends BaseModel<RefreshTokenModel> {
   @Property()

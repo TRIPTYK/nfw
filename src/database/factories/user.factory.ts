@@ -10,7 +10,7 @@ export class UserFactory extends Factory<UserModel> {
       firstName: '',
       lastName: '',
       password: '',
-      email: '',
+      email: ''
     };
   }
 }

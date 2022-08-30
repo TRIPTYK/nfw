@@ -5,7 +5,7 @@ import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
 import type { Configuration } from './api/services/configuration.service.js';
 import {
-  ConfigurationService,
+  ConfigurationService
 } from './api/services/configuration.service.js';
 import { DocumentModel } from './api/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
@@ -29,7 +29,7 @@ export async function runApplication () {
     database,
     port,
     cors: corsConfig,
-    env,
+    env
   } = await container
     .resolve<ConfigurationService<Configuration>>(ConfigurationService)
     .load();
@@ -47,7 +47,7 @@ export async function runApplication () {
     debug: database.debug,
     findOneOrFailHandler: (_entityName: string) => {
       return createHttpError(404, 'Not found');
-    },
+    }
   });
 
   const isConnected = await orm.isConnected();
@@ -76,7 +76,7 @@ export async function runApplication () {
   server.use(requestContext);
   server.use(helmet());
   server.use(cors({
-    origin: corsConfig.origin,
+    origin: corsConfig.origin
   }));
   server.use(createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'));
   server.use(koaBody({
@@ -89,16 +89,16 @@ export async function runApplication () {
         throw createHttpError(413, err.message);
       }
       throw createHttpError(400, err.message);
-    },
+    }
   }));
 
   container.resolve(JsonApiRegistry).init({
-    apiPath: '/api/v1',
+    apiPath: '/api/v1'
   });
 
   const koaApp = await createApplication({
     server,
-    controllers: [MainArea],
+    controllers: [MainArea]
   });
 
   KoaQS(koaApp);
