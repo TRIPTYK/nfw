@@ -13,5 +13,5 @@ export default {
   dbName: database.database,
   port: database.port,
   type: database.type,
-  debug: database.debug,
+  debug: database.debug
 };

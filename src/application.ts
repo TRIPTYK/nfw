@@ -45,6 +45,7 @@ export async function runApplication () {
     type: database.type,
     loadStrategy: LoadStrategy.SELECT_IN,
     debug: database.debug,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     findOneOrFailHandler: (_entityName: string) => {
       return createHttpError(404, 'Not found');
     }

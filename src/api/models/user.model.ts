@@ -4,8 +4,7 @@ import {
   OneToOne,
   Enum,
   Collection,
-  ManyToMany,
-  Filter
+  ManyToMany
 } from '@mikro-orm/core';
 import { Roles } from '../enums/roles.enum.js';
 import { UserRepository } from '../repositories/user.repository.js';

@@ -14,7 +14,6 @@ import { modelToName } from '../utils/model-to-name.js';
 @injectable()
 @singleton()
 export class AclService {
-  
   public constructor (@inject(MikroORM) public databaseConnection: MikroORM, @inject(ConfigurationService) private configService: ConfigurationService) {}
 
   public async can<T extends AnyEntity<T>> (ability: Class<T>, sub: UserModel | null | undefined, act: 'create' | 'update' | 'delete' | 'read', obj: EntityDTO<T> | T) {
