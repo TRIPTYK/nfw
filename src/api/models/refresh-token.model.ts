@@ -1,4 +1,5 @@
-import { Entity, Property, OneToOne } from '@mikro-orm/core';
+import type { Ref } from '@mikro-orm/core';
+import { types, Entity, Property, OneToOne } from '@mikro-orm/core';
 import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
 import { BaseModel } from './base.model.js';
 import type { UserModel } from './user.model.js';
@@ -8,12 +9,16 @@ import type { UserModel } from './user.model.js';
   customRepository: () => RefreshTokenRepository
 })
 export class RefreshTokenModel extends BaseModel<RefreshTokenModel> {
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare token: string;
 
-  @Property()
+  @Property({
+    type: types.datetime
+  })
   declare expires: Date;
 
-  @OneToOne({ entity: 'UserModel', inversedBy: 'refreshToken' })
-  declare user: UserModel;
+  @OneToOne({ entity: 'UserModel', inversedBy: 'refreshToken', ref: true })
+  declare user: Ref<UserModel>;
 }

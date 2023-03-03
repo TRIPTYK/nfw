@@ -4,7 +4,8 @@ import {
   Enum,
   BeforeDelete,
   ManyToMany,
-  Collection
+  Collection,
+  types
 } from '@mikro-orm/core';
 import { MimeTypes } from '../enums/mime-type.enum.js';
 import * as Fs from 'fs/promises';
@@ -15,19 +16,30 @@ import { BaseModel } from './base.model.js';
   tableName: 'documents'
 })
 export class DocumentModel extends BaseModel<DocumentModel> {
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare filename: string;
 
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare originalName: string;
 
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare path: string;
 
-  @Enum(() => MimeTypes)
+  @Enum({
+    items: Object.values(MimeTypes),
+    type: types.enum
+  })
   declare mimetype: MimeTypes;
 
-  @Property()
+  @Property({
+    type: types.integer
+  })
   declare size: number;
 
   @ManyToMany({

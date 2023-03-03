@@ -17,9 +17,10 @@ import { Controller, Ctx, POST, UseMiddleware } from '@triptyk/nfw-http';
   routeName: '/auth'
 })
 export class AuthController {
-  constructor (@inject(ConfigurationService) private configurationService: ConfigurationService,
-               @injectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
-               @injectRepository(UserModel) private userRepository: UserRepository
+  constructor (
+    @inject(ConfigurationService) private configurationService: ConfigurationService,
+    @injectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
+    @injectRepository(UserModel) private userRepository: UserRepository
   ) {}
 
   @POST('/register')
@@ -28,7 +29,7 @@ export class AuthController {
     @ValidatedBody(ValidatedRegisteredUserBody) body : ValidatedRegisteredUserBody,
     @Ctx() ctx: RouterContext
   ) {
-    const user = this.userRepository.create(body);
+    const user = this.userRepository.create({ ...body, role: Roles.USER });
     user.role = Roles.USER;
     user.password = await this.userRepository.hashPassword(body.password);
     await this.userRepository.persistAndFlush(user);
@@ -68,11 +69,12 @@ export class AuthController {
       throw createError(417, 'Invalid refresh token');
     }
 
-    const accessToken = this.userRepository.generateAccessToken(refresh.user, jwt.accessExpires, jwt.secret, jwt.iss, jwt.audience);
-    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(refresh.user, jwt.refreshExpires);
+    const user = refresh.user.unwrap();
 
-    this.refreshTokenRepository.remove(refresh);
-    await this.refreshTokenRepository.flush();
+    const accessToken = this.userRepository.generateAccessToken(user, jwt.accessExpires, jwt.secret, jwt.iss, jwt.audience);
+    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(user, jwt.refreshExpires);
+
+    await this.refreshTokenRepository.removeAndFlush(refresh);
 
     return { accessToken, refreshToken: refreshToken.token };
   }

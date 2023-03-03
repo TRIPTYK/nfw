@@ -1,10 +1,14 @@
+import type {
+  Ref
+} from '@mikro-orm/core';
 import {
   Entity,
   Property,
   OneToOne,
   Enum,
   Collection,
-  ManyToMany
+  ManyToMany,
+  types
 } from '@mikro-orm/core';
 import { Roles } from '../enums/roles.enum.js';
 import { UserRepository } from '../repositories/user.repository.js';
@@ -18,27 +22,39 @@ import { BaseModel } from './base.model.js';
   customRepository: () => UserRepository
 })
 export class UserModel extends BaseModel<UserModel> {
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare firstName: string;
 
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare lastName: string;
 
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare email: string;
 
-  @Property()
+  @Property({
+    type: types.string
+  })
   declare password: string;
 
-  @Enum(() => Roles)
+  @Enum({
+    items: Object.values(Roles),
+    type: types.enum
+  })
   declare role: Roles;
 
   @OneToOne({
     entity: 'RefreshTokenModel',
     mappedBy: 'user',
-    nullable: true
+    nullable: true,
+    ref: true
   })
-    refreshToken?: RefreshTokenModel;
+  declare refreshToken?: Ref<RefreshTokenModel>;
 
     @ManyToMany({
       entity: 'DocumentModel',

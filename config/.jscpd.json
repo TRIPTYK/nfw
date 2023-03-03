@@ -1,0 +1,19 @@
+{
+    "pattern": [
+        "{src,tests}/**/*.ts"
+    ],
+    "ignore": [
+        "**/node_modules/**",
+        "**/coverage/**",
+        "**/migrations/**",
+        "**/dist/**"
+    ],
+    "ignorePattern": [
+        "import .* from '.*';"
+    ],
+    "ignoreCase": true,
+    "minLines": 1,
+    "mode": "mild",
+    "gitignore": true,
+    "absolute": true
+}

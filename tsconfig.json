@@ -2,9 +2,9 @@
   "compilerOptions": {
     "lib": ["ES2022"],
     "strict": true,
-    "target":"ES2022" ,
+    "target": "ES2022",
     "moduleResolution": "node",
-    "module":"ES2022"  ,
+    "module": "ES2022",
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
@@ -14,7 +14,6 @@
     "outDir": "./dist",
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": [ "dist/**/*",  "node_modules/**/*"],
-  "include": ["src/**/*","tests/**/*"]
+  "exclude": ["dist/**/*", "node_modules/**/*"],
+  "include": ["src/**/*", "tests/**/*"]
 }
-  

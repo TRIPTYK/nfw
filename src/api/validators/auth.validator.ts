@@ -1,9 +1,10 @@
-import { Schema, SchemaBase, String, Email } from 'fastest-validator-decorators';
-import type { Roles } from '../enums/roles.enum.js';
+import { Schema, String, Email } from 'fastest-validator-decorators';
 import type { UserModel } from '../models/user.model';
 
-@Schema(true)
-export class ValidatedRegisteredUserBody extends SchemaBase implements Partial<UserModel> {
+@Schema({
+  strict: true
+})
+export class ValidatedRegisteredUserBody implements Partial<UserModel> {
   @String()
   public declare firstName: string;
 
@@ -15,18 +16,20 @@ export class ValidatedRegisteredUserBody extends SchemaBase implements Partial<U
 
   @String()
   public declare password: string;
-
-  public declare role: Roles;
 }
 
-@Schema(true)
-export class ValidatedRefreshBody extends SchemaBase {
+@Schema({
+  strict: true
+})
+export class ValidatedRefreshBody {
   @String()
   public declare refreshToken: string;
 }
 
-@Schema(true)
-export class ValidatedLoginBody extends SchemaBase {
+@Schema({
+  strict: true
+})
+export class ValidatedLoginBody {
   @Email()
   public declare email: string;
 

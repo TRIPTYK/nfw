@@ -43,7 +43,7 @@ export class ConfigurationService<T = Configuration> {
   }
 
   public async load () : Promise<T> {
-    const { default: configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
+    const { default: configuration } = await import(`${process.cwd()}/config/${process.env.NODE_ENV ?? 'development'}.js`);
     return this._config = Object.seal(configuration);
   }
 

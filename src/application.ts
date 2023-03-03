@@ -1,5 +1,5 @@
 import { LoadStrategy } from '@mikro-orm/core';
-import createApplication, { container } from '@triptyk/nfw-core';
+import { container } from '@triptyk/nfw-core';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
 import KoaQS from 'koa-qs';
@@ -17,9 +17,10 @@ import { MainArea } from './api/areas/main.area.js';
 import helmet from 'koa-helmet';
 import cors from '@koa/cors';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
-import koaBody from 'koa-body';
+import { koaBody } from 'koa-body';
 import { init, requestContext } from '@triptyk/nfw-mikro-orm';
 import { JsonApiRegistry } from '@triptyk/nfw-jsonapi';
+import { createApplication } from '@triptyk/nfw-http';
 
 export async function runApplication () {
   /**
@@ -83,6 +84,7 @@ export async function runApplication () {
   server.use(koaBody({
     jsonLimit: '128kb',
     text: false,
+    json: true,
     multipart: false,
     urlencoded: false,
     onError: (err: Error) => {
@@ -97,14 +99,14 @@ export async function runApplication () {
     apiPath: '/api/v1'
   });
 
-  const koaApp = await createApplication({
+  await createApplication({
     server,
     controllers: [MainArea]
   });
 
-  KoaQS(koaApp);
+  KoaQS(server);
 
-  const httpServer = koaApp.listen(port, () => {
+  const httpServer = server.listen(port, () => {
     logger.logger.info(`Listening on port ${port}`);
   });
 

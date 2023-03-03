@@ -1,6 +1,5 @@
 import {
   Schema,
-  SchemaBase,
   Enum,
   Array,
   Number,
@@ -8,8 +7,10 @@ import {
 } from 'fastest-validator-decorators';
 import { MimeTypes } from '../enums/mime-type.enum.js';
 
-@Schema()
-export class ValidatedDocument extends SchemaBase {
+@Schema({
+  strict: true
+})
+export class ValidatedDocument {
   @Enum({ values: Object.values(MimeTypes) })
   public declare mimetype: MimeTypes;
 

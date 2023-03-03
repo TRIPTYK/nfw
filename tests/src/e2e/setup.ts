@@ -4,14 +4,13 @@ import type { Server } from 'http';
 
 let server : Server;
 
-global.beforeEach(async () => {
-  const { runApplication } = await import('../src/application.js');
+export async function setup () {
+  const { runApplication } = await import('../../../src/application.js');
   server = await runApplication();
-});
+}
 
-global.afterEach(async () => {
+export async function teardown () {
   const { container } = await import('@triptyk/nfw-core');
-  await new Promise((resolve, _reject) => server.close(resolve));
-  // close existing database connection
+  await new Promise((resolve) => server.close(resolve));
   await (container.resolve(MikroORM)).close(true);
-});
+}
