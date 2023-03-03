@@ -1,3 +1,3 @@
-import { runApplication } from './application.js';
+import { Application } from './application.js';
 
-runApplication();
+export default new Application().start();

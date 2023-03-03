@@ -1,4 +1,4 @@
-import { LoadStrategy } from '@mikro-orm/core';
+import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
 import { RefreshTokenModel } from './api/models/refresh-token.model.js';
 import { UserModel } from './api/models/user.model.js';
@@ -21,94 +21,110 @@ import { koaBody } from 'koa-body';
 import { init, requestContext } from '@triptyk/nfw-mikro-orm';
 import { JsonApiRegistry } from '@triptyk/nfw-jsonapi';
 import { createApplication } from '@triptyk/nfw-http';
+import type { Server } from 'http';
 
-export async function runApplication () {
-  /**
-   * Load the config service first
-   */
-  const {
-    database,
-    port,
-    cors: corsConfig,
-    env
-  } = await container
-    .resolve<ConfigurationService<Configuration>>(ConfigurationService)
-    .load();
-  const logger = container.resolve(LoggerService);
+export class Application {
+  private httpServer?: Server;
+  private koaServer?: Koa;
 
-  const orm = await init({
-    entities: [UserModel, RefreshTokenModel, DocumentModel],
-    dbName: database.database,
-    host: database.host,
-    port: database.port,
-    user: database.user,
-    password: database.password,
-    type: database.type,
-    loadStrategy: LoadStrategy.SELECT_IN,
-    debug: database.debug,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    findOneOrFailHandler: (_entityName: string) => {
-      return createHttpError(404, 'Not found');
+  public async start () {
+    const {
+      database,
+      port,
+      cors: corsConfig,
+      env
+    } = await container
+      .resolve<ConfigurationService<Configuration>>(ConfigurationService)
+      .load();
+    const logger = container.resolve(LoggerService);
+
+    const orm = await this.setupORM(database);
+
+    if (env === 'test' || env === 'development') {
+      const generator = orm.getSchemaGenerator();
+      await generator.dropSchema();
+      await generator.createSchema();
+      await generator.updateSchema();
     }
-  });
 
-  const isConnected = await orm.isConnected();
+    if (env === 'test') {
+      await new TestSeeder().run(orm.em.fork());
+    }
 
-  if (!isConnected) {
-    throw new Error('Failed to connect to database');
+    if (env === 'development') {
+      await new DevelopmentSeeder().run(orm.em.fork());
+    }
+
+    const server = this.setupKoaServer(corsConfig);
+
+    container.resolve(JsonApiRegistry).init({
+      apiPath: '/api/v1'
+    });
+
+    await createApplication({
+      server,
+      controllers: [MainArea]
+    });
+
+    KoaQS(server);
+
+    return this.httpServer = server.listen(port, () => {
+      logger.logger.info(`Listening on port ${port}`);
+    });
   }
 
-  if (env === 'test' || env === 'development') {
-    const generator = orm.getSchemaGenerator();
-    await generator.dropSchema();
-    await generator.createSchema();
-    await generator.updateSchema();
-  }
+  private setupKoaServer (corsConfig: { origin: string }) {
+    const server = this.koaServer = new Koa();
 
-  if (env === 'test') {
-    await new TestSeeder().run(orm.em.fork());
-  }
-
-  if (env === 'development') {
-    await new DevelopmentSeeder().run(orm.em.fork());
-  }
-
-  const server = new Koa();
-
-  server.use(requestContext);
-  server.use(helmet());
-  server.use(cors({
-    origin: corsConfig.origin
-  }));
-  server.use(createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'));
-  server.use(koaBody({
-    jsonLimit: '128kb',
-    text: false,
-    json: true,
-    multipart: false,
-    urlencoded: false,
-    onError: (err: Error) => {
-      if (err.name === 'PayloadTooLargeError') {
-        throw createHttpError(413, err.message);
+    server.use(requestContext);
+    server.use(helmet());
+    server.use(cors({
+      origin: corsConfig.origin
+    }));
+    server.use(createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'));
+    server.use(koaBody({
+      jsonLimit: '128kb',
+      text: false,
+      json: true,
+      multipart: false,
+      urlencoded: false,
+      onError: (err: Error) => {
+        if (err.name === 'PayloadTooLargeError') {
+          throw createHttpError(413, err.message);
+        }
+        throw createHttpError(400, err.message);
       }
-      throw createHttpError(400, err.message);
+    }));
+
+    return server;
+  }
+
+  private async setupORM (database: Configuration['database']) {
+    const orm = await init({
+      entities: [UserModel, RefreshTokenModel, DocumentModel],
+      dbName: database.database,
+      host: database.host,
+      port: database.port,
+      user: database.user,
+      password: database.password,
+      type: database.type,
+      loadStrategy: LoadStrategy.SELECT_IN,
+      debug: database.debug,
+      findOneOrFailHandler: () => {
+        return createHttpError(404, 'Not found');
+      }
+    });
+
+    const isConnected = await orm.isConnected();
+
+    if (!isConnected) {
+      throw new Error('Failed to connect to database');
     }
-  }));
+    return orm;
+  }
 
-  container.resolve(JsonApiRegistry).init({
-    apiPath: '/api/v1'
-  });
-
-  await createApplication({
-    server,
-    controllers: [MainArea]
-  });
-
-  KoaQS(server);
-
-  const httpServer = server.listen(port, () => {
-    logger.logger.info(`Listening on port ${port}`);
-  });
-
-  return httpServer;
+  public async stop () {
+    await container.resolve(MikroORM).close(true);
+    return this.httpServer?.close();
+  }
 }
