@@ -11,7 +11,6 @@ specifiers:
   '@mikro-orm/seeder': ~5.6.13
   '@triptyk/nfw-core': file:../nfw-core/packages/core
   '@triptyk/nfw-http': file:../nfw-core/packages/http
-  '@triptyk/nfw-jsonapi': file:../nfw-core/packages/jsonapi
   '@triptyk/nfw-mikro-orm': file:../nfw-core/packages/mikro-orm
   '@types/bcrypt': ~5.0.0
   '@types/formidable': ~2.0.5
@@ -77,7 +76,6 @@ dependencies:
   '@mikro-orm/seeder': 5.6.13_@mikro-orm+core@5.6.13
   '@triptyk/nfw-core': file:../nfw-core/packages/core
   '@triptyk/nfw-http': file:../nfw-core/packages/http_vksrptgllqtzfn7iksrle5o3ha
-  '@triptyk/nfw-jsonapi': file:../nfw-core/packages/jsonapi_2df6e6w2qshjnf7uwci5r4ubqa
   '@triptyk/nfw-mikro-orm': file:../nfw-core/packages/mikro-orm_y35q34jw2ptpawhqmquaao72y4
   bcrypt: 5.1.0
   fastest-validator: 1.16.0
@@ -4591,11 +4589,6 @@ packages:
     hasBin: true
     dev: true
 
-  /ts-deepmerge/6.0.2:
-    resolution: {integrity: sha512-/GPCwZfJylLU3i00vFwHa36YYvKY9F1Es/VhRESre7betW2cvxF05qwAD0vGlsKl93FEAB+2DoN/QrUw9VyBcg==}
-    engines: {node: '>=14.13.1'}
-    dev: false
-
   /ts-node-dev/2.0.0_2cogyjchoknpkalymtikkc6nay:
     resolution: {integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w==}
     engines: {node: '>=0.8.0'}
@@ -5180,25 +5173,6 @@ packages:
       '@koa/router': 12.0.0
       '@triptyk/nfw-core': file:../nfw-core/packages/core
       is-class: 0.0.9
-    dev: false
-
-  file:../nfw-core/packages/jsonapi_2df6e6w2qshjnf7uwci5r4ubqa:
-    resolution: {directory: ../nfw-core/packages/jsonapi, type: directory}
-    id: file:../nfw-core/packages/jsonapi
-    name: '@triptyk/nfw-jsonapi'
-    version: 4.0.0-alpha.31
-    engines: {node: '>=16.3.1'}
-    peerDependencies:
-      '@triptyk/nfw-core': workspace:*
-      '@triptyk/nfw-http': workspace:*
-      '@triptyk/nfw-mikro-orm': workspace:*
-    dependencies:
-      '@koa/router': 12.0.0
-      '@triptyk/nfw-core': file:../nfw-core/packages/core
-      '@triptyk/nfw-http': file:../nfw-core/packages/http_vksrptgllqtzfn7iksrle5o3ha
-      '@triptyk/nfw-mikro-orm': file:../nfw-core/packages/mikro-orm_y35q34jw2ptpawhqmquaao72y4
-      pluralize: 8.0.0
-      ts-deepmerge: 6.0.2
     dev: false
 
   file:../nfw-core/packages/mikro-orm_y35q34jw2ptpawhqmquaao72y4:

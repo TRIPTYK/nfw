@@ -37,7 +37,6 @@
     "@mikro-orm/seeder": "~5.6.13",
     "@triptyk/nfw-core": "file:../nfw-core/packages/core",
     "@triptyk/nfw-http": "file:../nfw-core/packages/http",
-    "@triptyk/nfw-jsonapi": "file:../nfw-core/packages/jsonapi",
     "@triptyk/nfw-mikro-orm": "file:../nfw-core/packages/mikro-orm",
     "bcrypt": "~5.1.0",
     "fastest-validator": "^1.16.0",

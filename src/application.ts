@@ -8,7 +8,6 @@ import {
   ConfigurationService
 } from './api/services/configuration.service.js';
 import { DocumentModel } from './database/models/document.model.js';
-import { LoggerService } from './api/services/logger.service.js';
 import createHttpError from 'http-errors';
 import { TestSeeder } from './database/seeder/test.seeder.js';
 import Koa from 'koa';
@@ -19,9 +18,9 @@ import cors from '@koa/cors';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 import { koaBody } from 'koa-body';
 import { init, requestContext } from '@triptyk/nfw-mikro-orm';
-import { JsonApiRegistry } from '@triptyk/nfw-jsonapi';
 import { createApplication } from '@triptyk/nfw-http';
 import type { Server } from 'http';
+import { LoggerServiceImpl } from './api/services/logger.service.js';
 
 export class Application {
   private httpServer?: Server;
@@ -36,7 +35,7 @@ export class Application {
     } = await container
       .resolve<ConfigurationService<Configuration>>(ConfigurationService)
       .load();
-    const logger = container.resolve(LoggerService);
+    const logger = container.resolve(LoggerServiceImpl);
 
     const orm = await this.setupORM(database);
 
@@ -57,10 +56,6 @@ export class Application {
 
     const server = this.setupKoaServer(corsConfig);
 
-    container.resolve(JsonApiRegistry).init({
-      apiPath: '/api/v1'
-    });
-
     await createApplication({
       server,
       controllers: [MainArea]
@@ -69,7 +64,7 @@ export class Application {
     KoaQS(server);
 
     return this.httpServer = server.listen(port, () => {
-      logger.logger.info(`Listening on port ${port}`);
+      logger.info(`Listening on port ${port}`);
     });
   }
 
