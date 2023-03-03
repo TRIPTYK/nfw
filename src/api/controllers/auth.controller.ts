@@ -1,10 +1,10 @@
 import { inject } from '@triptyk/nfw-core';
 import { ConfigurationService } from '../services/configuration.service.js';
-import { UserModel } from '../models/user.model.js';
-import type { UserRepository } from '../repositories/user.repository.js';
+import { UserModel } from '../../database/models/user.model.js';
+import type { UserRepository } from '../../database/repositories/user.repository.js';
 import createError from 'http-errors';
-import { RefreshTokenModel } from '../models/refresh-token.model.js';
-import type { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
+import { RefreshTokenModel } from '../../database/models/refresh-token.model.js';
+import type { RefreshTokenRepository } from '../../database/repositories/refresh-token.repository.js';
 import { ValidatedBody } from '../decorators/validated-body.js';
 import { ValidatedLoginBody, ValidatedRefreshBody, ValidatedRegisteredUserBody } from '../validators/auth.validator.js';
 import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';

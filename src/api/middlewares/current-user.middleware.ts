@@ -1,8 +1,8 @@
 import type { RouterContext } from '@koa/router';
 import type { Next } from 'koa';
 import * as Jwt from 'jsonwebtoken';
-import { UserModel } from '../models/user.model.js';
-import type { UserRepository } from '../repositories/user.repository.js';
+import { UserModel } from '../../database/models/user.model.js';
+import type { UserRepository } from '../../database/repositories/user.repository.js';
 import { injectable } from '@triptyk/nfw-core';
 import type { MiddlewareInterface } from '@triptyk/nfw-http';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';

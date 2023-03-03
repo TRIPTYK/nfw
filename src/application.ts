@@ -1,13 +1,13 @@
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
-import { RefreshTokenModel } from './api/models/refresh-token.model.js';
-import { UserModel } from './api/models/user.model.js';
+import { RefreshTokenModel } from './database/models/refresh-token.model.js';
+import { UserModel } from './database/models/user.model.js';
 import KoaQS from 'koa-qs';
 import type { Configuration } from './api/services/configuration.service.js';
 import {
   ConfigurationService
 } from './api/services/configuration.service.js';
-import { DocumentModel } from './api/models/document.model.js';
+import { DocumentModel } from './database/models/document.model.js';
 import { LoggerService } from './api/services/logger.service.js';
 import createHttpError from 'http-errors';
 import { TestSeeder } from './database/seeder/test.seeder.js';

@@ -2,7 +2,7 @@
 import { Attribute, JsonApiResource, Resource } from '@triptyk/nfw-jsonapi';
 import { DocumentDeserializer } from '../deserializers/document.deserializer.js';
 import type { MimeTypes } from '../enums/mime-type.enum.js';
-import { DocumentModel } from '../models/document.model.js';
+import { DocumentModel } from '../../database/models/document.model.js';
 import { DocumentResourceService } from '../services/documents.service.js';
 
 @JsonApiResource({

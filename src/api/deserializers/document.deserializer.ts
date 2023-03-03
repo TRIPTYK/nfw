@@ -1,7 +1,7 @@
 import type { Resource, JsonApiContext } from '@triptyk/nfw-jsonapi';
 import { ResourceDeserializer } from '@triptyk/nfw-jsonapi';
 import type formidable from 'formidable';
-import type { DocumentModel } from '../models/document.model.js';
+import type { DocumentModel } from '../../database/models/document.model.js';
 
 export class DocumentDeserializer extends ResourceDeserializer<DocumentModel> {
   async deserialize (payload: Record<string, unknown>, context: JsonApiContext<DocumentModel, Resource<DocumentModel>>): Promise<Resource<DocumentModel>> {

@@ -3,7 +3,7 @@ import { injectable } from '@triptyk/nfw-core';
 import type { GuardInterface } from '@triptyk/nfw-http';
 import { Args } from '@triptyk/nfw-http';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
-import type { UserModel } from '../models/user.model.js';
+import type { UserModel } from '../../database/models/user.model.js';
 
 @injectable()
 export class AuthorizeGuard implements GuardInterface {

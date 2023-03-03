@@ -2,7 +2,7 @@ import { subject } from '@casl/ability';
 import type { AnyEntity, EntityDTO } from '@mikro-orm/core';
 import { MikroORM } from '@mikro-orm/core';
 import type { SqlEntityManager } from '@mikro-orm/mysql';
-import type { UserModel } from '../models/user.model.js';
+import type { UserModel } from '../../database/models/user.model.js';
 import * as abilities from '@casl/ability/extra'; // must use all because jest error
 import createHttpError from 'http-errors';
 import { ConfigurationService } from './configuration.service.js';

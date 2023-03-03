@@ -1,5 +1,5 @@
 import { Schema, String, Email } from 'fastest-validator-decorators';
-import type { UserModel } from '../models/user.model';
+import type { UserModel } from '../../database/models/user.model';
 
 @Schema({
   strict: true

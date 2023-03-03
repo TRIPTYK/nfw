@@ -1,5 +1,5 @@
 import type { UserModel } from '../models/user.model.js';
-import { unixTimestamp } from '../utils/date-utils.js';
+import { unixTimestamp } from '../../api/utils/date-utils.js';
 import Jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { EntityRepository } from '@mikro-orm/core';

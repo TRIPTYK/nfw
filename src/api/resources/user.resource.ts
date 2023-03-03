@@ -1,6 +1,6 @@
 
 import { Attribute, JsonApiResource, Relationship, Resource } from '@triptyk/nfw-jsonapi';
-import { UserModel } from '../models/user.model.js';
+import { UserModel } from '../../database/models/user.model.js';
 import type { DocumentResource } from './document.resource.js';
 
 @JsonApiResource({

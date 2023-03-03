@@ -10,7 +10,7 @@ import {
   ManyToMany,
   types
 } from '@mikro-orm/core';
-import { Roles } from '../enums/roles.enum.js';
+import { Roles } from '../../api/enums/roles.enum.js';
 import { UserRepository } from '../repositories/user.repository.js';
 import type { RefreshTokenModel } from './refresh-token.model.js';
 import bcrypt from 'bcrypt';

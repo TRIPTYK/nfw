@@ -7,7 +7,7 @@ import {
   Collection,
   types
 } from '@mikro-orm/core';
-import { MimeTypes } from '../enums/mime-type.enum.js';
+import { MimeTypes } from '../../api/enums/mime-type.enum.js';
 import * as Fs from 'fs/promises';
 import type { UserModel } from './user.model.js';
 import { BaseModel } from './base.model.js';
