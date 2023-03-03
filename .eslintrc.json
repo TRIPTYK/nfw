@@ -1,13 +1,12 @@
 {
   "env": {
     "browser": true,
-    "es2021": true,
-    "jest/globals": true
+    "es2021": true
   },
   "root": true,
   "extends": ["standard"],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "unused-imports", "jest"],
+  "plugins": ["@typescript-eslint", "unused-imports"],
   "rules": {
     "semi": "off",
     "no-console": "error",

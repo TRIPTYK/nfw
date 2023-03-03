@@ -5,13 +5,13 @@ import type { UserRepository } from '../../database/repositories/user.repository
 import { injectable } from '@triptyk/nfw-core';
 import type { MiddlewareInterface } from '@triptyk/nfw-http';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
-import { decode } from 'jsonwebtoken';
+import * as JWT from 'jsonwebtoken';
 
 export async function loadUserFromContext (context: RouterContext, userRepo: UserRepository) {
   if (context.header.authorization) {
     const bearerToken = context.header.authorization.split(' ');
     if (bearerToken[0] === 'Bearer') {
-      const decrypted = decode(bearerToken[1], { complete: true });
+      const decrypted = JWT.decode(bearerToken[1], { complete: true });
       const user = await userRepo.findOne({ id: decrypted?.payload.sub as string });
       if (!user) {
         throw new Error('Invalid token');

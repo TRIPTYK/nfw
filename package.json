@@ -5,16 +5,21 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "concurrently \"pnpm:test:*\"",
-    "test:e2e": "vitest -c config/tests/e2e.vitest.config.ts",
-    "test:unit": "vitest -c config/tests/unit.vitest.config.ts",
-    "test:integration": "vitest -c config/tests/integration.vitest.config.ts",
+    "test:e2e": "vitest -c config/vitest/e2e.vitest.config.ts",
+    "test:unit": "vitest -c config/vitest/unit.vitest.config.ts",
+    "test:integration": "vitest -c config/vitest/integration.vitest.config.ts",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
-    "lint:duplication": "jscpd --exitCode 1",
+    "lint:duplication": "jscpd -c config/jscpd.json --exitCode 1",
     "mikro-orm:cli": "MIKRO_ORM_CLI_USE_TS_NODE=1 MIKRO_ORM_DYNAMIC_IMPORTS=1 node --experimental-specifier-resolution=node --loader ts-node/esm ./node_modules/@mikro-orm/cli/cli.js",
-    "start:dev": "NODE_ENV=development nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
+    "start:dev": "nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
     "start:test": "NODE_ENV=test nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
     "start:production": "NODE_ENV=production node ./dist/src/application.bootstrap.js"
+  },
+  "mikro-orm": {
+    "configPaths": [
+      "config/orm.config.ts"
+    ]
   },
   "type": "module",
   "repository": {
@@ -44,7 +49,6 @@
     "http-errors": "~2.0.0",
     "json-api-serializer": "~2.6.6",
     "jsonwebtoken": "~9.0.0",
-    "jwt-simple": "~0.5.6",
     "koa": "~2.14.1",
     "koa-body": "6.0.1",
     "koa-helmet": "~6.1.0",
@@ -54,6 +58,7 @@
     "pluralize": "~8.0.0",
     "reflect-metadata": "~0.1.13",
     "tracer": "~1.1.6",
+    "ts-dotenv": "^0.9.1",
     "typescript": "~4.9.5",
     "uuid": "~9.0.0"
   },

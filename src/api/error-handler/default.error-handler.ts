@@ -3,19 +3,23 @@ import { inject, injectable } from '@triptyk/nfw-core';
 import type { MiddlewareInterface } from '@triptyk/nfw-http';
 import { isHttpError } from 'http-errors';
 import type { Next } from 'koa';
-import { ConfigurationService } from '../services/configuration.service.js';
+import type { ConfigurationService, Env } from '../services/configuration.service.js';
+import { ConfigurationServiceImpl } from '../services/configuration.service.js';
 import type { LoggerService } from '../services/logger.service.js';
 import { LoggerServiceImpl } from '../services/logger.service.js';
 
 @injectable()
 export class DefaultErrorHandler implements MiddlewareInterface {
-  constructor (@inject(LoggerServiceImpl) private loggerService: LoggerService, @inject(ConfigurationService) private configurationService: ConfigurationService) {}
+  constructor (
+    @inject(LoggerServiceImpl) private loggerService: LoggerService,
+    @inject(ConfigurationServiceImpl) private configurationService: ConfigurationService<Env>) {
+  }
 
   async use (context: RouterContext, next: Next) {
     try {
       await next();
     } catch (error: any) {
-      const isDev = this.configurationService.getKey('env', 'development') === 'development';
+      const isDev = this.configurationService.get('NODE_ENV') === 'development';
       this.loggerService.error(error);
 
       if (Array.isArray(error)) {

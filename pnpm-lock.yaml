@@ -44,7 +44,6 @@ specifiers:
   jscpd: ~3.5.3
   json-api-serializer: ~2.6.6
   jsonwebtoken: ~9.0.0
-  jwt-simple: ~0.5.6
   koa: ~2.14.1
   koa-body: 6.0.1
   koa-helmet: ~6.1.0
@@ -57,6 +56,7 @@ specifiers:
   prettier-eslint: ~15.0.1
   reflect-metadata: ~0.1.13
   tracer: ~1.1.6
+  ts-dotenv: ^0.9.1
   ts-node: ~10.9.1
   ts-node-dev: ~2.0.0
   type-fest: ~3.6.1
@@ -83,7 +83,6 @@ dependencies:
   http-errors: 2.0.0
   json-api-serializer: 2.6.6
   jsonwebtoken: 9.0.0
-  jwt-simple: 0.5.6
   koa: 2.14.1
   koa-body: 6.0.1
   koa-helmet: 6.1.0
@@ -93,6 +92,7 @@ dependencies:
   pluralize: 8.0.0
   reflect-metadata: 0.1.13
   tracer: 1.1.6
+  ts-dotenv: 0.9.1
   typescript: 4.9.5
   uuid: 9.0.0
 
@@ -3181,11 +3181,6 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /jwt-simple/0.5.6:
-    resolution: {integrity: sha512-40aUybvhH9t2h71ncA1/1SbtTNCVZHgsTsTgqPUxGWDmUDrXyDf2wMNQKEbdBjbf4AI+fQhbECNTV6lWxQKUzg==}
-    engines: {node: '>= 0.4.0'}
-    dev: false
-
   /keygrip/1.1.0:
     resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
     engines: {node: '>= 0.6'}
@@ -4588,6 +4583,10 @@ packages:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
     dev: true
+
+  /ts-dotenv/0.9.1:
+    resolution: {integrity: sha512-oTTXmjSMkCIK8d+uKbQnHh7JS9zEYGn3pq7nE0qHVERq+6Mx9wZKcXVAT+7X0qhOWpRz10dqrJCFFcKwunYz5w==}
+    dev: false
 
   /ts-node-dev/2.0.0_2cogyjchoknpkalymtikkc6nay:
     resolution: {integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w==}

@@ -3,9 +3,9 @@ import { container } from '@triptyk/nfw-core';
 import { RefreshTokenModel } from './database/models/refresh-token.model.js';
 import { UserModel } from './database/models/user.model.js';
 import KoaQS from 'koa-qs';
-import type { Configuration } from './api/services/configuration.service.js';
+
 import {
-  ConfigurationService
+  ConfigurationServiceImpl
 } from './api/services/configuration.service.js';
 import { DocumentModel } from './database/models/document.model.js';
 import createHttpError from 'http-errors';
@@ -22,22 +22,18 @@ import { createApplication } from '@triptyk/nfw-http';
 import type { Server } from 'http';
 import { LoggerServiceImpl } from './api/services/logger.service.js';
 
+const configurationService = container.resolve(ConfigurationServiceImpl);
+configurationService.load();
+
 export class Application {
   private httpServer?: Server;
   private koaServer?: Koa;
 
   public async start () {
-    const {
-      database,
-      port,
-      cors: corsConfig,
-      env
-    } = await container
-      .resolve<ConfigurationService<Configuration>>(ConfigurationService)
-      .load();
     const logger = container.resolve(LoggerServiceImpl);
+    const env = configurationService.get('NODE_ENV');
 
-    const orm = await this.setupORM(database);
+    const orm = await this.setupORM();
 
     if (env === 'test' || env === 'development') {
       const generator = orm.getSchemaGenerator();
@@ -54,7 +50,7 @@ export class Application {
       await new DevelopmentSeeder().run(orm.em.fork());
     }
 
-    const server = this.setupKoaServer(corsConfig);
+    const server = this.setupKoaServer();
 
     await createApplication({
       server,
@@ -63,18 +59,18 @@ export class Application {
 
     KoaQS(server);
 
-    return this.httpServer = server.listen(port, () => {
-      logger.info(`Listening on port ${port}`);
+    return this.httpServer = server.listen(configurationService.get('PORT'), () => {
+      logger.info(`Listening on port ${configurationService.get('PORT')}`);
     });
   }
 
-  private setupKoaServer (corsConfig: { origin: string }) {
+  private setupKoaServer () {
     const server = this.koaServer = new Koa();
 
     server.use(requestContext);
     server.use(helmet());
     server.use(cors({
-      origin: corsConfig.origin
+      origin: configurationService.get('CORS')
     }));
     server.use(createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'));
     server.use(koaBody({
@@ -94,17 +90,17 @@ export class Application {
     return server;
   }
 
-  private async setupORM (database: Configuration['database']) {
+  private async setupORM () {
     const orm = await init({
       entities: [UserModel, RefreshTokenModel, DocumentModel],
-      dbName: database.database,
-      host: database.host,
-      port: database.port,
-      user: database.user,
-      password: database.password,
-      type: database.type,
+      dbName: configurationService.get('DATABASE_NAME'),
+      host: configurationService.get('DATABASE_HOST'),
+      port: configurationService.get('DATABASE_PORT'),
+      user: configurationService.get('DATABASE_USER'),
+      password: configurationService.get('DATABASE_PASSWORD'),
+      type: 'mysql',
       loadStrategy: LoadStrategy.SELECT_IN,
-      debug: database.debug,
+      debug: configurationService.get('DEBUG'),
       findOneOrFailHandler: () => {
         return createHttpError(404, 'Not found');
       }
@@ -115,6 +111,7 @@ export class Application {
     if (!isConnected) {
       throw new Error('Failed to connect to database');
     }
+
     return orm;
   }
 
