@@ -1,3 +1,7 @@
 {
-    "recommendations": ["dbaeumer.vscode-eslint","usernamehw.errorlens"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "usernamehw.errorlens",
+    "ZixuanChen.vitest-explorer"
+  ]
 }

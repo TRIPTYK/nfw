@@ -9,9 +9,9 @@ import {
 } from './api/services/configuration.service.js';
 import { DocumentModel } from './database/models/document.model.js';
 import createHttpError from 'http-errors';
-import { TestSeeder } from './database/seeder/test.seeder.js';
+import { TestSeeder } from './database/seeders/test/test.seeder.js';
 import Koa from 'koa';
-import { DevelopmentSeeder } from './database/seeder/development.seeder.js';
+import { DevelopmentSeeder } from './database/seeders/development/development.seeder.js';
 import { MainArea } from './api/areas/main.area.js';
 import helmet from 'koa-helmet';
 import cors from '@koa/cors';
