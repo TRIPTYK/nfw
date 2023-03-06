@@ -20,7 +20,10 @@ import { koaBody } from 'koa-body';
 import { init, requestContext } from '@triptyk/nfw-mikro-orm';
 import { createApplication } from '@triptyk/nfw-http';
 import type { Server } from 'http';
+import type { LoggerService } from './api/services/logger.service.js';
 import { LoggerServiceImpl } from './api/services/logger.service.js';
+import { setupRegistry } from './api/resources/setup-registry.js';
+import { JsonApiRegistryImpl } from '@triptyk/nfw-resources';
 
 const configurationService = container.resolve(ConfigurationServiceImpl);
 configurationService.load();
@@ -28,12 +31,15 @@ configurationService.load();
 export class Application {
   private httpServer?: Server;
   private koaServer?: Koa;
+  private logger?: LoggerService;
 
-  public async start () {
-    const logger = container.resolve(LoggerServiceImpl);
+  public async setup () {
+    this.logger = container.resolve(LoggerServiceImpl);
     const env = configurationService.get('NODE_ENV');
 
     const orm = await this.setupORM();
+
+    setupRegistry(container.resolve(JsonApiRegistryImpl));
 
     if (env === 'test' || env === 'development') {
       const generator = orm.getSchemaGenerator();
@@ -58,10 +64,13 @@ export class Application {
     });
 
     KoaQS(server);
+  }
 
-    return this.httpServer = server.listen(configurationService.get('PORT'), () => {
-      logger.info(`Listening on port ${configurationService.get('PORT')}`);
-    });
+  public listen () {
+    return new Promise<void>((resolve) => this.koaServer?.listen(configurationService.get('PORT'), () => {
+      this.logger?.info(`Listening on port ${configurationService.get('PORT')}`);
+      resolve();
+    }));
   }
 
   private setupKoaServer () {

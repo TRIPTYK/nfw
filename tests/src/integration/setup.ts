@@ -5,7 +5,6 @@ let application : Application;
 export async function setup () {
   application = new Application();
   await application.setup();
-  await application.listen();
 }
 
 export async function teardown () {

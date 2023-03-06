@@ -1,0 +1,22 @@
+import type { JsonApiRegistryImpl } from '@triptyk/nfw-resources';
+import { DocumentResourceAdapter } from './adapter.js';
+import { UserResourceAuthorizer } from './authorizer.js';
+import { UserResourceDeserializer } from './deserializer.js';
+import { UserResourceFactory } from './factory.js';
+import { UserResource } from './resource.js';
+import { UserResourceSchema } from './schema.js';
+import { UserResourceSerializer } from './serializer.js';
+import { UserResourceValidator } from './validator.js';
+
+export function registerUserResource (registry: JsonApiRegistryImpl) {
+  registry.register('users', {
+    resourceClass: UserResource,
+    factory: UserResourceFactory,
+    serializer: UserResourceSerializer,
+    deserializer: UserResourceDeserializer,
+    adapter: DocumentResourceAdapter,
+    authorizer: UserResourceAuthorizer,
+    schema: UserResourceSchema,
+    validator: UserResourceValidator
+  });
+}
