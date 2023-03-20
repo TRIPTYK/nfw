@@ -3,15 +3,24 @@ import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import { JsonApiResourceAdapter } from '@triptyk/nfw-resources';
+import type { Promisable } from 'type-fest';
 import { UserModel } from '../../../database/models/user.model.js';
 import { Roles } from '../../enums/roles.enum.js';
 import type { DocumentResource } from './resource.js';
 
 @singleton()
 export class DocumentResourceAdapter extends JsonApiResourceAdapter<DocumentResource> {
+  update (): Promisable<void> {
+    throw new Error('Method not implemented.');
+  }
+
+  delete (): Promisable<void> {
+    throw new Error('Method not implemented.');
+  }
+
   async findAll (query: JsonApiQuery): Promise<[DocumentResource[], number]> {
     const [all, count] = await this.repository.findAndCount<'id'>({}, {
-      populate: query.include.map((i) => i.relationName) as never
+      populate: query.include?.map((i) => i.relationName) as never
     });
 
     const resources: DocumentResource[] = await Promise.all(all.map(async (resource) => {

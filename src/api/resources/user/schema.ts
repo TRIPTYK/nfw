@@ -4,7 +4,7 @@ import type { UserResource } from './resource.js';
 
 @singleton()
 export class UserResourceSchema implements ResourceSchema<UserResource> {
-  attributes: readonly (keyof UserResource)[] = ['name'];
+  attributes: readonly (keyof UserResource)[] = ['name', 'role'];
   relationships: Partial<Record<keyof UserResource, string>> = {
     documents: 'documents'
   };

@@ -43,7 +43,7 @@ specifiers:
   formdata-polyfill: ~4.0.10
   http-errors: ~2.0.0
   jscpd: ~3.5.3
-  json-api-query-parser: file:../json-api-query-parser
+  json-api-query-parser: link:../json-api-query-parser
   json-api-serializer: ~2.6.6
   jsonwebtoken: ~9.0.0
   koa: ~2.14.1
@@ -57,7 +57,7 @@ specifiers:
   pluralize: ~8.0.0
   prettier-eslint: ~15.0.1
   reflect-metadata: ~0.1.13
-  resources: file:../resources
+  resources: link:../resources
   tracer: ~1.1.6
   ts-dotenv: ^0.9.1
   ts-node: ~10.9.1
@@ -86,7 +86,7 @@ dependencies:
   fastest-validator: 1.16.0
   fastest-validator-decorators: 2.0.0_fastest-validator@1.16.0
   http-errors: 2.0.0
-  json-api-query-parser: file:../json-api-query-parser
+  json-api-query-parser: link:../json-api-query-parser
   json-api-serializer: 2.6.6
   jsonwebtoken: 9.0.0
   koa: 2.14.1
@@ -97,7 +97,7 @@ dependencies:
   param-case: 3.0.4
   pluralize: 8.0.0
   reflect-metadata: 0.1.13
-  resources: file:../resources
+  resources: link:../resources
   tracer: 1.1.6
   ts-dotenv: 0.9.1
   typescript: 4.9.5
@@ -1803,11 +1803,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /decode-uri-component/0.4.1:
-    resolution: {integrity: sha512-+8VxcR21HhTy8nOt6jf20w0c9CADrw1O8d+VZ/YzzCt4bJ3uBjw+D1q2osAB8RnpwwaeYBxy0HyKQxD5JBMuuQ==}
-    engines: {node: '>=14.16'}
-    dev: false
-
   /deep-eql/4.1.3:
     resolution: {integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==}
     engines: {node: '>=6'}
@@ -2464,11 +2459,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       to-regex-range: 5.0.1
-
-  /filter-obj/5.1.0:
-    resolution: {integrity: sha512-qWeTREPoT7I0bifpPUXtxkZJ1XJzxWtfoWWkdVGqa+eCr3SHW/Ocp89o8vLvbUuQnadybJpjOKu4V+RwO6sGng==}
-    engines: {node: '>=14.16'}
-    dev: false
 
   /find-up/4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -4091,15 +4081,6 @@ packages:
       side-channel: 1.0.4
     dev: false
 
-  /query-string/8.1.0:
-    resolution: {integrity: sha512-BFQeWxJOZxZGix7y+SByG3F36dA0AbTy9o6pSmKFcFz7DAj0re9Frkty3saBn3nHo3D0oZJ/+rx3r8H8r8Jbpw==}
-    engines: {node: '>=14.16'}
-    dependencies:
-      decode-uri-component: 0.4.1
-      filter-obj: 5.1.0
-      split-on-first: 3.0.0
-    dev: false
-
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -4374,11 +4355,6 @@ packages:
   /spawn-command/0.0.2-1:
     resolution: {integrity: sha512-n98l9E2RMSJ9ON1AKisHzz7V42VDiBQGY6PB1BwRglz99wpVsSuGzQ+jOi6lFXBGVTCrRpltvjm+/XA+tpeJrg==}
     dev: true
-
-  /split-on-first/3.0.0:
-    resolution: {integrity: sha512-qxQJTx2ryR0Dw0ITYyekNQWpz6f8dGd7vffGNflQQ3Iqj9NJ6qiZ7ELpZsJ/QBhIVAiDfXdag3+Gp8RvWa62AA==}
-    engines: {node: '>=12'}
-    dev: false
 
   /sprintf-js/1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
@@ -4780,6 +4756,7 @@ packages:
   /type-fest/3.6.1:
     resolution: {integrity: sha512-htXWckxlT6U4+ilVgweNliPqlsVSSucbxVexRYllyMVJDtf5rTjv6kF/s+qAd4QSL1BZcnJPEJavYBPQiWuZDA==}
     engines: {node: '>=14.16'}
+    dev: true
 
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
@@ -5204,26 +5181,12 @@ packages:
     resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
     dev: false
 
-  file:../json-api-query-parser:
-    resolution: {directory: ../json-api-query-parser, type: directory}
-    name: json-api-query-parser
-    version: 0.0.0
-    engines: {node: '>= 18.12 <19'}
-    dependencies:
-      query-string: 8.1.0
-      tslib: 2.4.1
-      type-fest: 3.6.1
-    dev: false
-
   file:../nfw-core/packages/core:
     resolution: {directory: ../nfw-core/packages/core, type: directory}
     name: '@triptyk/nfw-core'
     version: 4.0.0-alpha.31
     engines: {node: '>=16.3.1'}
     dependencies:
-      '@koa/router': 12.0.0
-      http-errors: 2.0.0
-      reflect-metadata: 0.1.13
       tsyringe: 4.7.0
     dev: false
 
@@ -5261,16 +5224,8 @@ packages:
     version: 4.0.0-alpha.31
     engines: {node: '>=16.3.1'}
     dependencies:
+      json-api-query-parser: link:../../../json-api-query-parser
       json-api-serializer: 2.6.6
       pluralize: 8.0.0
-    dev: false
-
-  file:../resources:
-    resolution: {directory: ../resources, type: directory}
-    name: resources
-    version: 0.0.0
-    engines: {node: '>= 18.12 <19'}
-    dependencies:
-      tslib: 2.4.1
-      type-fest: 3.6.1
+      resources: link:../../../resources
     dev: false

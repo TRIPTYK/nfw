@@ -3,15 +3,22 @@ import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import { JsonApiResourceAdapter } from '@triptyk/nfw-resources';
+import type { Promisable } from 'type-fest';
 import { UserModel } from '../../../database/models/user.model.js';
 import { Roles } from '../../enums/roles.enum.js';
 import type { UserResource } from './resource.js';
 
 @singleton()
-export class DocumentResourceAdapter extends JsonApiResourceAdapter<UserResource> {
+export class UserResourceAdapter extends JsonApiResourceAdapter<UserResource> {
+  constructor (
+    @injectRepository(UserModel) private repository: EntityRepository<UserModel>
+  ) {
+    super();
+  }
+
   async findAll (query: JsonApiQuery): Promise<[UserResource[], number]> {
     const [all, count] = await this.repository.findAndCount<'id'>({}, {
-      populate: query.include.map((i) => i.relationName) as never
+      populate: query.include?.map((i) => i.relationName) as never
     });
 
     const resources: UserResource[] = await Promise.all(all.map(async (resource) => {
@@ -21,14 +28,12 @@ export class DocumentResourceAdapter extends JsonApiResourceAdapter<UserResource
     return [resources, count];
   }
 
-  findById (): UserResource {
-    throw new Error('Method not implemented.');
-  }
+  async findById (id: string): Promise<UserResource> {
+    const user = await this.repository.findOneOrFail<'id'>(id);
 
-  constructor (
-    @injectRepository(UserModel) private repository: EntityRepository<UserModel>
-  ) {
-    super();
+    const resource = await this.ownRegistry.factory.create(user.toObject());
+
+    return resource;
   }
 
   public async create (resource: UserResource): Promise<void> {
@@ -43,5 +48,13 @@ export class DocumentResourceAdapter extends JsonApiResourceAdapter<UserResource
     await this.repository.persistAndFlush(userModel);
 
     resource.id = userModel.id;
+  }
+
+  update (resource: UserResource, query: JsonApiQuery): Promisable<void> {
+
+  }
+
+  delete (resource: UserResource, query: JsonApiQuery): Promisable<void> {
+    throw new Error('Method not implemented.');
   }
 }

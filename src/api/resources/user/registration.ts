@@ -1,5 +1,5 @@
 import type { JsonApiRegistryImpl } from '@triptyk/nfw-resources';
-import { DocumentResourceAdapter } from './adapter.js';
+import { UserResourceAdapter } from './adapter.js';
 import { UserResourceAuthorizer } from './authorizer.js';
 import { UserResourceDeserializer } from './deserializer.js';
 import { UserResourceFactory } from './factory.js';
@@ -14,7 +14,7 @@ export function registerUserResource (registry: JsonApiRegistryImpl) {
     factory: UserResourceFactory,
     serializer: UserResourceSerializer,
     deserializer: UserResourceDeserializer,
-    adapter: DocumentResourceAdapter,
+    adapter: UserResourceAdapter,
     authorizer: UserResourceAuthorizer,
     schema: UserResourceSchema,
     validator: UserResourceValidator

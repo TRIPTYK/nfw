@@ -1,27 +1,49 @@
 import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
 import type { RouterContext } from '@koa/router';
-import { AbstractResourceAuthorizer } from 'resources';
 import type { UserModel } from '../../../database/models/user.model.js';
+import { Roles } from '../../enums/roles.enum.js';
 import type { UserResource } from './resource.js';
+import { permittedFieldsOf } from '@casl/ability/extra';
+import { AbstractResourceAuthorizer } from 'resources';
 
 type Context = RouterContext;
+type Actions = 'create' | 'read' | 'update' | 'delete';
 
-export class UserResourceAuthorizer extends AbstractResourceAuthorizer<UserModel, UserResource, 'action', Context> {
-  public can (user: UserModel, action: string) {
-    const ability = this.defineAbilityFor();
+export class UserResourceAuthorizer extends AbstractResourceAuthorizer<UserModel, UserResource, Actions, Context> {
+  public can (user: UserModel, action: string, target: UserResource) {
+    const ability = this.defineAbilityFor(user);
+    const fields = permittedFieldsOf(ability, 'update', subject('user', target), { fieldsFrom: rule => (rule.fields ?? []).concat(['id']) });
 
-    return ability.can(action, subject('user', user));
+    if (Object.keys(target.toJSON()).some((k) => !fields.includes(k))) {
+      return false;
+    }
+
+    return ability.can(action, subject('user', target));
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private defineAbilityFor () {
+  private defineAbilityFor (user: UserModel) {
     const { can, build } = new AbilityBuilder(createMongoAbility);
 
-    can('create', 'user', {
-      role: {
-        $eq: 'admin'
-      }
-    });
+    if (user.role === Roles.ADMIN) {
+      can('read', 'user', {
+        role: {
+          $ne: 'admin'
+        }
+      });
+      can('create', 'user', {
+        role: {
+          $ne: 'admin'
+        }
+      });
+    } else {
+      can('read', 'user', {
+        id: user.id
+      });
+      can('update', 'user', ['firstName', 'lastName'], {
+        id: user.id
+      })
+    }
 
     return build();
   }
