@@ -1,9 +1,11 @@
+import { singleton } from '@triptyk/nfw-core';
 import type { ResourceSerializer } from 'resources';
 import type { UserResource } from './resource.js';
 
+@singleton()
 export class UserResourceSerializer implements ResourceSerializer<UserResource> {
   serializeOne (resource: UserResource): unknown {
-    return resource;
+    return 'serialized';
   }
 
   serializeMany (): unknown {

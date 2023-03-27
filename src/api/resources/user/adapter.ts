@@ -1,5 +1,5 @@
 import type { EntityRepository } from '@mikro-orm/core';
-import { inject, singleton } from '@triptyk/nfw-core';
+import { delay, inject, singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { ResourceAdapter, ResourcesRegistry } from 'resources';
 import { assign } from 'resources';
@@ -10,19 +10,21 @@ import { UserResource } from './resource.js';
 
 @singleton()
 export class UserResourceAdapter implements ResourceAdapter {
-  constructor (
+  public constructor (
     @injectRepository(UserModel) private repository: EntityRepository<UserModel>,
-    @inject(ResourcesRegistryImpl) private registry: ResourcesRegistry
+    @inject(delay(() => ResourcesRegistryImpl)) private registry: ResourcesRegistry
   ) {}
 
   async findById (id: string): Promise<UserResource> {
     const user = await this.repository.findOneOrFail<'id'>(id);
 
     const resource = new UserResource();
+
     assign(resource, {
       ...user.toPOJO(),
       documents: user.documents.getItems().map((d) => d.id)
     }, this.registry);
+
     return resource;
   }
 

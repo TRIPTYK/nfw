@@ -1,4 +1,4 @@
-import { container } from '@triptyk/nfw-core';
+import { container, injectable, singleton } from '@triptyk/nfw-core';
 import type { Resource, ResourceAuthorizer, ResourceDeserializer, ResourceFactory, ResourceSchema, ResourceSerializer, ResourcesRegistry, ResourceValidator, ValidationContext } from 'resources';
 import type { StringKeyOf } from 'type-fest';
 import { DocumentResourceAdapter } from './document/adapter.js';
@@ -37,6 +37,8 @@ const typeToClass = {
   }
 } as const;
 
+@singleton()
+@injectable()
 export class ResourcesRegistryImpl implements ResourcesRegistry {
   getSchemaFor<T extends Resource> (type: StringKeyOf<typeof typeToClass>): ResourceSchema<T> {
     return container.resolve(typeToClass[type].schema as never) as never;

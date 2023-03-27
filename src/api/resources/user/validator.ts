@@ -1,3 +1,4 @@
+import { singleton } from '@triptyk/nfw-core';
 import type { PartialResource, ResourceValidator, ValidationContext } from 'resources';
 import { object } from 'yup';
 import type { UserResource } from './resource.js';
@@ -9,6 +10,7 @@ interface UserResourceValidationContext extends ValidationContext<UserResource> 
   create: {},
 }
 
+@singleton()
 export class UserResourceValidator implements ResourceValidator<UserResource, UserResourceValidationContext> {
   validate (resource: PartialResource<UserResource>, action: string) {
     if (action === 'create') {

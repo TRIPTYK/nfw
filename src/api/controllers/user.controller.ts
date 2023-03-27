@@ -3,7 +3,6 @@ import { Body, Controller, GET, Param, POST, UseMiddleware } from '@triptyk/nfw-
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import type { UserModel } from '../../database/models/user.model.js';
 import { CurrentUserMiddleware } from '../middlewares/current-user.middleware.js';
-import type { UserResourceAdapter } from '../resources/user/adapter.js';
 import type { UserResourceAuthorizer } from '../resources/user/authorizer.js';
 import type { UserResourceDeserializer } from '../resources/user/deserializer.js';
 import type { UserResourceSerializer } from '../resources/user/serializer.js';
@@ -12,6 +11,7 @@ import type { ResourcesRegistry } from 'resources';
 import { ResourcesRegistryImpl } from '../resources/registry.js';
 import type { UserResourceFactory } from '../resources/user/factory.js';
 import { Roles } from '../enums/roles.enum.js';
+import type { UserResourceAdapter } from '../resources/user/adapter.js';
 
 @singleton()
 @Controller({
@@ -21,7 +21,6 @@ import { Roles } from '../enums/roles.enum.js';
 export class UsersController {
   private deserializer: UserResourceDeserializer;
   private serializer: UserResourceSerializer;
-  private adapter: UserResourceAdapter;
   private authorizer: UserResourceAuthorizer;
   private validator: UserResourceValidator;
   private factory: UserResourceFactory;
@@ -32,9 +31,12 @@ export class UsersController {
     this.deserializer = registry.getDeserializerFor('user') as UserResourceDeserializer;
     this.validator = registry.getValidatorFor('user') as UserResourceValidator;
     this.serializer = registry.getSerializerFor('user') as UserResourceSerializer;
-    this.adapter = registry.getAdapterFor('user') as UserResourceAdapter;
     this.authorizer = registry.getAuthorizerFor('user') as UserResourceAuthorizer;
     this.factory = registry.getFactoryFor('user') as UserResourceFactory;
+  }
+
+  get adapter () {
+    return this.registry.getAdapterFor('user') as UserResourceAdapter
   }
 
   @GET('/:id')

@@ -1,5 +1,6 @@
 import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
 import type { RouterContext } from '@koa/router';
+import { singleton } from '@triptyk/nfw-core';
 import type { ResourceAuthorizer } from 'resources';
 import type { UserModel } from '../../../database/models/user.model.js';
 import { Roles } from '../../enums/roles.enum.js';
@@ -8,6 +9,7 @@ import type { UserResource } from './resource.js';
 type Context = RouterContext;
 type Actions = 'create' | 'read' | 'update' | 'delete';
 
+@singleton()
 export class UserResourceAuthorizer implements ResourceAuthorizer<UserModel, UserResource, Actions, Context> {
   public can (user: UserModel, action: string, target: UserResource) {
     const ability = this.defineAbilityFor(user);

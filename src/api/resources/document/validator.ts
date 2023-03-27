@@ -1,3 +1,4 @@
+import { singleton } from '@triptyk/nfw-core';
 import type { ResourceValidator, ValidationContext } from 'resources';
 import { object } from 'yup';
 import type { DocumentResource } from './resource.js';
@@ -8,6 +9,7 @@ interface Context extends ValidationContext<DocumentResource> {
 
 }
 
+@singleton()
 export class DocumentResourceValidator implements ResourceValidator<DocumentResource, Context> {
   async validate (resource: DocumentResource) {
     return {
