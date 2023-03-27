@@ -22,8 +22,6 @@ import { createApplication } from '@triptyk/nfw-http';
 import type { Server } from 'http';
 import type { LoggerService } from './api/services/logger.service.js';
 import { LoggerServiceImpl } from './api/services/logger.service.js';
-import { setupRegistry } from './api/resources/setup-registry.js';
-import { JsonApiRegistryImpl } from '@triptyk/nfw-resources';
 
 const configurationService = container.resolve(ConfigurationServiceImpl);
 configurationService.load();
@@ -38,8 +36,6 @@ export class Application {
     const env = configurationService.get('NODE_ENV');
 
     const orm = await this.setupORM();
-
-    setupRegistry(container.resolve(JsonApiRegistryImpl));
 
     if (env === 'test' || env === 'development') {
       const generator = orm.getSchemaGenerator();

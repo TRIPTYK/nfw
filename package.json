@@ -43,7 +43,6 @@
     "@triptyk/nfw-core": "file:../nfw-core/packages/core",
     "@triptyk/nfw-http": "file:../nfw-core/packages/http",
     "@triptyk/nfw-mikro-orm": "file:../nfw-core/packages/mikro-orm",
-    "@triptyk/nfw-resources": "file:../nfw-core/packages/resource-jsonapi",
     "json-api-query-parser": "link:../json-api-query-parser",
     "bcrypt": "~5.1.0",
     "fastest-validator": "^1.16.0",

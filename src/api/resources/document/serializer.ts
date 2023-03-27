@@ -1,4 +1,12 @@
-import { JsonApiResourceSerializer } from '@triptyk/nfw-resources';
+import type { ResourceSerializer } from 'resources';
 import type { DocumentResource } from './resource.js';
 
-export class DocumentResourceSerializer extends JsonApiResourceSerializer<DocumentResource> {}
+export class DocumentResourceSerializer implements ResourceSerializer<DocumentResource> {
+  serializeOne (): unknown {
+    throw new Error('Method not implemented.');
+  }
+
+  serializeMany (): unknown {
+    throw new Error('Method not implemented.');
+  }
+}

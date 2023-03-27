@@ -1,11 +1,13 @@
 import { injectable } from '@triptyk/nfw-core';
-import { AbstractResource } from 'resources';
+import type { Resource } from 'resources';
 import type { Roles } from '../../enums/roles.enum.js';
 import type { DocumentResource } from '../document/resource.js';
 
 @injectable()
-export class UserResource extends AbstractResource {
-  declare name: string;
+export class UserResource implements Resource {
+  type = 'user';
+  id?: string | undefined;
+
   declare firstName: string;
   declare lastName: string;
   declare password: string;

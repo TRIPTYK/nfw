@@ -1,23 +1,16 @@
 import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
 import type { RouterContext } from '@koa/router';
+import type { ResourceAuthorizer } from 'resources';
 import type { UserModel } from '../../../database/models/user.model.js';
 import { Roles } from '../../enums/roles.enum.js';
 import type { UserResource } from './resource.js';
-import { permittedFieldsOf } from '@casl/ability/extra';
-import { AbstractResourceAuthorizer } from 'resources';
 
 type Context = RouterContext;
 type Actions = 'create' | 'read' | 'update' | 'delete';
 
-export class UserResourceAuthorizer extends AbstractResourceAuthorizer<UserModel, UserResource, Actions, Context> {
+export class UserResourceAuthorizer implements ResourceAuthorizer<UserModel, UserResource, Actions, Context> {
   public can (user: UserModel, action: string, target: UserResource) {
     const ability = this.defineAbilityFor(user);
-    const fields = permittedFieldsOf(ability, 'update', subject('user', target), { fieldsFrom: rule => (rule.fields ?? []).concat(['id']) });
-
-    if (Object.keys(target.toJSON()).some((k) => !fields.includes(k))) {
-      return false;
-    }
-
     return ability.can(action, subject('user', target));
   }
 

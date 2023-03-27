@@ -1,12 +1,12 @@
 import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
 import type { RouterContext } from '@koa/router';
-import { AbstractResourceAuthorizer } from 'resources';
+import type { ResourceAuthorizer } from 'resources';
 import type { UserModel } from '../../../database/models/user.model.js';
 import type { DocumentResource } from './resource.js';
 
 type Context = RouterContext;
 
-export class DocumentResourceAuthorizer extends AbstractResourceAuthorizer<UserModel, DocumentResource, 'action', Context> {
+export class DocumentResourceAuthorizer implements ResourceAuthorizer<UserModel, DocumentResource, 'action', Context> {
   public can (user: UserModel, action: string) {
     const ability = this.defineAbilityFor();
 

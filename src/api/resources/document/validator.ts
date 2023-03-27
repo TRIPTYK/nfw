@@ -1,14 +1,18 @@
-
-import { AbstractResourceValidator } from 'resources';
-import { object, string } from 'yup';
+import type { ResourceValidator, ValidationContext } from 'resources';
+import { object } from 'yup';
 import type { DocumentResource } from './resource.js';
 
-const userSchema = object({
-  name: string().required()
-});
+const userSchema = object();
 
-export class DocumentResourceValidator extends AbstractResourceValidator<DocumentResource> {
+interface Context extends ValidationContext<DocumentResource> {
+
+}
+
+export class DocumentResourceValidator implements ResourceValidator<DocumentResource, Context> {
   async validate (resource: DocumentResource) {
-    await userSchema.validate(resource);
+    return {
+      result: await userSchema.validate(resource),
+      isValid: true
+    } as const
   }
 }

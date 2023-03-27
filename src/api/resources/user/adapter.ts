@@ -1,38 +1,28 @@
 import type { EntityRepository } from '@mikro-orm/core';
-import { singleton } from '@triptyk/nfw-core';
+import { inject, singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
-import type { JsonApiQuery } from '@triptyk/nfw-resources';
-import { JsonApiResourceAdapter } from '@triptyk/nfw-resources';
-import type { Promisable } from 'type-fest';
+import type { ResourceAdapter, ResourcesRegistry } from 'resources';
+import { assign } from 'resources';
 import { UserModel } from '../../../database/models/user.model.js';
 import { Roles } from '../../enums/roles.enum.js';
-import type { UserResource } from './resource.js';
+import { ResourcesRegistryImpl } from '../registry.js';
+import { UserResource } from './resource.js';
 
 @singleton()
-export class UserResourceAdapter extends JsonApiResourceAdapter<UserResource> {
+export class UserResourceAdapter implements ResourceAdapter {
   constructor (
-    @injectRepository(UserModel) private repository: EntityRepository<UserModel>
-  ) {
-    super();
-  }
-
-  async findAll (query: JsonApiQuery): Promise<[UserResource[], number]> {
-    const [all, count] = await this.repository.findAndCount<'id'>({}, {
-      populate: query.include?.map((i) => i.relationName) as never
-    });
-
-    const resources: UserResource[] = await Promise.all(all.map(async (resource) => {
-      return this.ownRegistry.factory.create(resource.toObject());
-    }));
-
-    return [resources, count];
-  }
+    @injectRepository(UserModel) private repository: EntityRepository<UserModel>,
+    @inject(ResourcesRegistryImpl) private registry: ResourcesRegistry
+  ) {}
 
   async findById (id: string): Promise<UserResource> {
     const user = await this.repository.findOneOrFail<'id'>(id);
 
-    const resource = await this.ownRegistry.factory.create(user.toObject());
-
+    const resource = new UserResource();
+    assign(resource, {
+      ...user.toPOJO(),
+      documents: user.documents.getItems().map((d) => d.id)
+    }, this.registry);
     return resource;
   }
 
@@ -48,13 +38,5 @@ export class UserResourceAdapter extends JsonApiResourceAdapter<UserResource> {
     await this.repository.persistAndFlush(userModel);
 
     resource.id = userModel.id;
-  }
-
-  update (resource: UserResource, query: JsonApiQuery): Promisable<void> {
-
-  }
-
-  delete (resource: UserResource, query: JsonApiQuery): Promisable<void> {
-    throw new Error('Method not implemented.');
   }
 }
