@@ -1,5 +1,5 @@
 import { inject, singleton } from '@triptyk/nfw-core';
-import { Body, Controller, GET, Param, POST, UseMiddleware } from '@triptyk/nfw-http';
+import { Body, Controller, DELETE, GET, Param, PATCH, POST, UseMiddleware } from '@triptyk/nfw-http';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import type { UserModel } from '../../database/models/user.model.js';
 import { CurrentUserMiddleware } from '../middlewares/current-user.middleware.js';
@@ -8,9 +8,9 @@ import type { UserResourceDeserializer } from '../resources/user/deserializer.js
 import type { UserResourceSerializer } from '../resources/user/serializer.js';
 import type { UserResourceValidator } from '../resources/user/validator.js';
 import type { ResourcesRegistry } from 'resources';
+import { assign, canOrFail } from 'resources';
 import { ResourcesRegistryImpl } from '../resources/registry.js';
 import type { UserResourceFactory } from '../resources/user/factory.js';
-import { Roles } from '../enums/roles.enum.js';
 import type { UserResourceAdapter } from '../resources/user/adapter.js';
 
 @singleton()
@@ -55,18 +55,49 @@ export class UsersController {
     @CurrentUser() currentUser: UserModel
   ) {
     const partialResource = await this.deserializer.deserialize(body);
-    const validated = await this.validator.validate(partialResource, 'create');
-    const resource = this.factory.create({
-      ...validated.result,
-      firstName: '1',
-      lastName: '1',
-      documents: [],
-      password: '',
-      email: '',
-      role: Roles.ADMIN
-    });
-    await this.authorizer.can(currentUser, 'create', resource);
+    const validated = await this.validator.validate(partialResource);
+    if (!validated.isValid) {
+      throw validated.errors;
+    }
+    const resource = this.factory.create(
+      validated.result
+    );
+    await canOrFail(this.authorizer, currentUser, 'create', resource, {});
     await this.adapter.create(resource);
     return this.serializer.serializeOne(resource);
+  }
+
+  @PATCH('/:id')
+  public async update (
+    @Body() body: Record<string, unknown>,
+    @Param('id') id: string,
+    @CurrentUser() currentUser: UserModel
+  ) {
+    const partialResource = await this.deserializer.deserialize(body);
+
+    const validated = await this.validator.validate(partialResource);
+
+    if (!validated.isValid) {
+      throw validated.errors;
+    }
+
+    const existingResource = await this.adapter.findById(id);
+
+    assign(existingResource, validated.result, this.registry);
+
+    await canOrFail(this.authorizer, currentUser, 'update', existingResource, {});
+    await this.adapter.update(existingResource);
+
+    return this.serializer.serializeOne(existingResource);
+  }
+
+  @DELETE('/:id')
+  public async delete (
+    @Param('id') id: string,
+    @CurrentUser() currentUser: UserModel
+  ) {
+    const existingResource = await this.adapter.findById(id);
+    await canOrFail(this.authorizer, currentUser, 'delete', existingResource, {});
+    await this.adapter.delete(existingResource);
   }
 }

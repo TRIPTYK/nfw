@@ -21,12 +21,19 @@ export class UserResourceAuthorizer implements ResourceAuthorizer<UserModel, Use
     const { can, build } = new AbilityBuilder(createMongoAbility);
 
     if (user.role === Roles.ADMIN) {
-      can('read', 'user', {
+      can('read', 'user');
+      can('update', 'user', {
+        role: 'user'
+      });
+      can('update', 'user', {
+        id: user.id
+      });
+      can('create', 'user', {
         role: {
           $ne: 'admin'
         }
       });
-      can('create', 'user', {
+      can('delete', 'user', {
         role: {
           $ne: 'admin'
         }

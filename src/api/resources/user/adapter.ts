@@ -4,7 +4,6 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { ResourceAdapter, ResourcesRegistry } from 'resources';
 import { assign } from 'resources';
 import { UserModel } from '../../../database/models/user.model.js';
-import { Roles } from '../../enums/roles.enum.js';
 import { ResourcesRegistryImpl } from '../registry.js';
 import { UserResource } from './resource.js';
 
@@ -16,12 +15,14 @@ export class UserResourceAdapter implements ResourceAdapter {
   ) {}
 
   async findById (id: string): Promise<UserResource> {
-    const user = await this.repository.findOneOrFail<'id'>(id);
+    const user = await this.repository.findOneOrFail(id, {
+      populate: ['documents']
+    });
 
     const resource = new UserResource();
 
     assign(resource, {
-      ...user.toPOJO(),
+      ...user.toObject(['refreshToken']),
       documents: user.documents.getItems().map((d) => d.id)
     }, this.registry);
 
@@ -33,12 +34,23 @@ export class UserResourceAdapter implements ResourceAdapter {
       firstName: resource.firstName,
       lastName: resource.lastName,
       email: resource.email,
-      password: '123',
-      role: Roles.ADMIN
+      password: resource.password,
+      role: resource.role
     });
 
     await this.repository.persistAndFlush(userModel);
 
     resource.id = userModel.id;
+  }
+
+  public async update (resource: UserResource): Promise<void> {
+    const userModel = await this.repository.findOneOrFail(resource.id!);
+    userModel.assign(resource);
+    await this.repository.persistAndFlush(userModel);
+  }
+
+  public async delete (resource: UserResource): Promise<void> {
+    const userModel = await this.repository.findOneOrFail(resource.id!);
+    await this.repository.removeAndFlush(userModel);
   }
 }

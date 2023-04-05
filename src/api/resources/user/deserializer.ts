@@ -1,6 +1,6 @@
 import { delay, inject, singleton } from '@triptyk/nfw-core';
 import type { PartialResource, ResourceDeserializer, ResourcesRegistry } from 'resources';
-import { stripUnknownKeys } from 'resources';
+import { deserialize } from 'resources';
 import { ResourcesRegistryImpl } from '../registry.js';
 import type { UserResource } from './resource.js';
 
@@ -13,6 +13,6 @@ export class UserResourceDeserializer implements ResourceDeserializer<UserResour
   }
 
   deserialize (payload: Record<string, unknown>): PartialResource<UserResource> {
-    return stripUnknownKeys(payload, this.registry.getSchemaFor('user'));
+    return deserialize(payload, this.registry.getSchemaFor('user'));
   }
 }

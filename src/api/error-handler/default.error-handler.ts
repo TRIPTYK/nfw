@@ -7,6 +7,7 @@ import type { ConfigurationService, Env } from '../services/configuration.servic
 import { ConfigurationServiceImpl } from '../services/configuration.service.js';
 import type { LoggerService } from '../services/logger.service.js';
 import { LoggerServiceImpl } from '../services/logger.service.js';
+import { ValidationError } from 'resources';
 
 @injectable()
 export class DefaultErrorHandler implements MiddlewareInterface {
@@ -24,7 +25,7 @@ export class DefaultErrorHandler implements MiddlewareInterface {
 
       if (Array.isArray(error)) {
         context.response.status = 400;
-        context.response.body = error.map((e) => {
+        context.response.body = error.map((e) => {          
           return {
             title: 'validationError',
             message: e.message,

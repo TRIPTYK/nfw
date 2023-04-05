@@ -1,16 +1,12 @@
 import { singleton } from '@triptyk/nfw-core';
-import type { ResourceValidator, ValidationContext } from 'resources';
+import type { ResourceValidator } from 'resources';
 import { object } from 'yup';
 import type { DocumentResource } from './resource.js';
 
 const userSchema = object();
 
-interface Context extends ValidationContext<DocumentResource> {
-
-}
-
 @singleton()
-export class DocumentResourceValidator implements ResourceValidator<DocumentResource, Context> {
+export class DocumentResourceValidator implements ResourceValidator<DocumentResource> {
   async validate (resource: DocumentResource) {
     return {
       result: await userSchema.validate(resource),

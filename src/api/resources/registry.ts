@@ -1,5 +1,5 @@
 import { container, injectable, singleton } from '@triptyk/nfw-core';
-import type { Resource, ResourceAuthorizer, ResourceDeserializer, ResourceFactory, ResourceSchema, ResourceSerializer, ResourcesRegistry, ResourceValidator, ValidationContext } from 'resources';
+import type { Resource, ResourceAuthorizer, ResourceDeserializer, ResourceFactory, ResourceSchema, ResourceSerializer, ResourcesRegistry, ResourceValidator } from 'resources';
 import type { StringKeyOf } from 'type-fest';
 import { DocumentResourceAdapter } from './document/adapter.js';
 import { DocumentResourceAuthorizer } from './document/authorizer.js';
@@ -56,7 +56,7 @@ export class ResourcesRegistryImpl implements ResourcesRegistry {
     return container.resolve(typeToClass[type].deserializer as never) as never;
   }
 
-  getValidatorFor<T extends Resource, C extends ValidationContext<T>> (type: StringKeyOf<typeof typeToClass>): ResourceValidator<T, C> {
+  getValidatorFor<T extends Resource> (type: StringKeyOf<typeof typeToClass>): ResourceValidator<T> {
     return container.resolve(typeToClass[type].validator as never) as never;
   }
 

@@ -1,38 +1,42 @@
 import { singleton } from '@triptyk/nfw-core';
-import type { PartialResource, ResourceValidator, ValidationContext } from 'resources';
-import { object } from 'yup';
+import type { PartialResource, ResourceValidator } from 'resources';
+import { ValidationError, array, object, string } from 'yup';
 import type { UserResource } from './resource.js';
+import { Roles } from '../../enums/roles.enum.js';
 
-const userSchema = object({});
-
-interface UserResourceValidationContext extends ValidationContext<UserResource> {
-  update: {},
-  create: {},
-}
+const userSchema = object({
+  firstName: string().required(),
+  lastName: string().required(),
+  password: string().required(),
+  email: string().required(),
+  role: string().oneOf(Object.values(Roles)).required(),
+  documents: array().default([]).required()
+});
 
 @singleton()
-export class UserResourceValidator implements ResourceValidator<UserResource, UserResourceValidationContext> {
-  validate (resource: PartialResource<UserResource>, action: string) {
-    if (action === 'create') {
-      return this.validateCreate(resource);
-    }
-    if (action === 'update') {
-      return this.validateUpdate(resource);
-    }
-    throw new Error();
-  }
+export class UserResourceValidator implements ResourceValidator<UserResource> {
+  async validate (resource: PartialResource<UserResource>) {
+    try {
+      const validated = await userSchema.validate(resource, {
+        abortEarly: false
+      });
 
-  private async validateUpdate (resource: PartialResource<UserResource>) {
-    return {
-      isValid: true,
-      result: await userSchema.validate(resource)
-    } as const
-  }
-
-  private async validateCreate (resource: PartialResource<UserResource>) {
-    return {
-      isValid: true,
-      result: await userSchema.validate(resource)
-    } as const
+      return {
+        isValid: true as const,
+        result: validated
+      }
+    } catch (e) {
+      if (e instanceof ValidationError) {
+        return {
+          isValid: false as const,
+          errors: e.inner.map((e) => ({
+            key: e.path ?? 'unknown',
+            message: e.message,
+            value: e.value
+          }))
+        }
+      }
+      throw e;
+    }
   }
 }
