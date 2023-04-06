@@ -4,7 +4,11 @@ import { DocumentResource } from './resource.js';
 
 @singleton()
 export class DocumentResourceSchema implements ResourceSchema<DocumentResource> {
+  type = 'document';
   class = DocumentResource;
-  attributes = [];
+  attributes = {
+
+  };
+
   relationships: Partial<Record<keyof DocumentResource, string>> = {}
 }

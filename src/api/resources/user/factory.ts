@@ -1,20 +1,14 @@
 import { delay, inject, singleton } from '@triptyk/nfw-core';
-import type { ResourceFactory, ResourcePojo, ResourcesRegistry } from 'resources';
-import { assign } from 'resources';
-import { ResourcesRegistryImpl } from '../registry.js';
-import { UserResource } from './resource.js';
+import type { ResourcesRegistry } from 'resources';
+import { ResourceFactoryImpl } from 'resources';
+import type { UserResource } from './resource.js';
+import { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 
 @singleton()
-export class UserResourceFactory implements ResourceFactory<UserResource> {
+export class UserResourceFactory extends ResourceFactoryImpl<UserResource> {
   public constructor (
-    @inject(delay(() => ResourcesRegistryImpl)) private registry: ResourcesRegistry
+    @inject(delay(() => ResourcesRegistryImpl)) registry: ResourcesRegistry
   ) {
-
-  }
-
-  create (partialResource: ResourcePojo<UserResource>) {
-    const user = new UserResource();
-    assign(user, partialResource, this.registry);
-    return user;
+    super('user', registry);
   }
 }

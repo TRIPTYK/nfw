@@ -1,14 +1,13 @@
-import { singleton } from '@triptyk/nfw-core';
-import type { ResourceSerializer } from 'resources';
+import { delay, inject, singleton } from '@triptyk/nfw-core';
 import type { DocumentResource } from './resource.js';
+import { JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import type { ResourcesRegistry } from 'resources';
 
 @singleton()
-export class DocumentResourceSerializer implements ResourceSerializer<DocumentResource> {
-  serializeOne (): unknown {
-    throw new Error('Method not implemented.');
-  }
-
-  serializeMany (): unknown {
-    throw new Error('Method not implemented.');
+export class DocumentResourceSerializer extends JsonApiResourceSerializer<DocumentResource> {
+  public constructor (
+    @inject(delay(() => ResourcesRegistryImpl)) registry: ResourcesRegistry
+  ) {
+    super('document', registry);
   }
 }

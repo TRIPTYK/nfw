@@ -20,11 +20,15 @@ beforeEach(async () => {
 })
 
 const body = {
-  email: 'admin3@localhost.com',
-  firstName: 'Adriel',
-  password: '123',
-  role: 'user',
-  lastName: 'Wuckert'
+  data: {
+    attributes: {
+      email: 'admin3@localhost.com',
+      firstName: 'Adriel',
+      password: '123',
+      role: 'user',
+      lastName: 'Wuckert'
+    }
+  }
 };
 
 test('It gets a user', async () => {
@@ -33,18 +37,40 @@ test('It gets a user', async () => {
   await RequestContext.createAsync(container.resolve(MikroORM).em.fork(), async () => {
     const controllerResult = await controller.get(getClientId, currentUser);
 
-    expect(controllerResult).toMatchObject({
-      documents: [{
-        id: '123456789',
-        type: 'document'
-      }],
-      email: 'seb@localhost.com',
-      firstName: 'sebastien',
-      lastName: 'dutrèsgrosgrosXXXLDuGras',
-      role: 'user',
-      id: getClientId
+    expect(controllerResult).toStrictEqual({
+      jsonapi: { version: '1.0' },
+      meta: undefined,
+      links: undefined,
+      data: {
+        type: 'user',
+        id: '9876543210',
+        attributes: {
+          firstName: 'sebastien',
+          lastName: 'dutrèsgrosgrosXXXLDuGras',
+          role: 'user',
+          email: 'seb@localhost.com'
+        },
+        relationships: {
+          documents: {
+            links: undefined,
+            meta: undefined,
+            data: [{ type: 'document', id: '123456789' }]
+          }
+        },
+        meta: undefined,
+        links: undefined
+      },
+      included: [
+        {
+          type: 'document',
+          id: '123456789',
+          attributes: { type: 'document' },
+          relationships: undefined,
+          meta: undefined,
+          links: undefined
+        }
+      ]
     });
-    expect(controllerResult).toHaveProperty('id');
   })
 });
 
@@ -53,13 +79,23 @@ test('It creates a user', async () => {
     const controllerResult = await controller.create(body, currentUser);
 
     expect(controllerResult).toMatchObject({
-      documents: [],
-      email: 'admin3@localhost.com',
-      firstName: 'Adriel',
-      lastName: 'Wuckert',
-      role: 'user'
+      jsonapi: { version: '1.0' },
+      meta: undefined,
+      links: undefined,
+      data: {
+        type: 'user',
+        attributes: {
+          firstName: 'Adriel',
+          lastName: 'Wuckert',
+          role: 'user',
+          email: 'admin3@localhost.com'
+        },
+        relationships: { documents: { links: undefined, meta: undefined, data: [] } },
+        meta: undefined,
+        links: undefined
+      },
+      included: undefined
     });
-    expect(controllerResult).toHaveProperty('id');
   })
 });
 
@@ -70,13 +106,23 @@ test('It updates user', async () => {
     const controllerResult = await controller.update(body, updatedClientId, currentUser);
 
     expect(controllerResult).toMatchObject({
-      documents: [],
-      email: 'admin3@localhost.com',
-      firstName: 'Adriel',
-      lastName: 'Wuckert',
-      role: 'user'
+      jsonapi: { version: '1.0' },
+      meta: undefined,
+      links: undefined,
+      data: {
+        type: 'user',
+        attributes: {
+          firstName: 'Adriel',
+          lastName: 'Wuckert',
+          role: 'user',
+          email: 'admin3@localhost.com'
+        },
+        relationships: { documents: { links: undefined, meta: undefined, data: [] } },
+        meta: undefined,
+        links: undefined
+      },
+      included: undefined
     });
-    expect(controllerResult).toHaveProperty('id', updatedClientId);
   })
 });
 

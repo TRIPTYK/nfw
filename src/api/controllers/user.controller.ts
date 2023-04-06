@@ -9,9 +9,9 @@ import type { UserResourceSerializer } from '../resources/user/serializer.js';
 import type { UserResourceValidator } from '../resources/user/validator.js';
 import type { ResourcesRegistry } from 'resources';
 import { assign, canOrFail } from 'resources';
-import { ResourcesRegistryImpl } from '../resources/registry.js';
 import type { UserResourceFactory } from '../resources/user/factory.js';
 import type { UserResourceAdapter } from '../resources/user/adapter.js';
+import { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 
 @singleton()
 @Controller({
@@ -59,7 +59,7 @@ export class UsersController {
     if (!validated.isValid) {
       throw validated.errors;
     }
-    const resource = this.factory.create(
+    const resource = await this.factory.create(
       validated.result
     );
     await canOrFail(this.authorizer, currentUser, 'create', resource, {});

@@ -34,6 +34,9 @@ dependencies:
   '@triptyk/nfw-mikro-orm':
     specifier: ^4.0.0-alpha.31
     version: 4.0.0-alpha.31(@mikro-orm/core@5.6.13)(@triptyk/nfw-core@4.0.0-alpha.31)
+  '@triptyk/nfw-resources':
+    specifier: file:../nfw-core/packages/resource-jsonapi
+    version: file:../nfw-core/packages/resource-jsonapi
   bcrypt:
     specifier: ~5.1.0
     version: 5.1.0
@@ -5171,4 +5174,16 @@ packages:
 
   /zod@3.20.6:
     resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
+    dev: false
+
+  file:../nfw-core/packages/resource-jsonapi:
+    resolution: {directory: ../nfw-core/packages/resource-jsonapi, type: directory}
+    name: '@triptyk/nfw-resources'
+    version: 4.0.0-alpha.31
+    engines: {node: '>=16.3.1'}
+    dependencies:
+      json-api-query-parser: link:../../../json-api-query-parser
+      json-api-serializer: 2.6.6
+      pluralize: 8.0.0
+      resources: link:../../../resources
     dev: false

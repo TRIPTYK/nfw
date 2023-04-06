@@ -1,18 +1,24 @@
 import type { EntityRepository } from '@mikro-orm/core';
 import { delay, inject, singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
-import type { ResourceAdapter, ResourcesRegistry } from 'resources';
+import type { ResourcesRegistry } from 'resources';
 import { assign } from 'resources';
 import { UserModel } from '../../../database/models/user.model.js';
-import { ResourcesRegistryImpl } from '../registry.js';
+import type { JsonApiResourceAdapter } from '@triptyk/nfw-resources';
+import { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import { UserResource } from './resource.js';
+import type { Promisable } from 'type-fest';
 
 @singleton()
-export class UserResourceAdapter implements ResourceAdapter {
+export class UserResourceAdapter implements JsonApiResourceAdapter<UserResource> {
   public constructor (
     @injectRepository(UserModel) private repository: EntityRepository<UserModel>,
     @inject(delay(() => ResourcesRegistryImpl)) private registry: ResourcesRegistry
   ) {}
+
+  findAll (): Promisable<[UserResource[], number]> {
+    throw new Error('Method not implemented.');
+  }
 
   async findById (id: string): Promise<UserResource> {
     const user = await this.repository.findOneOrFail(id, {

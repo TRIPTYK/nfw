@@ -1,21 +1,13 @@
 import { delay, inject, singleton } from '@triptyk/nfw-core';
-import { ResourceSerializer, ResourcesRegistry, deserialize, serialize } from 'resources';
+import type { ResourcesRegistry } from 'resources';
 import type { UserResource } from './resource.js';
-import { ResourcesRegistryImpl } from '../registry.js';
+import { JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 
 @singleton()
-export class UserResourceSerializer implements ResourceSerializer<UserResource> {
+export class UserResourceSerializer extends JsonApiResourceSerializer<UserResource> {
   public constructor (
-    @inject(delay(() => ResourcesRegistryImpl)) private registry: ResourcesRegistry
+    @inject(delay(() => ResourcesRegistryImpl)) registry: ResourcesRegistry
   ) {
-
-  }
-
-  serializeOne (resource: UserResource) {
-    return serialize(resource as never, this.registry.getSchemaFor('user'));
-  }
-
-  serializeMany (resources: UserResource[]): unknown {
-    return resources.map((resource) => serialize(resource as never, this.registry.getSchemaFor('user')));
+    super('user', registry);
   }
 }

@@ -4,6 +4,7 @@ import { UserResource } from './resource.js';
 
 @singleton()
 export class UserResourceSchema implements ResourceSchema<UserResource> {
+  type = 'user';
   attributes: SchemaAttributes<UserResource> = {
     firstName: {
       type: 'string',
