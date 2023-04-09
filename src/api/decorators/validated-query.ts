@@ -1,12 +1,10 @@
-
 import type { ControllerParamsContext } from '@triptyk/nfw-http';
 import { createCustomDecorator } from '@triptyk/nfw-http';
-import type { Class } from 'type-fest';
-import { validateOrReject } from '../utils/validate-or-reject.js';
+import type { Schema } from 'yup';
 
-export function ValidatedQuery<T extends object> (ValidationClass : Class<T>) {
+export function ValidatedQuery<T> (validationSchema : Schema<T>) {
   return createCustomDecorator(
-    (controllerContext: ControllerParamsContext<unknown>) => {
-      return validateOrReject(ValidationClass, controllerContext.ctx.query);
-    }, 'entity-from-query');
+    (controllerContext:ControllerParamsContext<unknown>) => {
+      return validationSchema.validate(controllerContext.ctx.query);
+    }, 'validated-body');
 }

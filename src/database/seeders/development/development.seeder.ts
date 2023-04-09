@@ -3,15 +3,14 @@ import { Seeder } from '@mikro-orm/seeder';
 import { writeFile, mkdir } from 'fs/promises';
 import { Roles } from '../../../api/enums/roles.enum.js';
 import type { DocumentModel } from '../../models/document.model.js';
-import { UserModel } from '../../models/user.model.js';
-import type { UserRepository } from '../../repositories/user.repository.js';
 import { DocumentFactory } from '../../factories/document.factory.js';
 import { UserFactory } from '../../factories/user.factory.js';
+import { container } from '@triptyk/nfw-core';
+import { AuthService } from '../../../api/services/auth.service.js';
 
-/* jscpd:ignore-start */
 export class DevelopmentSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
-    const password = await (em.getRepository(UserModel) as UserRepository).hashPassword('123');
+    const password = await container.resolve(AuthService).hashPassword('123');
     const document = await new DocumentFactory(em).createOne({
       id: '123456789'
     });
@@ -38,4 +37,3 @@ export class DevelopmentSeeder extends Seeder {
     await writeFile(document.path, 'sdfhsdkjfsdjkfsdjkfhjskd', 'utf-8');
   }
 }
-/* jscpd:ignore-end */

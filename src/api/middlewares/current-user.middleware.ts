@@ -1,34 +1,18 @@
 import type { RouterContext } from '@koa/router';
 import type { Next } from 'koa';
-import { UserModel } from '../../database/models/user.model.js';
-import type { UserRepository } from '../../database/repositories/user.repository.js';
 import { injectable } from '@triptyk/nfw-core';
 import type { MiddlewareInterface } from '@triptyk/nfw-http';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
-import JWT from 'jsonwebtoken';
-
-export async function loadUserFromContext (context: RouterContext, userRepo: UserRepository) {
-  if (context.header.authorization) {
-    const bearerToken = context.header.authorization.split(' ');
-    if (bearerToken[0] === 'Bearer') {
-      const decrypted = JWT.decode(bearerToken[1], { complete: true });
-      const user = await userRepo.findOne({ id: decrypted?.payload.sub as string });
-      if (!user) {
-        throw new Error('Invalid token');
-      }
-      return user;
-    } else {
-      throw new Error('Invalid token');
-    }
-  }
-}
+import { UserService } from '../services/user.service.js';
 
 @injectable()
 export class CurrentUserMiddleware implements MiddlewareInterface {
-  constructor (@injectRepository(UserModel) private userRepository: UserRepository) {}
+  constructor (
+    @injectRepository(UserService) private userService: UserService
+  ) {}
 
   async use (context: RouterContext, next: Next) {
-    context.state.user = await loadUserFromContext(context, this.userRepository);
+    context.state.user = await this.userService.tryLoadUserFromToken(context.headers.authorization ?? '');
     await next();
   }
 }

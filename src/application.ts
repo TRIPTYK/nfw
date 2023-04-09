@@ -1,13 +1,5 @@
 /* eslint-disable import/first */
 import 'reflect-metadata';
-import { registerDocumentResource } from './api/resources/document/register.js';
-import { registerUserResource } from './api/resources/user/register.js';
-
-registerUserResource();
-registerDocumentResource();
-
-console.log('loaded');
-
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
 import { RefreshTokenModel } from './database/models/refresh-token.model.js';

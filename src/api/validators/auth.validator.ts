@@ -1,38 +1,17 @@
-import { Schema, String, Email } from 'fastest-validator-decorators';
-import type { UserModel } from '../../database/models/user.model';
+import * as yup from 'yup';
 
-@Schema({
-  strict: true
-})
-export class ValidatedRegisteredUserBody implements Partial<UserModel> {
-  @String()
-  public declare firstName: string;
+export const registeredUserBodySchema = yup.object().shape({
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
+  email: yup.string().email().required(),
+  password: yup.string().required()
+});
 
-  @String()
-  public declare lastName: string;
+export const refreshBodySchema = yup.object().shape({
+  refreshToken: yup.string().required()
+});
 
-  @Email()
-  public declare email: string;
-
-  @String()
-  public declare password: string;
-}
-
-@Schema({
-  strict: true
-})
-export class ValidatedRefreshBody {
-  @String()
-  public declare refreshToken: string;
-}
-
-@Schema({
-  strict: true
-})
-export class ValidatedLoginBody {
-  @Email()
-  public declare email: string;
-
-  @String()
-  public declare password: string;
-}
+export const loginBodySchema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().required()
+});

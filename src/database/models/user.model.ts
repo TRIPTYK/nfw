@@ -11,15 +11,13 @@ import {
   types
 } from '@mikro-orm/core';
 import { Roles } from '../../api/enums/roles.enum.js';
-import { UserRepository } from '../repositories/user.repository.js';
 import type { RefreshTokenModel } from './refresh-token.model.js';
 import bcrypt from 'bcrypt';
 import type { DocumentModel } from './document.model.js';
 import { BaseModel } from './base.model.js';
 
 @Entity({
-  tableName: 'users',
-  customRepository: () => UserRepository
+  tableName: 'users'
 })
 export class UserModel extends BaseModel<UserModel> {
   @Property({
