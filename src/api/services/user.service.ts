@@ -2,7 +2,7 @@ import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import { UserModel } from '../../database/models/user.model.js';
 import * as JWT from 'jsonwebtoken';
-import { InvalidBearerTokenError } from '../errors/invalid-bearer-token.js';
+import { InvalidBearerTokenError } from '../errors/web/invalid-bearer-token.js';
 import type { EntityRepository } from '@mikro-orm/mysql';
 
 @singleton()

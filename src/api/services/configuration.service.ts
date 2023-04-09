@@ -2,6 +2,7 @@ import { injectable, singleton } from '@triptyk/nfw-core';
 import { load } from 'ts-dotenv';
 import type { EnvType } from 'ts-dotenv';
 import type { StringKeyOf } from 'type-fest';
+import { ConfigurationNotLoadedError } from '../errors/configuration-not-loaded.js';
 
 export interface ConfigurationService<T extends Record<string, unknown>> {
   get<K extends StringKeyOf<T>>(key: K): T[K],
@@ -41,7 +42,7 @@ export class ConfigurationServiceImpl implements ConfigurationService<Env> {
 
   get<K extends StringKeyOf<Env>> (key: K): Env[K] {
     if (!this.env) {
-      throw new Error();
+      throw new ConfigurationNotLoadedError();
     }
     return this.env[key];
   }

@@ -12,8 +12,8 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import { Controller, Ctx, POST, UseMiddleware } from '@triptyk/nfw-http';
 import { AuthService } from '../services/auth.service.js';
 import type { EntityRepository } from '@mikro-orm/mysql';
-import { InvalidUserNameOrPasswordError } from '../errors/invalid-username-or-password.js';
-import { InvalidRefreshTokenError } from '../errors/invalid-refresh-token.js';
+import { InvalidUserNameOrPasswordError } from '../errors/web/invalid-username-or-password.js';
+import { InvalidRefreshTokenError } from '../errors/web/invalid-refresh-token.js';
 import { loginBodySchema, refreshBodySchema, registeredUserBodySchema } from '../validators/auth.validator.js';
 import type { InferType } from 'yup';
 
@@ -71,13 +71,13 @@ export class AuthController {
   }
 
   private generateAccessToken (user: UserModel) {
-    return this.authService.generateAccessToken(
-      user,
-      this.configurationService.get('JWT_EXPIRES'),
-      this.configurationService.get('JWT_SECRET'),
-      this.configurationService.get('JWT_ISS'),
-      this.configurationService.get('JWT_AUDIENCE')
-    );
+    return this.authService.generateAccessToken({
+      userId: user.id,
+      accessExpires: this.configurationService.get('JWT_EXPIRES'),
+      secret: this.configurationService.get('JWT_SECRET'),
+      iss: this.configurationService.get('JWT_ISS'),
+      audience: this.configurationService.get('JWT_AUDIENCE')
+    });
   }
 
   @POST('/refresh-token')

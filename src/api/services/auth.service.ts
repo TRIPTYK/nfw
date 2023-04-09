@@ -1,17 +1,24 @@
 import { singleton } from '@triptyk/nfw-core';
-import type { UserModel } from '../../database/models/user.model.js';
-import { unixTimestamp } from '../utils/date-utils.js';
+import { unixTimestamp } from '../utils/date.js';
 import * as Jwt from 'jsonwebtoken';
 import { hash } from 'bcrypt';
 
+interface AccessTokenGenerationOptions {
+  userId: string,
+  accessExpires: number,
+  secret: string,
+  iss: string,
+  audience: string,
+}
+
 @singleton()
 export class AuthService {
-  public generateAccessToken (user: UserModel, accessExpires: number, secret: string, iss: string, audience: string): string {
+  public generateAccessToken ({ userId, accessExpires, secret, iss, audience }: AccessTokenGenerationOptions): string {
     const now = unixTimestamp();
     const payload = {
       exp: now + accessExpires * 60,
       iat: now,
-      sub: user.id
+      sub: userId
     };
 
     return Jwt.sign(payload, secret, { algorithm: 'HS512', issuer: iss, notBefore: 0, audience });
