@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import 'reflect-metadata';
-import { expect, test, vi, afterEach, beforeEach } from 'vitest';
+import { expect, test, vi, afterEach, beforeEach, afterAll } from 'vitest';
 import type { LoggerService } from '../../../../src/api/services/logger.service.js';
 import { LoggerServiceImpl } from '../../../../src/api/services/logger.service.js';
 
@@ -41,4 +41,8 @@ test('If logging is disabled, it should not output to console.log', () => {
   loggerService.info('test');
   loggerService.error('test');
   expect(console.info).not.toBeCalledTimes(2);
+})
+
+afterAll(() => {
+  vi.unstubAllGlobals();
 })

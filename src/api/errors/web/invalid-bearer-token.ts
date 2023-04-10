@@ -1,5 +1,5 @@
-import { HttpError } from 'koa';
+import { WebError } from './web-error.js';
 
-export class InvalidBearerTokenError extends HttpError {
+export class InvalidBearerTokenError extends WebError {
   status = 417;
 }
