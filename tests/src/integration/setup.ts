@@ -1,9 +1,10 @@
+import { container } from '@triptyk/nfw-core';
 import { Application } from '../../../src/application.js';
 
 let application : Application;
 
 export async function setup () {
-  application = new Application();
+  application = container.resolve(Application);
   await application.setup();
 }
 

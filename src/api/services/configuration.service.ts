@@ -20,7 +20,9 @@ export const schema = {
     type: Boolean,
     default: true
   },
+  REFRESH_DATABASE: { type: Boolean, default: false },
   PORT: Number,
+  DATABASE_TYPE: ['mysql' as const, 'mariadb' as const, 'postgresql' as const],
   REFRESH_TOKEN_EXPIRES: Number,
   JWT_SECRET: String,
   JWT_EXPIRES: Number,

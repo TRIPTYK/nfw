@@ -1,27 +1,40 @@
-import { singleton } from '@triptyk/nfw-core';
+import { inject, injectable, singleton } from '@triptyk/nfw-core';
 import { unixTimestamp } from '../utils/date.js';
 import * as Jwt from 'jsonwebtoken';
 import { hash } from 'bcrypt';
-
-interface AccessTokenGenerationOptions {
-  userId: string,
-  accessExpires: number,
-  secret: string,
-  iss: string,
-  audience: string,
-}
+import { injectRepository } from '@triptyk/nfw-mikro-orm';
+import { RefreshTokenModel } from '../../database/models/refresh-token.model.js';
+import type { UserModel } from '../../database/models/user.model.js';
+import type { RefreshTokenRepository } from '../../database/repositories/refresh-token.repository.js';
+import type { ConfigurationService, Env } from './configuration.service.js';
+import { ConfigurationServiceImpl } from './configuration.service.js';
 
 @singleton()
+@injectable()
 export class AuthService {
-  public generateAccessToken ({ userId, accessExpires, secret, iss, audience }: AccessTokenGenerationOptions): string {
+  public constructor (
+    @injectRepository(RefreshTokenModel) public refreshTokenRepository: RefreshTokenRepository,
+    @inject(ConfigurationServiceImpl) public configurationService: ConfigurationService<Env>
+  ) {
+
+  }
+
+  public generateAccessToken (userId: string): string {
     const now = unixTimestamp();
     const payload = {
-      exp: now + accessExpires * 60,
+      exp: now + this.configurationService.get('JWT_EXPIRES') * 60,
       iat: now,
       sub: userId
     };
 
-    return Jwt.sign(payload, secret, { algorithm: 'HS512', issuer: iss, notBefore: 0, audience });
+    return Jwt.sign(payload, this.configurationService.get('JWT_SECRET'), { algorithm: 'HS512', issuer: this.configurationService.get('JWT_ISS'), notBefore: 0, audience: this.configurationService.get('JWT_AUDIENCE') });
+  }
+
+  public generateRefreshToken (user: UserModel) {
+    return this.refreshTokenRepository.generateRefreshToken(
+      user,
+      this.configurationService.get('REFRESH_TOKEN_EXPIRES')
+    );
   }
 
   public hashPassword (password: string): Promise<string> {

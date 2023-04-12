@@ -14,7 +14,7 @@ export class RefreshTokenRepository extends EntityRepository<RefreshTokenModel> 
     });
 
     if (oldToken) {
-      await this.removeAndFlush(oldToken);
+      this.remove(oldToken);
     }
 
     const refreshToken = this.create({
@@ -22,6 +22,7 @@ export class RefreshTokenRepository extends EntityRepository<RefreshTokenModel> 
       user,
       expires
     });
+
     return refreshToken;
   }
 }

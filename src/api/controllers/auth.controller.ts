@@ -56,28 +56,11 @@ export class AuthController {
       throw new InvalidUserNameOrPasswordError();
     }
 
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = await this.generateRefreshToken(user);
+    const accessToken = this.authService.generateAccessToken(user.id);
+    const refreshToken = await this.authService.generateRefreshToken(user);
     await this.refreshTokenRepository.flush();
 
     return { accessToken, refreshToken: refreshToken.token };
-  }
-
-  private async generateRefreshToken (user: UserModel) {
-    return this.refreshTokenRepository.generateRefreshToken(
-      user,
-      this.configurationService.get('REFRESH_TOKEN_EXPIRES')
-    );
-  }
-
-  private generateAccessToken (user: UserModel) {
-    return this.authService.generateAccessToken({
-      userId: user.id,
-      accessExpires: this.configurationService.get('JWT_EXPIRES'),
-      secret: this.configurationService.get('JWT_SECRET'),
-      iss: this.configurationService.get('JWT_ISS'),
-      audience: this.configurationService.get('JWT_AUDIENCE')
-    });
   }
 
   @POST('/refresh-token')
@@ -90,10 +73,10 @@ export class AuthController {
 
     const user = refresh.user.unwrap();
 
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = await this.generateRefreshToken(user);
+    const accessToken = this.authService.generateAccessToken(user.id);
+    const refreshToken = await this.authService.generateRefreshToken(user);
 
-    await this.refreshTokenRepository.removeAndFlush(refresh);
+    await this.refreshTokenRepository.flush();
 
     return { accessToken, refreshToken: refreshToken.token };
   }
