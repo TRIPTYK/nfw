@@ -8,9 +8,11 @@ import { UserFactory } from '../../factories/user.factory.js';
 import { AuthService } from '../../../api/services/auth.service.js';
 import { container } from '@triptyk/nfw-core';
 
+/**
+ * This is the default seeder for this environment
+ */
 export class DatabaseSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
-    console.log('bip');
     const password = await container.resolve(AuthService).hashPassword('123');
     const document = await new DocumentFactory(em).createOne({
       id: '123456789'
