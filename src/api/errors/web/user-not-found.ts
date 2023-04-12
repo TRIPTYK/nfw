@@ -1,5 +1,5 @@
-import { HttpError } from 'koa';
+import { WebError } from './web-error.js';
 
-export class UserNotFoundError extends HttpError {
+export class UserNotFoundError extends WebError {
   status = 404;
 }

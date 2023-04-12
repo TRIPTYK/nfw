@@ -1,17 +1,34 @@
-import type { Middleware } from 'koa';
+import type { RouterContext } from '@koa/router';
+import { inject, injectable } from '@triptyk/nfw-core';
+import type { MiddlewareInterface } from '@triptyk/nfw-http';
+import type { Middleware, Next } from 'koa';
 import KoaRatelimit from 'koa-ratelimit';
+import type { ConfigurationService, Env } from '../services/configuration.service.js';
+import { ConfigurationServiceImpl } from '../services/configuration.service.js';
 
-export const createRateLimitMiddleware : (duration: number, max: number, message?: string) => Middleware = (duration: number, max: number, message?: string) => {
-  // const configurationService = container.resolve(ConfigurationServiceImpl);
-  // if (configurationService.get('NODE_ENV') === 'test') max = Infinity;
+export function createRateLimitMiddleware (duration: number, max: number, message?: string) {
+  @injectable()
+  class RateLimitMiddleware implements MiddlewareInterface {
+    public rate: Middleware;
 
-  return KoaRatelimit({
-    driver: 'memory',
-    db: new Map(),
-    duration,
-    max,
-    throw: true,
-    errorMessage: message ?? 'Too many requests',
-    id: (ctx) => ctx.ip
-  });
+    public constructor (
+      @inject(ConfigurationServiceImpl) public configurationService: ConfigurationService<Env>
+    ) {
+      this.rate = KoaRatelimit({
+        driver: 'memory',
+        db: new Map(),
+        duration,
+        max: this.configurationService.get('NODE_ENV') === 'test'  ? Infinity : max,
+        throw: true,
+        errorMessage: message ?? 'Too many requests',
+        id: (ctx) => ctx.ip
+      })
+    }
+
+    async use (context: RouterContext, next: Next): Promise<void> {
+      await this.rate(context, next);
+    }
+  };
+
+  return RateLimitMiddleware;
 }

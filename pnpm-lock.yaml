@@ -29,8 +29,8 @@ dependencies:
     specifier: ~4.0.0-alpha.31
     version: 4.0.0-alpha.31
   '@triptyk/nfw-http':
-    specifier: ~4.0.0-alpha.31
-    version: 4.0.0-alpha.31(@triptyk/nfw-core@4.0.0-alpha.31)
+    specifier: file:../nfw-core/packages/http
+    version: file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31)
   '@triptyk/nfw-mikro-orm':
     specifier: ~4.0.0-alpha.31
     version: 4.0.0-alpha.31(@mikro-orm/core@5.6.16)(@triptyk/nfw-core@4.0.0-alpha.31)
@@ -654,7 +654,7 @@ packages:
     dependencies:
       '@jercle/yargonaut': 1.1.5
       '@mikro-orm/core': 5.6.16(@mikro-orm/migrations@5.6.16)(@mikro-orm/mysql@5.6.16)(@mikro-orm/seeder@5.6.16)
-      '@mikro-orm/knex': 5.6.16(@mikro-orm/core@5.6.16)(@mikro-orm/migrations@5.6.16)
+      '@mikro-orm/knex': 5.6.16(@mikro-orm/core@5.6.16)(@mikro-orm/migrations@5.6.16)(mysql2@2.3.3)
       '@mikro-orm/migrations': 5.6.16(@mikro-orm/core@5.6.16)
       '@mikro-orm/mysql': 5.6.16(@mikro-orm/core@5.6.16)(@mikro-orm/migrations@5.6.16)(@mikro-orm/seeder@5.6.16)
       '@mikro-orm/seeder': 5.6.16(@mikro-orm/core@5.6.16)
@@ -721,48 +721,6 @@ packages:
       reflect-metadata: 0.1.13
     dev: false
 
-  /@mikro-orm/knex@5.6.16(@mikro-orm/core@5.6.16)(@mikro-orm/migrations@5.6.16):
-    resolution: {integrity: sha512-uPrRUmRBOsjj4Px7h4vgikitlJsnnIrJRrhsD1zKiGiK3KZGdSkQOrpdwTKdcWSo7bUiJxPabM8AzITlrJBBqQ==}
-    engines: {node: '>= 14.0.0'}
-    peerDependencies:
-      '@mikro-orm/core': ^5.0.0
-      '@mikro-orm/entity-generator': ^5.0.0
-      '@mikro-orm/migrations': ^5.0.0
-      better-sqlite3: ^8.0.0
-      mssql: ^7.0.0
-      mysql: ^2.18.1
-      mysql2: ^2.1.0
-      pg: ^8.0.3
-      sqlite3: ^5.0.0
-    peerDependenciesMeta:
-      '@mikro-orm/entity-generator':
-        optional: true
-      '@mikro-orm/migrations':
-        optional: true
-      better-sqlite3:
-        optional: true
-      mssql:
-        optional: true
-      mysql:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      sqlite3:
-        optional: true
-    dependencies:
-      '@mikro-orm/core': 5.6.16(@mikro-orm/migrations@5.6.16)(@mikro-orm/mysql@5.6.16)(@mikro-orm/seeder@5.6.16)
-      '@mikro-orm/migrations': 5.6.16(@mikro-orm/core@5.6.16)
-      fs-extra: 11.1.1
-      knex: 2.4.2
-      sqlstring: 2.3.3
-    transitivePeerDependencies:
-      - pg-native
-      - supports-color
-      - tedious
-    dev: false
-
   /@mikro-orm/knex@5.6.16(@mikro-orm/core@5.6.16)(@mikro-orm/migrations@5.6.16)(mysql2@2.3.3):
     resolution: {integrity: sha512-uPrRUmRBOsjj4Px7h4vgikitlJsnnIrJRrhsD1zKiGiK3KZGdSkQOrpdwTKdcWSo7bUiJxPabM8AzITlrJBBqQ==}
     engines: {node: '>= 14.0.0'}
@@ -813,9 +771,9 @@ packages:
       '@mikro-orm/core': ^5.0.0
     dependencies:
       '@mikro-orm/core': 5.6.16(@mikro-orm/migrations@5.6.16)(@mikro-orm/mysql@5.6.16)(@mikro-orm/seeder@5.6.16)
-      '@mikro-orm/knex': 5.6.16(@mikro-orm/core@5.6.16)(@mikro-orm/migrations@5.6.16)
+      '@mikro-orm/knex': 5.6.16(@mikro-orm/core@5.6.16)(@mikro-orm/migrations@5.6.16)(mysql2@2.3.3)
       fs-extra: 11.1.1
-      knex: 2.4.2
+      knex: 2.4.2(mysql2@2.3.3)
       umzug: 3.2.1
     transitivePeerDependencies:
       - '@mikro-orm/entity-generator'
@@ -906,17 +864,6 @@ packages:
     engines: {node: '>=16.3.1'}
     dependencies:
       tsyringe: 4.7.0
-    dev: false
-
-  /@triptyk/nfw-http@4.0.0-alpha.31(@triptyk/nfw-core@4.0.0-alpha.31):
-    resolution: {integrity: sha512-MQmMhu6lq/2FI5T3WxyvfpUNEDe8+4jUEMGjw3RqNhn+wnDm2JnTJjJBqJyltzYVw4dWpKNwqN9ZRv6rBB0AOA==}
-    engines: {node: '>=16.3.1'}
-    peerDependencies:
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-    dependencies:
-      '@koa/router': 12.0.0
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-      is-class: 0.0.9
     dev: false
 
   /@triptyk/nfw-mikro-orm@4.0.0-alpha.31(@mikro-orm/core@5.6.16)(@triptyk/nfw-core@4.0.0-alpha.31):
@@ -1935,17 +1882,6 @@ packages:
     resolution: {integrity: sha512-OD0TZ+B7yP7ZgpJf5K2DIbj3FZvFvxgFUuaqA/V5zTjAtAAXZ1E8bktHxmAGs4x5b7PflqA9LeQ84Og7wYtF7Q==}
     dev: false
 
-  /debug@3.2.7:
-    resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-    dependencies:
-      ms: 2.1.3
-    dev: true
-
   /debug@3.2.7(supports-color@5.5.0):
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
     peerDependencies:
@@ -2068,7 +2004,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /dotenv@16.0.3:
@@ -2239,7 +2175,7 @@ packages:
   /eslint-import-resolver-node@0.3.7:
     resolution: {integrity: sha512-gozW2blMLJCeFpBwugLTGyvVjNoeo1knonXAcatC6bjPBZitotxdWf7Gimr25N4c0AAOo4eOUfaG82IJPDpqCA==}
     dependencies:
-      debug: 3.2.7
+      debug: 3.2.7(supports-color@5.5.0)
       is-core-module: 2.11.0
       resolve: 1.22.1
     transitivePeerDependencies:
@@ -2268,7 +2204,7 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/parser': 5.57.1(eslint@8.38.0)(typescript@4.9.5)
-      debug: 3.2.7
+      debug: 3.2.7(supports-color@5.5.0)
       eslint: 8.38.0
       eslint-import-resolver-node: 0.3.7
     transitivePeerDependencies:
@@ -2311,7 +2247,7 @@ packages:
       array-includes: 3.1.6
       array.prototype.flat: 1.3.1
       array.prototype.flatmap: 1.3.1
-      debug: 3.2.7
+      debug: 3.2.7(supports-color@5.5.0)
       doctrine: 2.1.0
       eslint: 8.38.0
       eslint-import-resolver-node: 0.3.7
@@ -3370,52 +3306,6 @@ packages:
       tsscmp: 1.0.6
     dev: false
 
-  /knex@2.4.2:
-    resolution: {integrity: sha512-tMI1M7a+xwHhPxjbl/H9K1kHX+VncEYcvCx5K00M16bWvpYPKAZd6QrCu68PtHAdIZNQPWZn0GVhqVBEthGWCg==}
-    engines: {node: '>=12'}
-    hasBin: true
-    peerDependencies:
-      better-sqlite3: '*'
-      mysql: '*'
-      mysql2: '*'
-      pg: '*'
-      pg-native: '*'
-      sqlite3: '*'
-      tedious: '*'
-    peerDependenciesMeta:
-      better-sqlite3:
-        optional: true
-      mysql:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      pg-native:
-        optional: true
-      sqlite3:
-        optional: true
-      tedious:
-        optional: true
-    dependencies:
-      colorette: 2.0.19
-      commander: 9.5.0
-      debug: 4.3.4
-      escalade: 3.1.1
-      esm: 3.2.25
-      get-package-type: 0.1.0
-      getopts: 2.3.0
-      interpret: 2.2.0
-      lodash: 4.17.21
-      pg-connection-string: 2.5.0
-      rechoir: 0.8.0
-      resolve-from: 5.0.0
-      tarn: 3.0.2
-      tildify: 2.0.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /knex@2.4.2(mysql2@2.3.3):
     resolution: {integrity: sha512-tMI1M7a+xwHhPxjbl/H9K1kHX+VncEYcvCx5K00M16bWvpYPKAZd6QrCu68PtHAdIZNQPWZn0GVhqVBEthGWCg==}
     engines: {node: '>=12'}
@@ -3610,7 +3500,7 @@ packages:
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /lru-cache@6.0.0:
@@ -3804,7 +3694,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.4.1
+      tslib: 2.5.0
     dev: false
 
   /node-addon-api@5.1.0:
@@ -4880,13 +4770,8 @@ packages:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
     dev: false
 
-  /tslib@2.4.1:
-    resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
-    dev: false
-
   /tslib@2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
-    dev: true
 
   /tsscmp@1.0.6:
     resolution: {integrity: sha512-LxhtAkPDTkVCMQjt2h6eBVY28KCjikZqZfMcC15YBeNjkgUpdCfBu5HoiOTDu86v6smE8yOjyEktJ8hlbANHQA==}
@@ -5401,4 +5286,18 @@ packages:
 
   /zod@3.20.6:
     resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
+    dev: false
+
+  file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31):
+    resolution: {directory: ../nfw-core/packages/http, type: directory}
+    id: file:../nfw-core/packages/http
+    name: '@triptyk/nfw-http'
+    version: 4.0.0-alpha.31
+    engines: {node: '>=16.3.1'}
+    peerDependencies:
+      '@triptyk/nfw-core': workspace:*
+    dependencies:
+      '@koa/router': 12.0.0
+      '@triptyk/nfw-core': 4.0.0-alpha.31
+      is-class: 0.0.9
     dev: false

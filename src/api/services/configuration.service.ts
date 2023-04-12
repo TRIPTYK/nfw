@@ -26,6 +26,10 @@ export const schema = {
   REFRESH_TOKEN_EXPIRES: Number,
   JWT_SECRET: String,
   JWT_EXPIRES: Number,
+  PRODUCTION_ENV: {
+    type: Boolean,
+    default: false
+  },
   JWT_ISS: String,
   JWT_AUDIENCE: String,
   DATABASE_PORT: Number,

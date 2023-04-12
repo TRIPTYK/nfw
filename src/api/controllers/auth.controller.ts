@@ -1,6 +1,4 @@
 import { inject } from '@triptyk/nfw-core';
-import type { ConfigurationService, Env } from '../services/configuration.service.js';
-import { ConfigurationServiceImpl } from '../services/configuration.service.js';
 import { UserModel } from '../../database/models/user.model.js';
 import { RefreshTokenModel } from '../../database/models/refresh-token.model.js';
 import type { RefreshTokenRepository } from '../../database/repositories/refresh-token.repository.js';
@@ -22,7 +20,6 @@ import type { InferType } from 'yup';
 })
 export class AuthController {
   constructor (
-    @inject(ConfigurationServiceImpl) private configurationService: ConfigurationService<Env>,
     @injectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
     @injectRepository(UserModel) private userRepository: EntityRepository<UserModel>,
     @inject(AuthService) private authService: AuthService
@@ -59,7 +56,7 @@ export class AuthController {
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = await this.authService.generateRefreshToken(user);
     await this.refreshTokenRepository.flush();
-
+    
     return { accessToken, refreshToken: refreshToken.token };
   }
 

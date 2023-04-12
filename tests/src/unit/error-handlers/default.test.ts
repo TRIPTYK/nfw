@@ -2,6 +2,7 @@ import createHttpError from 'http-errors';
 import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
 import { DefaultErrorHandler } from '../../../../src/api/error-handler/default.error-handler.js';
+import { WebError } from '../../../../src/api/errors/web/web-error.js';
 
 const loggerService = {
   info: vi.fn(),
@@ -31,25 +32,37 @@ const context = {
 test('It handles validation errors', async () => {
   next.mockRejectedValue([]);
   await errorHandler.use(context, next);
-  expect(context.response.status).toStrictEqual(400);
-  expect(context.response.body).toStrictEqual([]);
+  expect(context.status).toStrictEqual(400);
+  expect(context.body).toStrictEqual([]);
 });
 
-test('It handles fatal errors', async () => {
+test('It prints fatal error details in development', async () => {
+  configurationService.get.mockReturnValue(false);
   next.mockRejectedValue(new Error('bip'));
   await errorHandler.use(context, next);
-  expect(context.response.status).toStrictEqual(500);
-  expect(context.response.body).toStrictEqual({
-    code: 500,
+  expect(context.status).toStrictEqual(500);
+  expect(context.body).toStrictEqual({
+    message: 'bip'
+  });
+});
+
+test('It hides fatal error details in production', async () => {
+  configurationService.get.mockReturnValue(true);
+  next.mockRejectedValue(new Error('bip'));
+  await errorHandler.use(context, next);
+  expect(context.status).toStrictEqual(500);
+  expect(context.body).toStrictEqual({
     message: 'Internal server error'
   });
 });
 
-test('It handles http errors', async () => {
-  next.mockRejectedValue(createHttpError(405));
+test('It handles webError errors', async () => {
+  const error = new WebError('Method Not Allowed');
+  error.status = 415;
+  next.mockRejectedValue(error);
   await errorHandler.use(context, next);
-  expect(context.response.status).toStrictEqual(405);
-  expect(context.response.body).toStrictEqual({
+  expect(context.status).toStrictEqual(415);
+  expect(context.body).toStrictEqual({
     message: 'Method Not Allowed'
   });
 });

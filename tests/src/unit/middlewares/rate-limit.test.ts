@@ -8,9 +8,9 @@ const configService = {
 }
 
 vi.mock('@triptyk/nfw-core', async () => {
+  const existingImport: any = await vi.importActual('@triptyk/nfw-core');
   return {
-    injectable: vi.fn(),
-    singleton: vi.fn(),
+    ...existingImport,
     container: {
       resolve: vi.fn(() => configService)
     }
@@ -25,16 +25,18 @@ afterEach(() => {
   vi.restoreAllMocks();
 })
 
+function instantiateMiddlewareAndReturnCall() {
+  const middlewareClass = createRateLimitMiddleware(10, 10);
+  new middlewareClass(configService as never);
+  return (KoaRatelimit as any).mock.calls[0] as any[];
+}
+
 test('Unlimited in test env', async () => {
   configService.get.mockReturnValue('test');
-  createRateLimitMiddleware(10, 10);
-  const [rateLimitParameters] = (KoaRatelimit as any).mock.calls[0];
-  expect(rateLimitParameters.max).toBe(Infinity);
+  expect(instantiateMiddlewareAndReturnCall()[0].max).toBe(Infinity);
 });
 
 test('max is taken from argument in other envs', async () => {
   configService.get.mockReturnValue('development');
-  createRateLimitMiddleware(10, 10);
-  const [rateLimitParameters] = (KoaRatelimit as any).mock.calls[0];
-  expect(rateLimitParameters.max).toBe(10);
+  expect(instantiateMiddlewareAndReturnCall()[0].max).toBe(10);
 });

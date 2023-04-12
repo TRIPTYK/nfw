@@ -2,24 +2,43 @@ import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
 import { AuthController } from '../../../../src/api/controllers/auth.controller.js';
 
-const configServiceMock = {
-  get: vi.fn(),
-  load: vi.fn()
+const refreshTokenRepositoryMock = {
+  flush: vi.fn(),
 } as never;
 
-const refreshTokenRepositoryMock = {} as never;
+const userRepositoryMock = {
+  findOne: vi.fn()
+};
 
-const userRepositoryMock = {} as never;
+const authServiceMock = {
+  generateAccessToken: vi.fn(),
+  generateRefreshToken: vi.fn()
+};
 
-const userServiceMock = {} as never;
+test('Login', async () => {
+  const auth = new AuthController(
+    refreshTokenRepositoryMock,
+    userRepositoryMock as never,
+    authServiceMock as never
+  );
 
-test('Iogin', async () => {
-  const auth = new AuthController(configServiceMock, refreshTokenRepositoryMock, userRepositoryMock, userServiceMock);
+  userRepositoryMock.findOne.mockReturnValue({
+    id:  '123',
+    passwordMatches: () => true
+  });
+  
+  authServiceMock.generateAccessToken.mockReturnValue('access');
+  authServiceMock.generateRefreshToken.mockReturnValue({
+    token: 'refresh'
+  });
 
   const token = await auth.login({
     password: '123',
     email: 'amaury@gmail.com'
   });
 
-  expect(token).toStrictEqual({});
+  expect(token).toStrictEqual({
+    accessToken: 'access',
+    refreshToken: 'refresh'
+  });
 })

@@ -33,7 +33,8 @@ test('If logging is enabled, it should output to console.log', () => {
   const [infoFirstParameter] = (console.info as any).mock.calls[0];
 
   expect(infoFirstParameter).toContain('test');
-  expect(console.info).toBeCalledTimes(2);
+  //  .error() generates an aditionnal  trace log
+  expect(console.info).toBeCalledTimes(3);
 })
 
 test('If logging is disabled, it should not output to console.log', () => {

@@ -1,24 +1,24 @@
 /* eslint-disable import/first */
 import 'reflect-metadata';
 import { inject, singleton } from '@triptyk/nfw-core';
-
+import { ConfigurationServiceImpl } from './api/services/configuration.service.js';
 import KoaQS from 'koa-qs';
-
 import createHttpError from 'http-errors';
 import Koa from 'koa';
 import { MainArea } from './api/areas/main.area.js';
 import helmet from 'koa-helmet';
 import cors from '@koa/cors';
-import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 import { koaBody } from 'koa-body';
 import { requestContext } from '@triptyk/nfw-mikro-orm';
-import { createApplication } from '@triptyk/nfw-http';
+import { createApplication, resolveMiddlewareInstance } from '@triptyk/nfw-http';
 import type { Server } from 'http';
 import type { LoggerService } from './api/services/logger.service.js';
 import { LoggerServiceImpl } from './api/services/logger.service.js';
-import { ConfigurationServiceImpl } from './api/services/configuration.service.js';
 import { DatabaseConnectionImpl } from './database/connection.js';
 import { DatabaseGenerator } from './database/generator.js';
+import { LogMiddleware } from './api/middlewares/log.middleware.js';
+import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
+import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 
 @singleton()
 export class Application {
@@ -63,7 +63,9 @@ export class Application {
     server.use(cors({
       origin: this.configurationService.get('CORS')
     }));
-    server.use(createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'));
+    server.use(resolveMiddlewareInstance(LogMiddleware));
+    server.use(resolveMiddlewareInstance(DefaultErrorHandler));
+    server.use(resolveMiddlewareInstance(createRateLimitMiddleware(10000, 30, 'hello')));
     server.use(koaBody({
       jsonLimit: '128kb',
       text: false,

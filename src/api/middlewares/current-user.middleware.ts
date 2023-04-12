@@ -11,7 +11,9 @@ export class CurrentUserMiddleware implements MiddlewareInterface {
   ) {}
 
   async use (context: RouterContext, next: Next) {
-    context.state.user = await this.userService.tryLoadUserFromToken(context.headers.authorization ?? '');
+    if (context.headers.authorization) {
+      context.state.user = await this.userService.tryLoadUserFromToken(context.headers.authorization);
+    }
     await next();
   }
 }

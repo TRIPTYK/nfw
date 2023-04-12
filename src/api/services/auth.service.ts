@@ -27,7 +27,8 @@ export class AuthService {
       sub: userId
     };
 
-    return Jwt.sign(payload, this.configurationService.get('JWT_SECRET'), { algorithm: 'HS512', issuer: this.configurationService.get('JWT_ISS'), notBefore: 0, audience: this.configurationService.get('JWT_AUDIENCE') });
+
+    return (Jwt as any).default.sign(payload, this.configurationService.get('JWT_SECRET'), { algorithm: 'HS512', issuer: this.configurationService.get('JWT_ISS'), notBefore: 0, audience: this.configurationService.get('JWT_AUDIENCE') });
   }
 
   public generateRefreshToken (user: UserModel) {
