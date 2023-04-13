@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { inject, singleton } from '@triptyk/nfw-core';
 import { ConfigurationServiceImpl } from './api/services/configuration.service.js';
 import KoaQS from 'koa-qs';
-import createHttpError from 'http-errors';
 import Koa from 'koa';
 import { MainArea } from './api/areas/main.area.js';
 import helmet from 'koa-helmet';
@@ -19,6 +18,8 @@ import { DatabaseGenerator } from './database/generator.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
+import { BadRequestError } from './api/errors/web/bad-request.js';
+import { PayloadTooLargeError } from './api/errors/web/payload-too-large.js';
 
 @singleton()
 export class Application {
@@ -74,9 +75,9 @@ export class Application {
       urlencoded: false,
       onError: (err: Error) => {
         if (err.name === 'PayloadTooLargeError') {
-          throw createHttpError(413, err.message);
+          throw new PayloadTooLargeError(err.message);
         }
-        throw createHttpError(400, err.message);
+        throw new BadRequestError(err.message);
       }
     }));
 

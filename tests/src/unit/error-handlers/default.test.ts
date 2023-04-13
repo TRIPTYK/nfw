@@ -1,4 +1,3 @@
-import createHttpError from 'http-errors';
 import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
 import { DefaultErrorHandler } from '../../../../src/api/error-handler/default.error-handler.js';

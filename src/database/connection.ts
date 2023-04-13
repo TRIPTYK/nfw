@@ -2,8 +2,8 @@ import type { MikroORM } from '@mikro-orm/core';
 import { LoadStrategy } from '@mikro-orm/core';
 import { inject, singleton } from '@triptyk/nfw-core';
 import { init } from '@triptyk/nfw-mikro-orm';
-import createHttpError from 'http-errors';
 import type { Promisable } from 'type-fest';
+import { NotFoundError } from '../api/errors/web/not-found.js';
 import type { ConfigurationService, Env } from '../api/services/configuration.service.js';
 import { ConfigurationServiceImpl } from '../api/services/configuration.service.js';
 import { getConfiguration } from './configuration.js';
@@ -35,7 +35,7 @@ export class DatabaseConnectionImpl implements DatabaseConnection<MikroORM> {
       // api-specific behaviors
       loadStrategy: LoadStrategy.SELECT_IN,
       findOneOrFailHandler: () => {
-        return createHttpError(404, 'Not found');
+        return new NotFoundError();
       }
     });
 
