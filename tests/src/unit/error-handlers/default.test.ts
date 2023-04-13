@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
+import { ValidationError } from 'yup';
 import { DefaultErrorHandler } from '../../../../src/api/error-handler/default.error-handler.js';
 import { WebError } from '../../../../src/api/errors/web/web-error.js';
 
@@ -29,7 +30,7 @@ const context = {
 } as any;
 
 test('It handles validation errors', async () => {
-  next.mockRejectedValue([]);
+  next.mockRejectedValue(new ValidationError([]));
   await errorHandler.use(context, next);
   expect(context.status).toStrictEqual(400);
   expect(context.body).toStrictEqual([]);

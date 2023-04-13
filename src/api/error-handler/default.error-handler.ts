@@ -20,58 +20,61 @@ export class DefaultErrorHandler implements MiddlewareInterface {
   async use (context: RouterContext, next: Next) {
     try {
       await next();
-      rejectUnhandled();
+      this.rejectUnhandled(context);
     } catch (error: any) {
       this.loggerService.error(error);
 
-      if (isValidationError(error)) {
+      if (this.isValidationError(error)) {
         this.sendValidationErrors(context, error);
         return;
       }
 
       if (error instanceof WebError) {
-        sendWebError(error);
+        this.sendWebError(context, error);
         return;
       }
 
       this.sendDefaultError(context, error);
     }
+  }
 
-    function sendWebError(error: WebError) {
-      context.status = error.status;
-      context.body = {
-        message: error.message
-      };
-    }
+  private sendWebError (context: RouterContext, error: WebError) {
+    context.status = error.status;
+    context.body = {
+      message: error.message
+    };
+  }
 
-    function isValidationError(error: unknown) {
-      return Array.isArray(error) && error.every((error) => error instanceof ValidationError);
-    }
+  private isValidationError (error: unknown) {
+    return error instanceof ValidationError;
+  }
 
-    function rejectUnhandled() {
-      if (context.status === 404) {
-        throw new NotFoundError();
-      }
+  private rejectUnhandled (context: RouterContext) {
+    if (context.status === 404) {
+      throw new NotFoundError();
     }
   }
 
-  private sendValidationErrors(context: RouterContext, error: any) {
+  private sendValidationErrors (context: RouterContext, error: ValidationError) {
     context.status = 400;
-    context.body = error.map((e: ValidationError) => {
+    context.body = error.inner.map((e: ValidationError) => {
       return {
         title: 'validationError',
         message: e.message,
-        meta: e,
-        status: '400'
+        meta: {
+          path: e.path,
+          value: e.value,
+          type: e.type
+        }
       };
     });
   }
 
-  private sendDefaultError(context: RouterContext, error: any) {
+  private sendDefaultError (context: RouterContext, error: any) {
     const isProductionEnv = this.configurationService.get('PRODUCTION_ENV');
     context.status = 500;
     context.body = {
-      message: isProductionEnv ? 'Internal server error': error.message
+      message: isProductionEnv ? 'Internal server error' : error.message
     };
   }
 }

@@ -66,7 +66,7 @@ export class Application {
     }));
     server.use(resolveMiddlewareInstance(LogMiddleware));
     server.use(resolveMiddlewareInstance(DefaultErrorHandler));
-    server.use(resolveMiddlewareInstance(createRateLimitMiddleware(10000, 30, 'hello')));
+    server.use(resolveMiddlewareInstance(createRateLimitMiddleware(10000, 30, 'Please slow down')));
     server.use(koaBody({
       jsonLimit: '128kb',
       text: false,
