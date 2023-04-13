@@ -37,7 +37,10 @@ export class Application {
 
   public async setup () {
     await this.databaseConnection.connect();
-    await this.databaseGenerator.generateDatabase();
+
+    if (this.configurationService.get('REFRESH_DATABASE')) {
+      await this.databaseGenerator.generateDatabase();
+    }
 
     const server = this.setupKoaServer();
 
@@ -50,7 +53,7 @@ export class Application {
   }
 
   public listen () {
-    return new Promise<void>((resolve) => this.koaServer?.listen(this.configurationService.get('PORT'), () => {
+    return new Promise<void>((resolve) => this.httpServer = this.koaServer?.listen(this.configurationService.get('PORT'), () => {
       this.logger?.info(`Listening on port ${this.configurationService.get('PORT')}`);
       resolve();
     }));
@@ -85,6 +88,7 @@ export class Application {
   }
 
   public async stop () {
+    this.httpServer?.closeAllConnections();
     await this.databaseConnection.close();
     if (this.httpServer) {
       await new Promise((resolve) => this.httpServer!.close(resolve));

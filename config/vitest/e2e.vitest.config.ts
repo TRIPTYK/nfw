@@ -6,6 +6,7 @@ export default defineConfig({
     include: ['tests/src/e2e/**/*.test.ts'],
     singleThread: true,
     globals: true,
+    logHeapUsage: true,
     globalSetup: [
       'tests/src/e2e/setup.ts'
     ]

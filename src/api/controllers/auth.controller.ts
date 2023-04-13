@@ -6,13 +6,14 @@ import { ValidatedBody } from '../decorators/validated-body.js';
 import { Roles } from '../enums/roles.enum.js';
 import type { RouterContext } from '@koa/router';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
-import { Controller, Ctx, POST } from '@triptyk/nfw-http';
+import { Controller, Ctx, POST, UseMiddleware } from '@triptyk/nfw-http';
 import { AuthService } from '../services/auth.service.js';
 import type { EntityRepository } from '@mikro-orm/mysql';
 import { InvalidUserNameOrPasswordError } from '../errors/web/invalid-username-or-password.js';
 import { InvalidRefreshTokenError } from '../errors/web/invalid-refresh-token.js';
 import { loginBodySchema, refreshBodySchema, registeredUserBodySchema } from '../validators/auth.validator.js';
 import type { InferType } from 'yup';
+import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
 
 @Controller({
   routeName: '/auth'
@@ -25,7 +26,7 @@ export class AuthController {
   ) {}
 
   @POST('/register')
-  // @UseMiddleware(createRateLimitMiddleware(1000 * 60 * 15, 2, 'Please wait before creating another account'))
+  @UseMiddleware(createRateLimitMiddleware(1000 * 60 * 15, 2, 'Please wait before creating another account'))
   public async register (
     @ValidatedBody(registeredUserBodySchema) body : InferType<typeof registeredUserBodySchema>,
     @Ctx() ctx: RouterContext

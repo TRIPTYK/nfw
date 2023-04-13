@@ -49,6 +49,6 @@ export class DatabaseConnectionImpl implements DatabaseConnection<MikroORM> {
   }
 
   public close () {
-    return this._orm?.close(true);
+    return this._orm?.close();
   }
 }

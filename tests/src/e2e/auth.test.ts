@@ -10,9 +10,9 @@ test('Login', async () => {
     body: JSON.stringify({ email: 'amaury@localhost.com', password: '123' })
   });
 
-  expect(response.status).toStrictEqual(200);
-
   const body = await response.json();
+
+  expect(response.status).toStrictEqual(200);
   expect(body).toHaveProperty('accessToken');
   expect(body).toHaveProperty('refreshToken');
 });

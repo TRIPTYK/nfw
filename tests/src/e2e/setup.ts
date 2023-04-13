@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { container } from '@triptyk/nfw-core';
 import { Application } from '../../../src/application.js';
 

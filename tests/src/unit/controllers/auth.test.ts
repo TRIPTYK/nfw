@@ -3,7 +3,7 @@ import { expect, test, vi } from 'vitest';
 import { AuthController } from '../../../../src/api/controllers/auth.controller.js';
 
 const refreshTokenRepositoryMock = {
-  flush: vi.fn(),
+  flush: vi.fn()
 } as never;
 
 const userRepositoryMock = {
@@ -23,10 +23,10 @@ test('Login', async () => {
   );
 
   userRepositoryMock.findOne.mockReturnValue({
-    id:  '123',
+    id: '123',
     passwordMatches: () => true
   });
-  
+
   authServiceMock.generateAccessToken.mockReturnValue('access');
   authServiceMock.generateRefreshToken.mockReturnValue({
     token: 'refresh'
