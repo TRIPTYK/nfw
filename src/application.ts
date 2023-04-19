@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
 import 'reflect-metadata';
-import { inject, singleton } from '@triptyk/nfw-core';
+import { container, inject, singleton } from '@triptyk/nfw-core';
 import { ConfigurationServiceImpl } from './api/services/configuration.service.js';
 import KoaQS from 'koa-qs';
 import Koa from 'koa';
@@ -20,6 +20,8 @@ import { DefaultErrorHandler } from './api/error-handler/default.error-handler.j
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
 import { BadRequestError } from './api/errors/web/bad-request.js';
 import { PayloadTooLargeError } from './api/errors/web/payload-too-large.js';
+import { setupRegistry } from './api/resources/registry.js';
+import { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 
 @singleton()
 export class Application {
@@ -37,6 +39,8 @@ export class Application {
 
   public async setup () {
     await this.databaseConnection.connect();
+    const registry = container.resolve(ResourcesRegistryImpl);
+    setupRegistry(registry);
 
     if (this.configurationService.get('REFRESH_DATABASE')) {
       await this.databaseGenerator.generateDatabase();

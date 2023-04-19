@@ -8,7 +8,7 @@ import type { UserModel } from './user.model.js';
   tableName: 'refresh-token',
   customRepository: () => RefreshTokenRepository
 })
-export class RefreshTokenModel extends BaseModel<RefreshTokenModel> {
+export class RefreshTokenModel extends BaseModel {
   @Property({
     type: types.string
   })

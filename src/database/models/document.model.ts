@@ -15,7 +15,7 @@ import { BaseModel } from './base.model.js';
 @Entity({
   tableName: 'documents'
 })
-export class DocumentModel extends BaseModel<DocumentModel> {
+export class DocumentModel extends BaseModel {
   @Property({
     type: types.string
   })

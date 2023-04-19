@@ -19,7 +19,7 @@ import { BaseModel } from './base.model.js';
 @Entity({
   tableName: 'users'
 })
-export class UserModel extends BaseModel<UserModel> {
+export class UserModel extends BaseModel {
   @Property({
     type: types.string
   })

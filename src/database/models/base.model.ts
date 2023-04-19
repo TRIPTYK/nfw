@@ -1,11 +1,10 @@
-import type { AnyEntity } from '@mikro-orm/core';
-import { types, PrimaryKey, Entity, BaseEntity } from '@mikro-orm/core';
+import { types, PrimaryKey, Entity } from '@mikro-orm/core';
 import { v4 } from 'uuid';
 
 @Entity({
   abstract: true
 })
-export abstract class BaseModel<T extends AnyEntity> extends BaseEntity<T, 'id'> {
+export abstract class BaseModel {
   @PrimaryKey({
     type: types.string
   })

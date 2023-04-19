@@ -1,0 +1,63 @@
+import type { EntityData, EntityRepository, Loaded, RequiredEntityData } from '@mikro-orm/core';
+import { wrap } from '@mikro-orm/core';
+import { injectRepository } from '@triptyk/nfw-mikro-orm';
+import type { JsonApiQuery } from '@triptyk/nfw-resources';
+import type { Promisable } from 'type-fest';
+import { UserModel } from '../../../database/models/user.model.js';
+import { offsetFromPageAndSize } from '../../utils/offset-from-page.js';
+
+export interface UserResourceService {
+  getOne(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never> | null>,
+  getAll(query: JsonApiQuery): Promisable<[Loaded<UserModel, never>[], number]>,
+  create(body: RequiredEntityData<UserModel>): Promisable<Loaded<UserModel, never>>,
+  update(id: string, body: EntityData<UserModel>): Promisable<Loaded<UserModel, never>>,
+  delete(id: string): Promisable<void>,
+}
+
+export class UserResourceServiceImpl implements UserResourceService {
+  public constructor (
+    @injectRepository(UserModel) public usersRepository: EntityRepository<UserModel>
+  ) {
+
+  }
+
+  public async getOne (id: string, query: JsonApiQuery) {
+    const user = await this.usersRepository.findOne(id, {
+      populate: (query.include as never) ?? [],
+      fields: query.fields as never,
+      orderBy: query.sort
+    });
+
+    return user;
+  }
+
+  public async getAll (query: JsonApiQuery) {
+    const [users, number] = await this.usersRepository.findAndCount({}, {
+      populate: (query.include as never) ?? [],
+      fields: query.fields as never,
+      orderBy: query.sort,
+      limit: query.page?.size ?? 100,
+      offset: query.page ? offsetFromPageAndSize(query.page.number, query.page.size) : undefined
+    });
+
+    return [users, number] as [Loaded<UserModel, never>[], number];
+  }
+
+  async create (body: RequiredEntityData<UserModel>): Promise<Loaded<UserModel, never>> {
+    const user = this.usersRepository.create(body);
+    await this.usersRepository.persistAndFlush(user);
+    return user;
+  }
+
+  async update (id: string, body: EntityData<UserModel>): Promise<Loaded<UserModel, never>> {
+    const existing = await this.usersRepository.findOneOrFail(id);
+    const user = wrap(existing).assign(body);
+    await this.usersRepository.persistAndFlush(user);
+    return user;
+  }
+
+  async delete (id: string): Promise<void> {
+    const existing = await this.usersRepository.findOneOrFail(id);
+    await this.usersRepository.removeAndFlush(existing);
+  }
+}
