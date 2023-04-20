@@ -11,9 +11,10 @@
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "lint:duplication": "jscpd -c config/jscpd.json --exitCode 1",
     "mikro-orm:cli": "MIKRO_ORM_CLI_USE_TS_NODE=1 MIKRO_ORM_DYNAMIC_IMPORTS=1 node --experimental-specifier-resolution=node --loader ts-node/esm ./node_modules/@mikro-orm/cli/cli.js",
-    "start:dev": "nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
-    "start:test": "NODE_ENV=test nodemon --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts",
-    "start:production": "NODE_ENV=production node ./dist/src/application.bootstrap.js"
+    "start:dev": "node start.js",
+    "start:dev:debug": "DEBUG=true node start.js",
+    "start:test": "NODE_ENV=test node start.js",
+    "start:test:debug": "DEBUG=true NODE_ENV=test node start.js"
   },
   "mikro-orm": {
     "configPaths": [
