@@ -3,7 +3,7 @@ import { expect, test, vi } from 'vitest';
 import { CurrentUserMiddleware } from '../../../../src/api/middlewares/current-user.middleware.js';
 
 const mockUserService = {
-  tryLoadUserFromToken: vi.fn()
+  tryLoadUserFromToken: vi.fn(),
 }
 
 test('current-user middleware is called with authorization header and calls tryLoadUserFromToken', async () => {
@@ -12,8 +12,8 @@ test('current-user middleware is called with authorization header and calls tryL
   const context = {
     state: {},
     headers: {
-      authorization: 'Auth_Bearer'
-    }
+      authorization: 'Auth_Bearer',
+    },
   } as any;
   const loadedUser = {};
 

@@ -7,7 +7,7 @@ import { UserService } from '../services/user.service.js';
 @injectable()
 export class CurrentUserMiddleware implements MiddlewareInterface {
   constructor (
-    @inject(UserService) private userService: UserService
+    @inject(UserService) private userService: UserService,
   ) {}
 
   async use (context: RouterContext, next: Next) {

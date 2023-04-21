@@ -5,7 +5,7 @@ import type { LoggerService } from '../../../../src/api/services/logger.service.
 
 const loggerServiceMock = {
   error: vi.fn(),
-  info: vi.fn()
+  info: vi.fn(),
 } satisfies LoggerService;
 const next = vi.fn();
 
@@ -25,8 +25,8 @@ const anonymousContext = {
   method: 'GET',
   url: '/foo',
   headers: {
-    authorization: 'Auth_Bearer'
-  }
+    authorization: 'Auth_Bearer',
+  },
 } as any;
 
 test('log service is called for logged-in user with context data', async () => {
@@ -34,9 +34,9 @@ test('log service is called for logged-in user with context data', async () => {
     ...anonymousContext,
     state: {
       user: {
-        id: 'id'
-      }
-    }
+        id: 'id',
+      },
+    },
   } as any;
 
   await middleware.use(loggedContext, next);

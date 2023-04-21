@@ -1,12 +1,10 @@
 import { inject, injectable } from '@triptyk/nfw-core';
-import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiUpdate, ResourcesRegistry } from '@triptyk/nfw-resources';
-import { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
-import { UserResourceServiceImpl } from '../resources/user/service.js';
-import type { UserResourceService } from '../resources/user/service.js';
-import type { UserResourceAuthorizer } from '../resources/user/authorizer.js';
-import type { InferType } from 'yup';
+import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiUpdate, ResourcesRegistry, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { UserResourceServiceImpl, UserResourceService } from '../resources/user/service.js';
+import { UserResourceAuthorizer, UserResourceAuthorizerImpl } from '../resources/user/authorizer.js';
+import { InferType } from 'yup';
 import { createUserValidationSchema, updateUserValidationSchema } from '../validators/user.validator.js';
-import { Controller, GET, Param } from '@triptyk/nfw-http';
+import { Controller, Param } from '@triptyk/nfw-http';
 import { JsonApiQueryDecorator } from '../decorators/json-api-query.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { UserModel } from '../../database/models/user.model.js';
@@ -28,7 +26,7 @@ export class UsersController {
   ) {}
 
   @JsonApiGet()
-  async get (@Param('id') id: string, query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
+  async get (@Param('id') id: string, @JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const user = await this.usersService.getOneOrFail(id, query);
     await canOrFail(this.authorizer, currentUser, 'read', user);
     return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);

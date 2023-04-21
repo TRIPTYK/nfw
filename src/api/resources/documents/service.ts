@@ -1,5 +1,5 @@
-import { wrap } from '@mikro-orm/core';
-import type { EntityRepository, Loaded } from '@mikro-orm/core';
+import { wrap, EntityRepository } from '@mikro-orm/core';
+import type { Loaded } from '@mikro-orm/core';
 import { NotFoundError } from '../../errors/web/not-found.js';
 import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';

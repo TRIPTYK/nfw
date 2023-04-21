@@ -16,20 +16,20 @@ import { InferType } from 'yup';
 import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
 
 @Controller({
-  routeName: '/auth'
+  routeName: '/auth',
 })
 export class AuthController {
   constructor (
     @injectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
     @injectRepository(UserModel) private userRepository: EntityRepository<UserModel>,
-    @inject(AuthService) private authService: AuthService
+    @inject(AuthService) private authService: AuthService,
   ) {}
 
   @POST('/register')
   @UseMiddleware(createRateLimitMiddleware(1000 * 60 * 15, 2, 'Please wait before creating another account'))
   public async register (
     @ValidatedBody(registeredUserBodySchema) body : InferType<typeof registeredUserBodySchema>,
-    @Ctx() ctx: RouterContext
+    @Ctx() ctx: RouterContext,
   ) {
     const user = this.userRepository.create({ ...body, role: Roles.USER });
     user.password = await this.authService.hashPassword(body.password);
@@ -41,7 +41,7 @@ export class AuthController {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
-      email: user.email
+      email: user.email,
     };
   }
 
@@ -63,9 +63,9 @@ export class AuthController {
   @POST('/refresh-token')
   public async refreshToken (@ValidatedBody(refreshBodySchema) body: InferType<typeof refreshBodySchema>) {
     const refresh = await this.refreshTokenRepository.findOneOrFail({
-      token: body.refreshToken
+      token: body.refreshToken,
     }, {
-      failHandler: () => new InvalidRefreshTokenError()
+      failHandler: () => new InvalidRefreshTokenError(),
     });
 
     const user = refresh.user.unwrap();

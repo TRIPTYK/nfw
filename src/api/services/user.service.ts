@@ -11,7 +11,7 @@ import { ConfigurationServiceImpl, ConfigurationService } from './configuration.
 export class UserService {
   public constructor (
     @injectRepository(UserModel) public userRepository: EntityRepository<UserModel>,
-    @inject(ConfigurationServiceImpl) public configService: ConfigurationService<Env>
+    @inject(ConfigurationServiceImpl) public configService: ConfigurationService<Env>,
   ) {
 
   }

@@ -1,6 +1,5 @@
 import { inject, injectable } from '@triptyk/nfw-core';
-import type { ResourcesRegistry } from '@triptyk/nfw-resources';
-import { JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { ResourcesRegistry, JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import type { DocumentResource } from './schema.js';
 
 @injectable()
@@ -8,6 +7,6 @@ export class DocumentSerializer extends JsonApiResourceSerializer<DocumentResour
   public constructor (
         @inject(ResourcesRegistryImpl) registry: ResourcesRegistry,
   ) {
-    super('users', registry);
+    super('documents', registry);
   }
 }
