@@ -22,6 +22,7 @@ export class UserService {
     if (this.isBearerToken(tokenType)) {
       try {
         const user = await this.loadUserFromToken(token);
+
         if (!user) {
           throw new InvalidBearerTokenError();
         }

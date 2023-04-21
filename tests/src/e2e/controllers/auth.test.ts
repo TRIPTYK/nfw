@@ -1,10 +1,10 @@
-import fetch from 'node-fetch';
 import { test, expect } from 'vitest';
+import { fetchApi } from '../../../utils/config.js';
 
-const apiUrl = 'http://localhost:8001/api/v1/auth';
+const resource = 'auth';
 
 test('Login', async () => {
-  const response = await fetch(`${apiUrl}/login`, {
+  const response = await fetchApi(`${resource}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'amaury@localhost.com', password: '123' })
@@ -18,7 +18,7 @@ test('Login', async () => {
 });
 
 test('Login with incorrect user/password', async () => {
-  const response = await fetch(`${apiUrl}/login`, {
+  const response = await fetchApi(`${resource}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'amaury@localhost.com', password: '1234' })
@@ -39,7 +39,7 @@ test('Register', async () => {
     lastName: 'localhost'
   };
 
-  const response = await fetch(`${apiUrl}/register`, {
+  const response = await fetchApi(`${resource}/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user)
@@ -55,7 +55,7 @@ test('Register', async () => {
 });
 
 test('Register should deny unknown property', async () => {
-  const response = await fetch(`${apiUrl}/register`, {
+  const response = await fetchApi(`${resource}/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -71,10 +71,10 @@ test('Register should deny unknown property', async () => {
 });
 
 test('Refresh token', async () => {
-  const loginResponse = await fetch(`${apiUrl}/login`, {
+  const loginResponse = await fetchApi(`${resource}/refresh-token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'amaury@localhost.com', password: '123' })
+    body: JSON.stringify({ refreshToken: '123' })
   });
 
   expect(loginResponse.status).toStrictEqual(200);
@@ -86,7 +86,7 @@ test('Refresh token', async () => {
   // Wait 1 second to ensure that the access token has expired
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  const refreshResponse = await fetch(`${apiUrl}/refresh-token`, {
+  const refreshResponse = await fetchApi(`${resource}/refresh-token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken: loginBody.refreshToken })
@@ -100,7 +100,7 @@ test('Refresh token', async () => {
 });
 
 test('Refreshing wrong token', async () => {
-  const refreshResponse = await fetch(`${apiUrl}/refresh-token`, {
+  const refreshResponse = await fetchApi(`${resource}/refresh-token`, {
     body: JSON.stringify({
       refreshToken: 'sdkl,dkjkjfl'
     }),

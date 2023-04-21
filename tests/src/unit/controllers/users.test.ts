@@ -55,6 +55,7 @@ class Serializer implements ResourceSerializer<never> {
 }
 
 const serializer = new Serializer();
+const currentUser = new UserModel();
 
 describe('Get', () => {
   const user = new UserModel();
@@ -68,7 +69,7 @@ describe('Get', () => {
       fields: {
         users: ['a']
       }
-    })).rejects.toThrowError();
+    }, currentUser)).rejects.toThrowError();
   });
 
   test('happy path', async () => {
@@ -77,7 +78,7 @@ describe('Get', () => {
 
     registry.getSerializerFor.mockReturnValue(serializer);
 
-    await controller.get(id, jsonApiQuery);
+    await controller.get(id, jsonApiQuery, currentUser);
 
     expect(usersService.getOne).toBeCalledWith(id, jsonApiQuery);
     expect(serializer.serializeOne).toBeCalledWith(user);
@@ -87,8 +88,8 @@ describe('Get', () => {
     usersService.getOne.mockReturnValue(user);
     authorizer.can.mockReturnValue(false);
 
-    await expect(controller.get('123', {})).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(undefined, 'read', user, {});
+    await expect(controller.get('123', {}, currentUser)).rejects.toThrowError(ForbiddenError);
+    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user, {});
   });
 });
 
@@ -102,7 +103,7 @@ describe('FindAll', () => {
     usersService.getAll.mockReturnValue([users, 1]);
     registry.getSerializerFor.mockReturnValue(serializer);
 
-    await controller.findAll(jsonApiQuery);
+    await controller.findAll(jsonApiQuery, currentUser);
     expect(serializer.serializeMany).toBeCalledWith(users);
     expect(usersService.getAll).toBeCalledWith(jsonApiQuery);
   });
@@ -110,8 +111,8 @@ describe('FindAll', () => {
   test('Throws when cannot read an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.getAll.mockReturnValue([[user], 1]);
-    await expect(controller.findAll(jsonApiQuery)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(undefined, 'read', user, {});
+    await expect(controller.findAll(jsonApiQuery, currentUser)).rejects.toThrowError(ForbiddenError);
+    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user, {});
   });
 });
 
@@ -123,7 +124,7 @@ describe('Create', () => {
     authorizer.can.mockReturnValue(true);
     usersService.create.mockReturnValue(user);
     registry.getSerializerFor.mockReturnValue(serializer);
-    await controller.create(createBody as never);
+    await controller.create(createBody as never, currentUser);
     expect(usersService.create).toBeCalledWith(createBody);
     expect(serializer.serializeOne).toBeCalledWith(user);
   });
@@ -131,8 +132,8 @@ describe('Create', () => {
   test('Throws when cannot create an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.create.mockReturnValue(user);
-    await expect(controller.create(createBody as never)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(undefined, 'create', createBody, {});
+    await expect(controller.create(createBody as never, currentUser)).rejects.toThrowError(ForbiddenError);
+    expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody, {});
   });
 });
 
@@ -145,7 +146,7 @@ describe('Update', () => {
     authorizer.can.mockReturnValue(true);
     usersService.update.mockReturnValue(user);
     registry.getSerializerFor.mockReturnValue(serializer);
-    await controller.update(id, updateBody);
+    await controller.update(id, updateBody, currentUser);
     expect(serializer.serializeOne).toBeCalledWith(user);
     expect(usersService.update).toBeCalledWith(id, updateBody);
   });
@@ -153,8 +154,8 @@ describe('Update', () => {
   test('Throws when cannot update an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.update.mockReturnValue(user);
-    await expect(controller.update(id, updateBody)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(undefined, 'update', updateBody, {});
+    await expect(controller.update(id, updateBody, currentUser)).rejects.toThrowError(ForbiddenError);
+    expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody, {});
   });
 });
 
@@ -165,21 +166,21 @@ describe('Delete', () => {
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     usersService.getOne.mockReturnValue(user);
-    usersService.delete.mockReturnValue(undefined);
+    usersService.delete.mockReturnValue(currentUser);
     registry.getSerializerFor.mockReturnValue(serializer);
-    await controller.delete(id);
+    await controller.delete(id, currentUser);
     expect(usersService.delete).toBeCalledWith(id);
   });
 
   test('Throws when user does not exists', async () => {
     authorizer.can.mockReturnValue(true);
     usersService.getOne.mockReturnValue(null);
-    await expect(controller.delete(id)).rejects.toThrowError(NotFoundError);
+    await expect(controller.delete(id, currentUser)).rejects.toThrowError(NotFoundError);
   });
 
   test('Throws when cannot delete an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.getOne.mockReturnValue(user);
-    await expect(controller.delete(id)).rejects.toThrowError(ForbiddenError);
+    await expect(controller.delete(id, currentUser)).rejects.toThrowError(ForbiddenError);
   });
 });

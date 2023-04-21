@@ -1,13 +1,13 @@
 import type { ResourceSchema } from '@triptyk/nfw-resources';
 
-type UserResource = {
-    name: string,
+export type UserResource = {
+  firstName?: string,
 }
 
 export const userSchema = {
   type: 'users',
   attributes: {
-    name: {
+    firstName: {
       deserialize: true,
       serialize: true,
       type: 'string'

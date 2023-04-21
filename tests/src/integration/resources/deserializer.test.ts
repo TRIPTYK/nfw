@@ -18,7 +18,7 @@ test('Deserializer deserializes from schema', async () => {
   const deserialized = await deserializer.deserialize({
     unknown: 'unknown',
     name: 'name'
-  });
+  } as never);
 
   expect(deserialized).toStrictEqual({
 

@@ -44,7 +44,6 @@
     "@triptyk/nfw-mikro-orm": "~4.0.0-alpha.31",
     "@triptyk/nfw-resources": "file:../nfw-core/packages/resource-jsonapi",
     "bcrypt": "~5.1.0",
-    "json-api-query-parser": "link:../json-api-query-parser",
     "jsonwebtoken": "~9.0.0",
     "koa": "~2.14.1",
     "koa-body": "~6.0.1",

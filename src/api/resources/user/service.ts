@@ -1,10 +1,11 @@
 import type { EntityData, EntityRepository, Loaded, RequiredEntityData } from '@mikro-orm/core';
 import { wrap } from '@mikro-orm/core';
+import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import type { Promisable } from 'type-fest';
 import { UserModel } from '../../../database/models/user.model.js';
-import { offsetFromPageAndSize } from '../../utils/offset-from-page.js';
+import { jsonApiQueryToFindOptions } from '../../utils/json-api-query-to-mikro-orm.js';
 
 export interface UserResourceService {
   getOne(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never> | null>,
@@ -14,6 +15,7 @@ export interface UserResourceService {
   delete(id: string): Promisable<void>,
 }
 
+@singleton()
 export class UserResourceServiceImpl implements UserResourceService {
   public constructor (
     @injectRepository(UserModel) public usersRepository: EntityRepository<UserModel>
@@ -22,23 +24,13 @@ export class UserResourceServiceImpl implements UserResourceService {
   }
 
   public async getOne (id: string, query: JsonApiQuery) {
-    const user = await this.usersRepository.findOne(id, {
-      populate: (query.include as never) ?? [],
-      fields: query.fields as never,
-      orderBy: query.sort
-    });
+    const user = await this.usersRepository.findOne(id, jsonApiQueryToFindOptions(query));
 
     return user;
   }
 
   public async getAll (query: JsonApiQuery) {
-    const [users, number] = await this.usersRepository.findAndCount({}, {
-      populate: (query.include as never) ?? [],
-      fields: query.fields as never,
-      orderBy: query.sort,
-      limit: query.page?.size ?? 100,
-      offset: query.page ? offsetFromPageAndSize(query.page.number, query.page.size) : undefined
-    });
+    const [users, number] = await this.usersRepository.findAndCount({}, jsonApiQueryToFindOptions(query));
 
     return [users, number] as [Loaded<UserModel, never>[], number];
   }

@@ -1,5 +1,4 @@
 import { Factory } from '@mikro-orm/seeder';
-// eslint-disable-next-line import/no-named-default
 import { UserModel } from '../models/user.model.js';
 
 export class UserFactory extends Factory<UserModel> {
