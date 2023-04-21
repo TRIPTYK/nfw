@@ -19,8 +19,8 @@ export class AuthControllerTestSeeder extends Seeder {
       role: Roles.ADMIN,
       documents: new DocumentFactory(em).make(1, {
         id: '1234567891011',
-        path: 'tests/static/500.png'
-      })
+        path: 'tests/static/500.png',
+      }),
     });
     new UserFactory(em).makeOne({
       id: '9876543210',
@@ -31,15 +31,15 @@ export class AuthControllerTestSeeder extends Seeder {
       role: Roles.USER,
       documents: new DocumentFactory(em).make(1, {
         id: '1234567891012',
-        path: 'tests/static/500.png'
-      })
+        path: 'tests/static/500.png',
+      }),
     });
     new RefreshTokenFactory(em).makeOne({
       id: '123',
       token: '123',
       user: new UserFactory(em).makeOne({
-        role: Roles.ADMIN
-      })
+        role: Roles.ADMIN,
+      }),
     })
   }
 }

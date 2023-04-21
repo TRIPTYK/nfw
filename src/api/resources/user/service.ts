@@ -20,7 +20,7 @@ export interface UserResourceService {
 @singleton()
 export class UserResourceServiceImpl implements UserResourceService {
   public constructor (
-    @injectRepository(UserModel) public usersRepository: EntityRepository<UserModel>
+    @injectRepository(UserModel) public usersRepository: EntityRepository<UserModel>,
   ) {
 
   }

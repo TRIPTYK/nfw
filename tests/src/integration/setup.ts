@@ -11,7 +11,7 @@ export async function setup () {
   const orm = container.resolve(DatabaseConnectionImpl).connection;
   await orm.getSchemaGenerator().dropSchema({
     dropMigrationsTable: true,
-    dropDb: false
+    dropDb: false,
   });
   await orm.getMigrator().up();
 }

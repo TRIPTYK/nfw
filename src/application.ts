@@ -29,7 +29,7 @@ export class Application {
   public constructor (
     @inject(ConfigurationServiceImpl) private configurationService : ConfigurationServiceImpl,
     @inject(DatabaseConnectionImpl) private databaseConnection : DatabaseConnectionImpl,
-    @inject(LoggerServiceImpl) private logger: LoggerService
+    @inject(LoggerServiceImpl) private logger: LoggerService,
   ) {
     configurationService.load();
   }
@@ -41,7 +41,7 @@ export class Application {
     const server = this.setupKoaServer();
     await createApplication({
       server,
-      controllers: [MainArea]
+      controllers: [MainArea],
     });
     KoaQS(server);
   }
@@ -59,7 +59,7 @@ export class Application {
     server.use(requestContext);
     server.use(helmet());
     server.use(cors({
-      origin: this.configurationService.get('CORS')
+      origin: this.configurationService.get('CORS'),
     }));
     server.use(resolveMiddlewareInstance(LogMiddleware));
     server.use(resolveMiddlewareInstance(DefaultErrorHandler));
@@ -75,7 +75,7 @@ export class Application {
           throw new PayloadTooLargeError(err.message);
         }
         throw new BadRequestError(err.message);
-      }
+      },
     }));
 
     return server;

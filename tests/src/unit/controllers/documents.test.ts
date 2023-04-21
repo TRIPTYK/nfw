@@ -1,20 +1,22 @@
+import type { ResourcesRegistry, ResourceSerializer } from '@triptyk/nfw-resources';
 import 'reflect-metadata';
-import type { ResourceSerializer, ResourcesRegistry } from '@triptyk/nfw-resources';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { UsersController } from 'app/api/controllers/users.controller.js';
-import { ForbiddenError } from 'app/api/errors/web/forbidden.js';
-import type { UserResourceAuthorizer } from 'app/api/resources/user/authorizer.js';
-import type { UserResourceService } from 'app/api/resources/user/service.js';
-import { UserModel } from 'app/database/models/user.model.js';
+import { DocumentsController } from '../../../../src/api/controllers/documents.controller.js';
+import { ForbiddenError } from '../../../../src/api/errors/web/forbidden.js';
+import type { DocumentResourceService } from '../../../../src/api/resources/documents/service.js';
+import { DocumentModel } from '../../../../src/database/models/document.model.js';
+import { UserModel } from '../../../../src/database/models/user.model.js';
+import { NotFoundError } from '@mikro-orm/core';
+import type { ResourceAuthorizer } from '../../../../src/api/resources/base/authorizer.js';
 
-const usersService = {
+const service = {
   getOne: vi.fn(),
+  getOneOrFail: vi.fn(),
   getAll: vi.fn(),
   create: vi.fn(),
   update: vi.fn(),
   delete: vi.fn(),
-  getOneOrFail: vi.fn(),
-} satisfies UserResourceService;
+} satisfies DocumentResourceService;
 
 const registry = {
   getDeserializerFor: vi.fn(),
@@ -25,13 +27,13 @@ const registry = {
 
 const authorizer = {
   can: vi.fn(),
-} satisfies UserResourceAuthorizer;
+} satisfies ResourceAuthorizer<DocumentModel>;
 
-let controller: UsersController;
+let controller: DocumentsController;
 
 beforeEach(() => {
-  controller = new UsersController(
-    usersService,
+  controller = new DocumentsController(
+    service,
     registry,
     authorizer,
   );
@@ -59,123 +61,135 @@ const serializer = new Serializer();
 const currentUser = new UserModel();
 
 describe('Get', () => {
-  const user = new UserModel();
+  const document = new DocumentModel();
   const id = '123';
   const jsonApiQuery = {};
 
-  test('Get unexisting user throws error', async () => {
-    usersService.getOne.mockReturnValue(null);
+  test('Get unexisting document throws error', async () => {
+    service.getOneOrFail.mockImplementation(() => {
+      throw new NotFoundError('Not found')
+    });
 
     await expect(() => controller.get(id, {
       fields: {
-        users: ['a'],
+        documents: ['filename'],
       },
     }, currentUser)).rejects.toThrowError();
   });
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.getOneOrFail.mockReturnValue(user);
+    service.getOneOrFail.mockReturnValue(document);
 
     registry.getSerializerFor.mockReturnValue(serializer);
 
     await controller.get(id, jsonApiQuery, currentUser);
 
-    expect(usersService.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
-    expect(serializer.serializeOne).toBeCalledWith(user);
+    expect(service.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
+    expect(serializer.serializeOne).toBeCalledWith(document);
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
-    usersService.getOneOrFail.mockReturnValue(user);
-    authorizer.can.mockReturnValue(false);
+    service.getOneOrFail.mockReturnValue(document);
+    authorizer.can.mockReturnValue(false)
 
     await expect(controller.get('123', {}, currentUser)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user);
+    expect(authorizer.can).toBeCalledWith(currentUser, 'read', document);
   });
 });
 
 describe('FindAll', () => {
-  const user = new UserModel();
+  const document = new DocumentModel();
   const jsonApiQuery = {};
 
   test('happy path', async () => {
-    const users = [user];
+    const documents = [document];
     authorizer.can.mockReturnValue(true);
-    usersService.getAll.mockReturnValue([users, 1]);
+    service.getAll.mockReturnValue([documents, 1]);
     registry.getSerializerFor.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(users, undefined);
-    expect(usersService.getAll).toBeCalledWith(jsonApiQuery);
+    expect(serializer.serializeMany).toBeCalledWith(documents);
+    expect(service.getAll).toBeCalledWith(jsonApiQuery);
   });
 
   test('Throws when cannot read an element', async () => {
     authorizer.can.mockReturnValue(false);
-    usersService.getAll.mockReturnValue([[user], 1]);
+    service.getAll.mockReturnValue([[document], 1]);
     await expect(controller.findAll(jsonApiQuery, currentUser)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user);
+    expect(authorizer.can).toBeCalledWith(currentUser, 'read', document);
   });
 });
 
 describe('Create', () => {
-  const user = new UserModel();
+  const document = new DocumentModel();
   const createBody = {};
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.create.mockReturnValue(user);
+    service.create.mockReturnValue(document);
     registry.getSerializerFor.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
-    expect(usersService.create).toBeCalledWith(createBody);
-    expect(serializer.serializeOne).toBeCalledWith(user);
+    expect(service.create).toBeCalledWith(createBody);
+    expect(serializer.serializeOne).toBeCalledWith(document);
   });
 
   test('Throws when cannot create an element', async () => {
     authorizer.can.mockReturnValue(false);
-    usersService.create.mockReturnValue(user);
+    service.create.mockReturnValue(document);
     await expect(controller.create(createBody as never, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody);
   });
 });
 
 describe('Update', () => {
-  const user = new UserModel();
-  const updateBody = {};
+  const document = new DocumentModel();
+  const updateBody = {} as never
   const id = '1';
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.update.mockReturnValue(user);
+    service.update.mockReturnValue(document);
     registry.getSerializerFor.mockReturnValue(serializer);
-    await controller.update(updateBody, id, currentUser);
-    expect(serializer.serializeOne).toBeCalledWith(user);
-    expect(usersService.update).toBeCalledWith(id, updateBody);
+    await controller.update(id, updateBody, currentUser);
+    expect(serializer.serializeOne).toBeCalledWith(document);
+    expect(service.update).toBeCalledWith(id, updateBody);
   });
 
   test('Throws when cannot update an element', async () => {
     authorizer.can.mockReturnValue(false);
-    usersService.update.mockReturnValue(user);
-    await expect(controller.update(updateBody, id, currentUser)).rejects.toThrowError(ForbiddenError);
+    service.update.mockReturnValue(document);
+    await expect(controller.update(id, updateBody, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody);
   });
 });
 
 describe('Delete', () => {
-  const user = new UserModel();
+  const document = new DocumentModel();
   const id = '1';
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.getOne.mockReturnValue(user);
-    usersService.delete.mockReturnValue();
+    service.getOne.mockReturnValue(document);
+    service.delete.mockReturnValue();
     registry.getSerializerFor.mockReturnValue(serializer);
     await controller.delete(id, currentUser);
-    expect(usersService.delete).toBeCalledWith(id);
+    expect(service.delete).toBeCalledWith(id);
+  });
+
+  test('Throws when user does not exists', async () => {
+    authorizer.can.mockReturnValue(true);
+    service.getOneOrFail.mockImplementation(
+      () => {
+        throw new NotFoundError('Not found')
+      },
+    );
+    await expect(() => controller.delete(id, currentUser)).rejects.toThrowError(new NotFoundError('Not found'));
   });
 
   test('Throws when cannot delete an element', async () => {
     authorizer.can.mockReturnValue(false);
-    usersService.getOne.mockReturnValue(user);
+    service.getOne.mockReturnValue(document);
     await expect(controller.delete(id, currentUser)).rejects.toThrowError(ForbiddenError);
   });
 });

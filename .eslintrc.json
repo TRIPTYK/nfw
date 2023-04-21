@@ -13,6 +13,7 @@
     "no-return-assign": "off",
     "no-redeclare": "off",
     "@typescript-eslint/no-floating-promises": "error",
+    "comma-dangle": [2, "always-multiline"],
     "no-use-before-define": "off",
     "no-useless-constructor": "off",
     "@typescript-eslint/no-use-before-define": "error",

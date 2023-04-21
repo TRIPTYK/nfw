@@ -1,5 +1,4 @@
 import { defineAbility, subject } from '@casl/ability';
-import type { RequiredEntityData } from '@mikro-orm/core';
 import { singleton } from '@triptyk/nfw-core';
 import type { Promisable } from 'type-fest';
 import type { UserModel } from '../../../database/models/user.model.js';
@@ -30,13 +29,13 @@ export class UserResourceAuthorizerImpl implements UserResourceAuthorizer {
       }
       can('update', 'user', {
         id: {
-          $eq: actor.id
-        }
+          $eq: actor.id,
+        },
       });
       can('update', 'user', {
         id: {
-          $neq: actor.id
-        }
+          $neq: actor.id,
+        },
       })
     })
   }

@@ -14,7 +14,7 @@ export class LoggerServiceImpl implements LoggerService {
   private _logger: Tracer.Tracer.Logger<string>;
 
   public constructor (
-    @inject(ConfigurationServiceImpl) configurationService: ConfigurationService<Env>
+    @inject(ConfigurationServiceImpl) configurationService: ConfigurationService<Env>,
   ) {
     this._logger = Tracer.dailyfile({
       root: 'dist',
@@ -24,7 +24,7 @@ export class LoggerServiceImpl implements LoggerService {
           // eslint-disable-next-line no-console
           console.info(data.output);
         }
-      }
+      },
     });
   }
 

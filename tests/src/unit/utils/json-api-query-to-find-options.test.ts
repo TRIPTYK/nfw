@@ -6,31 +6,31 @@ import { jsonApiQueryToFindOptions } from '../../../../src/api/utils/json-api-qu
 test('jsonApiQueryToMikroORM', () => {
   const query: JsonApiQuery = {
     fields: {
-      users: ['username', 'lastname']
+      users: ['username', 'lastname'],
     },
     page: {
       number: 5,
-      size: 2
+      size: 2,
     },
     include: [
       {
         relationName: 'comments',
         nested: [{
           relationName: 'categories',
-          nested: []
+          nested: [],
         }, {
           relationName: 'tags',
-          nested: []
-        }]
-      }
+          nested: [],
+        }],
+      },
     ],
     filter: {},
     sort: {
       username: 'ASC',
       'comments.id': 'ASC',
       'comments.username': 'DESC',
-      'comments.tags.id': 'DESC'
-    }
+      'comments.tags.id': 'DESC',
+    },
   }
 
   expect(jsonApiQueryToFindOptions(query)).toStrictEqual<FindOptions<any, any>>({
@@ -42,11 +42,11 @@ test('jsonApiQueryToMikroORM', () => {
         id: 'ASC',
         username: 'DESC',
         tags: {
-          id: 'DESC'
-        }
-      }
+          id: 'DESC',
+        },
+      },
     },
     limit: 2,
-    offset: 8
+    offset: 8,
   });
 });

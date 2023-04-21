@@ -19,7 +19,7 @@ export class DatabaseConnectionImpl implements DatabaseConnection<MikroORM> {
   private _orm?: MikroORM;
 
   public constructor (
-    @inject(ConfigurationServiceImpl) private configurationService: ConfigurationService<Env>
+    @inject(ConfigurationServiceImpl) private configurationService: ConfigurationService<Env>,
   ) {}
 
   public get connection () {
@@ -36,7 +36,7 @@ export class DatabaseConnectionImpl implements DatabaseConnection<MikroORM> {
       loadStrategy: LoadStrategy.SELECT_IN,
       findOneOrFailHandler: () => {
         return new NotFoundError();
-      }
+      },
     });
 
     const isConnected = await this._orm.isConnected();

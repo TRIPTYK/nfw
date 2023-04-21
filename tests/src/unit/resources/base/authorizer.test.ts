@@ -4,7 +4,7 @@ import type { ResourceAuthorizer } from '../../../../../src/api/resources/base/a
 import { canOrFail } from '../../../../../src/api/utils/can-or-fail.js';
 
 const fakeAuthorizer = {
-  can: vi.fn()
+  can: vi.fn(),
 } satisfies ResourceAuthorizer<never>;
 
 const actor = Symbol('actor');

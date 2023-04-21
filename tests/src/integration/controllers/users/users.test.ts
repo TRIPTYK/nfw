@@ -39,7 +39,7 @@ testCtx('CreateOne', () => container.resolve(MikroORM), async () => {
     lastName: 'deflorenne',
     role: Roles.USER,
     password: '123',
-    email: 'amaury@localhost.com'
+    email: 'amaury@localhost.com',
   }, createAdminUser());
 
   expect(user).toMatchObject({
@@ -49,15 +49,15 @@ testCtx('CreateOne', () => container.resolve(MikroORM), async () => {
       type: 'users',
       attributes: { firstName: 'amaury' },
       relationships: undefined,
-      meta: undefined
+      meta: undefined,
     },
-    included: undefined
+    included: undefined,
   });
 });
 
 testCtx('Update', () => container.resolve(MikroORM), async () => {
   const user = await usersController.update({
-    role: Roles.USER
+    role: Roles.USER,
   }, 'user-user', createAdminUser());
 
   expect(user).toMatchSnapshot();

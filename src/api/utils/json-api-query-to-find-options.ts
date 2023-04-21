@@ -24,7 +24,7 @@ function transformIncludesQuery (includes: IncludeQuery[]): string[] {
 
 class SortTransformer<T> {
   public constructor (
-    private sortObject: Record<string, unknown>
+    private sortObject: Record<string, unknown>,
   ) {}
 
   public toOrderByFindOption (): TransformedSortObject<T> {
@@ -69,6 +69,6 @@ export function jsonApiQueryToFindOptions<T extends object, P extends string = s
     populate: transformIncludesQuery(jsonApiQuery.include ?? []) as unknown as FindOptions<T>['populate'],
     limit: jsonApiQuery.page?.size,
     offset: jsonApiQuery.page ? offsetFromPageAndSize(jsonApiQuery.page.number, jsonApiQuery.page.size) : undefined,
-    orderBy: new SortTransformer(jsonApiQuery.sort ?? {}).toOrderByFindOption()
+    orderBy: new SortTransformer(jsonApiQuery.sort ?? {}).toOrderByFindOption(),
   }
 }

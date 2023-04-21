@@ -7,5 +7,5 @@ export const validatedDocumentSchema = yup.object().shape({
   originalName: yup.string().required(),
   path: yup.string().required(),
   size: yup.number().required(),
-  users: yup.array().of(yup.string())
+  users: yup.array().of(yup.string()),
 });

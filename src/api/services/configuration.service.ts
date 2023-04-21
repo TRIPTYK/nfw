@@ -14,11 +14,11 @@ export type Env = EnvType<typeof schema>;
 export const schema = {
   NODE_ENV: {
     type: String,
-    default: 'development'
+    default: 'development',
   },
   LOGGING: {
     type: Boolean,
-    default: true
+    default: true,
   },
   PORT: Number,
   DATABASE_TYPE: ['mysql' as const, 'mariadb' as const, 'postgresql' as const],
@@ -27,7 +27,7 @@ export const schema = {
   JWT_EXPIRES: Number,
   PRODUCTION_ENV: {
     type: Boolean,
-    default: false
+    default: false,
   },
   JWT_ISS: String,
   JWT_AUDIENCE: String,
@@ -37,7 +37,7 @@ export const schema = {
   DATABASE_NAME: String,
   DATABASE_USER: String,
   DEBUG: Boolean,
-  CORS: String
+  CORS: String,
 };
 
 @injectable()
