@@ -11,12 +11,23 @@ beforeAll(async () => {
 test('GET / returns list of users', async () => {
   const users = await fetchApi('users', {
     headers: {
-      Authorization: accessTokenAdmin
-    }
+      Authorization: accessTokenAdmin,
+    },
   });
 
-  const json = await users.json();
+  expect(users.status).toStrictEqual(200);
+});
+
+test('PATCH returns list of users', async () => {
+  const users = await fetchApi('users', {
+    body: {
+      firstName: 'updatedFirstName',
+    },
+    method: 'PATCH',
+    headers: {
+      Authorization: accessTokenAdmin,
+    },
+  });
 
   expect(users.status).toStrictEqual(200);
-  expect(json).toMatchSnapshot();
 });

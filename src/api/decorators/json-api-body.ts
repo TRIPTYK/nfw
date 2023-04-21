@@ -12,7 +12,10 @@ export interface Controller {
 
 function jsonApiBody<T> (resourceName: string, validationSchema: Schema<T, any, any, ''>) {
   return async (controllerContext: ControllerParamsContext<unknown>) => {
+    console.log(ResourcesRegistryImpl);
     const body = await container.resolve(ResourcesRegistryImpl).getDeserializerFor(resourceName).deserialize(controllerContext.ctx.request.body);
+    console.log(body);
+    
     return validatedBody(body, validationSchema);
   };
 }

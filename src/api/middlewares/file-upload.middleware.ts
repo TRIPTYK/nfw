@@ -1,16 +1,28 @@
-import type { Middleware } from '@koa/router';
+import type { RouterContext } from '@koa/router';
+import { injectable } from '@triptyk/nfw-core';
+import type { MiddlewareInterface } from '@triptyk/nfw-http';
+import type { Next } from 'koa';
 import koaBody from 'koa-body';
-import { BadRequestError } from '../errors/web/bad-request.js';
+import type { Class } from 'type-fest';
+import { createBadRequestError } from '../errors/web/bad-request.js';
 
-export const fileUploadMiddleware : Middleware = koaBody({
-  formidable: {
-    uploadDir: './dist/uploads',
-    multiples: false,
-    keepExtensions: true,
-    maxFileSize: 1 * 1024 * 1024 // 1MB
-  },
-  onError: (err) => {
-    throw new BadRequestError(err.message);
-  },
-  multipart: true
-});
+export function createFileUploadMiddleware (path: string, maxFileSizeInMb: number = 1): Class<MiddlewareInterface> {
+  @injectable()
+  class FileUploadMiddleware implements MiddlewareInterface {
+    async use (context: RouterContext, next: Next) {
+      const uploadFileMiddleware = koaBody({
+        formidable: {
+          uploadDir: path,
+          multiples: false,
+          keepExtensions: true,
+          maxFileSize: maxFileSizeInMb * 1024 * 1024, // 1024 * 1024 = 1Mb
+        },
+        onError: createBadRequestError,
+        multipart: true,
+      });
+      return uploadFileMiddleware(context, next);
+    }
+  }
+
+  return FileUploadMiddleware;
+};

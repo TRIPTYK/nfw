@@ -4,7 +4,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { createRateLimitMiddleware } from '../../../../src/api/middlewares/rate-limit.middleware.js';
 
 const configService = {
-  get: vi.fn()
+  get: vi.fn(),
 }
 
 vi.mock('@triptyk/nfw-core', async () => {
@@ -12,8 +12,8 @@ vi.mock('@triptyk/nfw-core', async () => {
   return {
     ...existingImport,
     container: {
-      resolve: vi.fn(() => configService)
-    }
+      resolve: vi.fn(() => configService),
+    },
   }
 });
 
@@ -25,7 +25,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 })
 
-function instantiateMiddlewareAndReturnCall() {
+function instantiateMiddlewareAndReturnCall () {
   const middlewareClass = createRateLimitMiddleware(10, 10);
   new middlewareClass(configService as never);
   return (KoaRatelimit as any).mock.calls[0] as any[];
