@@ -23,26 +23,17 @@ dependencies:
     specifier: ~5.7.4
     version: 5.7.4(@mikro-orm/core@5.7.4)
   '@triptyk/nfw-core':
-<<<<<<< HEAD
-    specifier: ~4.0.0-alpha.31
-    version: 4.0.0-alpha.31
-=======
     specifier: file:../nfw-core/packages/core
     version: file:../nfw-core/packages/core
   '@triptyk/nfw-http':
     specifier: file:../nfw-core/packages/http
     version: file:../nfw-core/packages/http(@triptyk/nfw-core@5.0.0-alpha.0)
->>>>>>> 290f55c (wip documents integration)
   '@triptyk/nfw-mikro-orm':
     specifier: file:../nfw-core/packages/mikro-orm
     version: file:../nfw-core/packages/mikro-orm(@mikro-orm/core@5.7.4)(@triptyk/nfw-core@5.0.0-alpha.0)
   '@triptyk/nfw-resources':
     specifier: file:../nfw-core/packages/resource-jsonapi
-<<<<<<< HEAD
-    version: file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@5.0.0-alpha.0)
-=======
     version: file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@5.0.0-alpha.0)(@triptyk/nfw-http@5.0.0-alpha.0)
->>>>>>> 290f55c (wip documents integration)
   bcrypt:
     specifier: ~5.1.0
     version: 5.1.0
@@ -86,11 +77,7 @@ dependencies:
     specifier: ~0.9.1
     version: 0.9.1
   typescript:
-<<<<<<< HEAD
-    specifier: ~4.9.4
-=======
     specifier: ~4.9.5
->>>>>>> 290f55c (wip documents integration)
     version: 4.9.5
   uuid:
     specifier: ~9.0.0
@@ -103,9 +90,6 @@ devDependencies:
   '@casl/ability':
     specifier: ~6.5.0
     version: 6.5.0
-  '@triptyk/nfw-http':
-    specifier: file:../nfw-core/packages/http
-    version: file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31)
   '@types/bcrypt':
     specifier: ~5.0.0
     version: 5.0.0
@@ -143,19 +127,11 @@ devDependencies:
     specifier: ~9.0.1
     version: 9.0.1
   '@typescript-eslint/eslint-plugin':
-<<<<<<< HEAD
-    specifier: ~5.59.1
-    version: 5.59.1(@typescript-eslint/parser@5.59.1)(eslint@8.39.0)(typescript@4.9.5)
-  '@typescript-eslint/parser':
-    specifier: ~5.59.1
-    version: 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-=======
     specifier: ~5.59.2
     version: 5.59.2(@typescript-eslint/parser@5.59.2)(eslint@8.39.0)(typescript@4.9.5)
   '@typescript-eslint/parser':
     specifier: ~5.59.2
     version: 5.59.2(eslint@8.39.0)(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
   '@vitest/coverage-c8':
     specifier: ^0.30.1
     version: 0.30.1(vitest@0.30.1)
@@ -201,12 +177,9 @@ devDependencies:
   ts-node-dev:
     specifier: ~2.0.0
     version: 2.0.0(@types/node@18.16.3)(typescript@4.9.5)
-<<<<<<< HEAD
   tsconfig-paths:
     specifier: ^4.2.0
     version: 4.2.0
-=======
->>>>>>> 290f55c (wip documents integration)
   type-fest:
     specifier: ~3.9.0
     version: 3.9.0
@@ -642,6 +615,7 @@ packages:
       koa-compose: 4.1.0
       methods: 1.1.2
       path-to-regexp: 6.2.1
+    dev: false
 
   /@mapbox/node-pre-gyp@1.0.10:
     resolution: {integrity: sha512-4ySo4CjzStuprMwk35H5pPbkymjv1SF3jGLj6rAHp/xT/RF7TL7bd9CTm1xDY49K2qF7jmR/g7k+SkLETP6opA==}
@@ -908,34 +882,10 @@ packages:
   /@triptyk/json-api-query-parser@0.0.0:
     resolution: {integrity: sha512-YaYKoA/zgcTUvkjTbPe3RyoWW7jI+CuXXiuVOid13mZOQar2sMGI1ZhRlskccGF60Ask9xNT3Nl2p/BGhNRx0w==}
     engines: {node: '>= 18.12 <19'}
-<<<<<<< HEAD
     dependencies:
       query-string: 8.1.0
       tslib: 2.4.1
       type-fest: 3.6.1
-    dev: false
-
-  /@triptyk/nfw-core@4.0.0-alpha.31:
-    resolution: {integrity: sha512-ndrHXxxuDhU14KkdwC1NzVI0FsXuaNmy+WcY7cGQPW8686md8Kr33O/1ZFE1BgG6oPlhfoLn7bOR4tq54dDB/g==}
-    engines: {node: '>=16.3.1'}
-    dependencies:
-      tsyringe: 4.7.0
-
-  /@triptyk/nfw-mikro-orm@4.0.0-alpha.31(@mikro-orm/core@5.7.3)(@triptyk/nfw-core@4.0.0-alpha.31):
-    resolution: {integrity: sha512-t1HubEnRqfMS7hOTlB6THJxYf7mBtBCMbpyGHsn/0VlM2h+58x5IW36U9ESIeWCcOPmPXI0/Lc+giefC0BQEJQ==}
-    engines: {node: '>=16.3.1'}
-    peerDependencies:
-      '@mikro-orm/core': ~5.6.5
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-    dependencies:
-      '@mikro-orm/core': 5.7.3(@mikro-orm/migrations@5.7.3)(@mikro-orm/mysql@5.7.3)(@mikro-orm/seeder@5.7.3)
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-=======
-    dependencies:
-      query-string: 8.1.0
-      tslib: 2.4.1
-      type-fest: 3.6.1
->>>>>>> 290f55c (wip documents integration)
     dev: false
 
   /@tsconfig/node10@1.0.9:
@@ -1166,13 +1116,8 @@ packages:
     resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
     dev: true
 
-<<<<<<< HEAD
-  /@typescript-eslint/eslint-plugin@5.59.1(@typescript-eslint/parser@5.59.1)(eslint@8.39.0)(typescript@4.9.5):
-    resolution: {integrity: sha512-AVi0uazY5quFB9hlp2Xv+ogpfpk77xzsgsIEWyVS7uK/c7MZ5tw7ZPbapa0SbfkqE0fsAMkz5UwtgMLVk2BQAg==}
-=======
   /@typescript-eslint/eslint-plugin@5.59.2(@typescript-eslint/parser@5.59.2)(eslint@8.39.0)(typescript@4.9.5):
     resolution: {integrity: sha512-yVrXupeHjRxLDcPKL10sGQ/QlVrA8J5IYOEWVqk0lJaSZP7X5DfnP7Ns3cc74/blmbipQ1htFNVGsHX6wsYm0A==}
->>>>>>> 290f55c (wip documents integration)
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       '@typescript-eslint/parser': ^5.0.0
@@ -1183,17 +1128,10 @@ packages:
         optional: true
     dependencies:
       '@eslint-community/regexpp': 4.5.1
-<<<<<<< HEAD
-      '@typescript-eslint/parser': 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-      '@typescript-eslint/scope-manager': 5.59.1
-      '@typescript-eslint/type-utils': 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-      '@typescript-eslint/utils': 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-=======
       '@typescript-eslint/parser': 5.59.2(eslint@8.39.0)(typescript@4.9.5)
       '@typescript-eslint/scope-manager': 5.59.2
       '@typescript-eslint/type-utils': 5.59.2(eslint@8.39.0)(typescript@4.9.5)
       '@typescript-eslint/utils': 5.59.2(eslint@8.39.0)(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       debug: 4.3.4
       eslint: 8.39.0
       grapheme-splitter: 1.0.4
@@ -1206,13 +1144,8 @@ packages:
       - supports-color
     dev: true
 
-<<<<<<< HEAD
-  /@typescript-eslint/parser@5.59.1(eslint@8.39.0)(typescript@4.9.5):
-    resolution: {integrity: sha512-nzjFAN8WEu6yPRDizIFyzAfgK7nybPodMNFGNH0M9tei2gYnYszRDqVA0xlnRjkl7Hkx2vYrEdb6fP2a21cG1g==}
-=======
   /@typescript-eslint/parser@5.59.2(eslint@8.39.0)(typescript@4.9.5):
     resolution: {integrity: sha512-uq0sKyw6ao1iFOZZGk9F8Nro/8+gfB5ezl1cA06SrqbgJAt0SRoFhb9pXaHvkrxUpZaoLxt8KlovHNk8Gp6/HQ==}
->>>>>>> 290f55c (wip documents integration)
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -1221,15 +1154,9 @@ packages:
       typescript:
         optional: true
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/scope-manager': 5.59.1
-      '@typescript-eslint/types': 5.59.1
-      '@typescript-eslint/typescript-estree': 5.59.1(typescript@4.9.5)
-=======
       '@typescript-eslint/scope-manager': 5.59.2
       '@typescript-eslint/types': 5.59.2
       '@typescript-eslint/typescript-estree': 5.59.2(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       debug: 4.3.4
       eslint: 8.39.0
       typescript: 4.9.5
@@ -1245,13 +1172,8 @@ packages:
       '@typescript-eslint/visitor-keys': 5.59.2
     dev: true
 
-<<<<<<< HEAD
-  /@typescript-eslint/type-utils@5.59.1(eslint@8.39.0)(typescript@4.9.5):
-    resolution: {integrity: sha512-ZMWQ+Oh82jWqWzvM3xU+9y5U7MEMVv6GLioM3R5NJk6uvP47kZ7YvlgSHJ7ERD6bOY7Q4uxWm25c76HKEwIjZw==}
-=======
   /@typescript-eslint/type-utils@5.59.2(eslint@8.39.0)(typescript@4.9.5):
     resolution: {integrity: sha512-b1LS2phBOsEy/T381bxkkywfQXkV1dWda/z0PhnIy3bC5+rQWQDS7fk9CSpcXBccPY27Z6vBEuaPBCKCgYezyQ==}
->>>>>>> 290f55c (wip documents integration)
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '*'
@@ -1260,13 +1182,8 @@ packages:
       typescript:
         optional: true
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/typescript-estree': 5.59.1(typescript@4.9.5)
-      '@typescript-eslint/utils': 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-=======
       '@typescript-eslint/typescript-estree': 5.59.2(typescript@4.9.5)
       '@typescript-eslint/utils': 5.59.2(eslint@8.39.0)(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       debug: 4.3.4
       eslint: 8.39.0
       tsutils: 3.21.0(typescript@4.9.5)
@@ -1280,13 +1197,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-<<<<<<< HEAD
-  /@typescript-eslint/typescript-estree@5.59.1(typescript@4.9.5):
-    resolution: {integrity: sha512-lYLBBOCsFltFy7XVqzX0Ju+Lh3WPIAWxYpmH/Q7ZoqzbscLiCW00LeYCdsUnnfnj29/s1WovXKh2gwCoinHNGA==}
-=======
   /@typescript-eslint/typescript-estree@5.59.2(typescript@4.9.5):
     resolution: {integrity: sha512-+j4SmbwVmZsQ9jEyBMgpuBD0rKwi9RxRpjX71Brr73RsYnEr3Lt5QZ624Bxphp8HUkSKfqGnPJp1kA5nl0Sh7Q==}
->>>>>>> 290f55c (wip documents integration)
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -1306,13 +1218,8 @@ packages:
       - supports-color
     dev: true
 
-<<<<<<< HEAD
-  /@typescript-eslint/utils@5.59.1(eslint@8.39.0)(typescript@4.9.5):
-    resolution: {integrity: sha512-MkTe7FE+K1/GxZkP5gRj3rCztg45bEhsd8HYjczBuYm+qFHP5vtZmjx3B0yUCDotceQ4sHgTyz60Ycl225njmA==}
-=======
   /@typescript-eslint/utils@5.59.2(eslint@8.39.0)(typescript@4.9.5):
     resolution: {integrity: sha512-kSuF6/77TZzyGPhGO4uVp+f0SBoYxCDf+lW3GKhtKru/L8k/Hd7NFQxyWUeY7Z/KGB2C6Fe3yf2vVi4V9TsCSQ==}
->>>>>>> 290f55c (wip documents integration)
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -1320,15 +1227,9 @@ packages:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.39.0)
       '@types/json-schema': 7.0.11
       '@types/semver': 7.3.13
-<<<<<<< HEAD
-      '@typescript-eslint/scope-manager': 5.59.1
-      '@typescript-eslint/types': 5.59.1
-      '@typescript-eslint/typescript-estree': 5.59.1(typescript@4.9.5)
-=======
       '@typescript-eslint/scope-manager': 5.59.2
       '@typescript-eslint/types': 5.59.2
       '@typescript-eslint/typescript-estree': 5.59.2(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       eslint: 8.39.0
       eslint-scope: 5.1.1
       semver: 7.5.0
@@ -2063,6 +1964,7 @@ packages:
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
+    dev: false
 
   /destroy@1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
@@ -2318,11 +2220,7 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/parser': 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-=======
       '@typescript-eslint/parser': 5.59.2(eslint@8.39.0)(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       debug: 3.2.7(supports-color@5.5.0)
       eslint: 8.39.0
       eslint-import-resolver-node: 0.3.7
@@ -2362,11 +2260,7 @@ packages:
       '@typescript-eslint/parser':
         optional: true
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/parser': 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-=======
       '@typescript-eslint/parser': 5.59.2(eslint@8.39.0)(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       array-includes: 3.1.6
       array.prototype.flat: 1.3.1
       array.prototype.flatmap: 1.3.1
@@ -2440,11 +2334,7 @@ packages:
       '@typescript-eslint/eslint-plugin':
         optional: true
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/eslint-plugin': 5.59.1(@typescript-eslint/parser@5.59.1)(eslint@8.39.0)(typescript@4.9.5)
-=======
       '@typescript-eslint/eslint-plugin': 5.59.2(@typescript-eslint/parser@5.59.2)(eslint@8.39.0)(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       eslint: 8.39.0
       eslint-rule-composer: 0.3.0
     dev: true
@@ -3024,6 +2914,7 @@ packages:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
+    dev: false
 
   /https-proxy-agent@5.0.1:
     resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
@@ -3161,6 +3052,7 @@ packages:
 
   /is-class@0.0.9:
     resolution: {integrity: sha512-kUfRnejcRC9YLgblxoJ76dp9gZ3vMKTrDS5I6z2UVMOsHHSImNKCJocjQTkZr38PwiSZ9LVklaHEENaVYeFTXg==}
+    dev: false
 
   /is-core-module@2.12.0:
     resolution: {integrity: sha512-RECHCBCd/viahWmwj6enj19sKbHfJrddi/6cBDsNTKbNq0f7VeaUkBo60BqzvPqo/W54ChS62Z5qyun7cfOMqQ==}
@@ -3327,13 +3219,8 @@ packages:
       argparse: 2.0.1
     dev: true
 
-<<<<<<< HEAD
-  /jscpd@3.5.5:
-    resolution: {integrity: sha512-mb2xpAb+OaHBLMyb2akEwbDN0yaOdbQIjnT0ht3RNZHp6p2CVUmO1P3+f98ZgD7pzmBcajkkSVe+i39ZhFCCbQ==}
-=======
   /jscpd@3.5.9:
     resolution: {integrity: sha512-8JJUHVBlnxdU/Hp+ZgctlUaMkAU4yqJ0Cfb+SYMSUihR96idyLg17tJDP6STFpkFVfU4/HLB1LHfeSGp38zVuA==}
->>>>>>> 290f55c (wip documents integration)
     hasBin: true
     dependencies:
       '@jscpd/core': 3.5.4
@@ -3372,10 +3259,6 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
-<<<<<<< HEAD
-=======
-    dev: false
->>>>>>> 290f55c (wip documents integration)
 
   /jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
@@ -3399,7 +3282,7 @@ packages:
     dev: false
 
   /jstransformer@1.0.0:
-    resolution: {integrity: sha1-7Yvwkh4vPx7U1cGkT2hwntJHIsM=}
+    resolution: {integrity: sha512-C9YK3Rf8q6VAPDCCU9fnqo3mAfOH6vUGnMcP4AQAYIEpWtfGLpwOTmZ+igtdK5y+VvI2n3CyYSzy4Qh34eq24A==}
     dependencies:
       is-promise: 2.2.2
       promise: 7.3.1
@@ -3487,6 +3370,7 @@ packages:
 
   /koa-compose@4.1.0:
     resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
+    dev: false
 
   /koa-convert@2.0.0:
     resolution: {integrity: sha512-asOvN6bFlSnxewce2e/DK3p4tltyfC4VM7ZwuTuepI7dEQVcvpyFuBcEARu1+Hxg8DIwytce2n7jrZtRlPrARA==}
@@ -3682,6 +3566,7 @@ packages:
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
+    dev: false
 
   /micromatch@4.0.5:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
@@ -4026,6 +3911,7 @@ packages:
 
   /path-to-regexp@6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
+    dev: false
 
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
@@ -4089,18 +3975,14 @@ packages:
     dependencies:
       '@types/eslint': 8.37.0
       '@types/prettier': 2.7.2
-<<<<<<< HEAD
-      '@typescript-eslint/parser': 5.59.1(eslint@8.39.0)(typescript@4.9.5)
-=======
       '@typescript-eslint/parser': 5.59.2(eslint@8.39.0)(typescript@4.9.5)
->>>>>>> 290f55c (wip documents integration)
       common-tags: 1.8.2
       dlv: 1.1.3
       eslint: 8.39.0
       indent-string: 4.0.0
       lodash.merge: 4.6.2
       loglevel-colored-level-prefix: 1.0.0
-      prettier: 2.8.7
+      prettier: 2.8.8
       pretty-format: 23.6.0
       require-relative: 0.8.7
       typescript: 4.9.5
@@ -4109,8 +3991,8 @@ packages:
       - supports-color
     dev: true
 
-  /prettier@2.8.7:
-    resolution: {integrity: sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==}
+  /prettier@2.8.8:
+    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -4389,13 +4271,8 @@ packages:
     dependencies:
       glob: 7.2.3
 
-<<<<<<< HEAD
-  /rollup@3.21.2:
-    resolution: {integrity: sha512-c4vC+JZ3bbF4Kqq2TtM7zSKtSyMybFOjqmomFax3xpfYaPZDZ4iz8NMIuBRMjnXOcKYozw7bC6vhJjiWD6JpzQ==}
-=======
   /rollup@3.21.4:
     resolution: {integrity: sha512-N5LxpvDolOm9ueiCp4NfB80omMDqb45ShtsQw2+OT3f11uJ197dv703NZvznYHP6RWR85wfxanXurXKG3ux2GQ==}
->>>>>>> 290f55c (wip documents integration)
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -4464,6 +4341,7 @@ packages:
 
   /setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
+    dev: false
 
   /shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -4561,6 +4439,7 @@ packages:
   /statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
+    dev: false
 
   /std-env@3.3.3:
     resolution: {integrity: sha512-Rz6yejtVyWnVjC1RFvNmYL10kgjC49EOghxWn0RFqlCHGFpQx+Xe7yW3I4ceK1SGrWIGMjD5Kbue8W/udkbMJg==}
@@ -4736,7 +4615,7 @@ packages:
     dev: true
 
   /tinytim@0.1.1:
-    resolution: {integrity: sha1-yWih5VWa2VUyJO92J7qzTjyu+Kg=}
+    resolution: {integrity: sha512-NIpsp9lBIxPNzB++HnMmUd4byzJSVbbO4F+As1Gb1IG/YQT5QvmBDjpx8SpDS8fhGC+t+Qw8ldQgbcAIaU+2cA==}
     engines: {node: '>= 0.2.0'}
     dev: false
 
@@ -4754,9 +4633,10 @@ packages:
   /toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
+    dev: false
 
   /token-stream@1.0.0:
-    resolution: {integrity: sha1-zCAOqyYT9BZtJ/+a/HylbUnfbrQ=}
+    resolution: {integrity: sha512-VSsyNPPW74RpHwR8Fc21uubwHY7wMDeJLys2IX5zJNih+OnAnaifKHo+1LHT7DAdloQ7apeaaWg8l7qnf/TnEg==}
     dev: true
 
   /toposort@2.0.2:
@@ -4921,6 +4801,7 @@ packages:
     engines: {node: '>= 6.0.0'}
     dependencies:
       tslib: 1.14.1
+    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -5112,11 +4993,7 @@ packages:
       '@types/node': 18.16.3
       esbuild: 0.17.18
       postcss: 8.4.23
-<<<<<<< HEAD
-      rollup: 3.21.2
-=======
       rollup: 3.21.4
->>>>>>> 290f55c (wip documents integration)
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
@@ -5380,9 +5257,6 @@ packages:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     dev: false
 
-<<<<<<< HEAD
-  file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31):
-=======
   file:../nfw-core/packages/core:
     resolution: {directory: ../nfw-core/packages/core, type: directory}
     name: '@triptyk/nfw-core'
@@ -5393,7 +5267,6 @@ packages:
     dev: false
 
   file:../nfw-core/packages/http(@triptyk/nfw-core@5.0.0-alpha.0):
->>>>>>> 290f55c (wip documents integration)
     resolution: {directory: ../nfw-core/packages/http, type: directory}
     id: file:../nfw-core/packages/http
     name: '@triptyk/nfw-http'
@@ -5403,12 +5276,6 @@ packages:
       '@triptyk/nfw-core': workspace:*
     dependencies:
       '@koa/router': 12.0.0
-<<<<<<< HEAD
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-      is-class: 0.0.9
-
-  file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@5.0.0-alpha.0):
-=======
       '@triptyk/nfw-core': file:../nfw-core/packages/core
       is-class: 0.0.9
     dev: false
@@ -5428,7 +5295,6 @@ packages:
     dev: false
 
   file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@5.0.0-alpha.0)(@triptyk/nfw-http@5.0.0-alpha.0):
->>>>>>> 290f55c (wip documents integration)
     resolution: {directory: ../nfw-core/packages/resource-jsonapi, type: directory}
     id: file:../nfw-core/packages/resource-jsonapi
     name: '@triptyk/nfw-resources'
@@ -5439,13 +5305,8 @@ packages:
       '@triptyk/nfw-http': workspace:*
     dependencies:
       '@triptyk/json-api-query-parser': 0.0.0
-<<<<<<< HEAD
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-      '@triptyk/nfw-http': file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31)
-=======
       '@triptyk/nfw-core': file:../nfw-core/packages/core
       '@triptyk/nfw-http': file:../nfw-core/packages/http(@triptyk/nfw-core@5.0.0-alpha.0)
->>>>>>> 290f55c (wip documents integration)
       json-api-serializer: 2.6.6
       pluralize: 8.0.0
     dev: false
