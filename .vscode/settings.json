@@ -4,6 +4,7 @@
   "javascript.preferences.importModuleSpecifierEnding": "js",
   "typescript.preferences.importModuleSpecifierEnding": "js",
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "typescript.tsserver.log": "verbose",
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.bracketPairColorization.enabled": true
