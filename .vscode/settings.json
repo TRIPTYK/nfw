@@ -18,5 +18,6 @@
     },
     "editor.suggest.insertMode": "replace",
     "editor.bracketPairColorization.enabled": true
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

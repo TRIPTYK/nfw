@@ -43,7 +43,7 @@ export class UsersController {
 
   @GET('/')
   async findAll (@JsonApiQueryDecorator('users') query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
-    const [users] = await this.usersService.getAll(query);
+    const [users, count] = await this.usersService.getAll(query);
 
     for (const user of users) {
       if (!this.authorizer.can(currentUser, 'read', user, {})) {
@@ -51,7 +51,7 @@ export class UsersController {
       }
     }
 
-    return this.registry.getSerializerFor('users').serializeMany(users as never);
+    return this.registry.getSerializerFor('users').serializeMany(users as never, query.page ? { ...query.page, total: count } : undefined);
   }
 
   async create (@ValidatedBody(createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {

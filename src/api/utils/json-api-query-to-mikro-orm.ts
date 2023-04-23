@@ -2,6 +2,8 @@ import type { FindOptions, QueryOrderMap } from '@mikro-orm/core';
 import type { IncludeQuery, JsonApiQuery } from '@triptyk/nfw-resources';
 import { offsetFromPageAndSize } from './offset-from-page.js';
 
+type PartialFindOptions<T, P extends string> = Pick<FindOptions<T, P>, 'populate' | 'orderBy' | 'fields' | 'limit' | 'offset'>
+
 type TransformedSortObject<T> = QueryOrderMap<T>;
 
 function transformIncludesQuery (includes: IncludeQuery[]): string[] {
@@ -60,7 +62,8 @@ class SortTransformer<T> {
   }
 }
 
-export function jsonApiQueryToFindOptions<T> (jsonApiQuery: JsonApiQuery): FindOptions<T> {
+// don't remove PartialFindOptions: https://github.com/mikro-orm/mikro-orm/issues/4258
+export function jsonApiQueryToFindOptions<T extends object, P extends string = string> (jsonApiQuery: JsonApiQuery): PartialFindOptions<T, P> {
   return {
     fields: undefined,
     populate: transformIncludesQuery(jsonApiQuery.include ?? []) as unknown as FindOptions<T>['populate'],
