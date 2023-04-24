@@ -43,9 +43,7 @@ export class UsersController {
   async findAll (@JsonApiQueryDecorator('users') query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const [users, count] = await this.usersService.getAll(query);
 
-    for (const user of users) {
-      await canOrFail(this.authorizer, currentUser, 'read', user, {});
-    }
+    await canOrFail(this.authorizer, currentUser, 'read', users, {});
 
     return this.registry.getSerializerFor('users').serializeMany(users as never, query.page ? { ...query.page, total: count } : undefined);
   }
