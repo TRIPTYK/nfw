@@ -6,7 +6,6 @@ import { UserResourceServiceImpl } from '../resources/user/service.js';
 import type { UserResourceService } from '../resources/user/service.js';
 import type { UserResourceAuthorizer } from '../resources/user/authorizer.js';
 import { UserResourceAuthorizerImpl } from '../resources/user/authorizer.js';
-import { ForbiddenError } from '../errors/web/forbidden.js';
 import type { InferType } from 'yup';
 import { createUserValidationSchema, updateUserValidationSchema } from '../validators/user.validator.js';
 import { Controller, GET, Param } from '@triptyk/nfw-http';
@@ -14,6 +13,7 @@ import { ValidatedBody } from '../decorators/validated-body.js';
 import { JsonApiQueryDecorator } from '../decorators/json-api-query.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import type { UserModel } from '../../database/models/user.model.js';
+import { canOrFail } from '../utils/can-or-fail.js';
 
 @injectable()
 @Controller({
@@ -34,9 +34,7 @@ export class UsersController {
       throw new NotFoundError();
     }
 
-    if (!this.authorizer.can(currentUser, 'read', user, {})) {
-      throw new ForbiddenError();
-    }
+    await canOrFail(this.authorizer, currentUser, 'read', user, {});
 
     return this.registry.getSerializerFor('users').serializeOne(user as never);
   }
@@ -46,18 +44,14 @@ export class UsersController {
     const [users, count] = await this.usersService.getAll(query);
 
     for (const user of users) {
-      if (!this.authorizer.can(currentUser, 'read', user, {})) {
-        throw new ForbiddenError();
-      }
+      await canOrFail(this.authorizer, currentUser, 'read', user, {});
     }
 
-    return this.registry.getSerializerFor('users').serializeMany(users, query.page ? { ...query.page, total: count } : undefined);
+    return this.registry.getSerializerFor('users').serializeMany(users as never, query.page ? { ...query.page, total: count } : undefined);
   }
 
   async create (@ValidatedBody(createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
-    if (!this.authorizer.can(currentUser, 'create', body, {})) {
-      throw new ForbiddenError();
-    }
+    await canOrFail(this.authorizer, currentUser, 'create', body, {});
 
     const user = await this.usersService.create(body);
 
@@ -65,9 +59,7 @@ export class UsersController {
   }
 
   async update (@Param('id') id: string, @ValidatedBody(updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
-    if (!this.authorizer.can(currentUser, 'update', body, {})) {
-      throw new ForbiddenError();
-    }
+    await canOrFail(this.authorizer, currentUser, 'update', body, {});
 
     const user = await this.usersService.update(id, body);
 
@@ -81,9 +73,7 @@ export class UsersController {
       throw new NotFoundError();
     }
 
-    if (!this.authorizer.can(currentUser, 'delete', user, {})) {
-      throw new ForbiddenError();
-    }
+    await canOrFail(this.authorizer, currentUser, 'delete', user, {});
 
     await this.usersService.delete(id);
 

@@ -1,15 +1,13 @@
-import { expect, test, vi, beforeEach } from 'vitest';
+import { expect, test, beforeEach } from 'vitest';
 import type { UserResourceService } from '../../../../../src/api/resources/user/service.js';
 import { UserResourceServiceImpl } from '../../../../../src/api/resources/user/service.js';
 import { UserModel } from '../../../../../src/database/models/user.model.js';
+import { mockedEntityRepository } from '../../../../utils/mocked-repository.js';
 
 let userResourceService: UserResourceService;
 const user = new UserModel();
 
-const repository = {
-  findAndCount: vi.fn(),
-  findOne: vi.fn()
-} as never;
+const repository = mockedEntityRepository;
 
 beforeEach(() => {
   userResourceService = new UserResourceServiceImpl(

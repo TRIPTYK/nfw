@@ -1,4 +1,3 @@
-import type { EntityRepository } from '@mikro-orm/core';
 import { vi } from 'vitest';
 
 export const mockedEntityRepository = {
@@ -7,5 +6,4 @@ export const mockedEntityRepository = {
   findAndCount: vi.fn(),
   canPopulate: vi.fn(),
   assign: vi.fn()
-
-} as unknown as EntityRepository<any>;
+};

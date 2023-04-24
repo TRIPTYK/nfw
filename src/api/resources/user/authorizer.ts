@@ -1,19 +1,15 @@
 import { defineAbility, subject } from '@casl/ability';
-import type { EntityData } from '@mikro-orm/core';
 import { singleton } from '@triptyk/nfw-core';
 import type { Promisable } from 'type-fest';
 import type { UserModel } from '../../../database/models/user.model.js';
 import { Roles } from '../../enums/roles.enum.js';
+import type { AuthorizerAction, ResourceAuthorizer } from '../base/authorizer.js';
 
-type Action = 'create' | 'update' | 'delete' | 'read';
-
-export interface UserResourceAuthorizer {
-    can(actor: UserModel | undefined, action: Action, on: EntityData<UserModel>, inContext: unknown): Promisable<boolean>,
-}
+export type UserResourceAuthorizer = ResourceAuthorizer<UserModel>;
 
 @singleton()
 export class UserResourceAuthorizerImpl implements UserResourceAuthorizer {
-  can (actor: UserModel | undefined, action: Action, on: UserModel, inContext: unknown): Promisable<boolean> {
+  can (actor: UserModel | undefined, action: AuthorizerAction, on: UserModel, inContext: unknown): Promisable<boolean> {
     const ability = this.ability(actor, inContext);
 
     return ability.can(action, subject('user', on));

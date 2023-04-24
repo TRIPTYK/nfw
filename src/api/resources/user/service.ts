@@ -5,7 +5,7 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import type { Promisable } from 'type-fest';
 import { UserModel } from '../../../database/models/user.model.js';
-import { jsonApiQueryToFindOptions } from '../../utils/json-api-query-to-mikro-orm.js';
+import { jsonApiQueryToFindOptions } from '../../utils/json-api-query-to-find-options.js';
 
 export interface UserResourceService {
   getOne(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never> | null>,
