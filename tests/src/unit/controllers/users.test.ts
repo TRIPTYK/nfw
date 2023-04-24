@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { UsersController } from '../../../../src/api/controllers/users.controller.js';
 import { ForbiddenError } from '../../../../src/api/errors/web/forbidden.js';
-import { NotFoundError } from '../../../../src/api/errors/web/not-found.js';
 import type { UserResourceAuthorizer } from '../../../../src/api/resources/user/authorizer.js';
 import type { UserResourceService } from '../../../../src/api/resources/user/service.js';
 import { UserModel } from '../../../../src/database/models/user.model.js';
@@ -13,7 +12,8 @@ const usersService = {
   getAll: vi.fn(),
   create: vi.fn(),
   update: vi.fn(),
-  delete: vi.fn()
+  delete: vi.fn(),
+  getOneOrFail: vi.fn()
 } satisfies UserResourceService;
 
 const registry = {
@@ -75,18 +75,18 @@ describe('Get', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.getOne.mockReturnValue(user);
+    usersService.getOneOrFail.mockReturnValue(user);
 
     registry.getSerializerFor.mockReturnValue(serializer);
 
     await controller.get(id, jsonApiQuery, currentUser);
 
-    expect(usersService.getOne).toBeCalledWith(id, jsonApiQuery);
+    expect(usersService.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
     expect(serializer.serializeOne).toBeCalledWith(user);
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
-    usersService.getOne.mockReturnValue(user);
+    usersService.getOneOrFail.mockReturnValue(user);
     authorizer.can.mockReturnValue(false);
 
     await expect(controller.get('123', {}, currentUser)).rejects.toThrowError(ForbiddenError);
@@ -171,12 +171,6 @@ describe('Delete', () => {
     registry.getSerializerFor.mockReturnValue(serializer);
     await controller.delete(id, currentUser);
     expect(usersService.delete).toBeCalledWith(id);
-  });
-
-  test('Throws when user does not exists', async () => {
-    authorizer.can.mockReturnValue(true);
-    usersService.getOne.mockReturnValue(null);
-    await expect(controller.delete(id, currentUser)).rejects.toThrowError(NotFoundError);
   });
 
   test('Throws when cannot delete an element', async () => {

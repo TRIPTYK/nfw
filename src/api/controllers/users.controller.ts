@@ -49,9 +49,7 @@ export class UsersController {
 
   async update (@Param('id') id: string, @ValidatedBody(updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'update', body, {});
-
     const user = await this.usersService.update(id, body);
-
     return this.registry.getSerializerFor(RESOURCE_NAME).serializeOne(user as never);
   }
 
