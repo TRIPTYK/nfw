@@ -51,7 +51,7 @@ export class UsersController {
       }
     }
 
-    return this.registry.getSerializerFor('users').serializeMany(users as never, query.page ? { ...query.page, total: count } : undefined);
+    return this.registry.getSerializerFor('users').serializeMany(users, query.page ? { ...query.page, total: count } : undefined);
   }
 
   async create (@ValidatedBody(createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {

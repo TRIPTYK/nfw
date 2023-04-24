@@ -19,7 +19,8 @@ const usersService = {
 const registry = {
   getDeserializerFor: vi.fn(),
   getSerializerFor: vi.fn(),
-  getSchemaFor: vi.fn()
+  getSchemaFor: vi.fn(),
+  getConfig: vi.fn()
 } satisfies ResourcesRegistry;
 
 const authorizer = {
@@ -104,7 +105,7 @@ describe('FindAll', () => {
     registry.getSerializerFor.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(users);
+    expect(serializer.serializeMany).toBeCalledWith(users, undefined);
     expect(usersService.getAll).toBeCalledWith(jsonApiQuery);
   });
 
@@ -166,7 +167,7 @@ describe('Delete', () => {
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     usersService.getOne.mockReturnValue(user);
-    usersService.delete.mockReturnValue(currentUser);
+    usersService.delete.mockReturnValue();
     registry.getSerializerFor.mockReturnValue(serializer);
     await controller.delete(id, currentUser);
     expect(usersService.delete).toBeCalledWith(id);
