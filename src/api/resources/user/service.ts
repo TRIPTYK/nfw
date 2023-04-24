@@ -5,10 +5,12 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import type { Promisable } from 'type-fest';
 import { UserModel } from '../../../database/models/user.model.js';
+import { NotFoundError } from '../../errors/web/not-found.js';
 import { jsonApiQueryToFindOptions } from '../../utils/json-api-query-to-find-options.js';
 
 export interface UserResourceService {
   getOne(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never> | null>,
+  getOneOrFail(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never>>,
   getAll(query: JsonApiQuery): Promisable<[Loaded<UserModel, never>[], number]>,
   create(body: RequiredEntityData<UserModel>): Promisable<Loaded<UserModel, never>>,
   update(id: string, body: EntityData<UserModel>): Promisable<Loaded<UserModel, never>>,
@@ -27,6 +29,16 @@ export class UserResourceServiceImpl implements UserResourceService {
     const user = await this.usersRepository.findOne(id, jsonApiQueryToFindOptions(query));
 
     return user;
+  }
+
+  public async getOneOrFail (id: string, query: JsonApiQuery) {
+    const result = await this.getOne(id, query);
+
+    if (!result) {
+      throw new NotFoundError();
+    }
+
+    return result;
   }
 
   public async getAll (query: JsonApiQuery) {
