@@ -10,12 +10,12 @@ export type UserResourceAuthorizer = ResourceAuthorizer<UserModel>;
 
 @singleton()
 export class UserResourceAuthorizerImpl implements UserResourceAuthorizer {
-  can (actor: UserModel | undefined, action: AuthorizerAction, on: RequiredEntityData<UserModel>, inContext: unknown): Promisable<boolean> {
-    const ability = this.ability(actor, inContext);
+  can (actor: UserModel | undefined, action: AuthorizerAction, on: RequiredEntityData<UserModel>): Promisable<boolean> {
+    const ability = this.ability(actor);
     return ability.can(action, subject('user', on));
   }
 
-  private ability (actor: UserModel | undefined, _c: unknown) {
+  private ability (actor: UserModel | undefined) {
     return defineAbility((can) => {
       if (actor === undefined) {
         return;
