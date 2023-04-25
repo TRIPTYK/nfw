@@ -1,18 +1,16 @@
 import 'reflect-metadata';
 import { container } from '@triptyk/nfw-core';
-import { afterEach, beforeEach, expect } from 'vitest';
-import { AuthController } from '../../../../src/api/controllers/auth.controller.js';
-import { Application } from '../../../../src/application.js';
+import { beforeAll, expect } from 'vitest';
+import { AuthController } from '../../../../../src/api/controllers/auth.controller.js';
 import { MikroORM } from '@mikro-orm/core';
-import { testCtx } from '../../../utils/it-request-context.js';
-import { DatabaseConnectionImpl } from '../../../../src/database/connection.js';
-import { RefreshTokenModel } from '../../../../src/database/models/refresh-token.model.js';
+import { testCtx } from '../../../../utils/it-request-context.js';
+import { DatabaseConnectionImpl } from '../../../../../src/database/connection.js';
+import { RefreshTokenModel } from '../../../../../src/database/models/refresh-token.model.js';
+import { AuthControllerTestSeeder } from './seed.js';
+import { setupIntegrationTest } from '../../../../utils/setup-integration-test.js';
 
-let application : Application;
-
-beforeEach(async () => {
-  application = container.resolve(Application);
-  await application.setup();
+beforeAll(async () => {
+  await setupIntegrationTest(AuthControllerTestSeeder);
 })
 
 testCtx('Login creates a refresh token', () => container.resolve(MikroORM), async () => {
@@ -28,8 +26,4 @@ testCtx('Login creates a refresh token', () => container.resolve(MikroORM), asyn
 
   expect(refresh).not.toBeNull();
   expect(response).toBeTypeOf('object');
-})
-
-afterEach(async () => {
-  await application.stop();
-})
+});

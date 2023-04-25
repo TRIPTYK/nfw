@@ -22,11 +22,6 @@ test('GET / returns list of users', async () => {
       },
       {
         type: 'users',
-        id: '4d2834b8-7f22-4a4b-a35b-a2563d1474ce',
-        attributes: { firstName: '' }
-      },
-      {
-        type: 'users',
         id: '9876543210',
         attributes: { firstName: 'sebastien' }
       }

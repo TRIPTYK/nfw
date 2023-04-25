@@ -27,7 +27,7 @@ export class UserService {
           throw new InvalidBearerTokenError();
         }
         return user;
-      } catch {
+      } catch (e) {
         // catch-all for library
         throw new InvalidBearerTokenError();
       }

@@ -6,6 +6,8 @@ export default defineConfig({
     include: ['tests/src/integration/**/*.test.ts'],
     singleThread: true,
     globals: true,
-    globalSetup: []
+    globalSetup: [
+      'tests/src/integration/setup.ts'
+    ]
   }
 })

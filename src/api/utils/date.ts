@@ -1,3 +1,3 @@
 export function unixTimestamp (): number {
-  return Date.now() / 1000;
+  return Math.ceil(Date.now() / 1000);
 }

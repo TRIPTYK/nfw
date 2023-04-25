@@ -1,5 +1,5 @@
-import type { ResourceSerializer, ResourcesRegistry } from '@triptyk/nfw-resources';
 import 'reflect-metadata';
+import type { ResourceSerializer, ResourcesRegistry } from '@triptyk/nfw-resources';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { UsersController } from '../../../../src/api/controllers/users.controller.js';
 import { ForbiddenError } from '../../../../src/api/errors/web/forbidden.js';

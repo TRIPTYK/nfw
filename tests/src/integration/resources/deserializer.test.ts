@@ -14,7 +14,7 @@ beforeEach(async () => {
 })
 
 test('Deserializer deserializes from schema', async () => {
-  const deserializer = new UsersDeserializer('users', registry);
+  const deserializer = new UsersDeserializer(registry);
   const deserialized = await deserializer.deserialize({
     unknown: 'unknown',
     name: 'name'

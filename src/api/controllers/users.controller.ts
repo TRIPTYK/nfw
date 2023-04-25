@@ -7,12 +7,13 @@ import type { UserResourceAuthorizer } from '../resources/user/authorizer.js';
 import { UserResourceAuthorizerImpl } from '../resources/user/authorizer.js';
 import type { InferType } from 'yup';
 import { createUserValidationSchema, updateUserValidationSchema } from '../validators/user.validator.js';
-import { Controller, GET, Param } from '@triptyk/nfw-http';
-import { ValidatedBody } from '../decorators/validated-body.js';
+import { Controller, DELETE, GET, Param, PATCH, POST } from '@triptyk/nfw-http';
 import { JsonApiQueryDecorator } from '../decorators/json-api-query.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import type { UserModel } from '../../database/models/user.model.js';
 import { canOrFail } from '../utils/can-or-fail.js';
+import { JsonApiBody } from '../decorators/json-api-body.js';
+import type { UserResource } from '../resources/user/schema.js';
 
 const RESOURCE_NAME = 'users';
 
@@ -31,28 +32,31 @@ export class UsersController {
   async get (@Param('id') id: string, query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const user = await this.usersService.getOneOrFail(id, query);
     await canOrFail(this.authorizer, currentUser, 'read', user, {});
-    return this.registry.getSerializerFor(RESOURCE_NAME).serializeOne(user as never);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
   }
 
   @GET('/')
   async findAll (@JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const [users, count] = await this.usersService.getAll(query);
     await canOrFail(this.authorizer, currentUser, 'read', users, {});
-    return this.registry.getSerializerFor(RESOURCE_NAME).serializeMany(users as never, query.page ? { ...query.page, total: count } : undefined);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeMany(users, query.page ? { ...query.page, total: count } : undefined);
   }
 
-  async create (@ValidatedBody(createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
+  @POST('/')
+  async create (@JsonApiBody(RESOURCE_NAME, createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'create', body, {});
     const user = await this.usersService.create(body);
-    return this.registry.getSerializerFor(RESOURCE_NAME).serializeOne(user as never);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
   }
 
-  async update (@Param('id') id: string, @ValidatedBody(updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
+  @PATCH('/:id')
+  async update (@JsonApiBody(RESOURCE_NAME, updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @Param('id') id: string, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'update', body, {});
     const user = await this.usersService.update(id, body);
-    return this.registry.getSerializerFor(RESOURCE_NAME).serializeOne(user as never);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
   }
 
+  @DELETE('/:id')
   async delete (@Param('id') id: string, @CurrentUser() currentUser: UserModel) {
     const user = await this.usersService.getOneOrFail(id, {});
     await canOrFail(this.authorizer, currentUser, 'delete', user, {});

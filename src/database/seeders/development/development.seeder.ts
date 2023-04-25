@@ -5,22 +5,20 @@ import { Roles } from '../../../api/enums/roles.enum.js';
 import type { DocumentModel } from '../../models/document.model.js';
 import { DocumentFactory } from '../../factories/document.factory.js';
 import { UserFactory } from '../../factories/user.factory.js';
-import { container } from '@triptyk/nfw-core';
-import { AuthService } from '../../../api/services/auth.service.js';
 
 /**
  * This is the default seeder for this environment
  */
 export class DatabaseSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
-    const password = await container.resolve(AuthService).hashPassword('123');
+    const password = '$2b$10$sTzX.XuGTMTaHYEnwdcwZe0gduWH1AA1ZKj3qmW3EVNb./QKh4Kbu';
     const document = await new DocumentFactory(em).createOne({
       id: '123456789'
     });
     await new UserFactory(em).createOne({
       id: '12345678910abcdef',
       email: 'admin@localhost.com',
-      password,
+      password: '123',
       firstName: 'amaury',
       lastName: 'localhost',
       role: Roles.ADMIN,

@@ -1,17 +1,15 @@
 import type { EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
-import { Roles } from '../../../api/enums/roles.enum.js';
-import { DocumentFactory } from '../../factories/document.factory.js';
-import { UserFactory } from '../../factories/user.factory.js';
-import { RefreshTokenFactory } from '../../factories/refresh-token.factory.js';
+import { container } from '@triptyk/nfw-core';
+import { Roles } from '../../../../../src/api/enums/roles.enum.js';
+import { AuthService } from '../../../../../src/api/services/auth.service.js';
+import { DocumentFactory } from '../../../../../src/database/factories/document.factory.js';
+import { RefreshTokenFactory } from '../../../../../src/database/factories/refresh-token.factory.js';
+import { UserFactory } from '../../../../../src/database/factories/user.factory.js';
 
-/**
- * This is the default seeder for this environment
- * THIS SEEDER ONLY WORKS IN TEST SERVER OR E2E TESTS.
- */
-export class DatabaseSeeder extends Seeder {
+export class AuthControllerTestSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
-    const password = '$2b$10$sTzX.XuGTMTaHYEnwdcwZe0gduWH1AA1ZKj3qmW3EVNb./QKh4Kbu';
+    const password = await container.resolve(AuthService).hashPassword('123');
     new UserFactory(em).makeOne({
       id: '12345678910abcdef',
       email: 'amaury@localhost.com',

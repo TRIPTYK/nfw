@@ -1,0 +1,13 @@
+import type { Seeder } from '@mikro-orm/seeder';
+import { container } from '@triptyk/nfw-core';
+import type { Constructor } from 'type-fest';
+import { Application } from '../../src/application.js';
+import { DatabaseConnectionImpl } from '../../src/database/connection.js';
+
+export async function setupIntegrationTest (...seed: Constructor<Seeder>[]) {
+  const application = container.resolve(Application);
+  await application.setup();
+  const orm = container.resolve(DatabaseConnectionImpl);
+  orm.connection.getSchemaGenerator().clearDatabase();
+  await orm.connection.getSeeder().seed(...seed);
+}

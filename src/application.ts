@@ -14,7 +14,6 @@ import type { Server } from 'http';
 import type { LoggerService } from './api/services/logger.service.js';
 import { LoggerServiceImpl } from './api/services/logger.service.js';
 import { DatabaseConnectionImpl } from './database/connection.js';
-import { DatabaseGenerator } from './database/generator.js';
 import { LogMiddleware } from './api/middlewares/log.middleware.js';
 import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
 import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
@@ -31,8 +30,7 @@ export class Application {
   public constructor (
     @inject(ConfigurationServiceImpl) private configurationService : ConfigurationServiceImpl,
     @inject(DatabaseConnectionImpl) private databaseConnection : DatabaseConnectionImpl,
-    @inject(LoggerServiceImpl) private logger: LoggerService,
-    @inject(DatabaseGenerator) private databaseGenerator: DatabaseGenerator
+    @inject(LoggerServiceImpl) private logger: LoggerService
   ) {
     configurationService.load();
   }
@@ -41,18 +39,11 @@ export class Application {
     await this.databaseConnection.connect();
     const registry = container.resolve(ResourcesRegistryImpl);
     setupRegistry(registry);
-
-    if (this.configurationService.get('REFRESH_DATABASE')) {
-      await this.databaseGenerator.generateDatabase();
-    }
-
     const server = this.setupKoaServer();
-
     await createApplication({
       server,
       controllers: [MainArea]
     });
-
     KoaQS(server);
   }
 
