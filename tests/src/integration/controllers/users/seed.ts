@@ -13,7 +13,7 @@ export class UsersControllerTestSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
     const password = await container.resolve(AuthService).hashPassword('123');
     new UserFactory(em).makeOne({
-      id: '12345678910abcdef',
+      id: 'admin-user',
       email: 'amaury@localhost.com',
       password,
       firstName: 'amaury',
@@ -23,6 +23,22 @@ export class UsersControllerTestSeeder extends Seeder {
         id: '1234567891011',
         path: 'tests/static/500.png'
       })
+    });
+    new UserFactory(em).makeOne({
+      id: 'user-user',
+      email: 'amaury@localhost.com',
+      password,
+      firstName: 'amaury',
+      lastName: 'localhost',
+      role: Roles.USER
+    });
+    new UserFactory(em).makeOne({
+      id: 'delete-user',
+      email: 'amaury@localhost.com',
+      password,
+      firstName: 'amaury',
+      lastName: 'localhost',
+      role: Roles.USER
     });
   }
 }

@@ -40,7 +40,7 @@ test('access token generation from configuration', () => {
 
   const token = service.generateAccessToken('123');
 
-  expect(token).toStrictEqual('eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk0OTQxMDAwMCwiaWF0Ijo5NDk0MDY0MDAsInN1YiI6IjEyMyIsIm5iZiI6OTQ5NDA2NDAwLCJhdWQiOiJ0cmlwdHlrLmV1IiwiaXNzIjoidHJpcHR5ay5ldSJ9.MSdN8V4M7P5YjkzugluPrfY2SrnjCtcH4TYGbULBS9iNaVk7szJdn3obQedVXHr8f-TC8xIfvhRdnbv62MYFyQ');
+  expect(token).toStrictEqual('eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk0OTQxMDAwMCwiaWF0Ijo5NDk0MDY0MDAsInN1YiI6IjEyMyIsIm5iZiI6OTQ5NDA2Mzk5LCJhdWQiOiJ0cmlwdHlrLmV1IiwiaXNzIjoidHJpcHR5ay5ldSJ9.E3JGmiHu3nmaPGkshxNnjoXGc60CXX0zx7kczhSlin-SlbQXEIyMU4pa1g0ZGL1X53MmtSsczjHxeLQgeDiJcA');
 });
 
 const BCRYPT_RETURN_VALUE = '';

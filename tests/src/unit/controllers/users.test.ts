@@ -147,7 +147,7 @@ describe('Update', () => {
     authorizer.can.mockReturnValue(true);
     usersService.update.mockReturnValue(user);
     registry.getSerializerFor.mockReturnValue(serializer);
-    await controller.update(id, updateBody, currentUser);
+    await controller.update(updateBody, id, currentUser);
     expect(serializer.serializeOne).toBeCalledWith(user);
     expect(usersService.update).toBeCalledWith(id, updateBody);
   });
@@ -155,7 +155,7 @@ describe('Update', () => {
   test('Throws when cannot update an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.update.mockReturnValue(user);
-    await expect(controller.update(id, updateBody, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(controller.update(updateBody, id, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody, {});
   });
 });

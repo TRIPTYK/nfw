@@ -1,4 +1,5 @@
 import { defineAbility, subject } from '@casl/ability';
+import type { RequiredEntityData } from '@mikro-orm/core';
 import { singleton } from '@triptyk/nfw-core';
 import type { Promisable } from 'type-fest';
 import type { UserModel } from '../../../database/models/user.model.js';
@@ -9,9 +10,8 @@ export type UserResourceAuthorizer = ResourceAuthorizer<UserModel>;
 
 @singleton()
 export class UserResourceAuthorizerImpl implements UserResourceAuthorizer {
-  can (actor: UserModel | undefined, action: AuthorizerAction, on: UserModel, inContext: unknown): Promisable<boolean> {
+  can (actor: UserModel | undefined, action: AuthorizerAction, on: RequiredEntityData<UserModel>, inContext: unknown): Promisable<boolean> {
     const ability = this.ability(actor, inContext);
-
     return ability.can(action, subject('user', on));
   }
 
@@ -22,8 +22,11 @@ export class UserResourceAuthorizerImpl implements UserResourceAuthorizer {
       }
 
       can('read', 'user');
+
       if (actor.role === Roles.ADMIN) {
+        can('create', 'user');
         can(['update', 'delete'], 'user', { role: { $not: { $eq: Roles.ADMIN } } });
+        can(['update', 'delete'], 'user', { role: { $eq: Roles.USER } });
       }
       can('update', 'user', {
         id: {

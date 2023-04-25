@@ -9,7 +9,7 @@ adminUser.role = Roles.ADMIN;
 adminUser.id = '1';
 
 const normalUser = new UserModel();
-normalUser.role = Roles.ADMIN;
+normalUser.role = Roles.USER;
 normalUser.id = '2';
 
 const authorizer = new UserResourceAuthorizerImpl();
@@ -31,8 +31,16 @@ test('Admin cannot edit other admins', () => {
   expect(authorizer.can(adminUser, 'update', otherAdmin, {})).toBe(false);
 });
 
+test('Admin can edit any user', () => {
+  expect(authorizer.can(adminUser, 'update', normalUser, {})).toBe(true);
+});
+
 test('User can edit itself', () => {
   expect(authorizer.can(adminUser, 'update', adminUser, {})).toBe(true);
+});
+
+test('Admin can delete any user', () => {
+  expect(authorizer.can(adminUser, 'delete', normalUser, {})).toBe(true);
 });
 
 test('Admin cannot delete itself', () => {
