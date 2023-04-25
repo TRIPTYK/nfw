@@ -6,6 +6,7 @@ export default defineConfig({
     include: ['tests/src/integration/**/*.test.ts'],
     singleThread: true,
     globals: true,
+    logHeapUsage: true,
     globalSetup: [
       'tests/src/integration/setup.ts'
     ]
