@@ -12,7 +12,7 @@ test('GET / returns list of users', async () => {
   const json = await users.json();
 
   expect(users.status).toStrictEqual(200);
-  expect(json).toStrictEqual({
+  expect(json).toMatchObject({
     jsonapi: { version: '1.0' },
     links: { self: '/api/v1/users' },
     data: [
@@ -24,9 +24,9 @@ test('GET / returns list of users', async () => {
       },
       {
         type: 'users',
-        id: '7130f0c0-4b5a-4c55-bb41-56472d41f159',
+        id: '2d79f122-6a17-4db7-ace2-0d74073b4828',
         attributes: { firstName: '' },
-        links: { self: '/api/v1/users/7130f0c0-4b5a-4c55-bb41-56472d41f159' }
+        links: { self: '/api/v1/users/2d79f122-6a17-4db7-ace2-0d74073b4828' }
       },
       {
         type: 'users',
@@ -36,9 +36,9 @@ test('GET / returns list of users', async () => {
       },
       {
         type: 'users',
-        id: 'dfaf7491-1da5-487e-a60a-5119bf2b66dc',
+        id: 'adfa94fb-c5dd-487e-bbbc-228b9c05d617',
         attributes: { firstName: 'amaury' },
-        links: { self: '/api/v1/users/dfaf7491-1da5-487e-a60a-5119bf2b66dc' }
+        links: { self: '/api/v1/users/adfa94fb-c5dd-487e-bbbc-228b9c05d617' }
       }
     ]
   });

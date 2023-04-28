@@ -3,6 +3,7 @@
   "version": "5.0.0-alpha.0",
   "description": "![alt text](https://repository-images.githubusercontent.com/166414581/dc0a1b80-a1a0-11e9-805b-cf8be46b5507)",
   "scripts": {
+    "test": "node  test.js",
     "test:e2e": "vitest -c config/vitest/e2e.vitest.config.ts",
     "test:unit": "vitest -c config/vitest/unit.vitest.config.ts",
     "test:integration": "vitest -c config/vitest/integration.vitest.config.ts",

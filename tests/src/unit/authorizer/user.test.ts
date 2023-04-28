@@ -16,11 +16,11 @@ const authorizer = new UserResourceAuthorizerImpl();
 
 test('Admin can read other admins', () => {
   const user = new UserResourceAuthorizerImpl();
-  expect(user.can(adminUser, 'read', normalUser, {})).toBe(true);
+  expect(user.can(adminUser, 'read', normalUser)).toBe(true);
 });
 
 test('Admin can read other admins', () => {
-  expect(authorizer.can(adminUser, 'read', normalUser, {})).toBe(true);
+  expect(authorizer.can(adminUser, 'read', normalUser)).toBe(true);
 });
 
 test('Admin cannot edit other admins', () => {
@@ -28,21 +28,21 @@ test('Admin cannot edit other admins', () => {
   otherAdmin.role = Roles.ADMIN;
   otherAdmin.id = '3';
 
-  expect(authorizer.can(adminUser, 'update', otherAdmin, {})).toBe(false);
+  expect(authorizer.can(adminUser, 'update', otherAdmin)).toBe(false);
 });
 
 test('Admin can edit any user', () => {
-  expect(authorizer.can(adminUser, 'update', normalUser, {})).toBe(true);
+  expect(authorizer.can(adminUser, 'update', normalUser)).toBe(true);
 });
 
 test('User can edit itself', () => {
-  expect(authorizer.can(adminUser, 'update', adminUser, {})).toBe(true);
+  expect(authorizer.can(adminUser, 'update', adminUser)).toBe(true);
 });
 
 test('Admin can delete any user', () => {
-  expect(authorizer.can(adminUser, 'delete', normalUser, {})).toBe(true);
+  expect(authorizer.can(adminUser, 'delete', normalUser)).toBe(true);
 });
 
 test('Admin cannot delete itself', () => {
-  expect(authorizer.can(adminUser, 'delete', adminUser, {})).toBe(false);
+  expect(authorizer.can(adminUser, 'delete', adminUser)).toBe(false);
 });
