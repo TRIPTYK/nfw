@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
-import { AuthController } from '../../../../src/api/controllers/auth.controller.js';
+import { AuthController } from 'app/api/controllers/auth.controller.js';
 
 const refreshTokenRepositoryMock = {
   flush: vi.fn()

@@ -1,8 +1,7 @@
 import 'reflect-metadata';
 import { container } from '@triptyk/nfw-core';
-import { Application } from '../../../src/application.js';
-import { DatabaseConnectionImpl } from '../../../src/database/connection.js';
-import { DatabaseSeeder } from '../../../src/database/seeders/test/test.seeder.js';
+import { Application } from 'app/application.js';
+import { DatabaseConnectionImpl } from 'app/database/connection.js';
 
 let application : Application;
 
@@ -15,7 +14,6 @@ export async function setup () {
     dropDb: false
   });
   await orm.getMigrator().up();
-  await orm.getSeeder().seed(DatabaseSeeder);
   await application.listen();
 }
 

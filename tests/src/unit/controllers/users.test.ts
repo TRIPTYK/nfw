@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import type { ResourceSerializer, ResourcesRegistry } from '@triptyk/nfw-resources';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { UsersController } from '../../../../src/api/controllers/users.controller.js';
-import { ForbiddenError } from '../../../../src/api/errors/web/forbidden.js';
-import type { UserResourceAuthorizer } from '../../../../src/api/resources/user/authorizer.js';
-import type { UserResourceService } from '../../../../src/api/resources/user/service.js';
-import { UserModel } from '../../../../src/database/models/user.model.js';
+import { UsersController } from 'app/api/controllers/users.controller.js';
+import { ForbiddenError } from 'app/api/errors/web/forbidden.js';
+import type { UserResourceAuthorizer } from 'app/api/resources/user/authorizer.js';
+import type { UserResourceService } from 'app/api/resources/user/service.js';
+import { UserModel } from 'app/database/models/user.model.js';
 
 const usersService = {
   getOne: vi.fn(),

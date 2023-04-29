@@ -1,7 +1,13 @@
-import { test, expect } from 'vitest';
+import { DatabaseSeeder } from 'app/database/seeders/test/test.seeder.js';
+import { setupIntegrationTest } from 'tests/utils/setup-integration-test.js';
+import { test, expect, beforeAll } from 'vitest';
 import { fetchApi } from '../../../utils/config.js';
 
 const resource = 'auth';
+
+beforeAll(async () => {
+  await setupIntegrationTest(DatabaseSeeder);
+})
 
 test('Login', async () => {
   const response = await fetchApi(`${resource}/login`, {
