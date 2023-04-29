@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["ES2022"],
+    "baseUrl": ".",
     "strict": true,
     "target": "ES2022",
     "moduleResolution": "node",
@@ -12,7 +13,11 @@
     "experimentalDecorators": true,
     "declaration": true,
     "outDir": "./dist",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "tests/*": ["tests/*"],
+      "app/*": ["src/*"]
+    }
   },
   "include": ["src/**/*", "tests/**/*"]
 }

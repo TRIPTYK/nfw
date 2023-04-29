@@ -33,7 +33,7 @@ dependencies:
     version: 4.0.0-alpha.31(@mikro-orm/core@5.6.16)(@triptyk/nfw-core@4.0.0-alpha.31)
   '@triptyk/nfw-resources':
     specifier: file:../nfw-core/packages/resource-jsonapi
-    version: file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)
+    version: file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@4.0.0-alpha.31)
   bcrypt:
     specifier: ~5.1.0
     version: 5.1.0
@@ -177,6 +177,9 @@ devDependencies:
   vite:
     specifier: ~4.3.1
     version: 4.3.1(@types/node@18.15.11)
+  vite-tsconfig-paths:
+    specifier: ^4.2.0
+    version: 4.2.0(typescript@4.9.5)(vite@4.3.1)
   vitest:
     specifier: ~0.30.1
     version: 0.30.1
@@ -2830,6 +2833,10 @@ packages:
       merge2: 1.4.1
       slash: 3.0.0
 
+  /globrex@0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
+    dev: true
+
   /gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
     dependencies:
@@ -4780,6 +4787,19 @@ packages:
       yn: 3.1.1
     dev: true
 
+  /tsconfck@2.1.1(typescript@4.9.5):
+    resolution: {integrity: sha512-ZPCkJBKASZBmBUNqGHmRhdhM8pJYDdOXp4nRgj/O0JwUwsMq50lCDRQP/M5GBNAA0elPrq4gAeu4dkaVCuKWww==}
+    engines: {node: ^14.13.1 || ^16 || >=18}
+    hasBin: true
+    peerDependencies:
+      typescript: ^4.3.5 || ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 4.9.5
+    dev: true
+
   /tsconfig-paths@3.14.2:
     resolution: {integrity: sha512-o/9iXgCYc5L/JxCHPe3Hvh8Q/2xm5Z+p18PESBU6Ff33695QnCHBEjcytY2q19ua7Mbl/DavtBOLq+oG0RCL+g==}
     dependencies:
@@ -4982,6 +5002,23 @@ packages:
       - sugarss
       - supports-color
       - terser
+    dev: true
+
+  /vite-tsconfig-paths@4.2.0(typescript@4.9.5)(vite@4.3.1):
+    resolution: {integrity: sha512-jGpus0eUy5qbbMVGiTxCL1iB9ZGN6Bd37VGLJU39kTDD6ZfULTTb1bcc5IeTWqWJKiWV5YihCaibeASPiGi8kw==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+    dependencies:
+      debug: 4.3.4
+      globrex: 0.1.2
+      tsconfck: 2.1.1(typescript@4.9.5)
+      vite: 4.3.1(@types/node@18.15.11)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
     dev: true
 
   /vite@4.3.1(@types/node@18.15.11):
@@ -5336,7 +5373,7 @@ packages:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     dev: false
 
-  file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31):
+  file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@4.0.0-alpha.31):
     resolution: {directory: ../nfw-core/packages/resource-jsonapi, type: directory}
     id: file:../nfw-core/packages/resource-jsonapi
     name: '@triptyk/nfw-resources'
@@ -5344,10 +5381,11 @@ packages:
     engines: {node: '>=16.3.1'}
     peerDependencies:
       '@triptyk/nfw-core': workspace:*
+      '@triptyk/nfw-http': workspace:*
     dependencies:
       '@triptyk/json-api-query-parser': 0.0.0
       '@triptyk/nfw-core': 4.0.0-alpha.31
-      json-api-query-parser: link:../../../json-api-query-parser
+      '@triptyk/nfw-http': 4.0.0-alpha.31(@triptyk/nfw-core@4.0.0-alpha.31)
       json-api-serializer: 2.6.6
       pluralize: 8.0.0
     dev: false

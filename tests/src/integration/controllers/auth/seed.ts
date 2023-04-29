@@ -1,11 +1,11 @@
 import type { EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
 import { container } from '@triptyk/nfw-core';
-import { Roles } from '../../../../../src/api/enums/roles.enum.js';
-import { AuthService } from '../../../../../src/api/services/auth.service.js';
-import { DocumentFactory } from '../../../../../src/database/factories/document.factory.js';
-import { RefreshTokenFactory } from '../../../../../src/database/factories/refresh-token.factory.js';
-import { UserFactory } from '../../../../../src/database/factories/user.factory.js';
+import { Roles } from 'app/api/enums/roles.enum.js';
+import { AuthService } from 'app/api/services/auth.service.js';
+import { DocumentFactory } from 'app/database/factories/document.factory.js';
+import { RefreshTokenFactory } from 'app/database/factories/refresh-token.factory.js';
+import { UserFactory } from 'app/database/factories/user.factory.js';
 
 export class AuthControllerTestSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {

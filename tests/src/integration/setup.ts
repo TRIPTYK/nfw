@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { container } from '@triptyk/nfw-core';
-import { Application } from '../../../src/application.js';
-import { DatabaseConnectionImpl } from '../../../src/database/connection.js';
+import { Application } from 'app/application.js';
+import { DatabaseConnectionImpl } from 'app/database/connection.js';
 
 let application : Application;
 
