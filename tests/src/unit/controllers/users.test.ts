@@ -90,7 +90,7 @@ describe('Get', () => {
     authorizer.can.mockReturnValue(false);
 
     await expect(controller.get('123', {}, currentUser)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user, {});
+    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user);
   });
 });
 
@@ -113,7 +113,7 @@ describe('FindAll', () => {
     authorizer.can.mockReturnValue(false);
     usersService.getAll.mockReturnValue([[user], 1]);
     await expect(controller.findAll(jsonApiQuery, currentUser)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user, {});
+    expect(authorizer.can).toBeCalledWith(currentUser, 'read', user);
   });
 });
 
@@ -134,7 +134,7 @@ describe('Create', () => {
     authorizer.can.mockReturnValue(false);
     usersService.create.mockReturnValue(user);
     await expect(controller.create(createBody as never, currentUser)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody, {});
+    expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody);
   });
 });
 
@@ -156,7 +156,7 @@ describe('Update', () => {
     authorizer.can.mockReturnValue(false);
     usersService.update.mockReturnValue(user);
     await expect(controller.update(updateBody, id, currentUser)).rejects.toThrowError(ForbiddenError);
-    expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody, {});
+    expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody);
   });
 });
 

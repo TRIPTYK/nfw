@@ -10,7 +10,6 @@ const fakeAuthorizer = {
 const actor = Symbol('actor');
 const action = Symbol('action');
 const target = Symbol('target');
-const context = Symbol('context');
 
 beforeEach(() => {
   vi.restoreAllMocks();
@@ -19,19 +18,19 @@ beforeEach(() => {
 test('Can or fail calls authorizer.can with correct  arguments', async () => {
   fakeAuthorizer.can.mockReturnValue(true);
   await canOrFail(fakeAuthorizer, actor as never, action as never, target as never);
-  expect(fakeAuthorizer.can).toBeCalledWith(actor, action, target, context)
+  expect(fakeAuthorizer.can).toBeCalledWith(actor, action, target)
 });
 
 test('Can or fail calls authorizer.can for each target', async () => {
   const target2 = Symbol('target2');
   fakeAuthorizer.can.mockReturnValue(true);
   await canOrFail(fakeAuthorizer, actor as never, action as never, [target, target2] as never);
-  expect(fakeAuthorizer.can).toBeCalledWith(actor, action, target, context);
+  expect(fakeAuthorizer.can).toBeCalledWith(actor, action, target);
   expect(fakeAuthorizer.can).toBeCalledTimes(2);
 });
 
 test('Can or fail rejects ForbiddenError when authorizer returns false', async () => {
   fakeAuthorizer.can.mockReturnValue(false);
   await expect(() => canOrFail(fakeAuthorizer, actor as never, action as never, target as never)).rejects.toThrowError(ForbiddenError);
-  expect(fakeAuthorizer.can).toBeCalledWith(actor, action, target, context)
+  expect(fakeAuthorizer.can).toBeCalledWith(actor, action, target)
 });
