@@ -24,61 +24,13 @@ function createAdminUser () {
 testCtx('GetOne', () => container.resolve(MikroORM), async () => {
   const user = await usersController.get('admin-user', {}, new UserModel());
 
-  expect(user).toStrictEqual({
-    jsonapi: { version: '1.0' },
-    meta: undefined,
-    links: { self: '/api/v1/users/admin-user' },
-    data: {
-      type: 'users',
-      id: 'admin-user',
-      attributes: { firstName: 'amaury' },
-      relationships: undefined,
-      meta: undefined,
-      links: { self: '/api/v1/users/admin-user' }
-    },
-    included: undefined
-  });
+  expect(user).toMatchSnapshot();
 });
 
 testCtx('GetAll', () => container.resolve(MikroORM), async () => {
   const user = await usersController.findAll({}, new UserModel());
 
-  expect(user).toStrictEqual({
-    jsonapi: { version: '1.0' },
-    meta: undefined,
-    links: { self: '/api/v1/users' },
-    data: [
-      {
-        type: 'users',
-        id: 'admin-user',
-        attributes: { firstName: 'amaury' },
-        relationships: undefined,
-        meta: undefined,
-        links: { self: '/api/v1/users/admin-user' }
-      },
-      {
-        attributes: {
-          firstName: 'amaury'
-        },
-        id: 'delete-user',
-        links: {
-          self: '/api/v1/users/delete-user'
-        },
-        meta: undefined,
-        relationships: undefined,
-        type: 'users'
-      },
-      {
-        type: 'users',
-        id: 'user-user',
-        attributes: { firstName: 'amaury' },
-        relationships: undefined,
-        meta: undefined,
-        links: { self: '/api/v1/users/user-user' }
-      }
-    ],
-    included: undefined
-  });
+  expect(user).toMatchSnapshot();
 });
 
 testCtx('CreateOne', () => container.resolve(MikroORM), async () => {
@@ -108,17 +60,7 @@ testCtx('Update', () => container.resolve(MikroORM), async () => {
     role: Roles.USER
   }, 'user-user', createAdminUser());
 
-  expect(user).toMatchObject({
-    jsonapi: { version: '1.0' },
-    meta: undefined,
-    data: {
-      type: 'users',
-      attributes: { firstName: 'amaury' },
-      relationships: undefined,
-      meta: undefined
-    },
-    included: undefined
-  });
+  expect(user).toMatchSnapshot();
 });
 
 testCtx('Delete', () => container.resolve(MikroORM), async () => {

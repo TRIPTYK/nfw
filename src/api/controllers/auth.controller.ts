@@ -33,7 +33,7 @@ export class AuthController {
   ) {
     const user = this.userRepository.create({ ...body, role: Roles.USER });
     user.password = await this.authService.hashPassword(body.password);
-    await this.userRepository.persistAndFlush(user);
+    await this.userRepository.getEntityManager().persistAndFlush(user);
 
     ctx.response.status = 201;
 
@@ -55,7 +55,7 @@ export class AuthController {
 
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = await this.authService.generateRefreshToken(user);
-    await this.refreshTokenRepository.flush();
+    await this.refreshTokenRepository.getEntityManager().flush();
 
     return { accessToken, refreshToken: refreshToken.token };
   }
@@ -73,7 +73,7 @@ export class AuthController {
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = await this.authService.generateRefreshToken(user);
 
-    await this.refreshTokenRepository.flush();
+    await this.refreshTokenRepository.getEntityManager().flush();
 
     return { accessToken, refreshToken: refreshToken.token };
   }

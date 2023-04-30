@@ -1,0 +1,127 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CreateOne 1`] = `
+{
+  "data": {
+    "attributes": {
+      "firstName": "amaury",
+    },
+    "id": "1432d1f8-0f41-4616-ae3b-ba26392c81d1",
+    "links": {
+      "self": "/api/v1/users/1432d1f8-0f41-4616-ae3b-ba26392c81d1",
+    },
+    "meta": undefined,
+    "relationships": undefined,
+    "type": "users",
+  },
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/users/1432d1f8-0f41-4616-ae3b-ba26392c81d1",
+  },
+  "meta": undefined,
+}
+`;
+
+exports[`GetAll 1`] = `
+{
+  "data": [
+    {
+      "attributes": {
+        "firstName": "amaury",
+      },
+      "id": "admin-user",
+      "links": {
+        "self": "/api/v1/users/admin-user",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "users",
+    },
+    {
+      "attributes": {
+        "firstName": "amaury",
+      },
+      "id": "delete-user",
+      "links": {
+        "self": "/api/v1/users/delete-user",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "users",
+    },
+    {
+      "attributes": {
+        "firstName": "amaury",
+      },
+      "id": "user-user",
+      "links": {
+        "self": "/api/v1/users/user-user",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "users",
+    },
+  ],
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/users",
+  },
+  "meta": undefined,
+}
+`;
+
+exports[`GetOne 1`] = `
+{
+  "data": {
+    "attributes": {
+      "firstName": "amaury",
+    },
+    "id": "admin-user",
+    "links": {
+      "self": "/api/v1/users/admin-user",
+    },
+    "meta": undefined,
+    "relationships": undefined,
+    "type": "users",
+  },
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/users/admin-user",
+  },
+  "meta": undefined,
+}
+`;
+
+exports[`Update 1`] = `
+{
+  "data": {
+    "attributes": {
+      "firstName": "amaury",
+    },
+    "id": "user-user",
+    "links": {
+      "self": "/api/v1/users/user-user",
+    },
+    "meta": undefined,
+    "relationships": undefined,
+    "type": "users",
+  },
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/users/user-user",
+  },
+  "meta": undefined,
+}
+`;

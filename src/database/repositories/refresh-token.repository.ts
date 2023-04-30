@@ -14,7 +14,7 @@ export class RefreshTokenRepository extends EntityRepository<RefreshTokenModel> 
     });
 
     if (oldToken) {
-      this.remove(oldToken);
+      this.getEntityManager().remove(oldToken);
     }
 
     const refreshToken = this.create({

@@ -1,8 +1,4 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true
-  },
   "root": true,
   "extends": ["standard"],
   "parser": "@typescript-eslint/parser",

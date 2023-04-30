@@ -49,19 +49,19 @@ export class UserResourceServiceImpl implements UserResourceService {
 
   async create (body: RequiredEntityData<UserModel>): Promise<Loaded<UserModel, never>> {
     const user = this.usersRepository.create(body);
-    await this.usersRepository.persistAndFlush(user);
+    await this.usersRepository.getEntityManager().persistAndFlush(user);
     return user;
   }
 
   async update (id: string, body: EntityData<UserModel>): Promise<Loaded<UserModel, never>> {
     const existing = await this.usersRepository.findOneOrFail(id);
     const user = wrap(existing).assign(body);
-    await this.usersRepository.persistAndFlush(user);
+    await this.usersRepository.getEntityManager().persistAndFlush(user);
     return user;
   }
 
   async delete (id: string): Promise<void> {
     const existing = await this.usersRepository.findOneOrFail(id);
-    await this.usersRepository.removeAndFlush(existing);
+    await this.usersRepository.getEntityManager().removeAndFlush(existing);
   }
 }
