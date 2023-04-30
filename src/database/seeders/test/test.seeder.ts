@@ -7,7 +7,7 @@ import { RefreshTokenFactory } from '../../factories/refresh-token.factory.js';
 
 /**
  * This is the default seeder for this environment
- * THIS SEEDER ONLY WORKS IN TEST SERVER OR E2E TESTS.
+ * THIS SEEDER ONLY WORKS IN TEST SERVER OR ACCEPTANCE TESTS.
  */
 export class DatabaseSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {

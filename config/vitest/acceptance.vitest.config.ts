@@ -5,12 +5,12 @@ import baseConfig from './base.config.js';
 export default defineConfig({
   ...baseConfig,
   test: {
-    include: ['tests/src/e2e/**/*.test.ts'],
+    include: ['tests/src/acceptance/**/*.test.ts'],
     singleThread: true,
     globals: true,
     logHeapUsage: true,
     globalSetup: [
-      'tests/src/e2e/setup.ts'
+      'tests/src/acceptance/setup.ts'
     ]
   }
 })

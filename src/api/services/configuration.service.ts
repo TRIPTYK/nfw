@@ -20,8 +20,6 @@ export const schema = {
     type: Boolean,
     default: true
   },
-  REFRESH_DATABASE: { type: Boolean, default: false },
-  RUN_DEFAULT_SEEDER: { type: Boolean, default: true },
   PORT: Number,
   DATABASE_TYPE: ['mysql' as const, 'mariadb' as const, 'postgresql' as const],
   REFRESH_TOKEN_EXPIRES: Number,
