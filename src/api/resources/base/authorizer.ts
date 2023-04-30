@@ -5,5 +5,5 @@ import type { UserModel } from '../../../database/models/user.model.js';
 export type AuthorizerAction = 'create' | 'update' | 'delete' | 'read';
 
 export interface ResourceAuthorizer<On> {
-    can(actor: UserModel | undefined, action: AuthorizerAction, on: EntityData<On>, inContext: unknown): Promisable<boolean>,
+    can(actor: UserModel | undefined, action: AuthorizerAction, on: EntityData<On>): Promisable<boolean>,
 }

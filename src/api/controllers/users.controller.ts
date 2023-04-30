@@ -31,27 +31,27 @@ export class UsersController {
   @GET('/:id')
   async get (@Param('id') id: string, query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const user = await this.usersService.getOneOrFail(id, query);
-    await canOrFail(this.authorizer, currentUser, 'read', user, {});
+    await canOrFail(this.authorizer, currentUser, 'read', user);
     return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
   }
 
   @GET('/')
   async findAll (@JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const [users, count] = await this.usersService.getAll(query);
-    await canOrFail(this.authorizer, currentUser, 'read', users, {});
+    await canOrFail(this.authorizer, currentUser, 'read', users);
     return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeMany(users, query.page ? { ...query.page, total: count } : undefined);
   }
 
   @POST('/')
   async create (@JsonApiBody(RESOURCE_NAME, createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
-    await canOrFail(this.authorizer, currentUser, 'create', body, {});
+    await canOrFail(this.authorizer, currentUser, 'create', body);
     const user = await this.usersService.create(body);
     return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
   }
 
   @PATCH('/:id')
   async update (@JsonApiBody(RESOURCE_NAME, updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @Param('id') id: string, @CurrentUser() currentUser: UserModel) {
-    await canOrFail(this.authorizer, currentUser, 'update', body, {});
+    await canOrFail(this.authorizer, currentUser, 'update', body);
     const user = await this.usersService.update(id, body);
     return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
   }
@@ -59,7 +59,7 @@ export class UsersController {
   @DELETE('/:id')
   async delete (@Param('id') id: string, @CurrentUser() currentUser: UserModel) {
     const user = await this.usersService.getOneOrFail(id, {});
-    await canOrFail(this.authorizer, currentUser, 'delete', user, {});
+    await canOrFail(this.authorizer, currentUser, 'delete', user);
     await this.usersService.delete(id);
     return null;
   }
