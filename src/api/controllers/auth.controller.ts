@@ -1,18 +1,18 @@
 import { inject } from '@triptyk/nfw-core';
 import { UserModel } from '../../database/models/user.model.js';
 import { RefreshTokenModel } from '../../database/models/refresh-token.model.js';
-import type { RefreshTokenRepository } from '../../database/repositories/refresh-token.repository.js';
+import { RefreshTokenRepository } from '../../database/repositories/refresh-token.repository.js';
 import { ValidatedBody } from '../decorators/validated-body.js';
 import { Roles } from '../enums/roles.enum.js';
-import type { RouterContext } from '@koa/router';
+import { RouterContext } from '@koa/router';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import { Controller, Ctx, POST, UseMiddleware } from '@triptyk/nfw-http';
 import { AuthService } from '../services/auth.service.js';
-import type { EntityRepository } from '@mikro-orm/mysql';
+import { EntityRepository } from '@mikro-orm/mysql';
 import { InvalidUserNameOrPasswordError } from '../errors/web/invalid-username-or-password.js';
 import { InvalidRefreshTokenError } from '../errors/web/invalid-refresh-token.js';
 import { loginBodySchema, refreshBodySchema, registeredUserBodySchema } from '../validators/auth.validator.js';
-import type { InferType } from 'yup';
+import { InferType } from 'yup';
 import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
 
 @Controller({

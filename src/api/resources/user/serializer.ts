@@ -1,6 +1,5 @@
 import { inject, singleton } from '@triptyk/nfw-core';
-import type { ResourcesRegistry } from '@triptyk/nfw-resources';
-import { JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { ResourcesRegistry, JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import type { UserResource } from './schema.js';
 
 @singleton()

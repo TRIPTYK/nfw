@@ -4,8 +4,8 @@ import { inject, singleton } from '@triptyk/nfw-core';
 import { init } from '@triptyk/nfw-mikro-orm';
 import type { Promisable } from 'type-fest';
 import { NotFoundError } from '../api/errors/web/not-found.js';
-import type { ConfigurationService, Env } from '../api/services/configuration.service.js';
-import { ConfigurationServiceImpl } from '../api/services/configuration.service.js';
+import type { Env } from '../api/services/configuration.service.js';
+import { ConfigurationServiceImpl, ConfigurationService } from '../api/services/configuration.service.js';
 import { getConfiguration } from './configuration.js';
 
 export interface DatabaseConnection<T> {

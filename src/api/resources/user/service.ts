@@ -1,5 +1,5 @@
-import type { EntityData, EntityRepository, Loaded, RequiredEntityData } from '@mikro-orm/core';
-import { wrap } from '@mikro-orm/core';
+import type { EntityData, Loaded, RequiredEntityData } from '@mikro-orm/core';
+import { wrap, EntityRepository } from '@mikro-orm/core';
 import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';

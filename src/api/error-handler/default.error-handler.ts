@@ -5,10 +5,9 @@ import type { Next } from 'koa';
 import { ValidationError } from 'yup';
 import { NotFoundError } from '../errors/web/not-found.js';
 import { WebError } from '../errors/web/web-error.js';
-import type { ConfigurationService, Env } from '../services/configuration.service.js';
-import { ConfigurationServiceImpl } from '../services/configuration.service.js';
-import type { LoggerService } from '../services/logger.service.js';
-import { LoggerServiceImpl } from '../services/logger.service.js';
+import type { Env } from '../services/configuration.service.js';
+import { ConfigurationServiceImpl, ConfigurationService } from '../services/configuration.service.js';
+import { LoggerService, LoggerServiceImpl } from '../services/logger.service.js';
 
 @injectable()
 export class DefaultErrorHandler implements MiddlewareInterface {

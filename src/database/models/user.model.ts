@@ -1,7 +1,6 @@
-import type {
-  Ref
-} from '@mikro-orm/core';
 import {
+  Ref
+  ,
   Entity,
   Property,
   OneToOne,
