@@ -26,7 +26,7 @@ export class UsersController {
   ) {}
 
   @GET('/:id')
-  async get (@Param('id') id: string, query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
+  async get (@Param('id') id: string, @JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const user = await this.usersService.getOneOrFail(id, query);
     await canOrFail(this.authorizer, currentUser, 'read', user);
     return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
