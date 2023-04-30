@@ -1,45 +1,47 @@
 {
-    "env": {
-        "browser": false,
-        "es2021": true,
-        "jest/globals": true
-    },
-    "extends": [
-        "standard"
+  "root": true,
+  "extends": ["standard"],
+  "parserOptions": {
+    "project": ["tsconfig.json"]
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "unused-imports"],
+  "rules": {
+    "semi": "off",
+    "no-console": "error",
+    "no-unused-vars": "off",
+    "no-return-assign": "off",
+    "no-redeclare": "off",
+    "@typescript-eslint/no-floating-promises": "error",
+    "no-use-before-define": "off",
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-use-before-define": "error",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-redeclare": "error",
+    "@typescript-eslint/no-useless-constructor": "error",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
     ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint",
-        "unused-imports",
-        "jest"
-    ],
-    "rules": {
-        "semi": [2, "always"],
-        "no-console": "warn",
-        "no-return-assign": "off",
-        "unused-imports/no-unused-imports": "error",
-        "comma-dangle": ["error", "always-multiline"],
-		"unused-imports/no-unused-vars": [
-			"warn",
-			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
-		],
-        "@typescript-eslint/consistent-type-imports": "error",
-        "@typescript-eslint/no-explicit-any":"warn",
-        "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": ["error"],
-        "@typescript-eslint/member-delimiter-style": ["error", {
-            "multiline": {
-              "delimiter": "comma",    // 'none' or 'semi' or 'comma'
-              "requireLast": true
-            },
-            "singleline": {
-              "delimiter": "semi",    // 'semi' or 'comma'
-              "requireLast": false
-            }
-        }]
-    }
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/member-delimiter-style": [
+      "error",
+      {
+        "multiline": {
+          "delimiter": "comma", // 'none' or 'semi' or 'comma'
+          "requireLast": true
+        },
+        "singleline": {
+          "delimiter": "semi", // 'semi' or 'comma'
+          "requireLast": false
+        }
+      }
+    ]
+  }
 }

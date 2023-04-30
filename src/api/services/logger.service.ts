@@ -1,29 +1,43 @@
 import { inject, injectable, singleton } from '@triptyk/nfw-core';
 import Tracer from 'tracer';
-import { ConfigurationService } from './configuration.service.js';
+import type { Env } from './configuration.service.js';
+import { ConfigurationServiceImpl, ConfigurationService } from './configuration.service.js';
+
+export interface LoggerService {
+  info(...args: unknown[]): void,
+  error(...args: unknown[]): void,
+}
 
 @injectable()
 @singleton()
-export class LoggerService {
-  private _logger: Tracer.Tracer.Logger;
+export class LoggerServiceImpl implements LoggerService {
+  private _logger: Tracer.Tracer.Logger<string>;
 
-  // eslint-disable-next-line no-useless-constructor
-  public constructor (@inject(ConfigurationService) configurationService: ConfigurationService) {
-    const logConfig = configurationService.getKey('logger');
-
+  public constructor (
+    @inject(ConfigurationServiceImpl) configurationService: ConfigurationService<Env>
+  ) {
     this._logger = Tracer.dailyfile({
-      root: logConfig.dir,
+      root: 'dist',
       maxLogFiles: 10,
       transport: function (data) {
-        if (logConfig.logToConsole) {
+        if (configurationService.get('LOGGING')) {
           // eslint-disable-next-line no-console
           console.info(data.output);
         }
-      },
+      }
     });
   }
 
-  public get logger () {
-    return this._logger;
+  info (...args: unknown[]): void {
+    this._logger.log(...args);
+  }
+
+  error (...args: unknown[]): void {
+    this._logger.trace(...args);
+    this._logger.error(...args);
+  }
+
+  close () {
+    this._logger.close();
   }
 }

@@ -1,35 +1,17 @@
-import { Schema, SchemaBase, String, Email } from 'fastest-validator-decorators';
-import type { Roles } from '../enums/roles.enum.js';
-import type { UserModel } from '../models/user.model';
+import * as yup from 'yup';
 
-@Schema(true)
-export class ValidatedRegisteredUserBody extends SchemaBase implements Partial<UserModel> {
-  @String()
-  public declare firstName: string;
+export const registeredUserBodySchema = yup.object().shape({
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
+  email: yup.string().email().required(),
+  password: yup.string().required()
+}).noUnknown(true);
 
-  @String()
-  public declare lastName: string;
+export const refreshBodySchema = yup.object().shape({
+  refreshToken: yup.string().required()
+}).noUnknown(true);
 
-  @Email()
-  public declare email: string;
-
-  @String()
-  public declare password: string;
-
-  public declare role: Roles;
-}
-
-@Schema(true)
-export class ValidatedRefreshBody extends SchemaBase {
-  @String()
-  public declare refreshToken: string;
-}
-
-@Schema(true)
-export class ValidatedLoginBody extends SchemaBase {
-  @Email()
-  public declare email: string;
-
-  @String()
-  public declare password: string;
-}
+export const loginBodySchema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().required()
+}).noUnknown(true);

@@ -1,11 +1,18 @@
-import type { Class, ControllerParamsContext } from '@triptyk/nfw-core';
-import { createCustomDecorator } from '@triptyk/nfw-core';
-import type { SchemaBase } from 'fastest-validator-decorators';
-import { validateOrReject } from '../utils/validate-or-reject.js';
+import type { ControllerParamsContext } from '@triptyk/nfw-http';
+import { createCustomDecorator } from '@triptyk/nfw-http';
+import type { Schema } from 'yup';
 
-export function ValidatedBody<T extends SchemaBase> (ValidationClass : Class<T>) {
+export function validatedBody<T> (body: unknown, validationSchema: Schema<T>) {
+  return validationSchema.validate(body, {
+    abortEarly: false,
+    strict: true
+  })
+}
+
+export function ValidatedBody<T> (validationSchema: Schema<T>) {
   return createCustomDecorator(
-    (controllerContext:ControllerParamsContext) => {
-      return validateOrReject(ValidationClass, controllerContext.ctx.request.body);
-    }, 'validated-body', true, [ValidationClass]);
+    (controllerContext: ControllerParamsContext<unknown>) => validatedBody(controllerContext.ctx.request.body, validationSchema)
+    ,
+    'validated-body'
+  );
 }

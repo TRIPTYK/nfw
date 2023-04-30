@@ -1,116 +1,91 @@
-import { LoadStrategy, MikroORM } from '@mikro-orm/core';
-import createApplication, { container } from '@triptyk/nfw-core';
-import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
-import { NotFoundMiddleware } from './api/middlewares/not-found.middleware.js';
-import { RefreshTokenModel } from './api/models/refresh-token.model.js';
-import { UserModel } from './api/models/user.model.js';
+/* eslint-disable import/first */
+import 'reflect-metadata';
+import { container, inject, singleton } from '@triptyk/nfw-core';
+import { ConfigurationServiceImpl } from './api/services/configuration.service.js';
 import KoaQS from 'koa-qs';
-import type { Configuration } from './api/services/configuration.service.js';
-import {
-  ConfigurationService,
-} from './api/services/configuration.service.js';
-import { LogMiddleware } from './api/middlewares/log.middleware.js';
-import { DocumentModel } from './api/models/document.model.js';
-import { LoggerService } from './api/services/logger.service.js';
-import cors from '@koa/cors';
-import { CurrentUserMiddleware } from './api/middlewares/current-user.middleware.js';
-import createHttpError from 'http-errors';
-import { TestSeeder } from './database/seeder/test.seeder.js';
-import type { SqlEntityManager } from '@mikro-orm/mysql';
-import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
-import helmet from 'koa-helmet';
-import koaBody from 'koa-body';
 import Koa from 'koa';
-import { DevelopmentSeeder } from './database/seeder/development.seeder.js';
 import { MainArea } from './api/areas/main.area.js';
+import helmet from 'koa-helmet';
+import cors from '@koa/cors';
+import { koaBody } from 'koa-body';
+import { requestContext } from '@triptyk/nfw-mikro-orm';
+import { createApplication, resolveMiddlewareInstance } from '@triptyk/nfw-http';
+import type { Server } from 'http';
+import { LoggerService, LoggerServiceImpl } from './api/services/logger.service.js';
+import { DatabaseConnectionImpl } from './database/connection.js';
+import { LogMiddleware } from './api/middlewares/log.middleware.js';
+import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
+import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
+import { BadRequestError } from './api/errors/web/bad-request.js';
+import { PayloadTooLargeError } from './api/errors/web/payload-too-large.js';
+import { setupRegistry } from './api/resources/registry.js';
+import { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 
-export async function runApplication () {
-  /**
-   * Load the config service first
-   */
-  const {
-    database,
-    port,
-    cors: corsConfig,
-    env,
-  } = await container
-    .resolve<ConfigurationService<Configuration>>(ConfigurationService)
-    .load();
-  const logger = container.resolve(LoggerService);
+@singleton()
+export class Application {
+  private httpServer?: Server;
+  private koaServer?: Koa;
 
-  const orm = await MikroORM.init({
-    entities: [UserModel, RefreshTokenModel, DocumentModel],
-    dbName: database.database,
-    host: database.host,
-    port: database.port,
-    user: database.user,
-    password: database.password,
-    type: database.type,
-    loadStrategy: LoadStrategy.SELECT_IN,
-    debug: database.debug,
-    findOneOrFailHandler: (_entityName: string) => {
-      return createHttpError(404, 'Not found');
-    },
-  });
-
-  const isConnected = await orm.isConnected();
-
-  if (!isConnected) {
-    throw new Error('Failed to connect to database');
+  public constructor (
+    @inject(ConfigurationServiceImpl) private configurationService : ConfigurationServiceImpl,
+    @inject(DatabaseConnectionImpl) private databaseConnection : DatabaseConnectionImpl,
+    @inject(LoggerServiceImpl) private logger: LoggerService
+  ) {
+    configurationService.load();
   }
 
-  if (env === 'test' || env === 'development') {
-    const generator = orm.getSchemaGenerator();
-    await generator.dropSchema();
-    await generator.createSchema();
-    await generator.updateSchema();
+  public async setup () {
+    await this.databaseConnection.connect();
+    const registry = container.resolve(ResourcesRegistryImpl);
+    setupRegistry(registry);
+    const server = this.setupKoaServer();
+    await createApplication({
+      server,
+      controllers: [MainArea]
+    });
+    KoaQS(server);
   }
 
-  if (env === 'test') {
-    await new TestSeeder().run(orm.em.fork() as SqlEntityManager);
+  public listen () {
+    return new Promise<void>((resolve) => this.httpServer = this.koaServer?.listen(this.configurationService.get('PORT'), () => {
+      this.logger?.info(`Listening on port ${this.configurationService.get('PORT')}`);
+      resolve();
+    }));
   }
 
-  if (env === 'development') {
-    await new DevelopmentSeeder().run(orm.em.fork() as SqlEntityManager);
+  private setupKoaServer () {
+    const server = this.koaServer = new Koa();
+
+    server.use(requestContext);
+    server.use(helmet());
+    server.use(cors({
+      origin: this.configurationService.get('CORS')
+    }));
+    server.use(resolveMiddlewareInstance(LogMiddleware));
+    server.use(resolveMiddlewareInstance(DefaultErrorHandler));
+    server.use(resolveMiddlewareInstance(createRateLimitMiddleware(10000, 30, 'Please slow down')));
+    server.use(koaBody({
+      jsonLimit: '128kb',
+      text: false,
+      json: true,
+      multipart: false,
+      urlencoded: false,
+      onError: (err: Error) => {
+        if (err.name === 'PayloadTooLargeError') {
+          throw new PayloadTooLargeError(err.message);
+        }
+        throw new BadRequestError(err.message);
+      }
+    }));
+
+    return server;
   }
 
-  const koaApp = await createApplication({
-    server: new Koa(),
-    areas: [MainArea],
-    globalGuards: [],
-    globalMiddlewares: [
-      helmet(),
-      cors({
-        origin: corsConfig.origin,
-      }),
-      createRateLimitMiddleware(1000 * 60, 100, 'Too many requests'),
-      koaBody({
-        jsonLimit: '128kb',
-        text: false,
-        multipart: false,
-        urlencoded: false,
-        onError: (err: Error) => {
-          if (err.name === 'PayloadTooLargeError') {
-            throw createHttpError(413, err.message);
-          }
-          throw createHttpError(400, err.message);
-        },
-      }),
-      CurrentUserMiddleware,
-      LogMiddleware,
-    ],
-    globalErrorhandler: DefaultErrorHandler,
-    globalNotFoundMiddleware: NotFoundMiddleware,
-    mikroORMConnection: orm,
-    mikroORMContext: true,
-    baseRoute: '/api/v1',
-  });
-
-  KoaQS(koaApp);
-
-  const httpServer = koaApp.listen(port, () => {
-    logger.logger.info(`Listening on port ${port}`);
-  });
-
-  return httpServer;
+  public async stop () {
+    this.httpServer?.closeAllConnections();
+    await this.databaseConnection.close();
+    if (this.httpServer) {
+      await new Promise((resolve) => this.httpServer!.close(resolve));
+    }
+  }
 }

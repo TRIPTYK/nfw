@@ -65,5 +65,3 @@ pnpm lint
 ```bash
 pnpm mikro-orm:cli <any command>
 ```
-
-
