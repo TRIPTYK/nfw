@@ -25,15 +25,12 @@ dependencies:
   '@triptyk/nfw-core':
     specifier: ~4.0.0-alpha.31
     version: 4.0.0-alpha.31
-  '@triptyk/nfw-http':
-    specifier: ~4.0.0-alpha.31
-    version: 4.0.0-alpha.31(@triptyk/nfw-core@4.0.0-alpha.31)
   '@triptyk/nfw-mikro-orm':
     specifier: ~4.0.0-alpha.31
     version: 4.0.0-alpha.31(@mikro-orm/core@5.7.3)(@triptyk/nfw-core@4.0.0-alpha.31)
   '@triptyk/nfw-resources':
     specifier: file:../nfw-core/packages/resource-jsonapi
-    version: file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@4.0.0-alpha.31)
+    version: file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@5.0.0-alpha.0)
   bcrypt:
     specifier: ~5.1.0
     version: 5.1.0
@@ -84,6 +81,9 @@ devDependencies:
   '@casl/ability':
     specifier: ~6.5.0
     version: 6.5.0
+  '@triptyk/nfw-http':
+    specifier: file:../nfw-core/packages/http
+    version: file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31)
   '@types/bcrypt':
     specifier: ~5.0.0
     version: 5.0.0
@@ -602,7 +602,6 @@ packages:
       koa-compose: 4.1.0
       methods: 1.1.2
       path-to-regexp: 6.2.1
-    dev: false
 
   /@mapbox/node-pre-gyp@1.0.10:
     resolution: {integrity: sha512-4ySo4CjzStuprMwk35H5pPbkymjv1SF3jGLj6rAHp/xT/RF7TL7bd9CTm1xDY49K2qF7jmR/g7k+SkLETP6opA==}
@@ -880,18 +879,6 @@ packages:
     engines: {node: '>=16.3.1'}
     dependencies:
       tsyringe: 4.7.0
-    dev: false
-
-  /@triptyk/nfw-http@4.0.0-alpha.31(@triptyk/nfw-core@4.0.0-alpha.31):
-    resolution: {integrity: sha512-MQmMhu6lq/2FI5T3WxyvfpUNEDe8+4jUEMGjw3RqNhn+wnDm2JnTJjJBqJyltzYVw4dWpKNwqN9ZRv6rBB0AOA==}
-    engines: {node: '>=16.3.1'}
-    peerDependencies:
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-    dependencies:
-      '@koa/router': 12.0.0
-      '@triptyk/nfw-core': 4.0.0-alpha.31
-      is-class: 0.0.9
-    dev: false
 
   /@triptyk/nfw-mikro-orm@4.0.0-alpha.31(@mikro-orm/core@5.7.3)(@triptyk/nfw-core@4.0.0-alpha.31):
     resolution: {integrity: sha512-t1HubEnRqfMS7hOTlB6THJxYf7mBtBCMbpyGHsn/0VlM2h+58x5IW36U9ESIeWCcOPmPXI0/Lc+giefC0BQEJQ==}
@@ -1968,7 +1955,6 @@ packages:
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
-    dev: false
 
   /destroy@1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
@@ -2920,7 +2906,6 @@ packages:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
-    dev: false
 
   /https-proxy-agent@5.0.1:
     resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
@@ -3058,7 +3043,6 @@ packages:
 
   /is-class@0.0.9:
     resolution: {integrity: sha512-kUfRnejcRC9YLgblxoJ76dp9gZ3vMKTrDS5I6z2UVMOsHHSImNKCJocjQTkZr38PwiSZ9LVklaHEENaVYeFTXg==}
-    dev: false
 
   /is-core-module@2.12.0:
     resolution: {integrity: sha512-RECHCBCd/viahWmwj6enj19sKbHfJrddi/6cBDsNTKbNq0f7VeaUkBo60BqzvPqo/W54ChS62Z5qyun7cfOMqQ==}
@@ -3377,7 +3361,6 @@ packages:
 
   /koa-compose@4.1.0:
     resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
-    dev: false
 
   /koa-convert@2.0.0:
     resolution: {integrity: sha512-asOvN6bFlSnxewce2e/DK3p4tltyfC4VM7ZwuTuepI7dEQVcvpyFuBcEARu1+Hxg8DIwytce2n7jrZtRlPrARA==}
@@ -3573,7 +3556,6 @@ packages:
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
-    dev: false
 
   /micromatch@4.0.5:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
@@ -3919,7 +3901,6 @@ packages:
 
   /path-to-regexp@6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
-    dev: false
 
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
@@ -4345,7 +4326,6 @@ packages:
 
   /setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
-    dev: false
 
   /shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -4443,7 +4423,6 @@ packages:
   /statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
-    dev: false
 
   /std-env@3.3.2:
     resolution: {integrity: sha512-uUZI65yrV2Qva5gqE0+A7uVAvO40iPo6jGhs7s8keRfHCmtg+uB2X6EiLGCI9IgL1J17xGhvoOqSz79lzICPTA==}
@@ -4637,7 +4616,6 @@ packages:
   /toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
-    dev: false
 
   /token-stream@1.0.0:
     resolution: {integrity: sha1-zCAOqyYT9BZtJ/+a/HylbUnfbrQ=}
@@ -4806,7 +4784,6 @@ packages:
     engines: {node: '>= 6.0.0'}
     dependencies:
       tslib: 1.14.1
-    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -5277,11 +5254,24 @@ packages:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     dev: false
 
-  file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@4.0.0-alpha.31):
+  file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31):
+    resolution: {directory: ../nfw-core/packages/http, type: directory}
+    id: file:../nfw-core/packages/http
+    name: '@triptyk/nfw-http'
+    version: 5.0.0-alpha.0
+    engines: {node: '>=16.3.1'}
+    peerDependencies:
+      '@triptyk/nfw-core': workspace:*
+    dependencies:
+      '@koa/router': 12.0.0
+      '@triptyk/nfw-core': 4.0.0-alpha.31
+      is-class: 0.0.9
+
+  file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@4.0.0-alpha.31)(@triptyk/nfw-http@5.0.0-alpha.0):
     resolution: {directory: ../nfw-core/packages/resource-jsonapi, type: directory}
     id: file:../nfw-core/packages/resource-jsonapi
     name: '@triptyk/nfw-resources'
-    version: 4.0.0-alpha.32
+    version: 5.0.0-alpha.0
     engines: {node: '>=16.3.1'}
     peerDependencies:
       '@triptyk/nfw-core': workspace:*
@@ -5289,7 +5279,7 @@ packages:
     dependencies:
       '@triptyk/json-api-query-parser': 0.0.0
       '@triptyk/nfw-core': 4.0.0-alpha.31
-      '@triptyk/nfw-http': 4.0.0-alpha.31(@triptyk/nfw-core@4.0.0-alpha.31)
+      '@triptyk/nfw-http': file:../nfw-core/packages/http(@triptyk/nfw-core@4.0.0-alpha.31)
       json-api-serializer: 2.6.6
       pluralize: 8.0.0
     dev: false

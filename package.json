@@ -40,7 +40,6 @@
     "@mikro-orm/mysql": "~5.7.3",
     "@mikro-orm/seeder": "~5.7.3",
     "@triptyk/nfw-core": "~4.0.0-alpha.31",
-    "@triptyk/nfw-http": "~4.0.0-alpha.31",
     "@triptyk/nfw-mikro-orm": "~4.0.0-alpha.31",
     "@triptyk/nfw-resources": "file:../nfw-core/packages/resource-jsonapi",
     "bcrypt": "~5.1.0",
@@ -62,6 +61,7 @@
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
     "@casl/ability": "~6.5.0",
+    "@triptyk/nfw-http": "file:../nfw-core/packages/http",
     "@types/bcrypt": "~5.0.0",
     "@types/formidable": "~2.0.5",
     "@types/json-api-serializer": "~2.6.3",
