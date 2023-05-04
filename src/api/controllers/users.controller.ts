@@ -1,4 +1,4 @@
-import { inject, injectable } from '@triptyk/nfw-core';
+import { inject } from '@triptyk/nfw-core';
 import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiUpdate, ResourcesRegistry, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import { UserResourceServiceImpl, UserResourceService } from '../resources/user/service.js';
 import { UserResourceAuthorizer, UserResourceAuthorizerImpl } from '../resources/user/authorizer.js';
@@ -14,7 +14,6 @@ import type { UserResource } from '../resources/user/schema.js';
 
 const RESOURCE_NAME = 'users';
 
-@injectable()
 @Controller({
   routeName: `/${RESOURCE_NAME}`
 })
