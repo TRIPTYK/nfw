@@ -1,7 +1,7 @@
 import { inject, injectable } from '@triptyk/nfw-core';
 import type { ControllerParamsContext, ParamInterface } from '@triptyk/nfw-http';
 import { createCustomDecorator } from '@triptyk/nfw-http';
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/user.service.js';
 
 @injectable()
 class CurrentUserParam implements ParamInterface<void> {
@@ -10,8 +10,7 @@ class CurrentUserParam implements ParamInterface<void> {
   ) {}
 
   public async handle ({ ctx }: ControllerParamsContext<void>) {
-    const user = await this.userService.tryLoadUserFromToken(ctx.headers.authorization ?? '');
-    return user;
+    return this.userService.tryLoadUserFromToken(ctx.headers.authorization ?? '');
   }
 }
 

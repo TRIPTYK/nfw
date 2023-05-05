@@ -24,20 +24,16 @@ export class UserResourceAuthorizerImpl implements UserResourceAuthorizer {
       can('read', 'user');
 
       if (actor.role === Roles.ADMIN) {
-        can('create', 'user');
-        can(['update', 'delete'], 'user', { role: { $not: { $eq: Roles.ADMIN } } });
-        can(['update', 'delete'], 'user', { role: { $eq: Roles.USER } });
+        can(['create'], 'user');
+        can(['update'], 'user');
+        can(['delete'], 'user', { role: { $in: [Roles.USER] } });
       }
-      can('update', 'user', {
+
+      can(['update'], 'user', {
         id: {
-          $eq: actor.id
+          eq: actor.id
         }
       });
-      can('update', 'user', {
-        id: {
-          $neq: actor.id
-        }
-      })
     })
   }
 }

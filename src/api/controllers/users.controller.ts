@@ -1,10 +1,10 @@
 import { inject } from '@triptyk/nfw-core';
-import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiUpdate, ResourcesRegistry, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, ResourcesRegistry, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import { UserResourceServiceImpl, UserResourceService } from '../resources/user/service.js';
 import { UserResourceAuthorizer, UserResourceAuthorizerImpl } from '../resources/user/authorizer.js';
 import { InferType } from 'yup';
 import { createUserValidationSchema, updateUserValidationSchema } from '../validators/user.validator.js';
-import { Controller, Param } from '@triptyk/nfw-http';
+import { Controller, Param, PATCH } from '@triptyk/nfw-http';
 import { JsonApiQueryDecorator } from '../decorators/json-api-query.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { UserModel } from '../../database/models/user.model.js';
@@ -45,7 +45,7 @@ export class UsersController {
     return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
   }
 
-  @JsonApiUpdate()
+  @PATCH('/:id')
   async update (@JsonApiBody(RESOURCE_NAME, updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @Param('id') id: string, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'update', body);
     const user = await this.usersService.update(id, body);

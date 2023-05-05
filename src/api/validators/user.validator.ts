@@ -5,7 +5,6 @@ export const createUserValidationSchema = object().shape({
   firstName: string().required(),
   lastName: string().required(),
   email: string().required(),
-  password: string().required(),
   role: string().oneOf(Object.values(Roles)).default(Roles.USER)
 }).noUnknown();
 

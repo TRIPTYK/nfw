@@ -1,7 +1,7 @@
 import { inject, injectable } from '@triptyk/nfw-core';
 import { JsonApiQuery, ResourcesRegistry, JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiUpdate, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import { InferType } from 'yup';
-import { Controller, Param, UseMiddleware } from '@triptyk/nfw-http';
+import { Controller, Param, POST, PUT, UseMiddleware } from '@triptyk/nfw-http';
 import { JsonApiQueryDecorator } from '../decorators/json-api-query.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { UserModel } from '../../database/models/user.model.js';
@@ -32,7 +32,6 @@ export class DocumentsController {
   @JsonApiGet()
   async get (@Param('id') id: string, @JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const document = await this.documentService.getOneOrFail(id, query);
-
     await canOrFail(this.authorizer, currentUser, 'read', document)
 
     return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document);
@@ -47,7 +46,7 @@ export class DocumentsController {
     return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeMany(documents);
   }
 
-  @JsonApiCreate()
+  @POST('/')
   @UseMiddleware(createFileUploadMiddleware('./dist/uploads/'))
   async create (@JsonApiBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'create', body as never);
@@ -57,7 +56,7 @@ export class DocumentsController {
     return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document);
   }
 
-  @JsonApiUpdate()
+  @PUT('/')
   @UseMiddleware(createFileUploadMiddleware('./dist/uploads/'))
   async update (@Param('id') id: string, @JsonApiBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail<EntityData<DocumentModel>>(this.authorizer, currentUser, 'update', body as never);

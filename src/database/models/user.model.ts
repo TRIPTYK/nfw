@@ -35,12 +35,14 @@ export class UserModel extends BaseModel {
   declare email: string;
 
   @Property({
-    type: types.string
+    type: types.string,
+    nullable: true
   })
-  declare password: string;
+  declare password?: string;
 
   @Enum({
     items: Object.values(Roles),
+    default: Roles.USER,
     type: types.enum
   })
   declare role: Roles;
@@ -60,7 +62,10 @@ export class UserModel extends BaseModel {
     })
       documents = new Collection<DocumentModel>(this);
 
-    public passwordMatches (password: string): Promise<boolean> {
+    public async passwordMatches (password: string): Promise<boolean> {
+      if (!this.password) {
+        return false;
+      }
       return bcrypt.compare(password, this.password);
     }
 }

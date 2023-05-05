@@ -1,11 +1,13 @@
 import { FormData } from 'formdata-polyfill/esm.min';
+import File from 'fetch-blob/file.js';
+
+export const validFile = new File(['abc'], 'hello-world.txt', {
+  type: 'text/plain'
+})
+
 
 export function createFile () {
-  const formData = new FormData();
-  // formData.append('file', new File(readFileSync('./tests/static/500.png'), '500.png', {
-  //   type: MimeTypes.PNG,
-  // }));
-  return formData
+  return validFile;
 }
 
 export function createFileWithRelationship ({

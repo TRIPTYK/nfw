@@ -11,7 +11,7 @@ beforeAll(async () => {
   await setupIntegrationTest(DatabaseSeeder);
 })
 
-test('GET / returns list of documents', async () => {
+test('GET / returns status 200', async () => {
   const response = await fetchApi('documents', {
     headers: {
       Authorization: accessTokenAdmin,
@@ -21,7 +21,7 @@ test('GET / returns list of documents', async () => {
   expect(response.status).toStrictEqual(200);
 });
 
-test('GET id returns document', async () => {
+test('GET id returns status 200', async () => {
   const response = await fetchApi('documents/document', {
     headers: {
       Authorization: accessTokenAdmin,
@@ -31,7 +31,7 @@ test('GET id returns document', async () => {
   expect(response.status).toStrictEqual(200);
 });
 
-test('POST document returns document', async () => {
+test('POST document returns status 200', async () => {
   const response = await fetchApi('documents', {
     method: 'POST',
     body: createFile(),
@@ -43,11 +43,11 @@ test('POST document returns document', async () => {
   expect(response.status).toStrictEqual(200);
 });
 
-test('PATCH document returns document', async () => {
+test('PUT document return status 200', async () => {
   const formData = createFile();
   formData.append('id', dummyDocument.id);
   const response = await fetchApi('documents', {
-    method: 'PATCH',
+    method: 'PUT',
     headers: {
       Authorization: accessTokenAdmin,
     },
@@ -56,7 +56,7 @@ test('PATCH document returns document', async () => {
   expect(response.status).toStrictEqual(200);
 });
 
-test('DELETE document returns document', async () => {
+test('DELETE document returns status 204', async () => {
   await generateFile(deleteDummyDocument);
   const response = await fetchApi('documents/delete-document', {
     method: 'DELETE',
