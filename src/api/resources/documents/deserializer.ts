@@ -1,9 +1,9 @@
 import { inject, singleton } from '@triptyk/nfw-core';
-import { ResourcesRegistry, JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { ResourcesRegistry, JsonApiResourceDeserializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import type { DocumentResource } from './schema.js';
 
 @singleton()
-export class DocumentSerializer extends JsonApiResourceSerializer<DocumentResource> {
+export class DocumentDeserializer extends JsonApiResourceDeserializer<DocumentResource> {
   public constructor (
         @inject(ResourcesRegistryImpl) registry: ResourcesRegistry,
   ) {
