@@ -1,5 +1,5 @@
 import { inject, injectable } from '@triptyk/nfw-core';
-import { JsonApiQuery, ResourcesRegistry, JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiUpdate, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { JsonApiQuery, ResourcesRegistry, JsonApiDelete, JsonApiFindAll, JsonApiGet, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 import { InferType } from 'yup';
 import { Controller, Param, POST, PUT, UseMiddleware } from '@triptyk/nfw-http';
 import { JsonApiQueryDecorator } from '../decorators/json-api-query.js';
@@ -34,7 +34,7 @@ export class DocumentsController {
     const document = await this.documentService.getOneOrFail(id, query);
     await canOrFail(this.authorizer, currentUser, 'read', document)
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document);
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document, query);
   }
 
   @JsonApiFindAll()
@@ -43,7 +43,7 @@ export class DocumentsController {
 
     await canOrFail(this.authorizer, currentUser, 'read', documents);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeMany(documents);
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeMany(documents, query);
   }
 
   @POST('/')
@@ -53,7 +53,7 @@ export class DocumentsController {
 
     const document = await this.documentService.create(body);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document);
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document, {});
   }
 
   @PUT('/')
@@ -63,7 +63,7 @@ export class DocumentsController {
 
     const document = await this.documentService.update(id, body);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document);
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document, {});
   }
 
   @JsonApiDelete()

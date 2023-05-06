@@ -82,7 +82,7 @@ describe('Get', () => {
     await controller.get(id, jsonApiQuery, currentUser);
 
     expect(usersService.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
-    expect(serializer.serializeOne).toBeCalledWith(user);
+    expect(serializer.serializeOne).toBeCalledWith(user, {});
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
@@ -105,7 +105,7 @@ describe('FindAll', () => {
     registry.getSerializerFor.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(users, undefined);
+    expect(serializer.serializeMany).toBeCalledWith(users, jsonApiQuery, undefined);
     expect(usersService.getAll).toBeCalledWith(jsonApiQuery);
   });
 
@@ -127,7 +127,7 @@ describe('Create', () => {
     registry.getSerializerFor.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
     expect(usersService.create).toBeCalledWith(createBody);
-    expect(serializer.serializeOne).toBeCalledWith(user);
+    expect(serializer.serializeOne).toBeCalledWith(user, {});
   });
 
   test('Throws when cannot create an element', async () => {
@@ -148,7 +148,7 @@ describe('Update', () => {
     usersService.update.mockReturnValue(user);
     registry.getSerializerFor.mockReturnValue(serializer);
     await controller.update(updateBody, id, currentUser);
-    expect(serializer.serializeOne).toBeCalledWith(user);
+    expect(serializer.serializeOne).toBeCalledWith(user, {});
     expect(usersService.update).toBeCalledWith(id, updateBody);
   });
 

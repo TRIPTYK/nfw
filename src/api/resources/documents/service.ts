@@ -6,7 +6,7 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import type { Promisable } from 'type-fest';
 import { DocumentModel } from '../../../database/models/document.model.js';
-import { jsonApiQueryToFindOptions } from '../../utils/json-api-query-to-find-options.js';
+import { jsonApiQueryToFindOptions } from '../../utils/query/json-api-query-to-find-options.js';
 import type { DocumentResource } from './schema.js';
 
 export interface DocumentResourceService {

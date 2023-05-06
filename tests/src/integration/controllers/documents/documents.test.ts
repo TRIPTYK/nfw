@@ -1,6 +1,6 @@
 import { MikroORM } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
-import { beforeAll, expect } from 'vitest';
+import { afterAll, beforeAll, expect, vi } from 'vitest';
 import { DocumentsController } from 'app/api/controllers/documents.controller.js';
 import { MimeTypes } from 'app/api/enums/mime-type.enum.js';
 import { Roles } from 'app/api/enums/roles.enum.js';
@@ -9,6 +9,7 @@ import { generateFile } from '../../../../utils/generate-file.js';
 import { testCtx } from '../../../../utils/it-request-context.js';
 import { setupIntegrationTest } from '../../../../utils/setup-integration-test.js';
 import { deleteDummyDocument, DocumentsControllerTestSeeder, dummyDocument } from './seed.js';
+import { unlink } from 'fs/promises';
 
 let documentsController: DocumentsController;
 
@@ -72,8 +73,22 @@ testCtx('Update', () => container.resolve(MikroORM), async () => {
   expect(user).toMatchSnapshot();
 });
 
+vi.mock('fs/promises', async () => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actualImport = await vi.importActual<typeof import('fs/promises')>('fs/promises');
+  return {
+    ...actualImport,
+    unlink: vi.fn()
+  }
+})
+
 testCtx('Delete', () => container.resolve(MikroORM), async () => {
   await generateFile(deleteDummyDocument);
   const user = await documentsController.delete('delete-document', createAdminUser());
+  expect(unlink).toBeCalledWith(deleteDummyDocument.path);
   expect(user).toStrictEqual(null);
 });
+
+afterAll(() => {
+  vi.restoreAllMocks();
+})

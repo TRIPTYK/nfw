@@ -28,28 +28,28 @@ export class UsersController {
   async get (@Param('id') id: string, @JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const user = await this.usersService.getOneOrFail(id, query);
     await canOrFail(this.authorizer, currentUser, 'read', user);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user, query);
   }
 
   @JsonApiFindAll()
   async findAll (@JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
     const [users, count] = await this.usersService.getAll(query);
     await canOrFail(this.authorizer, currentUser, 'read', users);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeMany(users, query.page ? { ...query.page, total: count } : undefined);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeMany(users, query, query.page ? { ...query.page, total: count } : undefined);
   }
 
   @JsonApiCreate()
   async create (@JsonApiBody(RESOURCE_NAME, createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'create', body);
     const user = await this.usersService.create(body);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user, {});
   }
 
   @PATCH('/:id')
   async update (@JsonApiBody(RESOURCE_NAME, updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @Param('id') id: string, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'update', body);
     const user = await this.usersService.update(id, body);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user);
+    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user, {});
   }
 
   @JsonApiDelete()

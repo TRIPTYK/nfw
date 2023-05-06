@@ -38,7 +38,6 @@ testCtx('CreateOne', () => container.resolve(MikroORM), async () => {
     firstName: 'amaury',
     lastName: 'deflorenne',
     role: Roles.USER,
-    password: '123',
     email: 'amaury@localhost.com'
   }, createAdminUser());
 

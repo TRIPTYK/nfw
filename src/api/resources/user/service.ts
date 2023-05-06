@@ -6,7 +6,7 @@ import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import type { Promisable } from 'type-fest';
 import { UserModel } from '../../../database/models/user.model.js';
 import { NotFoundError } from '../../errors/web/not-found.js';
-import { jsonApiQueryToFindOptions } from '../../utils/json-api-query-to-find-options.js';
+import { jsonApiQueryToFindOptions } from '../../utils/query/json-api-query-to-find-options.js';
 
 export interface UserResourceService {
   getOne(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never> | null>,
