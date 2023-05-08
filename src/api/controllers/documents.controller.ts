@@ -46,27 +46,27 @@ export class DocumentsController {
 
     await canOrFail(this.authorizer, currentUser, 'read', documents);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeMany(documents, query);
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeMany(wrap(documents).toJSON(), query);
   }
 
   @POST('/')
   @UseMiddleware(createFileUploadMiddleware('./dist/uploads/'))
   async create (@ValidatedFileBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
-    await canOrFail(this.authorizer, currentUser, 'create', body as never);
+    await canOrFail(this.authorizer, currentUser, 'create', body);
 
-    const document = await this.documentService.create(body as never);
+    const document = await this.documentService.create(body);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document as never, {});
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(wrap(document).toJSON(), {});
   }
 
   @PUT('/')
   @UseMiddleware(createFileUploadMiddleware('./dist/uploads/'))
   async update (@Param('id') id: string, @JsonApiBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
-    await canOrFail<EntityData<DocumentModel>>(this.authorizer, currentUser, 'update', body as never);
+    await canOrFail<EntityData<DocumentModel>>(this.authorizer, currentUser, 'update', body);
 
     const document = await this.documentService.update(id, body);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document, {});
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(wrap(document).toJSON(), {});
   }
 
   @JsonApiDelete()

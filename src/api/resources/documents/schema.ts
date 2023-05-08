@@ -43,7 +43,7 @@ export const documentSchema = {
   relationships: {
     users: {
       type: 'users',
-      cardinality: 'belongs-to',
+      cardinality: 'has-many',
       serialize: true,
       deserialize: true,
     }

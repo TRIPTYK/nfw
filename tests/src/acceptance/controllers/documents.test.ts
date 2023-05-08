@@ -55,6 +55,7 @@ test('PUT document return status 200', async () => {
     resourceType: 'users'
   });
   formData.append('id', dummyDocument.id);
+
   const response = await fetchApi('documents', {
     method: 'PUT',
     body: formData,
