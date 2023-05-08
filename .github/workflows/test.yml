@@ -20,7 +20,7 @@ jobs:
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
             - name: Shutdown Ubuntu MySQL (SUDO)
               run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
@@ -35,7 +35,7 @@ jobs:
                   mysql password: "test123*"
                   mysql version: "8"
             - name: Cache pnpm modules
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                 path: ~/.pnpm-store
                 key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
