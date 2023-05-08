@@ -10,7 +10,6 @@ import { DocumentResourceAuthorizerImpl } from '../resources/documents/authorize
 import type { DocumentResource } from '../resources/documents/schema.js';
 import { validatedDocumentSchema } from '../validators/document.validator.js';
 import { canOrFail } from '../utils/can-or-fail.js';
-import { JsonApiBody } from '../decorators/json-api-body.js';
 import type { EntityData } from '@mikro-orm/core';
 import { wrap } from '@mikro-orm/core';
 import type { DocumentModel } from '../../database/models/document.model.js';
@@ -46,13 +45,13 @@ export class DocumentsController {
 
     await canOrFail(this.authorizer, currentUser, 'read', documents);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeMany(wrap(documents).toJSON(), query);
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeMany(documents.map((d) => wrap(d).toJSON()), query);
   }
 
   @POST('/')
   @UseMiddleware(createFileUploadMiddleware('./dist/uploads/'))
   async create (@ValidatedFileBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
-    await canOrFail(this.authorizer, currentUser, 'create', body);
+    await canOrFail(this.authorizer, currentUser, 'create', body as never);
 
     const document = await this.documentService.create(body);
 

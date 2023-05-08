@@ -2,7 +2,6 @@ import { MikroORM } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
 import { afterAll, beforeAll, expect, vi } from 'vitest';
 import { DocumentsController } from 'app/api/controllers/documents.controller.js';
-import { MimeTypes } from 'app/api/enums/mime-type.enum.js';
 import { Roles } from 'app/api/enums/roles.enum.js';
 import { UserModel } from 'app/database/models/user.model.js';
 import { generateFile } from '../../../../utils/generate-file.js';
@@ -44,9 +43,9 @@ testCtx('GetAll', () => container.resolve(MikroORM), async () => {
 //     size: 1337,
 //     path: 'create-file.bmp',
 //   };
-// 
+//
 //   const constrollerResponse = await documentsController.create(document, createAdminUser());
-// 
+//
 //   expect(constrollerResponse).toMatchObject({
 //     data: {
 //       attributes: {
@@ -66,6 +65,7 @@ testCtx('GetAll', () => container.resolve(MikroORM), async () => {
 testCtx('Update', () => container.resolve(MikroORM), async () => {
   const updatedDummyDocument = {
     ...dummyDocument,
+    users: [],
     filename: 'update-filename',
   };
   const user = await documentsController.update('document', updatedDummyDocument, createAdminUser());
