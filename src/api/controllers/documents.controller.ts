@@ -58,7 +58,7 @@ export class DocumentsController {
     return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(wrap(document).toJSON(), {});
   }
 
-  @PUT('/')
+  @PUT('/:id')
   @UseMiddleware(createFileUploadMiddleware('./dist/uploads/'))
   async update (@Param('id') id: string, @ValidatedFileBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail<EntityData<DocumentModel>>(this.authorizer, currentUser, 'update', body);
