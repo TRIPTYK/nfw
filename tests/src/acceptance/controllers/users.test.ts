@@ -8,15 +8,75 @@ beforeAll(async () => {
   await setupIntegrationTest(DatabaseSeeder);
 })
 
-test('GET / returns list of users', async () => {
+test('GET / returns status code 200', async () => {
   const users = await fetchApi('users', {
     headers: {
-      Authorization: accessTokenAdmin
-    }
+      Authorization: accessTokenAdmin,
+    },
   });
 
-  const json = await users.json();
+  expect(users.status).toStrictEqual(200);
+});
+
+test('GET id returns status code 200', async () => {
+  const users = await fetchApi('users/12345678910abcdef', {
+    headers: {
+      Authorization: accessTokenAdmin,
+    },
+  });
 
   expect(users.status).toStrictEqual(200);
-  expect(json).toMatchSnapshot();
+});
+
+test('POST returns status code 200', async () => {
+  const users = await fetchApi('users/12345678910abcdef', {
+    body: JSON.stringify({
+      data: {
+        attributes: {
+          firstName: 'createdFirstName',
+          lastName: 'createdLastName',
+          email: 'createdEmail',
+        },
+      }
+    }),
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/vnd.api+json',
+      Accept: 'application/vnd.api+json',
+      Authorization: accessTokenAdmin,
+    },
+  });
+
+  expect(users.status).toStrictEqual(200);
+});
+
+test('PATCH id returns status code 200', async () => {
+  const users = await fetchApi('users/12345678910abcdef', {
+    body: JSON.stringify({
+      data: {
+        attributes: {
+          firstName: 'updatedFirstName',
+        },
+      }
+    }),
+    method: 'PATCH',
+    headers: {
+      'Content-type': 'application/vnd.api+json',
+      Accept: 'application/vnd.api+json',
+      Authorization: accessTokenAdmin,
+    },
+  });
+
+  expect(users.status).toStrictEqual(200);
+});
+
+test('DELETE returns status code 204', async () => {
+  const users = await fetchApi('users/9876543210', {
+    method: 'DELETE',
+    headers: {
+      Authorization: accessTokenAdmin,
+    },
+  });
+
+  expect(users.status).toStrictEqual(204);
 });

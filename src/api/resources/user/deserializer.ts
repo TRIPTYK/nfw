@@ -5,7 +5,7 @@ import type { UserResource } from './schema.js';
 @singleton()
 export class UsersDeserializer extends JsonApiResourceDeserializer<UserResource> {
   public constructor (
-        @inject(ResourcesRegistryImpl) registry: ResourcesRegistry
+        @inject(ResourcesRegistryImpl) registry: ResourcesRegistry,
   ) {
     super('users', registry);
   }

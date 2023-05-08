@@ -1,4 +1,5 @@
 import type { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { registerDocument } from './documents/register.js';
 import { registerUser } from './user/register.js';
 
 export function setupRegistry (registry: ResourcesRegistryImpl) {
@@ -6,4 +7,5 @@ export function setupRegistry (registry: ResourcesRegistryImpl) {
     host: '/api/v1'
   });
   registerUser(registry);
+  registerDocument(registry);
 }

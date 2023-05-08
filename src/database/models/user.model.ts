@@ -7,7 +7,8 @@ import {
   Enum,
   Collection,
   ManyToMany,
-  types
+  types,
+  Filter
 } from '@mikro-orm/core';
 import { Roles } from '../../api/enums/roles.enum.js';
 import type { RefreshTokenModel } from './refresh-token.model.js';
@@ -18,6 +19,7 @@ import { BaseModel } from './base.model.js';
 @Entity({
   tableName: 'users'
 })
+@Filter({ name: 'truc', cond: { 1: 0 } })
 export class UserModel extends BaseModel {
   @Property({
     type: types.string
@@ -35,12 +37,14 @@ export class UserModel extends BaseModel {
   declare email: string;
 
   @Property({
-    type: types.string
+    type: types.string,
+    nullable: true
   })
-  declare password: string;
+  declare password?: string;
 
   @Enum({
     items: Object.values(Roles),
+    default: Roles.USER,
     type: types.enum
   })
   declare role: Roles;
@@ -60,7 +64,10 @@ export class UserModel extends BaseModel {
     })
       documents = new Collection<DocumentModel>(this);
 
-    public passwordMatches (password: string): Promise<boolean> {
+    public async passwordMatches (password: string): Promise<boolean> {
+      if (!this.password) {
+        return false;
+      }
       return bcrypt.compare(password, this.password);
     }
 }

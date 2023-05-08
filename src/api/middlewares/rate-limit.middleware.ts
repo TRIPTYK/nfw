@@ -13,7 +13,7 @@ export function createRateLimitMiddleware (duration: number, max: number, messag
     public rate: Middleware;
 
     public constructor (
-      @inject(ConfigurationServiceImpl) public configurationService: ConfigurationService<Env>
+      @inject(ConfigurationServiceImpl) public configurationService: ConfigurationService<Env>,
     ) {
       this.rate = KoaRatelimit({
         driver: 'memory',
@@ -22,7 +22,7 @@ export function createRateLimitMiddleware (duration: number, max: number, messag
         max: this.configurationService.get('NODE_ENV') === 'test' ? Infinity : max,
         throw: true,
         errorMessage: message ?? 'Too many requests',
-        id: (ctx) => ctx.ip
+        id: (ctx) => ctx.ip,
       })
     }
 

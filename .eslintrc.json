@@ -12,6 +12,7 @@
     "no-unused-vars": "off",
     "no-return-assign": "off",
     "no-redeclare": "off",
+    "comma-dangle": ["error", "only-multiline"],
     "@typescript-eslint/no-floating-promises": "error",
     "no-use-before-define": "off",
     "no-useless-constructor": "off",

@@ -11,14 +11,14 @@ import { UserFactory } from '../../factories/user.factory.js';
  */
 export class DatabaseSeeder extends Seeder {
   async run (em: EntityManager): Promise<void> {
-    const password = '$2b$10$sTzX.XuGTMTaHYEnwdcwZe0gduWH1AA1ZKj3qmW3EVNb./QKh4Kbu';
+    const password = '$2b$10$L6slyWbNtatYE15389majOpMpBxnR4CWgIlC2zrVFDRUjfxC6QjJ.';
     const document = await new DocumentFactory(em).createOne({
       id: '123456789'
     });
     await new UserFactory(em).createOne({
       id: '12345678910abcdef',
       email: 'admin@localhost.com',
-      password: '123',
+      password,
       firstName: 'amaury',
       lastName: 'localhost',
       role: Roles.ADMIN,

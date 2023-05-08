@@ -4,6 +4,7 @@ const terminalOptions = {
   shell: true,
   detached: false,
   stdio: "inherit",
+  stderr: "inherit",
 };
 
 spawnSync("pnpm run test:unit --watch=false", terminalOptions);

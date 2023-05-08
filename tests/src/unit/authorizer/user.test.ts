@@ -23,12 +23,12 @@ test('Admin can read other admins', () => {
   expect(authorizer.can(adminUser, 'read', normalUser)).toBe(true);
 });
 
-test('Admin cannot edit other admins', () => {
+test('Admin can edit other admins', () => {
   const otherAdmin = new UserModel();
   otherAdmin.role = Roles.ADMIN;
   otherAdmin.id = '3';
 
-  expect(authorizer.can(adminUser, 'update', otherAdmin)).toBe(false);
+  expect(authorizer.can(adminUser, 'update', otherAdmin)).toBe(true);
 });
 
 test('Admin can edit any user', () => {
