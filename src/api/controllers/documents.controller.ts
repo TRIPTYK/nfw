@@ -12,6 +12,7 @@ import { validatedDocumentSchema } from '../validators/document.validator.js';
 import { canOrFail } from '../utils/can-or-fail.js';
 import { JsonApiBody } from '../decorators/json-api-body.js';
 import type { EntityData } from '@mikro-orm/core';
+import { wrap } from '@mikro-orm/core';
 import type { DocumentModel } from '../../database/models/document.model.js';
 import { ResourceAuthorizer } from '../resources/base/authorizer.js';
 import { createFileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
@@ -36,7 +37,7 @@ export class DocumentsController {
 
     await canOrFail(this.authorizer, currentUser, 'read', document)
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document, query);
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(wrap(document).toJSON(), query);
   }
 
   @JsonApiFindAll()
