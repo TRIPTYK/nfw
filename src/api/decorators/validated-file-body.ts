@@ -34,8 +34,8 @@ function validatedFileBody<T> (resourceName: string, validationSchema: Schema<T,
         ...body,
         id: controllerContext.ctx.request.body.id,
       }
-      console.log(body);
     }
+
     return validatedBody(body, validationSchema);
   };
 }

@@ -1,4 +1,4 @@
-import { wrap, EntityRepository } from '@mikro-orm/core';
+import { wrap, EntityRepository, RequiredEntityData, EntityData } from '@mikro-orm/core';
 import type { Loaded } from '@mikro-orm/core';
 import { NotFoundError } from '../../errors/web/not-found.js';
 import { singleton } from '@triptyk/nfw-core';
@@ -44,21 +44,23 @@ export class DocumentResourceServiceImpl implements DocumentResourceService {
     return [documents, number] as [Loaded<DocumentModel, never>[], number];
   }
 
-  async create (body: DocumentResource): Promise<Loaded<DocumentModel, never>> {
+  async create (body: RequiredEntityData<DocumentModel>): Promise<Loaded<DocumentModel, never>> {
     const document = this.documentRepository.create(body);
-    await this.documentRepository.persistAndFlush(document);
+    await this.documentRepository.getEntityManager().persistAndFlush(document);
     return document;
   }
 
-  async update (id: string, body: Partial<DocumentResource>): Promise<Loaded<DocumentModel, never>> {
-    const existing = await this.documentRepository.findOneOrFail(id);
+  async update (id: string, body: EntityData<DocumentModel>): Promise<Loaded<DocumentModel, never>> {
+    const existing = await this.documentRepository.findOneOrFail({
+      id
+    });
     const user = wrap(existing).assign(body);
-    await this.documentRepository.persistAndFlush(user);
+    await this.documentRepository.getEntityManager().persistAndFlush(user);
     return user;
   }
 
   async delete (id: string): Promise<void> {
     const existing = await this.documentRepository.findOneOrFail(id);
-    await this.documentRepository.removeAndFlush(existing);
+    await this.documentRepository.getEntityManager().removeAndFlush(existing);
   }
 }

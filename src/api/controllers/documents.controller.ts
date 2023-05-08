@@ -61,7 +61,7 @@ export class DocumentsController {
 
   @PUT('/')
   @UseMiddleware(createFileUploadMiddleware('./dist/uploads/'))
-  async update (@Param('id') id: string, @JsonApiBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
+  async update (@Param('id') id: string, @ValidatedFileBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail<EntityData<DocumentModel>>(this.authorizer, currentUser, 'update', body);
 
     const document = await this.documentService.update(id, body);
