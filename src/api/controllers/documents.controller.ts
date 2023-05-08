@@ -15,7 +15,7 @@ import type { EntityData } from '@mikro-orm/core';
 import type { DocumentModel } from '../../database/models/document.model.js';
 import { ResourceAuthorizer } from '../resources/base/authorizer.js';
 import { createFileUploadMiddleware } from '../middlewares/file-upload.middleware.js';
-import { ValidatedFileBody } from '../decorators/file-as-body.js';
+import { ValidatedFileBody } from '../decorators/validated-file-body.js';
 
 const RESOURCE_NAME = 'documents';
 
@@ -53,9 +53,9 @@ export class DocumentsController {
   async create (@ValidatedFileBody(RESOURCE_NAME, validatedDocumentSchema) body: InferType<typeof validatedDocumentSchema>, @CurrentUser() currentUser: UserModel) {
     await canOrFail(this.authorizer, currentUser, 'create', body as never);
 
-    const document = await this.documentService.create(body);
+    const document = await this.documentService.create(body as never);
 
-    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document, {});
+    return this.registry.getSerializerFor<DocumentResource>(RESOURCE_NAME).serializeOne(document as never, {});
   }
 
   @PUT('/')

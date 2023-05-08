@@ -1,6 +1,6 @@
 import { DatabaseSeeder } from 'app/database/seeders/test/test.seeder.js';
-import { deleteDummyDocument } from 'tests/src/integration/controllers/documents/seed.js';
-import { createFileWithRelationship } from 'tests/utils/create-file-with-relation.js';
+import { deleteDummyDocument, dummyDocument } from 'tests/src/integration/controllers/documents/seed.js';
+import { createFileWithManyRelationship } from 'tests/utils/create-file-with-relation.js';
 import { generateFile } from 'tests/utils/generate-file.js';
 import { setupIntegrationTest } from 'tests/utils/setup-integration-test.js';
 import { beforeAll, expect, test } from 'vitest';
@@ -34,7 +34,7 @@ test('GET id returns status 200', async () => {
 test('POST document returns status 200', async () => {
   const response = await fetchApi('documents', {
     method: 'POST',
-    body: createFileWithRelationship({
+    body: createFileWithManyRelationship({
       resourceId: '12345678910abcdef',
       relationName: 'users',
       resourceType: 'users'
@@ -48,18 +48,23 @@ test('POST document returns status 200', async () => {
   expect(response.status).toStrictEqual(200);
 });
 
-// test('PUT document return status 200', async () => {
-//   const formData = createFile();
-//   formData.append('id', dummyDocument.id);
-//   const response = await fetchApi('documents', {
-//     method: 'PUT',
-//     headers: {
-//       Authorization: accessTokenAdmin,
-//     },
-//   });
-//
-//   expect(response.status).toStrictEqual(200);
-// });
+test('PUT document return status 200', async () => {
+  const formData = createFileWithManyRelationship({
+    resourceId: '12345678910abcdef',
+    relationName: 'users',
+    resourceType: 'users'
+  });
+  formData.append('id', dummyDocument.id);
+  const response = await fetchApi('documents', {
+    method: 'PUT',
+    body: formData,
+    headers: {
+      Authorization: accessTokenAdmin,
+    },
+  });
+
+  expect(response.status).toStrictEqual(200);
+});
 
 test('DELETE document returns status 204', async () => {
   await generateFile(deleteDummyDocument);

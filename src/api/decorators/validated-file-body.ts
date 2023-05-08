@@ -15,15 +15,18 @@ function validatedFileBody<T> (resourceName: string, validationSchema: Schema<T,
   return async (controllerContext: ControllerParamsContext<unknown>) => {
     const file = controllerContext.ctx.request.files!.file as File;
 
-    console.log('data', JSON.parse(controllerContext.ctx.request.body.data));
-    const parsedRelationships = await container.resolve(ResourcesRegistryImpl).getDeserializerFor(resourceName).deserialize(JSON.parse(controllerContext.ctx.request.body.data));
+    console.log('parsed', JSON.parse(controllerContext.ctx.request.body.data));
+    const parsedBody = {
+      data: JSON.parse(controllerContext.ctx.request.body.data)
+    }
+    const parsedRelationships = await container.resolve(ResourcesRegistryImpl).getDeserializerFor(resourceName).deserialize(parsedBody);
     console.log('parsed', parsedRelationships);
 
     const body = {
       filename: file.newFilename,
       originalName: file.originalFilename,
       path: file.filepath,
-      size: undefined,
+      size: file.size,
       mimetype: file.mimetype,
       ...parsedRelationships,
     }

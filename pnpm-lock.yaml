@@ -40,9 +40,6 @@ dependencies:
   fetch-blob:
     specifier: ^3.2.0
     version: 3.2.0
-  formdata-polyfill:
-    specifier: ^4.0.10
-    version: 4.0.10
   jsonwebtoken:
     specifier: ~9.0.0
     version: 9.0.0
@@ -159,6 +156,9 @@ devDependencies:
   eslint-plugin-unused-imports:
     specifier: ~2.0.0
     version: 2.0.0(@typescript-eslint/eslint-plugin@5.59.2)(eslint@8.39.0)
+  formdata-polyfill:
+    specifier: ^4.0.10
+    version: 4.0.10
   jscpd:
     specifier: ~3.5.9
     version: 3.5.9
@@ -2604,6 +2604,7 @@ packages:
     engines: {node: '>=12.20.0'}
     dependencies:
       fetch-blob: 3.2.0
+    dev: true
 
   /formidable@2.1.1:
     resolution: {integrity: sha512-0EcS9wCFEzLvfiks7omJ+SiYJAiD+TzK4Pcw1UlUoGnhUxDcMKjt0P7x8wEb0u6OHu8Nb98WG3nxtlF5C7bvUQ==}
