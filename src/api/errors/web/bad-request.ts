@@ -4,5 +4,7 @@ export class BadRequestError extends Error {
 }
 
 export function createBadRequestError (err: {message: string}) {
+  console.log(err);
+  
   throw new BadRequestError(err.message);
 }

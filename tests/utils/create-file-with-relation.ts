@@ -5,7 +5,10 @@ export const validFile = new File(['abc'], 'hello-world.txt', {
 })
 
 export function createFile () {
-  return validFile;
+  const formData = new FormData();
+  formData.append('file', validFile);
+  formData.append('data', JSON.stringify({ relationships: { users: { data: [{ type: 'users', id: '12345678910abcdef' }] } } }))
+  return formData;
 }
 
 export function createFileWithRelationship ({
@@ -18,6 +21,6 @@ export function createFileWithRelationship ({
     resourceId: string,
 }) {
   const formData = createFile();
-  formData.append('data', JSON.stringify({ relationships: { [relationName]: { data: { type: resourceType, id: resourceId } } } }));
+  formData.append('data', JSON.stringify({ relationships: { [relationName]: [{ data: { type: resourceType, id: resourceId } }] } }));
   return formData;
 }

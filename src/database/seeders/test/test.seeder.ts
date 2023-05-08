@@ -4,7 +4,7 @@ import { Roles } from '../../../api/enums/roles.enum.js';
 import { DocumentFactory } from '../../factories/document.factory.js';
 import { UserFactory } from '../../factories/user.factory.js';
 import { RefreshTokenFactory } from '../../factories/refresh-token.factory.js';
-import {DocumentsControllerTestSeeder} from 'tests/src/integration/controllers/documents/seed.js';
+import { DocumentsControllerTestSeeder } from 'tests/src/integration/controllers/documents/seed.js';
 
 /**
  * This is the default seeder for this environment

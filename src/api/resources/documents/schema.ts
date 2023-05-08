@@ -1,4 +1,5 @@
 import type { ResourceSchema } from '@triptyk/nfw-resources';
+import type { UserModel } from 'app/database/models/user.model';
 import type { MimeTypes } from '../../enums/mime-type.enum';
 
 export type DocumentResource = {
@@ -7,6 +8,7 @@ export type DocumentResource = {
   path: string,
   size: number,
   mimetype: MimeTypes,
+  users?: UserModel,
 }
 
 export const documentSchema = {
@@ -38,5 +40,12 @@ export const documentSchema = {
       type: 'string',
     },
   },
-  relationships: {},
+  relationships: {
+    users: {
+      type: 'users',
+      cardinality: 'belongs-to',
+      serialize: true,
+      deserialize: true,
+    }
+  },
 } satisfies ResourceSchema<DocumentResource>
