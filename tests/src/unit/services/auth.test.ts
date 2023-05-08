@@ -35,7 +35,7 @@ afterEach(() => {
 })
 
 test('access token generation from configuration', () => {
-  const date = new Date(2000, 1, 1, 13)
+  const date = new Date(949406400000);
   vi.setSystemTime(date)
 
   const token = service.generateAccessToken('123');
