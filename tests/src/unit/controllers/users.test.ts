@@ -1,11 +1,12 @@
 import 'reflect-metadata';
-import type { ResourceSerializer, ResourcesRegistry } from '@triptyk/nfw-resources';
+import type { ResourceSerializer } from '@triptyk/nfw-resources';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { UsersController } from 'app/api/controllers/users.controller.js';
 import { ForbiddenError } from 'app/api/errors/web/forbidden.js';
 import type { UserResourceAuthorizer } from 'app/api/resources/user/authorizer.js';
 import type { UserResourceService } from 'app/api/resources/user/service.js';
 import { UserModel } from 'app/database/models/user.model.js';
+import type { UserResource } from 'app/api/resources/user/schema.js';
 
 const usersService = {
   getOne: vi.fn(),
@@ -16,12 +17,10 @@ const usersService = {
   getOneOrFail: vi.fn()
 } satisfies UserResourceService;
 
-const registry = {
-  getDeserializerFor: vi.fn(),
-  getSerializerFor: vi.fn(),
-  getSchemaFor: vi.fn(),
-  getConfig: vi.fn()
-} satisfies ResourcesRegistry;
+const serializer = {
+  serializeOne: vi.fn(),
+  serializeMany: vi.fn()
+} satisfies ResourceSerializer<UserResource>;
 
 const authorizer = {
   can: vi.fn()
@@ -32,8 +31,8 @@ let controller: UsersController;
 beforeEach(() => {
   controller = new UsersController(
     usersService,
-    registry,
-    authorizer
+    authorizer,
+    serializer
   );
 })
 
@@ -43,19 +42,18 @@ afterEach(() => {
 
 vi.mock('@mikro-orm/core', async () => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const imports = await vi.importActual<typeof import('@mikro-orm/core')>('@mikro-orm/core')
+  const imports = await vi.importActual<typeof import('@mikro-orm/core')>('@mikro-orm/core');
   return {
     ...imports,
+    wrap: (data: unknown) => {
+      return {
+        toJSON: vi.fn().mockReturnValue(data)
+      }
+    },
     Collection: Array
   }
 })
 
-class Serializer implements ResourceSerializer<never> {
-  serializeMany = vi.fn()
-  serializeOne = vi.fn()
-}
-
-const serializer = new Serializer();
 const currentUser = new UserModel();
 
 describe('Get', () => {
@@ -77,7 +75,7 @@ describe('Get', () => {
     authorizer.can.mockReturnValue(true);
     usersService.getOneOrFail.mockReturnValue(user);
 
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
 
     await controller.get(id, jsonApiQuery, currentUser);
 
@@ -102,7 +100,7 @@ describe('FindAll', () => {
     const users = [user];
     authorizer.can.mockReturnValue(true);
     usersService.getAll.mockReturnValue([users, 1]);
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeMany.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
     expect(serializer.serializeMany).toBeCalledWith(users, jsonApiQuery, undefined);
@@ -124,7 +122,7 @@ describe('Create', () => {
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     usersService.create.mockReturnValue(user);
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
     expect(usersService.create).toBeCalledWith(createBody);
     expect(serializer.serializeOne).toBeCalledWith(user, {});
@@ -146,7 +144,7 @@ describe('Update', () => {
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     usersService.update.mockReturnValue(user);
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
     await controller.update(updateBody, id, currentUser);
     expect(serializer.serializeOne).toBeCalledWith(user, {});
     expect(usersService.update).toBeCalledWith(id, updateBody);
@@ -168,7 +166,7 @@ describe('Delete', () => {
     authorizer.can.mockReturnValue(true);
     usersService.getOne.mockReturnValue(user);
     usersService.delete.mockReturnValue();
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
     await controller.delete(id, currentUser);
     expect(usersService.delete).toBeCalledWith(id);
   });

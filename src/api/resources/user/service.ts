@@ -3,19 +3,12 @@ import { wrap, EntityRepository } from '@mikro-orm/core';
 import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
-import type { Promisable } from 'type-fest';
 import { UserModel } from '../../../database/models/user.model.js';
 import { NotFoundError } from '../../errors/web/not-found.js';
 import { jsonApiQueryToFindOptions } from '../../utils/query/json-api-query-to-find-options.js';
+import type { ResourceService } from '../base/service.js';
 
-export interface UserResourceService {
-  getOne(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never> | null>,
-  getOneOrFail(id: string, query: JsonApiQuery): Promisable<Loaded<UserModel, never>>,
-  getAll(query: JsonApiQuery): Promisable<[Loaded<UserModel, never>[], number]>,
-  create(body: RequiredEntityData<UserModel>): Promisable<Loaded<UserModel, never>>,
-  update(id: string, body: EntityData<UserModel>): Promisable<Loaded<UserModel, never>>,
-  delete(id: string): Promisable<void>,
-}
+export type UserResourceService = ResourceService<UserModel>;
 
 @singleton()
 export class UserResourceServiceImpl implements UserResourceService {

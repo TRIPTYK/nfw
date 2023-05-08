@@ -4,18 +4,11 @@ import { NotFoundError } from '../../errors/web/not-found.js';
 import { singleton } from '@triptyk/nfw-core';
 import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
-import type { Promisable } from 'type-fest';
 import { DocumentModel } from '../../../database/models/document.model.js';
 import { jsonApiQueryToFindOptions } from '../../utils/query/json-api-query-to-find-options.js';
+import type { ResourceService } from '../base/service.js';
 
-export interface DocumentResourceService {
-  getOne(id: string, query: JsonApiQuery): Promisable<Loaded<DocumentModel, never> | null>,
-  getOneOrFail(id: string, query: JsonApiQuery): Promisable<Loaded<DocumentModel, never>>,
-  getAll(query: JsonApiQuery): Promisable<[Loaded<DocumentModel, never>[], number]>,
-  create(body: EntityData<DocumentModel>): Promisable<Loaded<DocumentModel, never>>,
-  update(id: string, body: EntityData<DocumentModel>): Promisable<Loaded<DocumentModel, never>>,
-  delete(id: string): Promisable<void>,
-}
+export type DocumentResourceService = ResourceService<DocumentModel>;
 
 @singleton()
 export class DocumentResourceServiceImpl implements DocumentResourceService {

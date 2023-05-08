@@ -1,5 +1,5 @@
 import { inject } from '@triptyk/nfw-core';
-import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiUpdate, ResourcesRegistry, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiUpdate, ResourceSerializer } from '@triptyk/nfw-resources';
 import { UserResourceServiceImpl, UserResourceService } from '../resources/user/service.js';
 import { UserResourceAuthorizer, UserResourceAuthorizerImpl } from '../resources/user/authorizer.js';
 import { InferType } from 'yup';
@@ -8,8 +8,9 @@ import { Controller, Param } from '@triptyk/nfw-http';
 import { JsonApiQueryDecorator } from '../decorators/json-api-query.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { UserModel } from '../../database/models/user.model.js';
-import { canOrFail } from '../utils/can-or-fail.js';
 import { JsonApiBody } from '../decorators/json-api-body.js';
+import { jsonApiCreateFunction, jsonApiDeleteFunction, jsonApiFindAllFunction, jsonApiGetFunction, jsonApiUpdateFunction } from '../resources/base/controller.js';
+import { UsersSerializer } from '../resources/user/serializer.js';
 import type { UserResource } from '../resources/user/schema.js';
 
 const RESOURCE_NAME = 'users';
@@ -19,44 +20,33 @@ const RESOURCE_NAME = 'users';
 })
 export class UsersController {
   public constructor (
-    @inject(UserResourceServiceImpl) public usersService: UserResourceService,
-    @inject(ResourcesRegistryImpl) public registry: ResourcesRegistry,
-    @inject(UserResourceAuthorizerImpl) public authorizer: UserResourceAuthorizer
+    @inject(UserResourceServiceImpl) public service: UserResourceService,
+    @inject(UserResourceAuthorizerImpl) public authorizer: UserResourceAuthorizer,
+    @inject(UsersSerializer) public serializer: ResourceSerializer<UserResource>
   ) {}
 
   @JsonApiGet()
   async get (@Param('id') id: string, @JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
-    const user = await this.usersService.getOneOrFail(id, query);
-    await canOrFail(this.authorizer, currentUser, 'read', user);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user, query);
+    return jsonApiGetFunction.call(this, id, query, currentUser);
   }
 
   @JsonApiFindAll()
   async findAll (@JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
-    const [users, count] = await this.usersService.getAll(query);
-    await canOrFail(this.authorizer, currentUser, 'read', users);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeMany(users, query, query.page ? { ...query.page, total: count } : undefined);
+    return jsonApiFindAllFunction.call(this, query, currentUser);
   }
 
   @JsonApiCreate()
   async create (@JsonApiBody(RESOURCE_NAME, createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
-    await canOrFail(this.authorizer, currentUser, 'create', body);
-    const user = await this.usersService.create(body);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user, {});
+    return jsonApiCreateFunction.call(this, currentUser, body);
   }
 
   @JsonApiUpdate()
   async update (@JsonApiBody(RESOURCE_NAME, updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @Param('id') id: string, @CurrentUser() currentUser: UserModel) {
-    await canOrFail(this.authorizer, currentUser, 'update', body);
-    const user = await this.usersService.update(id, body);
-    return this.registry.getSerializerFor<UserResource>(RESOURCE_NAME).serializeOne(user, {});
+    return jsonApiUpdateFunction.call(this, currentUser, body, id);
   }
 
   @JsonApiDelete()
   async delete (@Param('id') id: string, @CurrentUser() currentUser: UserModel) {
-    const user = await this.usersService.getOneOrFail(id, {});
-    await canOrFail(this.authorizer, currentUser, 'delete', user);
-    await this.usersService.delete(id);
-    return null;
+    return jsonApiDeleteFunction.call(this, id, currentUser);
   }
 }

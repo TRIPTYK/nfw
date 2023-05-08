@@ -1,4 +1,4 @@
-import type { ResourcesRegistry, ResourceSerializer } from '@triptyk/nfw-resources';
+import type { ResourceSerializer } from '@triptyk/nfw-resources';
 import 'reflect-metadata';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { DocumentsController } from '../../../../src/api/controllers/documents.controller.js';
@@ -8,6 +8,7 @@ import { DocumentModel } from '../../../../src/database/models/document.model.js
 import { UserModel } from '../../../../src/database/models/user.model.js';
 import { NotFoundError } from '@mikro-orm/core';
 import type { ResourceAuthorizer } from '../../../../src/api/resources/base/authorizer.js';
+import type { DocumentResource } from 'app/api/resources/documents/schema.js';
 
 const service = {
   getOne: vi.fn(),
@@ -18,12 +19,10 @@ const service = {
   delete: vi.fn(),
 } satisfies DocumentResourceService;
 
-const registry = {
-  getDeserializerFor: vi.fn(),
-  getSerializerFor: vi.fn(),
-  getSchemaFor: vi.fn(),
-  getConfig: vi.fn(),
-} satisfies ResourcesRegistry;
+const serializer = {
+  serializeMany: vi.fn(),
+  serializeOne: vi.fn()
+} satisfies ResourceSerializer<DocumentResource>;
 
 const authorizer = {
   can: vi.fn(),
@@ -34,7 +33,7 @@ let controller: DocumentsController;
 beforeEach(() => {
   controller = new DocumentsController(
     service,
-    registry,
+    serializer,
     authorizer,
   );
 })
@@ -57,12 +56,6 @@ vi.mock('@mikro-orm/core', async () => {
   }
 })
 
-class Serializer implements ResourceSerializer<never> {
-  serializeMany = vi.fn()
-  serializeOne = vi.fn()
-}
-
-const serializer = new Serializer();
 const currentUser = new UserModel();
 
 describe('Get', () => {
@@ -86,7 +79,7 @@ describe('Get', () => {
     authorizer.can.mockReturnValue(true);
     service.getOneOrFail.mockReturnValue(document);
 
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
 
     await controller.get(id, jsonApiQuery, currentUser);
 
@@ -111,10 +104,10 @@ describe('FindAll', () => {
     const documents = [document];
     authorizer.can.mockReturnValue(true);
     service.getAll.mockReturnValue([documents, 1]);
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeMany.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(documents, {});
+    expect(serializer.serializeMany).toBeCalledWith(documents, {}, undefined);
     expect(service.getAll).toBeCalledWith(jsonApiQuery);
   });
 
@@ -133,7 +126,7 @@ describe('Create', () => {
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     service.create.mockReturnValue(document);
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
     expect(service.create).toBeCalledWith(createBody);
     expect(serializer.serializeOne).toBeCalledWith(document, {});
@@ -155,7 +148,7 @@ describe('Update', () => {
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     service.update.mockReturnValue(document);
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
     await controller.update(id, updateBody, currentUser);
     expect(serializer.serializeOne).toBeCalledWith(document, {});
     expect(service.update).toBeCalledWith(id, updateBody);
@@ -177,7 +170,7 @@ describe('Delete', () => {
     authorizer.can.mockReturnValue(true);
     service.getOne.mockReturnValue(document);
     service.delete.mockReturnValue();
-    registry.getSerializerFor.mockReturnValue(serializer);
+    serializer.serializeOne.mockReturnValue(serializer);
     await controller.delete(id, currentUser);
     expect(service.delete).toBeCalledWith(id);
   });
