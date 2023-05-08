@@ -43,4 +43,4 @@ test('Login', async () => {
     accessToken: 'access',
     refreshToken: 'refresh'
   });
-})
+});

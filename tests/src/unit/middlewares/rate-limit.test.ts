@@ -27,6 +27,7 @@ afterEach(() => {
 
 function instantiateMiddlewareAndReturnCall () {
   const middlewareClass = createRateLimitMiddleware(10, 10);
+  // eslint-disable-next-line no-new, new-cap
   new middlewareClass(configService as never);
   return (KoaRatelimit as any).mock.calls[0] as any[];
 }

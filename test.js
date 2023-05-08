@@ -7,6 +7,13 @@ const terminalOptions = {
   stderr: "inherit",
 };
 
-spawnSync("pnpm run test:unit --watch=false", terminalOptions);
-spawnSync("pnpm run test:integration --watch=false", terminalOptions);
-spawnSync("pnpm run test:acceptance --watch=false", terminalOptions);
+function spawnOrFail(command) {
+  const result = spawnSync(command, terminalOptions);
+  if (result.status !== 0) {
+    process.exit(result.status);
+  }
+}
+
+spawnOrFail("pnpm run test:unit --watch=false");
+spawnOrFail("pnpm run test:integration --watch=false");
+spawnOrFail("pnpm run test:acceptance --watch=false");
