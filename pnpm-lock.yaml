@@ -23,17 +23,17 @@ dependencies:
     specifier: ~5.7.4
     version: 5.7.4(@mikro-orm/core@5.7.4)
   '@triptyk/nfw-core':
-    specifier: file:../nfw-core/packages/core
-    version: file:../nfw-core/packages/core
+    specifier: ~5.0.0-alpha.1
+    version: 5.0.0-alpha.1
   '@triptyk/nfw-http':
-    specifier: file:../nfw-core/packages/http
-    version: file:../nfw-core/packages/http(@triptyk/nfw-core@5.0.0-alpha.0)
+    specifier: ~5.0.0-alpha.1
+    version: 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)
   '@triptyk/nfw-mikro-orm':
-    specifier: file:../nfw-core/packages/mikro-orm
-    version: file:../nfw-core/packages/mikro-orm(@mikro-orm/core@5.7.4)(@triptyk/nfw-core@5.0.0-alpha.0)
+    specifier: ~5.0.0-alpha.1
+    version: 5.0.0-alpha.1(@mikro-orm/core@5.7.4)(@triptyk/nfw-core@5.0.0-alpha.1)
   '@triptyk/nfw-resources':
-    specifier: file:../nfw-core/packages/resource-jsonapi
-    version: file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@5.0.0-alpha.0)(@triptyk/nfw-http@5.0.0-alpha.0)
+    specifier: ~5.0.0-alpha.1
+    version: 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)(@triptyk/nfw-http@5.0.0-alpha.1)
   bcrypt:
     specifier: ~5.1.0
     version: 5.1.0
@@ -886,6 +886,49 @@ packages:
       query-string: 8.1.0
       tslib: 2.4.1
       type-fest: 3.6.1
+    dev: false
+
+  /@triptyk/nfw-core@5.0.0-alpha.1:
+    resolution: {integrity: sha512-wKMeHXB8qSGBqObNBb6QDoE2ZS0cwBPZhy0nsXrSRruJ/MFkcOxHsbVbaTgXjI8pLgqhnH3Rqq2+ebrY1CKi7w==}
+    engines: {node: '>=16.3.1'}
+    dependencies:
+      tsyringe: 4.7.0
+    dev: false
+
+  /@triptyk/nfw-http@5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1):
+    resolution: {integrity: sha512-Sj8cMsCw0DlnU86KzyGXt3L2vmVbxd1/mQqTr5+EBQJOCD9FUi27NAEGeGAT0Igsi6US6syWQ+BwSOBgha3+Eg==}
+    engines: {node: '>=16.3.1'}
+    peerDependencies:
+      '@triptyk/nfw-core': workspace:*
+    dependencies:
+      '@koa/router': 12.0.0
+      '@triptyk/nfw-core': 5.0.0-alpha.1
+      is-class: 0.0.9
+    dev: false
+
+  /@triptyk/nfw-mikro-orm@5.0.0-alpha.1(@mikro-orm/core@5.7.4)(@triptyk/nfw-core@5.0.0-alpha.1):
+    resolution: {integrity: sha512-Juv76PG4/UKu/2mMthvXUR9hY/wGSnv9p2yaaItwmE+C3ltEeNTrGimP9akW+Y3zud5xaTsOp91oSTzlase41w==}
+    engines: {node: '>=16.3.1'}
+    peerDependencies:
+      '@mikro-orm/core': ~5.7.3
+      '@triptyk/nfw-core': workspace:*
+    dependencies:
+      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
+      '@triptyk/nfw-core': 5.0.0-alpha.1
+    dev: false
+
+  /@triptyk/nfw-resources@5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)(@triptyk/nfw-http@5.0.0-alpha.1):
+    resolution: {integrity: sha512-t45IMetZAR9ckXFIeS8okyvCrFWKVxeYwMwqPn+SalY4Hz38kfs+W9HC+MQmmBYcyadEiiwC29YN9MWfFl4lNg==}
+    engines: {node: '>=16.3.1'}
+    peerDependencies:
+      '@triptyk/nfw-core': workspace:*
+      '@triptyk/nfw-http': workspace:*
+    dependencies:
+      '@triptyk/json-api-query-parser': 0.0.0
+      '@triptyk/nfw-core': 5.0.0-alpha.1
+      '@triptyk/nfw-http': 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)
+      json-api-serializer: 2.6.6
+      pluralize: 8.0.0
     dev: false
 
   /@tsconfig/node10@1.0.9:
@@ -5256,58 +5299,4 @@ packages:
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
-    dev: false
-
-  file:../nfw-core/packages/core:
-    resolution: {directory: ../nfw-core/packages/core, type: directory}
-    name: '@triptyk/nfw-core'
-    version: 5.0.0-alpha.0
-    engines: {node: '>=16.3.1'}
-    dependencies:
-      tsyringe: 4.7.0
-    dev: false
-
-  file:../nfw-core/packages/http(@triptyk/nfw-core@5.0.0-alpha.0):
-    resolution: {directory: ../nfw-core/packages/http, type: directory}
-    id: file:../nfw-core/packages/http
-    name: '@triptyk/nfw-http'
-    version: 5.0.0-alpha.0
-    engines: {node: '>=16.3.1'}
-    peerDependencies:
-      '@triptyk/nfw-core': workspace:*
-    dependencies:
-      '@koa/router': 12.0.0
-      '@triptyk/nfw-core': file:../nfw-core/packages/core
-      is-class: 0.0.9
-    dev: false
-
-  file:../nfw-core/packages/mikro-orm(@mikro-orm/core@5.7.4)(@triptyk/nfw-core@5.0.0-alpha.0):
-    resolution: {directory: ../nfw-core/packages/mikro-orm, type: directory}
-    id: file:../nfw-core/packages/mikro-orm
-    name: '@triptyk/nfw-mikro-orm'
-    version: 5.0.0-alpha.0
-    engines: {node: '>=16.3.1'}
-    peerDependencies:
-      '@mikro-orm/core': ~5.7.3
-      '@triptyk/nfw-core': workspace:*
-    dependencies:
-      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
-      '@triptyk/nfw-core': file:../nfw-core/packages/core
-    dev: false
-
-  file:../nfw-core/packages/resource-jsonapi(@triptyk/nfw-core@5.0.0-alpha.0)(@triptyk/nfw-http@5.0.0-alpha.0):
-    resolution: {directory: ../nfw-core/packages/resource-jsonapi, type: directory}
-    id: file:../nfw-core/packages/resource-jsonapi
-    name: '@triptyk/nfw-resources'
-    version: 5.0.0-alpha.0
-    engines: {node: '>=16.3.1'}
-    peerDependencies:
-      '@triptyk/nfw-core': workspace:*
-      '@triptyk/nfw-http': workspace:*
-    dependencies:
-      '@triptyk/json-api-query-parser': 0.0.0
-      '@triptyk/nfw-core': file:../nfw-core/packages/core
-      '@triptyk/nfw-http': file:../nfw-core/packages/http(@triptyk/nfw-core@5.0.0-alpha.0)
-      json-api-serializer: 2.6.6
-      pluralize: 8.0.0
     dev: false
