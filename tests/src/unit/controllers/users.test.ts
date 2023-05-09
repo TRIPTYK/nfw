@@ -1,31 +1,16 @@
 import 'reflect-metadata';
 import { mockedORMImport } from 'tests/mocks/orm-core.js';
-import type { ResourceSerializer } from '@triptyk/nfw-resources';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { UsersController } from 'app/api/controllers/users.controller.js';
 import { ForbiddenError } from 'app/api/errors/web/forbidden.js';
-import type { UserResourceAuthorizer } from 'app/api/resources/user/authorizer.js';
-import type { UserResourceService } from 'app/api/resources/user/service.js';
 import { UserModel } from 'app/database/models/user.model.js';
-import type { UserResource } from 'app/api/resources/user/schema.js';
+import { mockedAuthorizer } from 'tests/mocks/authorizer.js';
+import { mockedResourceService } from 'tests/mocks/resource-service.js';
+import { mockedSerializer } from 'tests/mocks/serializer.js';
 
-const usersService = {
-  getOne: vi.fn(),
-  getAll: vi.fn(),
-  create: vi.fn(),
-  update: vi.fn(),
-  delete: vi.fn(),
-  getOneOrFail: vi.fn()
-} satisfies UserResourceService;
-
-const serializer = {
-  serializeOne: vi.fn(),
-  serializeMany: vi.fn()
-} satisfies ResourceSerializer<UserResource>;
-
-const authorizer = {
-  can: vi.fn()
-} satisfies UserResourceAuthorizer;
+const usersService = mockedResourceService;
+const serializer = mockedSerializer;
+const authorizer = mockedAuthorizer;
 
 let controller: UsersController;
 
@@ -62,7 +47,7 @@ describe('Get', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.getOneOrFail.mockReturnValue(user);
+    usersService.getOneOrFail.mockReturnValue(user as never);
 
     serializer.serializeOne.mockReturnValue(serializer);
 
@@ -73,7 +58,7 @@ describe('Get', () => {
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
-    usersService.getOneOrFail.mockReturnValue(user);
+    usersService.getOneOrFail.mockReturnValue(user as never);
     authorizer.can.mockReturnValue(false);
 
     await expect(controller.get('123', {}, currentUser)).rejects.toThrowError(ForbiddenError);
@@ -110,7 +95,7 @@ describe('Create', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.create.mockReturnValue(user);
+    usersService.create.mockReturnValue(user as never);
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
     expect(usersService.create).toBeCalledWith(createBody);
@@ -119,7 +104,7 @@ describe('Create', () => {
 
   test('Throws when cannot create an element', async () => {
     authorizer.can.mockReturnValue(false);
-    usersService.create.mockReturnValue(user);
+    usersService.create.mockReturnValue(user as never);
     await expect(controller.create(createBody as never, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody);
   });
@@ -132,7 +117,7 @@ describe('Update', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.update.mockReturnValue(user);
+    usersService.update.mockReturnValue(user as never);
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.update(updateBody, id, currentUser);
     expect(serializer.serializeOne).toBeCalledWith(user, {});
@@ -141,7 +126,7 @@ describe('Update', () => {
 
   test('Throws when cannot update an element', async () => {
     authorizer.can.mockReturnValue(false);
-    usersService.update.mockReturnValue(user);
+    usersService.update.mockReturnValue(user as never);
     await expect(controller.update(updateBody, id, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody);
   });
@@ -153,7 +138,7 @@ describe('Delete', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    usersService.getOne.mockReturnValue(user);
+    usersService.getOne.mockReturnValue(user as never);
     usersService.delete.mockReturnValue();
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.delete(id, currentUser);
@@ -162,7 +147,7 @@ describe('Delete', () => {
 
   test('Throws when cannot delete an element', async () => {
     authorizer.can.mockReturnValue(false);
-    usersService.getOne.mockReturnValue(user);
+    usersService.getOne.mockReturnValue(user as never);
     await expect(controller.delete(id, currentUser)).rejects.toThrowError(ForbiddenError);
   });
 });

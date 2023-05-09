@@ -1,32 +1,18 @@
-import type { ResourceSerializer } from '@triptyk/nfw-resources';
+import { mockedORMImport } from 'tests/mocks/orm-core.js';
 import 'reflect-metadata';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { DocumentsController } from '../../../../src/api/controllers/documents.controller.js';
 import { ForbiddenError } from '../../../../src/api/errors/web/forbidden.js';
-import type { DocumentResourceService } from '../../../../src/api/resources/documents/service.js';
 import { DocumentModel } from '../../../../src/database/models/document.model.js';
 import { UserModel } from '../../../../src/database/models/user.model.js';
 import { NotFoundError } from '@mikro-orm/core';
-import type { ResourceAuthorizer } from '../../../../src/api/resources/base/authorizer.js';
-import type { DocumentResource } from 'app/api/resources/documents/schema.js';
+import { mockedResourceService } from 'tests/mocks/resource-service.js';
+import { mockedSerializer } from 'tests/mocks/serializer.js';
+import { mockedAuthorizer } from 'tests/mocks/authorizer.js';
 
-const service = {
-  getOne: vi.fn(),
-  getOneOrFail: vi.fn(),
-  getAll: vi.fn(),
-  create: vi.fn(),
-  update: vi.fn(),
-  delete: vi.fn(),
-} satisfies DocumentResourceService;
-
-const serializer = {
-  serializeMany: vi.fn(),
-  serializeOne: vi.fn()
-} satisfies ResourceSerializer<DocumentResource>;
-
-const authorizer = {
-  can: vi.fn(),
-} satisfies ResourceAuthorizer<DocumentModel>;
+const service = mockedResourceService;
+const serializer = mockedSerializer;
+const authorizer = mockedAuthorizer;
 
 let controller: DocumentsController;
 
@@ -42,19 +28,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 })
 
-vi.mock('@mikro-orm/core', async () => {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const imports = await vi.importActual<typeof import('@mikro-orm/core')>('@mikro-orm/core')
-  return {
-    ...imports,
-    wrap: (data: unknown) => {
-      return {
-        toJSON: vi.fn().mockReturnValue(data)
-      }
-    },
-    Collection: Array,
-  }
-})
+vi.mock('@mikro-orm/core', async () => await mockedORMImport());
 
 const currentUser = new UserModel();
 
@@ -77,7 +51,7 @@ describe('Get', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    service.getOneOrFail.mockReturnValue(document);
+    service.getOneOrFail.mockReturnValue(document as never);
 
     serializer.serializeOne.mockReturnValue(serializer);
 
@@ -88,7 +62,7 @@ describe('Get', () => {
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
-    service.getOneOrFail.mockReturnValue(document);
+    service.getOneOrFail.mockReturnValue(document as never);
     authorizer.can.mockReturnValue(false)
 
     await expect(controller.get('123', {}, currentUser)).rejects.toThrowError(ForbiddenError);
@@ -125,7 +99,7 @@ describe('Create', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    service.create.mockReturnValue(document);
+    service.create.mockReturnValue(document as never);
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
     expect(service.create).toBeCalledWith(createBody);
@@ -134,7 +108,7 @@ describe('Create', () => {
 
   test('Throws when cannot create an element', async () => {
     authorizer.can.mockReturnValue(false);
-    service.create.mockReturnValue(document);
+    service.create.mockReturnValue(document as never);
     await expect(controller.create(createBody as never, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody);
   });
@@ -147,7 +121,7 @@ describe('Update', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    service.update.mockReturnValue(document);
+    service.update.mockReturnValue(document as never);
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.update(id, updateBody, currentUser);
     expect(serializer.serializeOne).toBeCalledWith(document, {});
@@ -156,7 +130,7 @@ describe('Update', () => {
 
   test('Throws when cannot update an element', async () => {
     authorizer.can.mockReturnValue(false);
-    service.update.mockReturnValue(document);
+    service.update.mockReturnValue(document as never);
     await expect(controller.update(id, updateBody, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody);
   });
@@ -168,7 +142,7 @@ describe('Delete', () => {
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
-    service.getOne.mockReturnValue(document);
+    service.getOne.mockReturnValue(document as never);
     service.delete.mockReturnValue();
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.delete(id, currentUser);
@@ -187,7 +161,7 @@ describe('Delete', () => {
 
   test('Throws when cannot delete an element', async () => {
     authorizer.can.mockReturnValue(false);
-    service.getOne.mockReturnValue(document);
+    service.getOne.mockReturnValue(document as never);
     await expect(controller.delete(id, currentUser)).rejects.toThrowError(ForbiddenError);
   });
 });
