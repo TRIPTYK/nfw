@@ -6,7 +6,7 @@ import type { UserModel } from 'app/database/models/user.model.js';
 import type { ResourceAuthorizer } from './authorizer.js';
 import type { ResourceService } from './service.js';
 
-interface JsonApiContext<R extends Record<string, unknown>, T> {
+export interface JsonApiContext<R extends Record<string, unknown>, T> {
     service: ResourceService<T>,
     authorizer: ResourceAuthorizer<T>,
     serializer: ResourceSerializer<R>,

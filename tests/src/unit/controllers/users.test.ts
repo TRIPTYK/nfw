@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { mockedORMImport } from 'tests/mocks/orm-core.js';
 import type { ResourceSerializer } from '@triptyk/nfw-resources';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { UsersController } from 'app/api/controllers/users.controller.js';
@@ -28,6 +29,8 @@ const authorizer = {
 
 let controller: UsersController;
 
+vi.mock('@mikro-orm/core', async () => await mockedORMImport());
+
 beforeEach(() => {
   controller = new UsersController(
     usersService,
@@ -38,20 +41,6 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
-})
-
-vi.mock('@mikro-orm/core', async () => {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const imports = await vi.importActual<typeof import('@mikro-orm/core')>('@mikro-orm/core');
-  return {
-    ...imports,
-    wrap: (data: unknown) => {
-      return {
-        toJSON: vi.fn().mockReturnValue(data)
-      }
-    },
-    Collection: Array
-  }
 })
 
 const currentUser = new UserModel();
