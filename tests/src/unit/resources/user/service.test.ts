@@ -7,16 +7,14 @@ import { mockedEntityRepository } from '../../../../mocks/repository.js';
 let userResourceService: UserResourceService;
 const user = new UserModel();
 
-const repository = mockedEntityRepository;
-
 beforeEach(() => {
   userResourceService = new UserResourceServiceImpl(
-    repository as never
+    mockedEntityRepository as never
   );
 })
 
 test('It applies filters', async () => {
-  repository.findAndCount.mockResolvedValue([]);
+  mockedEntityRepository.findAndCount.mockResolvedValue([]);
   await userResourceService.getAll({
     include: [{
       relationName: 'comments',
@@ -37,7 +35,7 @@ test('It applies filters', async () => {
     }
   });
 
-  expect(repository.findAndCount).toBeCalledWith({}, {
+  expect(mockedEntityRepository.findAndCount).toBeCalledWith({}, {
     populate: ['comments'],
     filters: {
       writtenBy: '1'
@@ -53,7 +51,7 @@ test('It applies filters', async () => {
 
 test('Fetch many users resource from database', async () => {
   const findAndCountResponse = [user, 1];
-  repository.findAndCount.mockResolvedValue(findAndCountResponse);
+  mockedEntityRepository.findAndCount.mockResolvedValue(findAndCountResponse);
 
   const response = await userResourceService.getAll({
     include: [{
@@ -72,7 +70,7 @@ test('Fetch many users resource from database', async () => {
     }
   });
 
-  expect(repository.findAndCount).toBeCalledWith({}, {
+  expect(mockedEntityRepository.findAndCount).toBeCalledWith({}, {
     populate: ['comments'],
     limit: 1,
     filters: {},
