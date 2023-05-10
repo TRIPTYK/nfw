@@ -4,7 +4,6 @@ import { afterAll, beforeAll, expect, vi } from 'vitest';
 import { DocumentsController } from 'app/api/controllers/documents.controller.js';
 import { Roles } from 'app/api/enums/roles.enum.js';
 import { UserModel } from 'app/database/models/user.model.js';
-import { generateFile } from '../../../../utils/generate-file.js';
 import { testCtx } from '../../../../utils/it-request-context.js';
 import { setupIntegrationTest } from '../../../../utils/setup-integration-test.js';
 import { deleteDummyDocument, DocumentsControllerTestSeeder, dummyDocument } from './seed.js';
@@ -83,7 +82,6 @@ vi.mock('fs/promises', async () => {
 })
 
 testCtx('Delete', () => container.resolve(MikroORM), async () => {
-  await generateFile(deleteDummyDocument);
   const user = await documentsController.delete('delete-document', createAdminUser());
   expect(unlink).toBeCalledWith(deleteDummyDocument.path);
   expect(user).toStrictEqual(null);

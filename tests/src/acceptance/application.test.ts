@@ -1,10 +1,16 @@
-import { DatabaseSeeder } from 'app/database/seeders/test/test.seeder.js';
+import type { Application } from 'app/application.js';
 import fetch from 'node-fetch';
-import { setupIntegrationTest } from 'tests/utils/setup-integration-test.js';
-import { test, expect, beforeAll } from 'vitest';
+import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
+import { test, expect, beforeAll, afterAll } from 'vitest';
+
+let application: Application;
 
 beforeAll(async () => {
-  await setupIntegrationTest(DatabaseSeeder);
+  application = await setupAcceptance();
+})
+
+afterAll(async () => {
+  await teardownAcceptance(application);
 })
 
 test('Application should listen to requests', async () => {

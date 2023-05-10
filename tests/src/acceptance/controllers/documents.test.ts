@@ -1,14 +1,19 @@
-import { DatabaseSeeder } from 'app/database/seeders/test/test.seeder.js';
-import { deleteDummyDocument, dummyDocument } from 'tests/src/integration/controllers/documents/seed.js';
+import type { Application } from 'app/application.js';
+import { dummyDocument } from 'tests/src/integration/controllers/documents/seed.js';
 import { createFileWithManyRelationship } from 'tests/utils/create-file-with-relation.js';
-import { generateFile } from 'tests/utils/generate-file.js';
-import { setupIntegrationTest } from 'tests/utils/setup-integration-test.js';
-import { beforeAll, expect, test } from 'vitest';
+import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
+import { afterEach, beforeEach, expect, test, vitest } from 'vitest';
 import { accessTokenAdmin } from '../../../utils/access-token.js';
 import { fetchApi } from '../../../utils/config.js';
 
-beforeAll(async () => {
-  await setupIntegrationTest(DatabaseSeeder);
+let application: Application;
+
+beforeEach(async () => {
+  application = await setupAcceptance();
+})
+
+afterEach(async () => {
+  await teardownAcceptance(application);
 })
 
 test('GET / returns status 200', async () => {
@@ -67,8 +72,16 @@ test('PUT document return status 200', async () => {
   expect(response.status).toStrictEqual(200);
 });
 
+vitest.mock('fs/promises', async () => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actualImport = await vitest.importActual<typeof import('fs/promises')>('fs/promises');
+  return {
+    ...actualImport,
+    unlink: vitest.fn()
+  }
+})
+
 test('DELETE document returns status 204', async () => {
-  await generateFile(deleteDummyDocument);
   const response = await fetchApi('documents/delete-document', {
     method: 'DELETE',
     headers: {

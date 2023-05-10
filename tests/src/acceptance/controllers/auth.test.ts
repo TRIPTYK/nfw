@@ -1,12 +1,18 @@
-import { DatabaseSeeder } from 'app/database/seeders/test/test.seeder.js';
-import { setupIntegrationTest } from 'tests/utils/setup-integration-test.js';
-import { test, expect, beforeAll } from 'vitest';
+import type { Application } from 'app/application.js';
+import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
+import { test, expect, beforeAll, afterAll } from 'vitest';
 import { fetchApi } from '../../../utils/config.js';
 
 const resource = 'auth';
 
+let application: Application;
+
 beforeAll(async () => {
-  await setupIntegrationTest(DatabaseSeeder);
+  application = await setupAcceptance();
+})
+
+afterAll(async () => {
+  await teardownAcceptance(application);
 })
 
 test('Login', async () => {

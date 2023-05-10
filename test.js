@@ -1,5 +1,9 @@
 import { spawnSync } from "child_process";
 
+const args = process.argv.slice(2);
+
+process.env.NODE_ENV = "test";
+
 const terminalOptions = {
   shell: true,
   detached: false,
@@ -14,6 +18,5 @@ function spawnOrFail(command) {
   }
 }
 
-spawnOrFail("pnpm run test:unit --watch=false");
-spawnOrFail("pnpm run test:integration --watch=false");
-spawnOrFail("pnpm run test:acceptance --watch=false");
+spawnOrFail("pnpm mikro-orm:cli migration:fresh");
+spawnOrFail(`pnpm vitest --watch=false  ${args.join("  ")}`);

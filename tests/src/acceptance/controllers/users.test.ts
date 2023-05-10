@@ -1,11 +1,17 @@
-import { DatabaseSeeder } from 'app/database/seeders/development/development.seeder.js';
-import { setupIntegrationTest } from 'tests/utils/setup-integration-test.js';
-import { beforeAll, expect, test } from 'vitest';
+import type { Application } from 'app/application.js';
+import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
+import { afterAll, beforeAll, expect, test } from 'vitest';
 import { accessTokenAdmin } from '../../../utils/access-token.js';
 import { fetchApi } from '../../../utils/config.js';
 
+let application: Application;
+
 beforeAll(async () => {
-  await setupIntegrationTest(DatabaseSeeder);
+  application = await setupAcceptance();
+})
+
+afterAll(async () => {
+  await teardownAcceptance(application);
 })
 
 test('GET / returns status code 200', async () => {
