@@ -19,4 +19,4 @@ function spawnOrFail(command) {
 }
 
 spawnOrFail("pnpm mikro-orm:cli migration:fresh");
-spawnOrFail(`pnpm vitest --watch=false  ${args.join("  ")}`);
+spawnOrFail(`pnpm vitest --watch=false ${args.join("  ")}`);
