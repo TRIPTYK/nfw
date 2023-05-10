@@ -2,7 +2,7 @@ import type { RouterContext } from '@koa/router';
 import { injectable } from '@triptyk/nfw-core';
 import type { MiddlewareInterface } from '@triptyk/nfw-http';
 import type { Middleware, Next } from 'koa';
-import koaBody from 'koa-body';
+import { koaBody } from 'koa-body';
 import type { Class } from 'type-fest';
 import { createBadRequestError } from '../errors/web/bad-request.js';
 

@@ -1,5 +1,5 @@
 import type { Application } from 'app/application.js';
-import { dummyDocument } from 'tests/src/integration/controllers/documents/seed.js';
+import { dummyDocument } from 'app/database/seeders/test/seed.js';
 import { createFileWithManyRelationship } from 'tests/utils/create-file-with-relation.js';
 import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
 import { afterEach, beforeEach, expect, test, vitest } from 'vitest';

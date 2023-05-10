@@ -1,8 +1,8 @@
 import type { EntityData, RequiredEntityData } from '@mikro-orm/core';
 import { wrap } from '@mikro-orm/core';
 import type { JsonApiQuery, ResourceSerializer } from '@triptyk/nfw-resources';
-import { canOrFail } from 'app/api/utils/can-or-fail.js';
-import type { UserModel } from 'app/database/models/user.model.js';
+import { canOrFail } from '../../utils/can-or-fail.js';
+import type { UserModel } from '../../../database/models/user.model.js';
 import type { ResourceAuthorizer } from './authorizer.js';
 import type { ResourceService } from './service.js';
 

@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import { vi, it, expect } from 'vitest';
+import { vi, it, expect, afterAll, vitest } from 'vitest';
 import { createFileUploadMiddleware } from '../../../../src/api/middlewares/file-upload.middleware.js';
 import * as KoaBody from 'koa-body';
 import { createBadRequestError } from 'app/api/errors/web/bad-request.js';
 
-vi.mock('koa-body', () => {
-  return { __esModule: true, default: () => vi.fn() }
-})
+vi.mock('koa-body', () => ({
+  koaBody: vi.fn(() => vi.fn())
+}));
 
 function instantiateDummyFileUploadMiddleware () {
   const path = 'Wow, much path';
@@ -16,8 +16,8 @@ function instantiateDummyFileUploadMiddleware () {
   return new FileUploadMiddleware();
 }
 
-it('', async () => {
-  const spiedKoaBody = vi.spyOn(KoaBody, 'default')
+it('Calls koa-body with correct arguments', async () => {
+  const spiedKoaBody = vi.spyOn(KoaBody, 'koaBody');
   const fileUploadMiddleware = instantiateDummyFileUploadMiddleware();
   await fileUploadMiddleware.use({
   } as never, vi.fn());
@@ -33,3 +33,7 @@ it('', async () => {
       onError: createBadRequestError,
     });
 })
+
+afterAll(() => {
+  vitest.restoreAllMocks();
+});

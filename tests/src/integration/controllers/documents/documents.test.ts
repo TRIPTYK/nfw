@@ -6,9 +6,9 @@ import { Roles } from 'app/api/enums/roles.enum.js';
 import { UserModel } from 'app/database/models/user.model.js';
 import { testCtx } from '../../../../utils/it-request-context.js';
 import { setupIntegrationTest } from '../../../../utils/setup-integration-test.js';
-import { deleteDummyDocument, DocumentsControllerTestSeeder, dummyDocument } from './seed.js';
 import { unlink } from 'fs/promises';
 import { MimeTypes } from 'app/api/enums/mime-type.enum.js';
+import { deleteDummyDocument, DocumentsControllerTestSeeder, dummyDocument } from 'app/database/seeders/test/seed.js';
 
 let documentsController: DocumentsController;
 

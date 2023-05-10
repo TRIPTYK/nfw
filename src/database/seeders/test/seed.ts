@@ -1,7 +1,7 @@
 import type { EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
-import { MimeTypes } from '../../../../../src/api/enums/mime-type.enum.js';
-import { DocumentFactory } from '../../../../../src/database/factories/document.factory.js';
+import { MimeTypes } from '../../../api/enums/mime-type.enum.js';
+import { DocumentFactory } from '../../factories/document.factory.js';
 
 export const dummyDocument = {
   id: 'document',

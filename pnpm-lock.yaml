@@ -8,20 +8,20 @@ dependencies:
     specifier: ~4.0.0
     version: 4.0.0
   '@mikro-orm/cli':
-    specifier: ~5.7.4
-    version: 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
+    specifier: ~5.7.5
+    version: 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
   '@mikro-orm/core':
-    specifier: ~5.7.4
-    version: 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
+    specifier: ~5.7.5
+    version: 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
   '@mikro-orm/migrations':
-    specifier: ~5.7.4
-    version: 5.7.4(@mikro-orm/core@5.7.4)
+    specifier: ~5.7.5
+    version: 5.7.5(@mikro-orm/core@5.7.5)
   '@mikro-orm/mysql':
-    specifier: ~5.7.4
-    version: 5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(@mikro-orm/seeder@5.7.4)
+    specifier: ~5.7.5
+    version: 5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(@mikro-orm/seeder@5.7.5)
   '@mikro-orm/seeder':
-    specifier: ~5.7.4
-    version: 5.7.4(@mikro-orm/core@5.7.4)
+    specifier: ~5.7.5
+    version: 5.7.5(@mikro-orm/core@5.7.5)
   '@triptyk/nfw-core':
     specifier: ~5.0.0-alpha.1
     version: 5.0.0-alpha.1
@@ -30,7 +30,7 @@ dependencies:
     version: 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)
   '@triptyk/nfw-mikro-orm':
     specifier: ~5.0.0-alpha.1
-    version: 5.0.0-alpha.1(@mikro-orm/core@5.7.4)(@triptyk/nfw-core@5.0.0-alpha.1)
+    version: 5.0.0-alpha.1(@mikro-orm/core@5.7.5)(@triptyk/nfw-core@5.0.0-alpha.1)
   '@triptyk/nfw-resources':
     specifier: ~5.0.0-alpha.1
     version: 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)(@triptyk/nfw-http@5.0.0-alpha.1)
@@ -91,8 +91,8 @@ devDependencies:
     specifier: ~5.0.0
     version: 5.0.0
   '@types/formidable':
-    specifier: ~2.0.5
-    version: 2.0.5
+    specifier: ~2.0.6
+    version: 2.0.6
   '@types/json-api-serializer':
     specifier: ~2.6.3
     version: 2.6.3
@@ -660,8 +660,8 @@ packages:
       - supports-color
     dev: false
 
-  /@mikro-orm/cli@5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4):
-    resolution: {integrity: sha512-9idUYQyC7HMQg7zf5X2M3XQLHBOTBD2QagOXB4D3ujjiDqxtCPIYWVnIvgX3psPiKniX360QkFOaLCWrXFfwzg==}
+  /@mikro-orm/cli@5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5):
+    resolution: {integrity: sha512-SZ1Xrw8Q79nq2uvSHEzC5cYkpjxIzVfTwbTh/P8tBBD5e38jkWezpN9r2Ap6kqUS7KQGmK9T9H86FLLk9pa4Ag==}
     engines: {node: '>= 14.0.0'}
     hasBin: true
     peerDependencies:
@@ -698,11 +698,11 @@ packages:
         optional: true
     dependencies:
       '@jercle/yargonaut': 1.1.5
-      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
-      '@mikro-orm/knex': 5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(mysql2@3.2.4)
-      '@mikro-orm/migrations': 5.7.4(@mikro-orm/core@5.7.4)
-      '@mikro-orm/mysql': 5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(@mikro-orm/seeder@5.7.4)
-      '@mikro-orm/seeder': 5.7.4(@mikro-orm/core@5.7.4)
+      '@mikro-orm/core': 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
+      '@mikro-orm/knex': 5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(mysql2@3.3.0)
+      '@mikro-orm/migrations': 5.7.5(@mikro-orm/core@5.7.5)
+      '@mikro-orm/mysql': 5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(@mikro-orm/seeder@5.7.5)
+      '@mikro-orm/seeder': 5.7.5(@mikro-orm/core@5.7.5)
       fs-extra: 11.1.1
       tsconfig-paths: 4.2.0
       yargs: 17.7.2
@@ -718,8 +718,8 @@ packages:
       - tedious
     dev: false
 
-  /@mikro-orm/core@5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4):
-    resolution: {integrity: sha512-UA53JbdTkcyYCrzUPcMlAdWEvYfoLcZ/d90AWbS0fSIEKAAU0p57aL2J2+XqywNQfuEvnMVZsNvK5AWFaFRNsQ==}
+  /@mikro-orm/core@5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5):
+    resolution: {integrity: sha512-Jakjz7qScsoHBHkFG7/A73M0TVTsNylPD/eDNQ+yoq73GwQ1NcJmhzQhMQQuF+5YpKdvnL2gUbNSzQ1MJ3OEcQ==}
     engines: {node: '>= 14.0.0'}
     peerDependencies:
       '@mikro-orm/better-sqlite': ^5.0.0
@@ -754,20 +754,20 @@ packages:
       '@mikro-orm/sqlite':
         optional: true
     dependencies:
-      '@mikro-orm/migrations': 5.7.4(@mikro-orm/core@5.7.4)
-      '@mikro-orm/mysql': 5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(@mikro-orm/seeder@5.7.4)
-      '@mikro-orm/seeder': 5.7.4(@mikro-orm/core@5.7.4)
+      '@mikro-orm/migrations': 5.7.5(@mikro-orm/core@5.7.5)
+      '@mikro-orm/mysql': 5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(@mikro-orm/seeder@5.7.5)
+      '@mikro-orm/seeder': 5.7.5(@mikro-orm/core@5.7.5)
       acorn-loose: 8.3.0
       acorn-walk: 8.2.0
       dotenv: 16.0.3
       fs-extra: 11.1.1
       globby: 11.1.0
-      mikro-orm: 5.7.4
+      mikro-orm: 5.7.5
       reflect-metadata: 0.1.13
     dev: false
 
-  /@mikro-orm/knex@5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(mysql2@3.2.4):
-    resolution: {integrity: sha512-DP7h2Ib5QBDWgCQj3AGv/4KIL78vAuNwVQAC0CV6yk+q/6yIiBHNnjgw1b4aFcRcBemKaFx+jjEhA03flxaebQ==}
+  /@mikro-orm/knex@5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(mysql2@3.3.0):
+    resolution: {integrity: sha512-Y9/sCi7ffojgt/gq0oeANqehqPmsEzpttbJVTmp73T6WUbWYmKVxnu9nSEjSrHkKaCwKw7N0olhf2Y8Mn7+Ykg==}
     engines: {node: '>= 14.0.0'}
     peerDependencies:
       '@mikro-orm/core': ^5.0.0
@@ -797,11 +797,11 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
-      '@mikro-orm/migrations': 5.7.4(@mikro-orm/core@5.7.4)
+      '@mikro-orm/core': 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
+      '@mikro-orm/migrations': 5.7.5(@mikro-orm/core@5.7.5)
       fs-extra: 11.1.1
-      knex: 2.4.2(mysql2@3.2.4)
-      mysql2: 3.2.4
+      knex: 2.4.2(mysql2@3.3.0)
+      mysql2: 3.3.0
       sqlstring: 2.3.3
     transitivePeerDependencies:
       - pg-native
@@ -809,16 +809,16 @@ packages:
       - tedious
     dev: false
 
-  /@mikro-orm/migrations@5.7.4(@mikro-orm/core@5.7.4):
-    resolution: {integrity: sha512-en3JYWKZGrLJAunD7nIPegangUnGNyUktJthVZxiXSQBsKsQXnZPXyYmEN98QaPaHRXHSSg23PWYjIuII/MuaA==}
+  /@mikro-orm/migrations@5.7.5(@mikro-orm/core@5.7.5):
+    resolution: {integrity: sha512-Hazx1ffxzFn6LloxS4rRGfZOn//XwkrbrG/zTvuDYEB8OB9zyBXjydvA71wKHcZ11XMyE1/u2faC0FlhI5JXYA==}
     engines: {node: '>= 14.0.0'}
     peerDependencies:
       '@mikro-orm/core': ^5.0.0
     dependencies:
-      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
-      '@mikro-orm/knex': 5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(mysql2@3.2.4)
+      '@mikro-orm/core': 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
+      '@mikro-orm/knex': 5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(mysql2@3.3.0)
       fs-extra: 11.1.1
-      knex: 2.4.2(mysql2@3.2.4)
+      knex: 2.4.2(mysql2@3.3.0)
       umzug: 3.2.1
     transitivePeerDependencies:
       - '@mikro-orm/entity-generator'
@@ -833,8 +833,8 @@ packages:
       - tedious
     dev: false
 
-  /@mikro-orm/mysql@5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(@mikro-orm/seeder@5.7.4):
-    resolution: {integrity: sha512-PxMB4LMw3GpujJUD7kJeZSLDHrvucTRTFcCi5sXpCkuq4mMSGzEJhfYo2QVHIDk02WrDzEU9Vk26xbcBfU8odg==}
+  /@mikro-orm/mysql@5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(@mikro-orm/seeder@5.7.5):
+    resolution: {integrity: sha512-euqZGh5sWPuewKNj0sFTR4T2XS9pTL2ddKkOcSylLL1hAZZ3+eHPXuDpm4aDXOlwY9KfNIvvo/IZaGyOYS9lUA==}
     engines: {node: '>= 14.0.0'}
     peerDependencies:
       '@mikro-orm/core': ^5.0.0
@@ -849,11 +849,11 @@ packages:
       '@mikro-orm/seeder':
         optional: true
     dependencies:
-      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
-      '@mikro-orm/knex': 5.7.4(@mikro-orm/core@5.7.4)(@mikro-orm/migrations@5.7.4)(mysql2@3.2.4)
-      '@mikro-orm/migrations': 5.7.4(@mikro-orm/core@5.7.4)
-      '@mikro-orm/seeder': 5.7.4(@mikro-orm/core@5.7.4)
-      mysql2: 3.2.4
+      '@mikro-orm/core': 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
+      '@mikro-orm/knex': 5.7.5(@mikro-orm/core@5.7.5)(@mikro-orm/migrations@5.7.5)(mysql2@3.3.0)
+      '@mikro-orm/migrations': 5.7.5(@mikro-orm/core@5.7.5)
+      '@mikro-orm/seeder': 5.7.5(@mikro-orm/core@5.7.5)
+      mysql2: 3.3.0
     transitivePeerDependencies:
       - better-sqlite3
       - mssql
@@ -865,14 +865,14 @@ packages:
       - tedious
     dev: false
 
-  /@mikro-orm/seeder@5.7.4(@mikro-orm/core@5.7.4):
-    resolution: {integrity: sha512-VMLnuYTRoofqI0Yy79pekb2QDYoK2Ug5C7MOYUx7OfyLf0djMSsi3Ai7FM7Z7WKFcWF/oVYP1p6zPdnHW83SUg==}
+  /@mikro-orm/seeder@5.7.5(@mikro-orm/core@5.7.5):
+    resolution: {integrity: sha512-jFdPMqt+zYtHegmbtE0DZfzlg9NajEDyr/lz8WKiBxMBsYgsx6yr/HT3zWTt4xevDtNWhFxewNTq8xqM3j5ZmA==}
     engines: {node: '>= 14.0.0'}
     peerDependencies:
       '@mikro-orm/core': ^5.0.0
     dependencies:
       '@faker-js/faker': 7.6.0
-      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
+      '@mikro-orm/core': 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
       fs-extra: 11.1.1
       globby: 11.1.0
     dev: false
@@ -935,14 +935,14 @@ packages:
       is-class: 0.0.9
     dev: false
 
-  /@triptyk/nfw-mikro-orm@5.0.0-alpha.1(@mikro-orm/core@5.7.4)(@triptyk/nfw-core@5.0.0-alpha.1):
+  /@triptyk/nfw-mikro-orm@5.0.0-alpha.1(@mikro-orm/core@5.7.5)(@triptyk/nfw-core@5.0.0-alpha.1):
     resolution: {integrity: sha512-Juv76PG4/UKu/2mMthvXUR9hY/wGSnv9p2yaaItwmE+C3ltEeNTrGimP9akW+Y3zud5xaTsOp91oSTzlase41w==}
     engines: {node: '>=16.3.1'}
     peerDependencies:
       '@mikro-orm/core': ~5.7.3
       '@triptyk/nfw-core': workspace:*
     dependencies:
-      '@mikro-orm/core': 5.7.4(@mikro-orm/migrations@5.7.4)(@mikro-orm/mysql@5.7.4)(@mikro-orm/seeder@5.7.4)
+      '@mikro-orm/core': 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
       '@triptyk/nfw-core': 5.0.0-alpha.1
     dev: false
 
@@ -1057,8 +1057,8 @@ packages:
       '@types/qs': 6.9.7
       '@types/serve-static': 1.15.1
 
-  /@types/formidable@2.0.5:
-    resolution: {integrity: sha512-uvMcdn/KK3maPOaVUAc3HEYbCEhjaGFwww4EsX6IJfWIJ1tzHtDHczuImH3GKdusPnAAmzB07St90uabZeCKPA==}
+  /@types/formidable@2.0.6:
+    resolution: {integrity: sha512-L4HcrA05IgQyNYJj6kItuIkXrInJvsXTPC5B1i64FggWKKqSL+4hgt7asiSNva75AoLQjq29oPxFfU4GAQ6Z2w==}
     dependencies:
       '@types/node': 18.16.3
 
@@ -3404,7 +3404,7 @@ packages:
       tsscmp: 1.0.6
     dev: false
 
-  /knex@2.4.2(mysql2@3.2.4):
+  /knex@2.4.2(mysql2@3.3.0):
     resolution: {integrity: sha512-tMI1M7a+xwHhPxjbl/H9K1kHX+VncEYcvCx5K00M16bWvpYPKAZd6QrCu68PtHAdIZNQPWZn0GVhqVBEthGWCg==}
     engines: {node: '>=12'}
     hasBin: true
@@ -3441,7 +3441,7 @@ packages:
       getopts: 2.3.0
       interpret: 2.2.0
       lodash: 4.17.21
-      mysql2: 3.2.4
+      mysql2: 3.3.0
       pg-connection-string: 2.5.0
       rechoir: 0.8.0
       resolve-from: 5.0.0
@@ -3455,7 +3455,7 @@ packages:
     resolution: {integrity: sha512-M8ZvMD8r+kPHy28aWP9VxL7kY8oPWA+C7ZgCljrCMeaU7uX6wsIQgDHskyrAr9sw+jqnIXyv4Mlxri5R4InIJg==}
     dependencies:
       '@types/co-body': 6.1.0
-      '@types/formidable': 2.0.5
+      '@types/formidable': 2.0.6
       '@types/koa': 2.13.6
       co-body: 6.1.0
       formidable: 2.1.1
@@ -3669,8 +3669,8 @@ packages:
       braces: 3.0.2
       picomatch: 2.3.1
 
-  /mikro-orm@5.7.4:
-    resolution: {integrity: sha512-1j5k5u9Ip4w8rnvGhcGma/8fSJmSoQ3rb0sa+eehpFpFMBVYyHJ3Sqz19X8FjbRpQw0F7lhydoJUNfxQzFISWQ==}
+  /mikro-orm@5.7.5:
+    resolution: {integrity: sha512-nx+hKgjK4+VgCiESmcVDvuBfVtSIrYodEjFHlVG85whEOwjYYi3ntBE1HloRVOVj0CAp1/KUEybo28ki8v0VNA==}
     engines: {node: '>= 14.0.0'}
     dev: false
 
@@ -3751,8 +3751,8 @@ packages:
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  /mysql2@3.2.4:
-    resolution: {integrity: sha512-VRjBMAB/WXd35cytsbKPy5eQMdHTQu661CcFAK+pcScVCfGpzQQR9EOM9H4z9tvEW0maVOjTAX0dqXneLX4kaQ==}
+  /mysql2@3.3.0:
+    resolution: {integrity: sha512-/+LGlWgXxppcomT1NqkUnaDchcS9tebsXsj5eZQhnAB/onlSLgqMA5W9ZRHcZPKyqg3XROJDgomB4eCkn6Ca2g==}
     engines: {node: '>= 8.0'}
     dependencies:
       denque: 2.1.0
@@ -4049,8 +4049,8 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /pony-cause@2.1.9:
-    resolution: {integrity: sha512-DIWdKGa0CSu5W1ooX1bcw4jQ+Fo++sgee0v1iczO7epT/suU/s2XBA8JDMl+8zkXZkjyfHfPaEngFwK5L3D9pg==}
+  /pony-cause@2.1.10:
+    resolution: {integrity: sha512-3IKLNXclQgkU++2fSi93sQ6BznFuxSLB11HdvZQ6JW/spahf/P1pAHBQEahr20rs0htZW0UDkM1HmA+nZkXKsw==}
     engines: {node: '>=12.0.0'}
     dev: false
 
@@ -4985,7 +4985,7 @@ packages:
       emittery: 0.12.1
       fs-jetpack: 4.3.1
       glob: 8.1.0
-      pony-cause: 2.1.9
+      pony-cause: 2.1.10
       type-fest: 2.19.0
     dev: false
 

@@ -12,9 +12,9 @@ This repository contains a JSON-API REST API boilerplate using [NFW-CORE](https:
 
 ## Requirements
 
-- Typescript >= 4.5.x
-- node >= 16.x
-- pnpm
+- Typescript >= 4.9.x
+- node >= 18.x
+- pnpm 8
 
 ## Install
 
@@ -24,11 +24,11 @@ Any package manager should do the trick but i recommend using [Pnpm](https://pnp
 pnpm i
 ```
 
-## Start
+## Environments
 
-*You must create a `<NODE_ENV>.js` file for each env at the root of your project.*
+*You must create a `config/env/<NODE_ENV>.env` file for each env at the root of your project.*
 
-The structure of the env file can be found in the configuration service.
+The structure of the env file is validated and can be found in the `src/api/services/configuration.service.ts` service.
 
 ### Dev
 
