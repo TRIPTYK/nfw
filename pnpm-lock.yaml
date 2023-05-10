@@ -37,9 +37,6 @@ dependencies:
   bcrypt:
     specifier: ~5.1.0
     version: 5.1.0
-  fetch-blob:
-    specifier: ^3.2.0
-    version: 3.2.0
   jsonwebtoken:
     specifier: ~9.0.0
     version: 9.0.0
@@ -159,6 +156,9 @@ devDependencies:
   eslint-plugin-unused-imports:
     specifier: ~2.0.0
     version: 2.0.0(@typescript-eslint/eslint-plugin@5.59.5)(eslint@8.40.0)
+  fetch-blob:
+    specifier: ^3.2.0
+    version: 3.2.0
   formdata-polyfill:
     specifier: ^4.0.10
     version: 4.0.10
@@ -2629,6 +2629,7 @@ packages:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.2.1
+    dev: true
 
   /fflate@0.7.4:
     resolution: {integrity: sha512-5u2V/CDW15QM1XbbgS+0DfPxVB+jUKhWEKuuFuHncbk3tEEqzmoXL+2KyOFuKGqOnmdIy0/davWF1CkuwtibCw==}
@@ -3805,6 +3806,7 @@ packages:
   /node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    dev: true
 
   /node-fetch@2.6.9:
     resolution: {integrity: sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==}
@@ -5207,6 +5209,7 @@ packages:
   /web-streams-polyfill@3.2.1:
     resolution: {integrity: sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==}
     engines: {node: '>= 8'}
+    dev: true
 
   /webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
