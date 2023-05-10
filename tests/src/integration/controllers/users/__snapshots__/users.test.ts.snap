@@ -1,0 +1,112 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GetAll 1`] = `
+{
+  "data": [
+    {
+      "attributes": {
+        "email": "amaury@localhost.com",
+        "firstName": "amaury",
+        "lastName": "localhost",
+      },
+      "id": "admin-user",
+      "links": {
+        "self": "/api/v1/users/admin-user",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "users",
+    },
+    {
+      "attributes": {
+        "email": "amaury@localhost.com",
+        "firstName": "amaury",
+        "lastName": "localhost",
+      },
+      "id": "delete-user",
+      "links": {
+        "self": "/api/v1/users/delete-user",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "users",
+    },
+    {
+      "attributes": {
+        "email": "amaury@localhost.com",
+        "firstName": "amaury",
+        "lastName": "localhost",
+      },
+      "id": "user-user",
+      "links": {
+        "self": "/api/v1/users/user-user",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "users",
+    },
+  ],
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/users",
+  },
+  "meta": undefined,
+}
+`;
+
+exports[`GetOne 1`] = `
+{
+  "data": {
+    "attributes": {
+      "email": "amaury@localhost.com",
+      "firstName": "amaury",
+      "lastName": "localhost",
+    },
+    "id": "admin-user",
+    "links": {
+      "self": "/api/v1/users/admin-user",
+    },
+    "meta": undefined,
+    "relationships": undefined,
+    "type": "users",
+  },
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/users/admin-user",
+  },
+  "meta": undefined,
+}
+`;
+
+exports[`Update 1`] = `
+{
+  "data": {
+    "attributes": {
+      "email": "amaury@localhost.com",
+      "firstName": "amaury",
+      "lastName": "localhost",
+    },
+    "id": "user-user",
+    "links": {
+      "self": "/api/v1/users/user-user",
+    },
+    "meta": undefined,
+    "relationships": undefined,
+    "type": "users",
+  },
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/users/user-user",
+  },
+  "meta": undefined,
+}
+`;

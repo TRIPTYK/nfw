@@ -1,0 +1,106 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GetAll 1`] = `
+{
+  "data": [
+    {
+      "attributes": {
+        "filename": "delete-filename.bmp",
+        "mimetype": "image/bmp",
+        "originalName": "delete-original-name.bmp",
+        "path": "./delete-filename.bmp",
+        "size": 1337,
+      },
+      "id": "delete-document",
+      "links": {
+        "self": "/api/v1/documents/delete-document",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "documents",
+    },
+    {
+      "attributes": {
+        "filename": "filename.bmp",
+        "mimetype": "image/bmp",
+        "originalName": "originalName.bmp",
+        "path": "filename.bmp",
+        "size": 8001,
+      },
+      "id": "document",
+      "links": {
+        "self": "/api/v1/documents/document",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "documents",
+    },
+  ],
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/documents",
+  },
+  "meta": undefined,
+}
+`;
+
+exports[`GetOne 1`] = `
+{
+  "data": {
+    "attributes": {
+      "filename": "filename.bmp",
+      "mimetype": "image/bmp",
+      "originalName": "originalName.bmp",
+      "path": "filename.bmp",
+      "size": 8001,
+    },
+    "id": "document",
+    "links": {
+      "self": "/api/v1/documents/document",
+    },
+    "meta": undefined,
+    "relationships": undefined,
+    "type": "documents",
+  },
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/documents/document",
+  },
+  "meta": undefined,
+}
+`;
+
+exports[`Update 1`] = `
+{
+  "data": {
+    "attributes": {
+      "filename": "update-filename",
+      "mimetype": "image/bmp",
+      "originalName": "originalName.bmp",
+      "path": "filename.bmp",
+      "size": 8001,
+    },
+    "id": "document",
+    "links": {
+      "self": "/api/v1/documents/document",
+    },
+    "meta": undefined,
+    "relationships": undefined,
+    "type": "documents",
+  },
+  "included": undefined,
+  "jsonapi": {
+    "version": "1.0",
+  },
+  "links": {
+    "self": "/api/v1/documents/document",
+  },
+  "meta": undefined,
+}
+`;

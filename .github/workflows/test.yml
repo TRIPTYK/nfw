@@ -19,13 +19,7 @@ jobs:
 
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
-            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v2
-
-            - name: Shutdown Ubuntu MySQL (SUDO)
-              run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
-
-            # Runs a single command using the runners shell
+            - uses: actions/checkout@v3
             - name: Setup MySQL
               uses: mirromutth/mysql-action@v1.1
               with:
@@ -33,10 +27,29 @@ jobs:
                   mysql database: "nfw_test"
                   mysql user: "nfw"
                   mysql password: "test123*"
-                  mysql version: "5.7" # mysqljs does not actually support mysql 8 new password auth , need to wait a release
-
-            - name: Install
-              run: npm i
-
+                  mysql version: "8"
+            - uses: pnpm/action-setup@v2
+              name: Install pnpm
+              id: pnpm-install
+              with:
+                version: 8
+                run_install: false
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              shell: bash
+              run: |
+                  echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+            - uses: actions/cache@v3
+              name: Setup pnpm cache
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                    ${{ runner.os }}-pnpm-store-
+            - name: Pnpm install
+              uses: pnpm/action-setup@v2
+              with:
+                version: 8
+                run_install: true
             - name: Run test
-              run: npm run test
+              run: pnpm run test

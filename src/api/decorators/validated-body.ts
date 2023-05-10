@@ -1,15 +1,18 @@
-import type { Class, ControllerParamsContext } from '@triptyk/nfw-core';
-import { createCustomDecorator } from '@triptyk/nfw-core';
-import type { SchemaBase } from 'fastest-validator-decorators';
+import type { ControllerParamsContext } from '@triptyk/nfw-http';
+import { createCustomDecorator } from '@triptyk/nfw-http';
+import type { Schema } from 'yup';
 
-export function ValidatedBody<T extends SchemaBase> (ValidationClass : Class<T>) {
+export function validatedBody<T> (body: unknown, validationSchema: Schema<T>) {
+  return validationSchema.validate(body, {
+    abortEarly: false,
+    strict: true
+  })
+}
+
+export function ValidatedBody<T> (validationSchema: Schema<T>) {
   return createCustomDecorator(
-    async (controllerContext:ControllerParamsContext) => {
-      const validatedBody = new ValidationClass(controllerContext.ctx.request.body);
-      const isChecked = validatedBody.validate();
-      if (isChecked !== true) {
-        throw isChecked;
-      }
-      return validatedBody;
-    }, 'entity-from-body');
+    (controllerContext: ControllerParamsContext<unknown>) => validatedBody(controllerContext.ctx.request.body, validationSchema)
+    ,
+    'validated-body'
+  );
 }

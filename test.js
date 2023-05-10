@@ -1,31 +1,22 @@
-const port = 8001;
+import { spawnSync } from "child_process";
 
-export default {
-  jwt: {
-    secret: 'h8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROVh8566MNQ18oo5cMmHROV',
-    accessExpires: 5,
-    refreshExpires: 1440,
-    iss: `http://localhost:${port}`,
-    audience: `http://localhost:${port}`,
+const args = process.argv.slice(2);
 
-  },
-  logger: {
-    logToConsole: false,
-    dir: 'dist/logs/',
-  },
-  baseURL: '/api/v1',
-  port,
-  database: {
-    host: 'localhost',
-    user: 'root',
-    password: 'test123*',
-    database: 'nfw_test',
-    type: 'mysql',
-    port: 3306,
-    debug: false,
-  },
-  env: 'test',
-  cors: {
-    origin: 'http://localhost:4200',
-  },
+process.env.NODE_ENV = "test";
+
+const terminalOptions = {
+  shell: true,
+  detached: false,
+  stdio: "inherit",
+  stderr: "inherit",
 };
+
+function spawnOrFail(command) {
+  const result = spawnSync(command, terminalOptions);
+  if (result.status !== 0) {
+    process.exit(result.status);
+  }
+}
+
+spawnOrFail("pnpm mikro-orm:cli migration:fresh");
+spawnOrFail(`pnpm vitest --watch=false ${args.join("  ")}`);

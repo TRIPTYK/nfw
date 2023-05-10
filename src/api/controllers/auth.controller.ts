@@ -1,76 +1,79 @@
-import { Controller, injectable, InjectRepository, inject, POST, UseMiddleware, Ctx } from '@triptyk/nfw-core';
-import { ConfigurationService } from '../services/configuration.service.js';
-import { UserModel } from '../models/user.model.js';
-import type { UserRepository } from '../repositories/user.repository.js';
-import createError from 'http-errors';
-import { RefreshTokenModel } from '../models/refresh-token.model.js';
-import type { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
+import { inject } from '@triptyk/nfw-core';
+import { UserModel } from '../../database/models/user.model.js';
+import { RefreshTokenModel } from '../../database/models/refresh-token.model.js';
+import { RefreshTokenRepository } from '../../database/repositories/refresh-token.repository.js';
 import { ValidatedBody } from '../decorators/validated-body.js';
-import { ValidatedLoginBody, ValidatedRefreshBody, ValidatedRegisteredUserBody } from '../validators/auth.validator.js';
-import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
 import { Roles } from '../enums/roles.enum.js';
-import type { RouterContext } from '@koa/router';
+import { RouterContext } from '@koa/router';
+import { injectRepository } from '@triptyk/nfw-mikro-orm';
+import { Controller, Ctx, POST, UseMiddleware } from '@triptyk/nfw-http';
+import { AuthService } from '../services/auth.service.js';
+import { EntityRepository } from '@mikro-orm/mysql';
+import { InvalidUserNameOrPasswordError } from '../errors/web/invalid-username-or-password.js';
+import { InvalidRefreshTokenError } from '../errors/web/invalid-refresh-token.js';
+import { loginBodySchema, refreshBodySchema, registeredUserBodySchema } from '../validators/auth.validator.js';
+import { InferType } from 'yup';
+import { createRateLimitMiddleware } from '../middlewares/rate-limit.middleware.js';
 
-@Controller('/auth')
-@injectable()
+@Controller({
+  routeName: '/auth',
+})
 export class AuthController {
-  // eslint-disable-next-line no-useless-constructor
-  constructor (@inject(ConfigurationService) private configurationService: ConfigurationService,
-               @InjectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
-               @InjectRepository(UserModel) private userRepository: UserRepository,
+  constructor (
+    @injectRepository(RefreshTokenModel) private refreshTokenRepository: RefreshTokenRepository,
+    @injectRepository(UserModel) private userRepository: EntityRepository<UserModel>,
+    @inject(AuthService) private authService: AuthService,
   ) {}
 
   @POST('/register')
   @UseMiddleware(createRateLimitMiddleware(1000 * 60 * 15, 2, 'Please wait before creating another account'))
   public async register (
-    @ValidatedBody(ValidatedRegisteredUserBody) body : ValidatedRegisteredUserBody,
+    @ValidatedBody(registeredUserBodySchema) body : InferType<typeof registeredUserBodySchema>,
     @Ctx() ctx: RouterContext,
   ) {
-    const user = this.userRepository.create(body);
-    user.role = Roles.USER;
-    user.password = await this.userRepository.hashPassword(body.password);
-    await this.userRepository.persistAndFlush(user);
+    const user = this.userRepository.create({ ...body, role: Roles.USER });
+    user.password = await this.authService.hashPassword(body.password);
+    await this.userRepository.getEntityManager().persistAndFlush(user);
 
-    // override status
     ctx.response.status = 201;
+
     return {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
-      email: user.email,
+      email: user.email
     };
   }
 
   @POST('/login')
-  public async login (@ValidatedBody(ValidatedLoginBody) body: ValidatedLoginBody) {
-    const { accessExpires, refreshExpires, secret, iss, audience } = this.configurationService.getKey('jwt');
+  public async login (@ValidatedBody(loginBodySchema) body: InferType<typeof loginBodySchema>) {
     const user = await this.userRepository.findOne({ email: body.email });
 
     if (!user || !await user.passwordMatches(body.password)) {
-      throw createError(417, 'Votre email ou mot de passe est incorrect');
+      throw new InvalidUserNameOrPasswordError();
     }
 
-    const accessToken = this.userRepository.generateAccessToken(user, accessExpires, secret, iss, audience);
-    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(user, refreshExpires);
-    await this.refreshTokenRepository.flush();
+    const accessToken = this.authService.generateAccessToken(user.id);
+    const refreshToken = await this.authService.generateRefreshToken(user);
+    await this.refreshTokenRepository.getEntityManager().flush();
 
     return { accessToken, refreshToken: refreshToken.token };
   }
 
   @POST('/refresh-token')
-  public async refreshToken (@ValidatedBody(ValidatedRefreshBody) body: ValidatedRefreshBody) {
-    const jwt = this.configurationService.getKey('jwt');
-    const refresh = await this.refreshTokenRepository.findOne({ token: body.refreshToken });
+  public async refreshToken (@ValidatedBody(refreshBodySchema) body: InferType<typeof refreshBodySchema>) {
+    const refresh = await this.refreshTokenRepository.findOneOrFail({
+      token: body.refreshToken,
+    }, {
+      failHandler: () => new InvalidRefreshTokenError(),
+    });
 
-    if (!refresh) {
-      throw createError(417, 'Invalid refresh token');
-    }
+    const user = refresh.user.unwrap();
 
-    const accessToken = this.userRepository.generateAccessToken(refresh.user, jwt.accessExpires, jwt.secret, jwt.iss, jwt.audience);
-    const refreshToken = await this.refreshTokenRepository.generateRefreshToken(refresh.user, jwt.refreshExpires);
+    const accessToken = this.authService.generateAccessToken(user.id);
+    const refreshToken = await this.authService.generateRefreshToken(user);
 
-    this.refreshTokenRepository.remove(refresh);
-    await this.refreshTokenRepository.flush();
+    await this.refreshTokenRepository.getEntityManager().flush();
 
     return { accessToken, refreshToken: refreshToken.token };
   }

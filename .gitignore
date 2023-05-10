@@ -1,4 +1,10 @@
 node_modules/
-*.lock
 dist/
-migrations
+coverage
+.DS_Store
+
+" Big Up to my vim homies
+*.swp
+*.swo
+
+config/env

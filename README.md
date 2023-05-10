@@ -8,11 +8,13 @@
 
 This repository contains a JSON-API REST API boilerplate using [NFW-CORE](https://github.com/TRIPTYK/nfw-core).
 
+:warning: : ESM only, no CommonJS modules.
+
 ## Requirements
 
-- Typescript >= 4.5.x
-- node >= 16.x
-- pnpm
+- Typescript >= 4.9.x (waiting on tsyringe to move to 5.x)
+- node >= 18.x
+- pnpm 8.x
 
 ## Install
 
@@ -22,46 +24,89 @@ Any package manager should do the trick but i recommend using [Pnpm](https://pnp
 pnpm i
 ```
 
-## Start
+Install the database container.
 
-*You must create a `<NODE_ENV>.js` file for each env at the root of your project.*
+```bash
+docker compose up -d
+```
 
-The structure of the env file can be found in the configuration service.
+## Environments
 
-### Dev
+*You must create a `config/env/<NODE_ENV>.env` file for each env at the root of your project.*
+
+The structure of the env file is validated and can be found in the `src/api/services/configuration.service.ts` service.
+
+## Scripts
+
+### Start from dev env
 
 ```bash
 pnpm start:dev
 ```
 
-### Test
+### Start from test env
+
+Useful for debugging
 
 ```bash
 pnpm start:test
 ```
 
-### Production
-
-You need to transpile the Typescript because executing the command.
-
-```bash
-pnpm tsc && pnpm start:production
-```
-
-## Tests & Lint
-
-```bash
-pnpm test
-```
-
-```bash
-pnpm lint
-```
-
-## Mikro-orm CLI
+### [MIKRO-ORM](https://mikro-orm.io/) CLI
 
 ```bash
 pnpm mikro-orm:cli <any command>
 ```
 
+### Production and deployments
 
+You need to transpile (or bundle) the Typescript. And then run node against it. it's up to you.
+
+```bash
+pnpm tsc
+# rollup ...
+# docker containers ...
+```
+
+## Tests
+
+Runs the tests with [vitest](https://vitest.dev/).
+The migrations  are run and database is cleared before testing.
+
+```bash
+pnpm test
+```
+
+With beautiful UI in watch mode and coverage
+
+```bash
+pnpm test -- --ui --watch --coverage
+```
+
+In watch mode
+
+```bash
+pnpm test -- --watch
+```
+
+## File structure
+
+- **config**: config files (some config files that cannot be moved stay in root)
+- **database**: the docker database init files.
+- **dist**: the typescript output folder
+- **src**
+  - **api**: transport and configuration related files.
+  - **database**: database and ORM related files.
+- **tests**:
+  - **mocks**: mocks folder
+  - **src**: the test files folder
+    - **acceptance**: acceptance tests files
+    - **integration**: integration tests files
+    - **unit**: unit tests files
+  - **static**: static files (png,pdf, ...) for testing
+  - **utils**: utils for testing
+
+## Notes
+
+- App must not depend on tests folder.
+- Path aliases are used in typescript to have clearer imports and separation. You cannot import app into app. Import must be relative when the import in the same path.

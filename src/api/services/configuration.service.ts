@@ -1,53 +1,58 @@
 import { injectable, singleton } from '@triptyk/nfw-core';
+import { load } from 'ts-dotenv';
+import type { EnvType } from 'ts-dotenv';
+import type { StringKeyOf } from 'type-fest';
+import { ConfigurationNotLoadedError } from '../errors/configuration-not-loaded.js';
 
-export interface Configuration {
-  env: string,
-  jwt: {
-    iss: string,
-    secret: string,
-    audience: string,
-    accessExpires: number,
-    refreshExpires: number,
-  },
-  baseURL: `/${string}`,
-  port: number,
-  database: {
-    host: string,
-    user: string,
-    password: string,
-    database: string,
-    port: number,
-    type: 'mysql' | 'sqlite',
-    debug: boolean,
-  },
-  logger: {
-    logToConsole: boolean,
-    dir: string,
-  },
-  cors : {
-    origin: string,
-  },
+export interface ConfigurationService<T extends Record<string, unknown>> {
+  get<K extends StringKeyOf<T>>(key: K): T[K],
+  load(): void,
 }
+
+export type Env = EnvType<typeof schema>;
+
+export const schema = {
+  NODE_ENV: {
+    type: String,
+    default: 'development'
+  },
+  LOGGING: {
+    type: Boolean,
+    default: true
+  },
+  PORT: Number,
+  DATABASE_TYPE: ['mysql' as const, 'mariadb' as const, 'postgresql' as const],
+  REFRESH_TOKEN_EXPIRES: Number,
+  JWT_SECRET: String,
+  JWT_EXPIRES: Number,
+  PRODUCTION_ENV: {
+    type: Boolean,
+    default: false
+  },
+  JWT_ISS: String,
+  JWT_AUDIENCE: String,
+  DATABASE_PORT: Number,
+  DATABASE_PASSWORD: String,
+  DATABASE_HOST: String,
+  DATABASE_NAME: String,
+  DATABASE_USER: String,
+  DEBUG: Boolean,
+  CORS: String
+};
 
 @injectable()
 @singleton()
-export class ConfigurationService<T = Configuration> {
-  private _config!: T;
+export class ConfigurationServiceImpl implements ConfigurationService<Env> {
+  private env?: Env;
 
-  public async load () : Promise<T> {
-    const { default: configuration } = await import(`${process.cwd()}/${process.env.NODE_ENV ?? 'development'}.js`);
-    return this._config = Object.seal(configuration);
-  }
-
-  public get config (): T {
-    if (!this._config) {
-      throw new Error('Please use load() before app launch');
+  get<K extends StringKeyOf<Env>> (key: K): Env[K] {
+    if (!this.env) {
+      throw new ConfigurationNotLoadedError();
     }
-
-    return this._config;
+    return this.env[key];
   }
 
-  public getKey<K extends keyof T> (key: K, defaultValue?: any): T[K] {
-    return (this._config[key] === undefined) ? defaultValue : this._config[key];
+  load (): void {
+    this.env = load(schema, `config/env/${process.env.NODE_ENV ?? 'development'}.env`);
   }
 }

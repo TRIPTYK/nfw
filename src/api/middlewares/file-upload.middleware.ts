@@ -1,22 +1,41 @@
-import type { Middleware } from '@koa/router';
-import createHttpError from 'http-errors';
-import koaBody from 'koa-body';
+import type { RouterContext } from '@koa/router';
+import { injectable } from '@triptyk/nfw-core';
+import type { MiddlewareInterface } from '@triptyk/nfw-http';
+import type { Middleware, Next } from 'koa';
+import { koaBody } from 'koa-body';
+import type { Class } from 'type-fest';
+import { createBadRequestError } from '../errors/web/bad-request.js';
 
-export const fileUploadMiddleware : Middleware = koaBody({
-  formidable: {
-    uploadDir: './dist/uploads',
-    multiples: false,
-    keepExtensions: true,
-    // Can't handle directly in koa body
-    // onFileBegin: (_formName, file: formidable.File) => {
-    //   if (!Object.values(MimeTypes).includes((file.type ?? '') as MimeTypes)) {
-    //     throw createHttpError(422);
-    //   }
-    // },
-    maxFileSize: 1 * 1024 * 1024, // 1MB
-  },
-  onError: (err) => {
-    throw createHttpError(400, err.message);
-  },
-  multipart: true,
-});
+export function createFileUploadMiddleware (path: string, maxFileSizeInMb: number = 1): Class<MiddlewareInterface> {
+  @injectable()
+  class FileUploadMiddleware implements MiddlewareInterface {
+    public fileUploadMiddleware: Middleware;
+
+    public constructor (
+    ) {
+      this.fileUploadMiddleware = koaBody({
+        formidable: {
+          uploadDir: path,
+          multiples: false,
+          keepExtensions: true,
+          maxFileSize: maxFileSizeInMb * 1024 * 1024, // 1024 * 1024 = 1Mb
+        },
+        onError: createBadRequestError,
+        multipart: true,
+      });
+    }
+
+    async use (context: RouterContext, next: Next) {
+      try {
+        await this.fileUploadMiddleware(context, next);
+      } catch (e) {
+        if (e instanceof Error && e.name === 'TooManyRequestsError') {
+          throw new Error('Wesh');
+        }
+        throw e;
+      }
+    }
+  }
+
+  return FileUploadMiddleware;
+};

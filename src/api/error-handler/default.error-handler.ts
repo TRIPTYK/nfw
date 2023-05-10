@@ -1,44 +1,79 @@
 import type { RouterContext } from '@koa/router';
-import type { ErrorHandlerInterface } from '@triptyk/nfw-core';
 import { inject, injectable } from '@triptyk/nfw-core';
-import type { HttpError } from 'http-errors';
-import { isHttpError } from 'http-errors';
-import { ConfigurationService } from '../services/configuration.service.js';
-import { LoggerService } from '../services/logger.service.js';
+import type { MiddlewareInterface } from '@triptyk/nfw-http';
+import type { Next } from 'koa';
+import { ValidationError } from 'yup';
+import { NotFoundError } from '../errors/web/not-found.js';
+import { WebError } from '../errors/web/web-error.js';
+import type { Env } from '../services/configuration.service.js';
+import { ConfigurationServiceImpl, ConfigurationService } from '../services/configuration.service.js';
+import { LoggerService, LoggerServiceImpl } from '../services/logger.service.js';
 
 @injectable()
-export class DefaultErrorHandler implements ErrorHandlerInterface {
-  // eslint-disable-next-line no-useless-constructor
-  constructor (@inject(LoggerService) private loggerService: LoggerService, @inject(ConfigurationService) private configurationService: ConfigurationService) {}
+export class DefaultErrorHandler implements MiddlewareInterface {
+  constructor (
+    @inject(LoggerServiceImpl) private loggerService: LoggerService,
+    @inject(ConfigurationServiceImpl) private configurationService: ConfigurationService<Env>) {
+  }
 
-  async handle (error: Error | HttpError | Record<string, unknown>[], context: RouterContext) {
-    const isDev = this.configurationService.getKey('env', 'development') === 'development';
-    this.loggerService.logger.trace(error);
+  async use (context: RouterContext, next: Next) {
+    try {
+      await next();
+      this.rejectUnhandled(context);
+    } catch (error: any) {
+      this.loggerService.error(error);
 
-    if (Array.isArray(error)) {
-      context.response.status = 400;
-      context.response.body = error.map((e) => {
-        return {
-          title: 'validationError',
-          message: e.message,
-          meta: e,
-          status: '400',
-        };
-      });
-      return;
+      if (this.isValidationError(error)) {
+        this.sendValidationErrors(context, error);
+        return;
+      }
+
+      if (error instanceof WebError) {
+        this.sendWebError(context, error);
+        return;
+      }
+
+      this.sendDefaultError(context, error);
     }
+  }
 
-    if (isHttpError(error)) {
-      context.response.status = error.statusCode;
-      context.response.body = {
-        message: error.message,
-      };
-    } else {
-      context.response.status = 500;
-      context.response.body = {
-        message: isDev ? error.message : 'Internal server error',
-        code: context.response.status,
-      };
+  private sendWebError (context: RouterContext, error: WebError) {
+    context.status = error.status;
+    context.body = {
+      message: error.message
+    };
+  }
+
+  private isValidationError (error: unknown) {
+    return error instanceof ValidationError;
+  }
+
+  private rejectUnhandled (context: RouterContext) {
+    if (context.status === 404) {
+      throw new NotFoundError();
     }
+  }
+
+  private sendValidationErrors (context: RouterContext, error: ValidationError) {
+    context.status = 400;
+    context.body = error.inner.map((e: ValidationError) => {
+      return {
+        title: 'validationError',
+        message: e.message,
+        meta: {
+          path: e.path,
+          value: e.value,
+          type: e.type
+        }
+      };
+    });
+  }
+
+  private sendDefaultError (context: RouterContext, error: any) {
+    const isProductionEnv = this.configurationService.get('PRODUCTION_ENV');
+    context.status = 500;
+    context.body = {
+      message: isProductionEnv ? 'Internal server error' : error.message
+    };
   }
 }

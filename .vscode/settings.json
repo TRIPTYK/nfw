@@ -1,21 +1,22 @@
 {
-    "editor.formatOnSave": true,
-    "eslint.format.enable": true,
-    "javascript.preferences.importModuleSpecifierEnding": "js",
-    "typescript.preferences.importModuleSpecifierEnding": "js",
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "javascript.preferences.importModuleSpecifierEnding": "js",
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "[typescript]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-        "editor.bracketPairColorization.enabled": true
+    "editor.bracketPairColorization.enabled": true
+  },
+  "[javascript]": {
+    "editor.bracketPairColorization.enabled": true
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
     },
-    "[javascript]": {
-        "editor.bracketPairColorization.enabled": true
-    },
-    "[json]": {
-        "editor.quickSuggestions": {
-            "strings": true
-        },
-        "editor.suggest.insertMode": "replace",
-        "editor.bracketPairColorization.enabled": true
-    }
+    "editor.suggest.insertMode": "replace",
+    "editor.bracketPairColorization.enabled": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
