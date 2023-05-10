@@ -1,6 +1,6 @@
 {
   "name": "@triptyk/nfw",
-  "version": "5.0.0-alpha.0",
+  "version": "5.0.0-alpha.1",
   "description": "![alt text](https://repository-images.githubusercontent.com/166414581/dc0a1b80-a1a0-11e9-805b-cf8be46b5507)",
   "scripts": {
     "test": "node  test.js",
@@ -44,7 +44,6 @@
     "@triptyk/nfw-mikro-orm": "~5.0.0-alpha.1",
     "@triptyk/nfw-resources": "~5.0.0-alpha.1",
     "bcrypt": "~5.1.0",
-    "fetch-blob": "^3.2.0",
     "jsonwebtoken": "~9.0.0",
     "koa": "~2.14.2",
     "koa-body": "~6.0.1",
@@ -62,6 +61,7 @@
   },
   "homepage": "https://github.com/TRIPTYK/nfw#readme",
   "devDependencies": {
+    "fetch-blob": "^3.2.0",
     "@casl/ability": "~6.5.0",
     "@types/bcrypt": "~5.0.0",
     "@types/formidable": "~2.0.6",
@@ -103,5 +103,5 @@
   "volta": {
     "node": "18.16.0"
   },
-  "packageManager": "pnpm@8.3.1"
+  "packageManager": "pnpm@8.4.0"
 }
