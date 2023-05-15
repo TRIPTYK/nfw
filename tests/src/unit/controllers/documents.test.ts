@@ -58,7 +58,10 @@ describe('Get', () => {
     await controller.get(id, jsonApiQuery, currentUser);
 
     expect(service.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
-    expect(serializer.serializeOne).toBeCalledWith(document, {});
+    expect(serializer.serializeOne).toBeCalledWith(document, {}, {
+      endpointURL: 'documents/123',
+      pagination: undefined
+    });
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
@@ -81,7 +84,10 @@ describe('FindAll', () => {
     serializer.serializeMany.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(documents, {}, undefined);
+    expect(serializer.serializeMany).toBeCalledWith(documents, {}, {
+      endpointURL: 'documents',
+      pagination: undefined
+    });
     expect(service.getAll).toBeCalledWith(jsonApiQuery);
   });
 
@@ -103,7 +109,10 @@ describe('Create', () => {
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
     expect(service.create).toBeCalledWith(createBody);
-    expect(serializer.serializeOne).toBeCalledWith(document, {});
+    expect(serializer.serializeOne).toBeCalledWith(document, {}, {
+      endpointURL: 'documents',
+      pagination: undefined
+    });
   });
 
   test('Throws when cannot create an element', async () => {
@@ -124,7 +133,10 @@ describe('Update', () => {
     service.update.mockReturnValue(document as never);
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.update(id, updateBody, currentUser);
-    expect(serializer.serializeOne).toBeCalledWith(document, {});
+    expect(serializer.serializeOne).toBeCalledWith(document, {}, {
+      endpointURL: 'documents/1',
+      pagination: undefined
+    });
     expect(service.update).toBeCalledWith(id, updateBody);
   });
 

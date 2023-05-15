@@ -11,11 +11,16 @@ import { MimeTypes } from '../../api/enums/mime-type.enum.js';
 import * as Fs from 'fs/promises';
 import type { UserModel } from './user.model.js';
 import { BaseModel } from './base.model.js';
+import { toJSONWithType } from '../utils/to-json-with-type.js';
 
 @Entity({
   tableName: 'documents'
 })
 export class DocumentModel extends BaseModel {
+  toJSON () {
+    return toJSONWithType(this, 'documents')
+  }
+
   @Property({
     type: types.string
   })

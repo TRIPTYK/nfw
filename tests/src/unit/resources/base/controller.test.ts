@@ -9,7 +9,7 @@ import { mockedSerializer } from 'tests/mocks/serializer.js';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { NotFoundError } from 'app/api/errors/web/not-found.js';
 
-const thisContext: JsonApiContext<{}, {}> = {
+const thisContext: JsonApiContext<{}> = {
   service: mockedResourceService,
   authorizer: mockedAuthorizer,
   serializer: mockedSerializer
@@ -31,7 +31,7 @@ describe('Get', () => {
   test('Get unexisting user throws error', async () => {
     mockedResourceService.getOne.mockReturnValue(null);
 
-    await expect(() => jsonApiGetFunction.bind(thisContext)(id, jsonApiQuery, currentUser)).rejects.toThrowError();
+    await expect(() => jsonApiGetFunction.bind(thisContext)(id, jsonApiQuery, currentUser, '')).rejects.toThrowError();
   });
 
   test('happy path', async () => {
@@ -40,17 +40,20 @@ describe('Get', () => {
 
     mockedSerializer.serializeOne.mockReturnValue({});
 
-    await jsonApiGetFunction.bind(thisContext)(id, jsonApiQuery, currentUser);
+    await jsonApiGetFunction.bind(thisContext)(id, jsonApiQuery, currentUser, '');
 
     expect(mockedResourceService.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
-    expect(mockedSerializer.serializeOne).toBeCalledWith(existingEntity, {});
+    expect(mockedSerializer.serializeOne).toBeCalledWith(existingEntity, {}, {
+      endpointURL: '',
+      pagination: undefined
+    });
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
     mockedResourceService.getOneOrFail.mockReturnValue(existingEntity);
     mockedAuthorizer.can.mockReturnValue(false);
 
-    await expect(jsonApiGetFunction.bind(thisContext)(id, jsonApiQuery, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(jsonApiGetFunction.bind(thisContext)(id, jsonApiQuery, currentUser, '')).rejects.toThrowError(ForbiddenError);
     expect(mockedAuthorizer.can).toBeCalledWith(currentUser, 'read', existingEntity);
   });
 });
@@ -62,15 +65,18 @@ describe('FindAll', () => {
     mockedResourceService.getAll.mockReturnValue([documents, 1]);
     mockedSerializer.serializeMany.mockReturnValue({});
 
-    await jsonApiFindAllFunction.bind(thisContext)({}, currentUser)
-    expect(mockedSerializer.serializeMany).toBeCalledWith(documents, {}, undefined);
+    await jsonApiFindAllFunction.bind(thisContext)({}, currentUser, '')
+    expect(mockedSerializer.serializeMany).toBeCalledWith(documents, {}, {
+      endpointURL: '',
+      pagination: undefined
+    });
     expect(mockedResourceService.getAll).toBeCalledWith(jsonApiQuery);
   });
 
   test('Throws when cannot read an element', async () => {
     mockedAuthorizer.can.mockReturnValue(false);
     mockedResourceService.getAll.mockReturnValue([[existingEntity], 1]);
-    await expect(jsonApiFindAllFunction.bind(thisContext)({}, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(jsonApiFindAllFunction.bind(thisContext)({}, currentUser, '')).rejects.toThrowError(ForbiddenError);
     expect(mockedAuthorizer.can).toBeCalledWith(currentUser, 'read', existingEntity);
   });
 });
@@ -82,15 +88,18 @@ describe('Create', () => {
     mockedAuthorizer.can.mockReturnValue(true);
     mockedResourceService.create.mockReturnValue(existingEntity);
     mockedSerializer.serializeOne.mockReturnValue({});
-    await jsonApiCreateFunction.bind(thisContext)(currentUser, createBody);
+    await jsonApiCreateFunction.bind(thisContext)(currentUser, createBody, '');
     expect(mockedResourceService.create).toBeCalledWith(createBody);
-    expect(mockedSerializer.serializeOne).toBeCalledWith(existingEntity, {});
+    expect(mockedSerializer.serializeOne).toBeCalledWith(existingEntity, {}, {
+      endpointURL: '',
+      pagination: undefined
+    });
   });
 
   test('Throws when cannot create an element', async () => {
     mockedAuthorizer.can.mockReturnValue(false);
     mockedResourceService.create.mockReturnValue(existingEntity);
-    await expect(jsonApiCreateFunction.bind(thisContext)(currentUser, createBody)).rejects.toThrowError(ForbiddenError);
+    await expect(jsonApiCreateFunction.bind(thisContext)(currentUser, createBody, '')).rejects.toThrowError(ForbiddenError);
     expect(mockedAuthorizer.can).toBeCalledWith(currentUser, 'create', createBody);
   });
 });
@@ -103,15 +112,18 @@ describe('Update', () => {
     mockedAuthorizer.can.mockReturnValue(true);
     mockedResourceService.update.mockReturnValue(existingEntity);
     mockedSerializer.serializeOne.mockReturnValue({});
-    await jsonApiUpdateFunction.bind(thisContext)(currentUser, updateBody, id);
-    expect(mockedSerializer.serializeOne).toBeCalledWith(existingEntity, {});
+    await jsonApiUpdateFunction.bind(thisContext)(currentUser, updateBody, id, '');
+    expect(mockedSerializer.serializeOne).toBeCalledWith(existingEntity, {}, {
+      endpointURL: '',
+      pagination: undefined
+    });
     expect(mockedResourceService.update).toBeCalledWith(id, updateBody);
   });
 
   test('Throws when cannot update an element', async () => {
     mockedAuthorizer.can.mockReturnValue(false);
     mockedResourceService.update.mockReturnValue(existingEntity);
-    await expect(jsonApiUpdateFunction.bind(thisContext)(currentUser, updateBody, id)).rejects.toThrowError(ForbiddenError);
+    await expect(jsonApiUpdateFunction.bind(thisContext)(currentUser, updateBody, id, '')).rejects.toThrowError(ForbiddenError);
     expect(mockedAuthorizer.can).toBeCalledWith(currentUser, 'update', updateBody);
   });
 });

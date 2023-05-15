@@ -23,17 +23,17 @@ dependencies:
     specifier: ~5.7.5
     version: 5.7.5(@mikro-orm/core@5.7.5)
   '@triptyk/nfw-core':
-    specifier: ~5.0.0-alpha.1
-    version: 5.0.0-alpha.1
+    specifier: 5.0.0-alpha.2
+    version: 5.0.0-alpha.2
   '@triptyk/nfw-http':
-    specifier: ~5.0.0-alpha.1
-    version: 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)
+    specifier: 5.0.0-alpha.2
+    version: 5.0.0-alpha.2(@triptyk/nfw-core@5.0.0-alpha.2)
   '@triptyk/nfw-mikro-orm':
-    specifier: ~5.0.0-alpha.1
-    version: 5.0.0-alpha.1(@mikro-orm/core@5.7.5)(@triptyk/nfw-core@5.0.0-alpha.1)
+    specifier: 5.0.0-alpha.2
+    version: 5.0.0-alpha.2(@mikro-orm/core@5.7.5)(@triptyk/nfw-core@5.0.0-alpha.2)
   '@triptyk/nfw-resources':
-    specifier: ~5.0.0-alpha.1
-    version: 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)(@triptyk/nfw-http@5.0.0-alpha.1)
+    specifier: 5.0.0-alpha.2
+    version: 5.0.0-alpha.2(@triptyk/nfw-core@5.0.0-alpha.2)(@triptyk/nfw-http@5.0.0-alpha.2)
   bcrypt:
     specifier: ~5.1.0
     version: 5.1.0
@@ -917,45 +917,45 @@ packages:
       type-fest: 3.6.1
     dev: false
 
-  /@triptyk/nfw-core@5.0.0-alpha.1:
-    resolution: {integrity: sha512-wKMeHXB8qSGBqObNBb6QDoE2ZS0cwBPZhy0nsXrSRruJ/MFkcOxHsbVbaTgXjI8pLgqhnH3Rqq2+ebrY1CKi7w==}
+  /@triptyk/nfw-core@5.0.0-alpha.2:
+    resolution: {integrity: sha512-kxK9EJDH7k6wgvtzwACxJ0DNEvzQTA75K0yaPPCGBllM2yTd4NgMZ+PrEXmex/VrhoxlTMLGpUpwxmcMXqIKJA==}
     engines: {node: '>=16.3.1'}
     dependencies:
       tsyringe: 4.7.0
     dev: false
 
-  /@triptyk/nfw-http@5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1):
-    resolution: {integrity: sha512-Sj8cMsCw0DlnU86KzyGXt3L2vmVbxd1/mQqTr5+EBQJOCD9FUi27NAEGeGAT0Igsi6US6syWQ+BwSOBgha3+Eg==}
+  /@triptyk/nfw-http@5.0.0-alpha.2(@triptyk/nfw-core@5.0.0-alpha.2):
+    resolution: {integrity: sha512-01w0di+keFIKEL8FjR1f9FsoVWEwjsNeX4vpbNE6ukqe7tb2WftQmNXlCMSzyKw8BoP3sq8NR+Av2G6Wg9m27Q==}
     engines: {node: '>=16.3.1'}
     peerDependencies:
       '@triptyk/nfw-core': workspace:*
     dependencies:
       '@koa/router': 12.0.0
-      '@triptyk/nfw-core': 5.0.0-alpha.1
+      '@triptyk/nfw-core': 5.0.0-alpha.2
       is-class: 0.0.9
     dev: false
 
-  /@triptyk/nfw-mikro-orm@5.0.0-alpha.1(@mikro-orm/core@5.7.5)(@triptyk/nfw-core@5.0.0-alpha.1):
-    resolution: {integrity: sha512-Juv76PG4/UKu/2mMthvXUR9hY/wGSnv9p2yaaItwmE+C3ltEeNTrGimP9akW+Y3zud5xaTsOp91oSTzlase41w==}
+  /@triptyk/nfw-mikro-orm@5.0.0-alpha.2(@mikro-orm/core@5.7.5)(@triptyk/nfw-core@5.0.0-alpha.2):
+    resolution: {integrity: sha512-v2deAzcsCDqh6GPIzh+Nf/+rSfqMW5SwzLuQuXMOAS5ii9CwbCZxlZxR4jKlYS+rUbmrJCWczkg3wapJmsJp2A==}
     engines: {node: '>=16.3.1'}
     peerDependencies:
       '@mikro-orm/core': ~5.7.3
       '@triptyk/nfw-core': workspace:*
     dependencies:
       '@mikro-orm/core': 5.7.5(@mikro-orm/migrations@5.7.5)(@mikro-orm/mysql@5.7.5)(@mikro-orm/seeder@5.7.5)
-      '@triptyk/nfw-core': 5.0.0-alpha.1
+      '@triptyk/nfw-core': 5.0.0-alpha.2
     dev: false
 
-  /@triptyk/nfw-resources@5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)(@triptyk/nfw-http@5.0.0-alpha.1):
-    resolution: {integrity: sha512-t45IMetZAR9ckXFIeS8okyvCrFWKVxeYwMwqPn+SalY4Hz38kfs+W9HC+MQmmBYcyadEiiwC29YN9MWfFl4lNg==}
+  /@triptyk/nfw-resources@5.0.0-alpha.2(@triptyk/nfw-core@5.0.0-alpha.2)(@triptyk/nfw-http@5.0.0-alpha.2):
+    resolution: {integrity: sha512-bfW0kuKY2mCZ7l+vhe0wp4uoOB928su6i/Vw1FH/OTyT4UyEhvpOOfeuDZAeOyH1OpcUoGF5rMnmnHDA4wmzSw==}
     engines: {node: '>=16.3.1'}
     peerDependencies:
       '@triptyk/nfw-core': workspace:*
       '@triptyk/nfw-http': workspace:*
     dependencies:
       '@triptyk/json-api-query-parser': 0.0.0
-      '@triptyk/nfw-core': 5.0.0-alpha.1
-      '@triptyk/nfw-http': 5.0.0-alpha.1(@triptyk/nfw-core@5.0.0-alpha.1)
+      '@triptyk/nfw-core': 5.0.0-alpha.2
+      '@triptyk/nfw-http': 5.0.0-alpha.2(@triptyk/nfw-core@5.0.0-alpha.2)
       json-api-serializer: 2.6.6
       pluralize: 8.0.0
     dev: false

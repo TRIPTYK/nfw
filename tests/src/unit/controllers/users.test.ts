@@ -54,14 +54,17 @@ describe('Get', () => {
     await controller.get(id, jsonApiQuery, currentUser);
 
     expect(usersService.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
-    expect(serializer.serializeOne).toBeCalledWith(user, {});
+    expect(serializer.serializeOne).toBeCalledWith(user, {}, {
+      endpointURL: 'users/123',
+      pagination: undefined
+    });
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
     usersService.getOneOrFail.mockReturnValue(user as never);
     authorizer.can.mockReturnValue(false);
 
-    await expect(controller.get('123', {}, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(controller.get(id, {}, currentUser)).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'read', user);
   });
 });
@@ -77,7 +80,10 @@ describe('FindAll', () => {
     serializer.serializeMany.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(users, jsonApiQuery, undefined);
+    expect(serializer.serializeMany).toBeCalledWith(users, jsonApiQuery, {
+      endpointURL: 'users',
+      pagination: undefined
+    });
     expect(usersService.getAll).toBeCalledWith(jsonApiQuery);
   });
 
@@ -99,7 +105,10 @@ describe('Create', () => {
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.create(createBody as never, currentUser);
     expect(usersService.create).toBeCalledWith(createBody);
-    expect(serializer.serializeOne).toBeCalledWith(user, {});
+    expect(serializer.serializeOne).toBeCalledWith(user, {}, {
+      endpointURL: 'users',
+      pagination: undefined
+    });
   });
 
   test('Throws when cannot create an element', async () => {
@@ -120,7 +129,10 @@ describe('Update', () => {
     usersService.update.mockReturnValue(user as never);
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.update(updateBody, id, currentUser);
-    expect(serializer.serializeOne).toBeCalledWith(user, {});
+    expect(serializer.serializeOne).toBeCalledWith(user, {}, {
+      endpointURL: 'users/1',
+      pagination: undefined
+    });
     expect(usersService.update).toBeCalledWith(id, updateBody);
   });
 

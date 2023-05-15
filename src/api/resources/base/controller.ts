@@ -6,37 +6,46 @@ import type { UserModel } from '../../../database/models/user.model.js';
 import type { ResourceAuthorizer } from './authorizer.js';
 import type { ResourceService } from './service.js';
 
-export interface JsonApiContext<R extends Record<string, unknown>, T> {
+export interface JsonApiContext<T> {
     service: ResourceService<T>,
     authorizer: ResourceAuthorizer<T>,
-    serializer: ResourceSerializer<R>,
+    serializer: ResourceSerializer,
 }
 
-export async function jsonApiGetFunction<T, R extends Record<string, unknown>> (this: JsonApiContext<R, T>, id: string, query: JsonApiQuery, currentUser: UserModel) {
+export async function jsonApiGetFunction<T> (this: JsonApiContext<T>, id: string, query: JsonApiQuery, currentUser: UserModel, endpointURL: string) {
   const resourceModel = await this.service.getOneOrFail(id, query);
   await canOrFail(this.authorizer, currentUser, 'read', resourceModel);
-  return this.serializer.serializeOne(wrap(resourceModel).toJSON() as never, query);
+  return this.serializer.serializeOne(wrap(resourceModel).toJSON() as never, query, {
+    endpointURL
+  });
 }
 
-export async function jsonApiFindAllFunction <T, R extends Record<string, unknown>> (this: JsonApiContext<R, T>, query: JsonApiQuery, currentUser: UserModel) {
+export async function jsonApiFindAllFunction <T> (this: JsonApiContext<T>, query: JsonApiQuery, currentUser: UserModel, endpointURL: string) {
   const [resourcesModel, count] = await this.service.getAll(query);
   await canOrFail(this.authorizer, currentUser, 'read', resourcesModel);
-  return this.serializer.serializeMany(resourcesModel.map((d) => wrap(d).toJSON()) as never, query, query.page ? { ...query.page, total: count } : undefined);
+  return this.serializer.serializeMany(resourcesModel.map((d) => wrap(d).toJSON()) as never, query, {
+    pagination: query.page ? { ...query.page, total: count } : undefined,
+    endpointURL,
+  });
 }
 
-export async function jsonApiCreateFunction<T, R extends Record<string, unknown>> (this: JsonApiContext<R, T>, currentUser: UserModel, body: RequiredEntityData<T>) {
+export async function jsonApiCreateFunction<T> (this: JsonApiContext<T>, currentUser: UserModel, body: RequiredEntityData<T>, endpointURL: string) {
   await canOrFail(this.authorizer, currentUser, 'create', body);
   const user = await this.service.create(body);
-  return this.serializer.serializeOne(user as never, {});
+  return this.serializer.serializeOne(wrap(user).toJSON() as never, {}, {
+    endpointURL
+  });
 }
 
-export async function jsonApiUpdateFunction<T, R extends Record<string, unknown>> (this: JsonApiContext<R, T>, currentUser: UserModel, body: EntityData<T>, id: string) {
+export async function jsonApiUpdateFunction<T> (this: JsonApiContext<T>, currentUser: UserModel, body: EntityData<T>, id: string, endpointURL: string) {
   await canOrFail(this.authorizer, currentUser, 'update', body);
   const user = await this.service.update(id, body);
-  return this.serializer.serializeOne(user as never, {});
+  return this.serializer.serializeOne(wrap(user).toJSON() as never, {}, {
+    endpointURL
+  });
 }
 
-export async function jsonApiDeleteFunction<T, R extends Record<string, unknown>> (this: JsonApiContext<R, T>, id: string, currentUser: UserModel) {
+export async function jsonApiDeleteFunction<T> (this: JsonApiContext<T>, id: string, currentUser: UserModel) {
   const user = await this.service.getOneOrFail(id, {});
   await canOrFail(this.authorizer, currentUser, 'delete', user);
   await this.service.delete(id);

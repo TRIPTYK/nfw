@@ -1,6 +1,5 @@
 import {
-  Ref
-  ,
+  Ref,
   Entity,
   Property,
   OneToOne,
@@ -15,12 +14,17 @@ import type { RefreshTokenModel } from './refresh-token.model.js';
 import bcrypt from 'bcrypt';
 import type { DocumentModel } from './document.model.js';
 import { BaseModel } from './base.model.js';
+import { toJSONWithType } from '../utils/to-json-with-type.js';
 
 @Entity({
   tableName: 'users'
 })
 @Filter({ name: 'truc', cond: { 1: 0 } })
 export class UserModel extends BaseModel {
+  toJSON () {
+    return toJSONWithType(this, 'users')
+  }
+
   @Property({
     type: types.string
   })

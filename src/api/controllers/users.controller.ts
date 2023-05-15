@@ -1,5 +1,5 @@
 import { inject } from '@triptyk/nfw-core';
-import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiUpdate, ResourceSerializer } from '@triptyk/nfw-resources';
+import { JsonApiCreate, JsonApiDelete, JsonApiFindAll, JsonApiGet, JsonApiQuery, JsonApiResourceSerializer, JsonApiUpdate, ResourceSerializer } from '@triptyk/nfw-resources';
 import { UserResourceServiceImpl, UserResourceService } from '../resources/user/service.js';
 import { UserResourceAuthorizer, UserResourceAuthorizerImpl } from '../resources/user/authorizer.js';
 import { InferType } from 'yup';
@@ -10,10 +10,7 @@ import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { UserModel } from '../../database/models/user.model.js';
 import { JsonApiBody } from '../decorators/json-api-body.js';
 import { jsonApiCreateFunction, jsonApiDeleteFunction, jsonApiFindAllFunction, jsonApiGetFunction, jsonApiUpdateFunction } from '../resources/base/controller.js';
-import { UsersSerializer } from '../resources/user/serializer.js';
-import type { UserResource } from '../resources/user/schema.js';
-
-const RESOURCE_NAME = 'users';
+import { RESOURCE_NAME } from '../resources/user/schema.js';
 
 @Controller({
   routeName: `/${RESOURCE_NAME}`
@@ -22,27 +19,27 @@ export class UsersController {
   public constructor (
     @inject(UserResourceServiceImpl) public service: UserResourceService,
     @inject(UserResourceAuthorizerImpl) public authorizer: UserResourceAuthorizer,
-    @inject(UsersSerializer) public serializer: ResourceSerializer<UserResource>
+    @inject(JsonApiResourceSerializer) public serializer: ResourceSerializer
   ) {}
 
   @JsonApiGet()
   async get (@Param('id') id: string, @JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
-    return jsonApiGetFunction.call(this, id, query, currentUser);
+    return jsonApiGetFunction.call(this, id, query, currentUser, `${RESOURCE_NAME}/${id}`);
   }
 
   @JsonApiFindAll()
   async findAll (@JsonApiQueryDecorator(RESOURCE_NAME) query: JsonApiQuery, @CurrentUser() currentUser: UserModel) {
-    return jsonApiFindAllFunction.call(this, query, currentUser);
+    return jsonApiFindAllFunction.call(this, query, currentUser, `${RESOURCE_NAME}`);
   }
 
   @JsonApiCreate()
   async create (@JsonApiBody(RESOURCE_NAME, createUserValidationSchema) body: InferType<typeof createUserValidationSchema>, @CurrentUser() currentUser: UserModel) {
-    return jsonApiCreateFunction.call(this, currentUser, body);
+    return jsonApiCreateFunction.call(this, currentUser, body, `${RESOURCE_NAME}`);
   }
 
   @JsonApiUpdate()
   async update (@JsonApiBody(RESOURCE_NAME, updateUserValidationSchema) body: InferType<typeof updateUserValidationSchema>, @Param('id') id: string, @CurrentUser() currentUser: UserModel) {
-    return jsonApiUpdateFunction.call(this, currentUser, body, id);
+    return jsonApiUpdateFunction.call(this, currentUser, body, id, `${RESOURCE_NAME}/${id}`);
   }
 
   @JsonApiDelete()
