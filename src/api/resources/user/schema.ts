@@ -5,10 +5,11 @@ export type UserResource = {
   lastName: string,
   email: string,
   password?: string,
+  resourceType: 'users',
 }
 
 export const userSchema = {
-  type: 'users',
+  resourceType: 'users',
   attributes: {
     firstName: {
       deserialize: true,

@@ -1,6 +1,6 @@
 import type { ResourceSchema } from '@triptyk/nfw-resources';
-import type { MimeTypes } from '../../enums/mime-type.enum';
 import type { UserResource } from '../user/schema.js';
+import type { MimeTypes } from 'app/api/enums/mime-type.enum.js';
 
 export type DocumentResource = {
   filename: string,
@@ -9,10 +9,11 @@ export type DocumentResource = {
   size: number,
   mimetype: MimeTypes,
   users?: UserResource[],
+  resourceType: 'documents',
 }
 
 export const documentSchema = {
-  type: 'documents',
+  resourceType: 'documents',
   attributes: {
     filename: {
       deserialize: true,

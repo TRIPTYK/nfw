@@ -4,8 +4,8 @@ import type { MiddlewareInterface } from '@triptyk/nfw-http';
 import type { Middleware, Next } from 'koa';
 import KoaRatelimit from 'koa-ratelimit';
 import { TooManyRequestsError } from '../errors/web/too-many-requests.js';
-import type { Env } from '../services/configuration.service.js';
-import { ConfigurationServiceImpl, ConfigurationService } from '../services/configuration.service.js';
+import type { ConfigurationService, Env } from '../services/configuration.service.js';
+import { ConfigurationServiceImpl } from '../services/configuration.service.js';
 
 export function createRateLimitMiddleware (duration: number, max: number, message?: string) {
   @injectable()

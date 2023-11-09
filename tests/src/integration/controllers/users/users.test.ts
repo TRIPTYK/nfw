@@ -39,7 +39,7 @@ testCtx('CreateOne', () => container.resolve(MikroORM), async () => {
     lastName: 'deflorenne',
     role: Roles.USER,
     email: 'amaury@localhost.com'
-  }, createAdminUser());
+  }, createAdminUser(), {});
 
   expect(user).toMatchObject({
     jsonapi: { version: '1.0' },
@@ -57,7 +57,7 @@ testCtx('CreateOne', () => container.resolve(MikroORM), async () => {
 testCtx('Update', () => container.resolve(MikroORM), async () => {
   const user = await usersController.update({
     role: Roles.USER
-  }, 'user-user', createAdminUser());
+  }, 'user-user', createAdminUser(), {});
 
   expect(user).toMatchSnapshot();
 });

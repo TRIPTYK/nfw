@@ -45,7 +45,7 @@ testCtx('CreateOne', () => container.resolve(MikroORM), async () => {
     users: []
   };
 
-  const constrollerResponse = await documentsController.create(document, createAdminUser());
+  const constrollerResponse = await documentsController.create(document, {}, createAdminUser());
 
   expect(constrollerResponse).toMatchObject({
     data: {
@@ -69,7 +69,7 @@ testCtx('Update', () => container.resolve(MikroORM), async () => {
     users: [],
     filename: 'update-filename',
   };
-  const user = await documentsController.update('document', updatedDummyDocument, createAdminUser());
+  const user = await documentsController.update('document', updatedDummyDocument, {}, createAdminUser());
 
   expect(user).toMatchSnapshot();
 });

@@ -6,8 +6,8 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import { RefreshTokenModel } from '../../database/models/refresh-token.model.js';
 import type { UserModel } from '../../database/models/user.model.js';
 import { RefreshTokenRepository } from '../../database/repositories/refresh-token.repository.js';
-import type { Env } from './configuration.service.js';
-import { ConfigurationServiceImpl, ConfigurationService } from './configuration.service.js';
+import type { ConfigurationService, Env } from './configuration.service.js';
+import { ConfigurationServiceImpl } from './configuration.service.js';
 
 @singleton()
 @injectable()

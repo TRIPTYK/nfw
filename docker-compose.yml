@@ -2,10 +2,10 @@ version: '3.6'
 
 services:
   db:
-    image: mysql
+    image: postgres
     volumes:
       - ./database:/docker-entrypoint-initdb.d
     ports:
-      - 3306:3306
+      - 5432:5432
     environment:
-      MYSQL_ROOT_PASSWORD: test123*
+      POSTGRES_PASSWORD: test123*

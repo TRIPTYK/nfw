@@ -97,7 +97,9 @@ describe('Create', () => {
     authorizer.can.mockReturnValue(true);
     usersService.create.mockReturnValue(user as never);
     serializer.serializeOne.mockReturnValue(serializer);
-    await controller.create(createBody as never, currentUser);
+    await controller.create(createBody as never, currentUser, {
+      fields: {}
+    });
     expect(usersService.create).toBeCalledWith(createBody);
     expect(serializer.serializeOne).toBeCalledWith(user, {});
   });
@@ -105,7 +107,7 @@ describe('Create', () => {
   test('Throws when cannot create an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.create.mockReturnValue(user as never);
-    await expect(controller.create(createBody as never, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(controller.create(createBody as never, currentUser, {})).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody);
   });
 });
@@ -119,7 +121,7 @@ describe('Update', () => {
     authorizer.can.mockReturnValue(true);
     usersService.update.mockReturnValue(user as never);
     serializer.serializeOne.mockReturnValue(serializer);
-    await controller.update(updateBody, id, currentUser);
+    await controller.update(updateBody, id, currentUser, {});
     expect(serializer.serializeOne).toBeCalledWith(user, {});
     expect(usersService.update).toBeCalledWith(id, updateBody);
   });
@@ -127,7 +129,7 @@ describe('Update', () => {
   test('Throws when cannot update an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.update.mockReturnValue(user as never);
-    await expect(controller.update(updateBody, id, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(controller.update(updateBody, id, currentUser, {})).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody);
   });
 });

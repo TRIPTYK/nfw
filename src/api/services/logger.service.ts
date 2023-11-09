@@ -1,7 +1,7 @@
 import { inject, injectable, singleton } from '@triptyk/nfw-core';
 import Tracer from 'tracer';
-import type { Env } from './configuration.service.js';
-import { ConfigurationServiceImpl, ConfigurationService } from './configuration.service.js';
+import type { Env, ConfigurationService } from './configuration.service.js';
+import { ConfigurationServiceImpl } from './configuration.service.js';
 
 export interface LoggerService {
   info(...args: unknown[]): void,

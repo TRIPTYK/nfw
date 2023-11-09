@@ -1,6 +1,7 @@
 import type { RouterContext } from '@koa/router';
 import { inject, injectable } from '@triptyk/nfw-core';
-import { LoggerService, LoggerServiceImpl } from '../services/logger.service.js';
+import { LoggerServiceImpl } from '../services/logger.service.js';
+import type { LoggerService } from '../services/logger.service.js';
 import type { Next } from 'koa';
 import type { UserModel } from '../../database/models/user.model.js';
 import type { MiddlewareInterface } from '@triptyk/nfw-http';
