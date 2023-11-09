@@ -37,6 +37,8 @@ describe('Get', () => {
   const id = '123';
   const jsonApiQuery = {};
 
+  document.id = id;
+
   test('Get unexisting document throws error', async () => {
     service.getOneOrFail.mockImplementation(() => {
       throw new NotFoundError('Not found')
@@ -53,12 +55,15 @@ describe('Get', () => {
     authorizer.can.mockReturnValue(true);
     service.getOneOrFail.mockReturnValue(document as never);
 
-    serializer.serializeOne.mockReturnValue(serializer);
-
     await controller.get(id, jsonApiQuery, currentUser);
 
     expect(service.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
-    expect(serializer.serializeOne).toBeCalledWith(document, {});
+    expect(serializer.serializeOne).toBeCalledWith({
+      resourceType: 'documents',
+      ...document
+    }, {}, {
+      endpointURL: `documents/${id}`,
+    });
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
@@ -81,7 +86,10 @@ describe('FindAll', () => {
     serializer.serializeMany.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(documents, {}, undefined);
+    expect(serializer.serializeMany).toBeCalledWith(documents.map((a) => ({ ...a, resourceType: 'documents' })), {}, {
+      endpointURL: 'documents',
+      pagination: undefined
+    });
     expect(service.getAll).toBeCalledWith(jsonApiQuery);
   });
 
@@ -95,6 +103,7 @@ describe('FindAll', () => {
 
 describe('Create', () => {
   const document = new DocumentModel();
+  document.id = '123';
   const createBody = {};
 
   test('happy path', async () => {
@@ -103,7 +112,12 @@ describe('Create', () => {
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.create(createBody as never, {}, currentUser);
     expect(service.create).toBeCalledWith(createBody);
-    expect(serializer.serializeOne).toBeCalledWith(document, {});
+    expect(serializer.serializeOne).toBeCalledWith({
+      resourceType: 'documents',
+      ...document
+    }, {}, {
+      endpointURL: 'documents/123'
+    });
   });
 
   test('Throws when cannot create an element', async () => {
@@ -118,13 +132,19 @@ describe('Update', () => {
   const document = new DocumentModel();
   const updateBody = {} as never
   const id = '1';
+  document.id = id;
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     service.update.mockReturnValue(document as never);
     serializer.serializeOne.mockReturnValue(serializer);
     await controller.update(id, updateBody, {}, currentUser);
-    expect(serializer.serializeOne).toBeCalledWith(document, {});
+    expect(serializer.serializeOne).toBeCalledWith({
+      resourceType: 'documents',
+      ...document
+    }, {}, {
+      endpointURL: 'documents/1'
+    });
     expect(service.update).toBeCalledWith(id, updateBody);
   });
 
