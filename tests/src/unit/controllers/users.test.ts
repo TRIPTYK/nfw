@@ -33,6 +33,7 @@ const currentUser = new UserModel();
 describe('Get', () => {
   const user = new UserModel();
   const id = '123';
+  user.id = id;
   const jsonApiQuery = {};
 
   test('Get unexisting user throws error', async () => {
@@ -54,7 +55,9 @@ describe('Get', () => {
     await controller.get(id, jsonApiQuery, currentUser);
 
     expect(usersService.getOneOrFail).toBeCalledWith(id, jsonApiQuery);
-    expect(serializer.serializeOne).toBeCalledWith(user, {});
+    expect(serializer.serializeOne).toBeCalledWith({ ...user, resourceType: 'users' }, {}, {
+      endpointURL: `users/${id}`
+    });
   });
 
   test('It throws a forbiddenError when not allowed to read user', async () => {
@@ -68,6 +71,7 @@ describe('Get', () => {
 
 describe('FindAll', () => {
   const user = new UserModel();
+  user.id = '123';
   const jsonApiQuery = {};
 
   test('happy path', async () => {
@@ -77,7 +81,13 @@ describe('FindAll', () => {
     serializer.serializeMany.mockReturnValue(serializer);
 
     await controller.findAll(jsonApiQuery, currentUser);
-    expect(serializer.serializeMany).toBeCalledWith(users, jsonApiQuery, undefined);
+    expect(serializer.serializeMany).toBeCalledWith(users.map((u) => ({
+      ...u,
+      resourceType: 'users'
+    })), jsonApiQuery, {
+      endpointURL: 'users',
+      pagination: undefined
+    });
     expect(usersService.getAll).toBeCalledWith(jsonApiQuery);
   });
 
@@ -91,21 +101,28 @@ describe('FindAll', () => {
 
 describe('Create', () => {
   const user = new UserModel();
+  user.id = '123';
   const createBody = {};
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     usersService.create.mockReturnValue(user as never);
     serializer.serializeOne.mockReturnValue(serializer);
-    await controller.create(createBody as never, currentUser);
+    await controller.create(createBody as never, currentUser, {
+      fields: {}
+    });
     expect(usersService.create).toBeCalledWith(createBody);
-    expect(serializer.serializeOne).toBeCalledWith(user, {});
+    expect(serializer.serializeOne).toBeCalledWith({ ...user, resourceType: 'users' }, {
+      fields: {}
+    }, {
+      endpointURL: `users/${user.id}`
+    });
   });
 
   test('Throws when cannot create an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.create.mockReturnValue(user as never);
-    await expect(controller.create(createBody as never, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(controller.create(createBody as never, currentUser, {})).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'create', createBody);
   });
 });
@@ -114,20 +131,23 @@ describe('Update', () => {
   const user = new UserModel();
   const updateBody = {};
   const id = '1';
+  user.id = id;
 
   test('happy path', async () => {
     authorizer.can.mockReturnValue(true);
     usersService.update.mockReturnValue(user as never);
     serializer.serializeOne.mockReturnValue(serializer);
-    await controller.update(updateBody, id, currentUser);
-    expect(serializer.serializeOne).toBeCalledWith(user, {});
+    await controller.update(updateBody, id, currentUser, {});
+    expect(serializer.serializeOne).toBeCalledWith({ ...user, resourceType: 'users' }, {}, {
+      endpointURL: `users/${id}`
+    });
     expect(usersService.update).toBeCalledWith(id, updateBody);
   });
 
   test('Throws when cannot update an element', async () => {
     authorizer.can.mockReturnValue(false);
     usersService.update.mockReturnValue(user as never);
-    await expect(controller.update(updateBody, id, currentUser)).rejects.toThrowError(ForbiddenError);
+    await expect(controller.update(updateBody, id, currentUser, {})).rejects.toThrowError(ForbiddenError);
     expect(authorizer.can).toBeCalledWith(currentUser, 'update', updateBody);
   });
 });

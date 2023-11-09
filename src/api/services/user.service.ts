@@ -3,9 +3,9 @@ import { injectRepository } from '@triptyk/nfw-mikro-orm';
 import { UserModel } from '../../database/models/user.model.js';
 import * as JWT from 'jsonwebtoken';
 import { InvalidBearerTokenError } from '../errors/web/invalid-bearer-token.js';
-import { EntityRepository } from '@mikro-orm/mysql';
-import type { Env } from './configuration.service.js';
-import { ConfigurationServiceImpl, ConfigurationService } from './configuration.service.js';
+import { EntityRepository } from '@mikro-orm/postgresql';
+import { ConfigurationServiceImpl } from './configuration.service.js';
+import type { Env, ConfigurationService } from './configuration.service.js';
 
 @singleton()
 export class UserService {

@@ -20,17 +20,9 @@
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-redeclare": "error",
     "@typescript-eslint/no-useless-constructor": "error",
-    "unused-imports/no-unused-imports": "error",
-    "unused-imports/no-unused-vars": [
-      "warn",
-      {
-        "vars": "all",
-        "varsIgnorePattern": "^_",
-        "args": "after-used",
-        "argsIgnorePattern": "^_"
-      }
-    ],
-    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/no-import-type-side-effects": "error",
+    "import/consistent-type-specifier-style": "error",
+    "import/no-duplicates": "error",
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {

@@ -1,12 +1,12 @@
 import { inject, singleton } from '@triptyk/nfw-core';
-import { ResourcesRegistry, JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
-import type { UserResource } from './schema.js';
+import { JsonApiResourceSerializer, ResourcesRegistryImpl } from '@triptyk/nfw-resources';
+import type { ResourcesRegistry } from '@triptyk/nfw-resources';
 
 @singleton()
-export class UsersSerializer extends JsonApiResourceSerializer<UserResource> {
+export class UsersSerializer extends JsonApiResourceSerializer {
   public constructor (
-        @inject(ResourcesRegistryImpl) registry: ResourcesRegistry
+      @inject(ResourcesRegistryImpl) registry: ResourcesRegistry
   ) {
-    super('users', registry);
+    super(registry);
   }
 }

@@ -9,6 +9,20 @@ exports[`GetAll 1`] = `
         "firstName": "amaury",
         "lastName": "localhost",
       },
+      "id": "user-user",
+      "links": {
+        "self": "/api/v1/users/user-user",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "users",
+    },
+    {
+      "attributes": {
+        "email": "amaury@localhost.com",
+        "firstName": "amaury",
+        "lastName": "localhost",
+      },
       "id": "admin-user",
       "links": {
         "self": "/api/v1/users/admin-user",
@@ -26,20 +40,6 @@ exports[`GetAll 1`] = `
       "id": "delete-user",
       "links": {
         "self": "/api/v1/users/delete-user",
-      },
-      "meta": undefined,
-      "relationships": undefined,
-      "type": "users",
-    },
-    {
-      "attributes": {
-        "email": "amaury@localhost.com",
-        "firstName": "amaury",
-        "lastName": "localhost",
-      },
-      "id": "user-user",
-      "links": {
-        "self": "/api/v1/users/user-user",
       },
       "meta": undefined,
       "relationships": undefined,

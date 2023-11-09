@@ -5,7 +5,8 @@ import {
   BeforeDelete,
   ManyToMany,
   Collection,
-  types
+  types,
+  wrap
 } from '@mikro-orm/core';
 import { MimeTypes } from '../../api/enums/mime-type.enum.js';
 import * as Fs from 'fs/promises';
@@ -51,5 +52,12 @@ export class DocumentModel extends BaseModel {
   @BeforeDelete()
   public removeFromDisk (): Promise<void> {
     return Fs.unlink(this.path);
+  }
+}
+
+export function serializeDocument (document: DocumentModel) {
+  return {
+    ...wrap(document).toJSON(),
+    resourceType: 'documents'
   }
 }

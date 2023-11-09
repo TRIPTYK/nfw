@@ -5,4 +5,4 @@ import { vi } from 'vitest';
 export const mockedSerializer = {
   serializeMany: vi.fn() as Mock,
   serializeOne: vi.fn()
-} satisfies ResourceSerializer<never>;
+} satisfies ResourceSerializer;

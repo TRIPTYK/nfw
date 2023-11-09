@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022"],
+    "lib": ["ESNEXT"],
     "baseUrl": ".",
     "strict": true,
-    "target": "ES2022",
-    "moduleResolution": "node",
-    "module": "ES2022",
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
+    "verbatimModuleSyntax": true,
     "declaration": true,
     "outDir": "./dist",
     "forceConsistentCasingInFileNames": true,
@@ -19,5 +20,5 @@
       "app/*": ["src/*"]
     }
   },
-  "include": ["src/**/*", "tests/**/*"]
+  "include": ["src/**/*", "tests/**/*", "vitest.workspace.ts"]
 }

@@ -1,4 +1,5 @@
-import { Ref, types, Entity, Property, OneToOne } from '@mikro-orm/core';
+import { types, Entity, Property, OneToOne } from '@mikro-orm/core';
+import type { Ref } from '@mikro-orm/core';
 import { RefreshTokenRepository } from '../repositories/refresh-token.repository.js';
 import { BaseModel } from './base.model.js';
 import type { UserModel } from './user.model.js';

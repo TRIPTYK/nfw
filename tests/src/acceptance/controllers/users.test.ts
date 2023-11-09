@@ -35,7 +35,7 @@ test('GET id returns status code 200', async () => {
 });
 
 test('POST returns status code 200', async () => {
-  const users = await fetchApi('users/12345678910abcdef', {
+  const users = await fetchApi('users', {
     body: JSON.stringify({
       data: {
         attributes: {

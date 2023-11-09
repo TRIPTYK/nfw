@@ -1,9 +1,9 @@
-import File from 'fetch-blob/file.js';
-import { FormData } from 'formdata-polyfill/esm.min';
+import { File } from 'fetch-blob/file.js';
+import { FormData } from 'formdata-polyfill/esm.min.js';
 
 export const validFile = new File(['abc'], 'hello-world.txt', {
   type: 'text/plain'
-})
+});
 
 export function createFile () {
   const formData = new FormData();

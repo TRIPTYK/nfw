@@ -1,6 +1,7 @@
+import type {
+  Loaded, Ref
+} from '@mikro-orm/core';
 import {
-  Ref
-  ,
   Entity,
   Property,
   OneToOne,
@@ -8,7 +9,8 @@ import {
   Collection,
   ManyToMany,
   types,
-  Filter
+  Filter,
+  wrap
 } from '@mikro-orm/core';
 import { Roles } from '../../api/enums/roles.enum.js';
 import type { RefreshTokenModel } from './refresh-token.model.js';
@@ -57,17 +59,24 @@ export class UserModel extends BaseModel {
   })
   declare refreshToken?: Ref<RefreshTokenModel>;
 
-    @ManyToMany({
-      entity: 'DocumentModel',
-      mappedBy: 'users',
-      owner: true
-    })
-      documents = new Collection<DocumentModel>(this);
+  @ManyToMany({
+    entity: 'DocumentModel',
+    mappedBy: 'users',
+    owner: true
+  })
+    documents = new Collection<DocumentModel>(this);
 
-    public async passwordMatches (password: string): Promise<boolean> {
-      if (!this.password) {
-        return false;
-      }
-      return bcrypt.compare(password, this.password);
+  public async passwordMatches (password: string): Promise<boolean> {
+    if (!this.password) {
+      return false;
     }
+    return bcrypt.compare(password, this.password);
+  }
+}
+
+export function serializeUser (user: Loaded<UserModel, never>) {
+  return {
+    ...wrap(user).toJSON(),
+    resourceType: 'users'
+  }
 }

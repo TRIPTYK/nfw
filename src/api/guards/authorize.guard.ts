@@ -1,4 +1,3 @@
-
 import { injectable } from '@triptyk/nfw-core';
 import type { GuardInterface } from '@triptyk/nfw-http';
 import { Args } from '@triptyk/nfw-http';

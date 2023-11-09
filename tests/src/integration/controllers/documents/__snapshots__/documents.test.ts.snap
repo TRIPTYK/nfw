@@ -5,22 +5,6 @@ exports[`GetAll 1`] = `
   "data": [
     {
       "attributes": {
-        "filename": "delete-filename.bmp",
-        "mimetype": "image/bmp",
-        "originalName": "delete-original-name.bmp",
-        "path": "./delete-filename.bmp",
-        "size": 1337,
-      },
-      "id": "delete-document",
-      "links": {
-        "self": "/api/v1/documents/delete-document",
-      },
-      "meta": undefined,
-      "relationships": undefined,
-      "type": "documents",
-    },
-    {
-      "attributes": {
         "filename": "filename.bmp",
         "mimetype": "image/bmp",
         "originalName": "originalName.bmp",
@@ -30,6 +14,22 @@ exports[`GetAll 1`] = `
       "id": "document",
       "links": {
         "self": "/api/v1/documents/document",
+      },
+      "meta": undefined,
+      "relationships": undefined,
+      "type": "documents",
+    },
+    {
+      "attributes": {
+        "filename": "delete-filename.bmp",
+        "mimetype": "image/bmp",
+        "originalName": "delete-original-name.bmp",
+        "path": "./delete-filename.bmp",
+        "size": 1337,
+      },
+      "id": "delete-document",
+      "links": {
+        "self": "/api/v1/documents/delete-document",
       },
       "meta": undefined,
       "relationships": undefined,

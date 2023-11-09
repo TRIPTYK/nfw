@@ -1,4 +1,3 @@
-
 import type { ControllerParamsContext } from '@triptyk/nfw-http';
 import { createCustomDecorator } from '@triptyk/nfw-http';
 import type { Schema } from 'yup';
