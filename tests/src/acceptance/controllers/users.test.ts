@@ -1,8 +1,8 @@
-import type { Application } from 'app/application.js';
-import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { accessTokenAdmin } from '../../../utils/access-token.js';
 import { fetchApi } from '../../../utils/config.js';
+import type { Application } from '../../../../src/application.js';
+import { setupAcceptance, teardownAcceptance } from '../../../utils/setup-acceptance-test.js';
 
 let application: Application;
 

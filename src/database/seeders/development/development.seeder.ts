@@ -1,10 +1,10 @@
 import type { Collection, EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
 import { writeFile, mkdir } from 'fs/promises';
-import { Roles } from '../../../api/enums/roles.enum.js';
-import type { DocumentModel } from '../../models/document.model.js';
-import { DocumentFactory } from '../../factories/document.factory.js';
-import { UserFactory } from '../../factories/user.factory.js';
+import { Roles } from '../../../features/users/enums/roles.enum.js';
+import type { DocumentModel } from '../../../features/users/models/document.model.js';
+import { DocumentFactory } from '../../../features/users/factories/document.factory.js';
+import { UserFactory } from '../../../features/users/factories/user.factory.js';
 
 /**
  * This is the default seeder for this environment

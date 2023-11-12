@@ -1,24 +1,21 @@
-import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineWorkspace } from 'vitest/dist/config.js';
 
 // Cannot split integration and acceptance https://github.com/vitest-dev/vitest/issues/3255
 export default defineWorkspace([
   {
-    plugins: [tsconfigPaths()],
+    plugins: [],
     test: {
       name: 'unit',
-      include: ['tests/src/unit/**/*.test.ts'],
-      logHeapUsage: true
+      include: ['tests/src/unit/**/*.test.ts']
     },
   },
   {
-    plugins: [tsconfigPaths()],
+    plugins: [],
     test: {
       name: 'integration-acceptance',
       include: ['tests/src/{integration,acceptance}/**/*.test.ts'],
       singleThread: true,
-      globals: true,
-      logHeapUsage: true
+      globals: true
     }
   }
 ]);

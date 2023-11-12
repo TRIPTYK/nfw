@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import { mockedEntityRepository } from 'tests/mocks/repository.js';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { InvalidBearerTokenError } from '../../../../src/api/errors/web/invalid-bearer-token.js';
-import { UserService } from '../../../../src/api/services/user.service.js';
+import { InvalidBearerTokenError } from '../../../../src/features/auth/errors/invalid-bearer-token.js';
+import { UserService } from '../../../../src/features/users/services/user.service.js';
+import { mockedEntityRepository } from '../../../mocks/repository.js';
 
 let userService: UserService;
 

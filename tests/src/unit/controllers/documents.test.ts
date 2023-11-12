@@ -1,14 +1,18 @@
-import { mockedORMImport } from 'tests/mocks/orm-core.js';
+/* eslint-disable import/first */
 import 'reflect-metadata';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { DocumentsController } from '../../../../src/api/controllers/documents.controller.js';
-import { ForbiddenError } from '../../../../src/api/errors/web/forbidden.js';
-import { DocumentModel } from '../../../../src/database/models/document.model.js';
-import { UserModel } from '../../../../src/database/models/user.model.js';
+import { mockedORMImport } from '../../../mocks/orm-core.js';
+
+vi.mock('@mikro-orm/core', async () => await mockedORMImport());
+
+import { DocumentsController } from '../../../../src/features/users/controllers/documents.controller.js';
+import { ForbiddenError } from '../../../../src/errors/forbidden.js';
+import { DocumentModel } from '../../../../src/features/users/models/document.model.js';
+import { UserModel } from '../../../../src/features/users/models/user.model.js';
 import { NotFoundError } from '@mikro-orm/core';
-import { mockedResourceService } from 'tests/mocks/resource-service.js';
-import { mockedSerializer } from 'tests/mocks/serializer.js';
-import { mockedAuthorizer } from 'tests/mocks/authorizer.js';
+import { mockedAuthorizer } from '../../../mocks/authorizer.js';
+import { mockedResourceService } from '../../../mocks/resource-service.js';
+import { mockedSerializer } from '../../../mocks/serializer.js';
 
 const service = mockedResourceService;
 const serializer = mockedSerializer;
@@ -27,8 +31,6 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
 })
-
-vi.mock('@mikro-orm/core', async () => await mockedORMImport());
 
 const currentUser = new UserModel();
 

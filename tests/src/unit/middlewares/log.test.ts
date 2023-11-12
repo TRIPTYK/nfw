@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { LogMiddleware } from '../../../../src/api/middlewares/log.middleware.js';
-import type { LoggerService } from '../../../../src/api/services/logger.service.js';
+import { LogMiddleware } from '../../../../src/middlewares/log.middleware.js';
+import type { LoggerService } from '../../../../src/services/logger.service.js';
 
 const loggerServiceMock = {
   error: vi.fn(),

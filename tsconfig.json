@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "lib": ["ESNEXT"],
-    "baseUrl": ".",
     "strict": true,
     "target": "ESNext",
     "moduleResolution": "NodeNext",
@@ -14,11 +13,7 @@
     "verbatimModuleSyntax": true,
     "declaration": true,
     "outDir": "./dist",
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "tests/*": ["tests/*"],
-      "app/*": ["src/*"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "tests/**/*", "vitest.workspace.ts"]
+  "include": ["src/**/*", "tests/**/*", "vitest.workspace.ts", "config/**/*.ts"]
 }

@@ -1,10 +1,10 @@
 import type { EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
 import { container } from '@triptyk/nfw-core';
-import { Roles } from '../../../../../src/api/enums/roles.enum.js';
-import { AuthService } from '../../../../../src/api/services/auth.service.js';
-import { DocumentFactory } from '../../../../../src/database/factories/document.factory.js';
-import { UserFactory } from '../../../../../src/database/factories/user.factory.js';
+import { Roles } from '../../../../../src/features/users/enums/roles.enum.js';
+import { AuthService } from '../../../../../src/features/auth/services/auth.service.js';
+import { DocumentFactory } from '../../../../../src/features/users/factories/document.factory.js';
+import { UserFactory } from '../../../../../src/features/users/factories/user.factory.js';
 
 /**
  * This is the default seeder for this environment

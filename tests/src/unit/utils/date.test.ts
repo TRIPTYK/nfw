@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { unixTimestamp } from '../../../../src/api/utils/date.js';
+import { unixTimestamp } from '../../../../src/utils/date.js';
 
 test('it returns current date in unix timestamp in milliseconds', () => {
   vi.useFakeTimers();

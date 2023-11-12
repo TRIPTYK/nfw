@@ -1,7 +1,7 @@
-import type { Application } from 'app/application.js';
-import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
 import { test, expect, beforeAll, afterAll } from 'vitest';
 import { fetchApi } from '../../../utils/config.js';
+import type { Application } from '../../../../src/application.js';
+import { setupAcceptance, teardownAcceptance } from '../../../utils/setup-acceptance-test.js';
 
 const resource = 'auth';
 

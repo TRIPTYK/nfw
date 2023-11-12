@@ -3,12 +3,12 @@ import { container } from '@triptyk/nfw-core';
 import { beforeAll, expect } from 'vitest';
 
 import { MikroORM } from '@mikro-orm/core';
-import { testCtx } from 'tests/utils/it-request-context.js';
-import { DatabaseConnectionImpl } from 'app/database/connection.js';
-import { RefreshTokenModel } from 'app/database/models/refresh-token.model.js';
-import { setupIntegrationTest } from 'tests/utils/setup-integration-test.js';
-import { AuthController } from 'app/api/controllers/auth.controller.js';
 import { AuthControllerTestSeeder } from './seed.js';
+import { setupIntegrationTest } from '../../../../utils/setup-integration-test.js';
+import { testCtx } from '../../../../utils/it-request-context.js';
+import { AuthController } from '../../../../../src/features/auth/controllers/auth.controller.js';
+import { DatabaseConnectionImpl } from '../../../../../src/database/connection.js';
+import { RefreshTokenModel } from '../../../../../src/features/auth/models/refresh-token.model.js';
 
 beforeAll(async () => {
   await setupIntegrationTest(AuthControllerTestSeeder);

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
-import { CurrentUserMiddleware } from '../../../../src/api/middlewares/current-user.middleware.js';
+import { CurrentUserMiddleware } from '../../../../src/middlewares/current-user.middleware.js';
 
 const mockUserService = {
   tryLoadUserFromToken: vi.fn(),

@@ -1,6 +1,6 @@
-import type { ResourceService } from 'app/api/resources/base/service.js';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
+import type { ResourceService } from '../../src/features/shared/resources/base/service.js';
 
 export const mockedResourceService = {
   getAll: vi.fn() as Mock,

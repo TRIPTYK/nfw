@@ -1,9 +1,9 @@
 import { MikroORM } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
 import { beforeAll, expect } from 'vitest';
-import { UsersController } from '../../../../../src/api/controllers/users.controller.js';
-import { Roles } from '../../../../../src/api/enums/roles.enum.js';
-import { UserModel } from '../../../../../src/database/models/user.model.js';
+import { UsersController } from '../../../../../src/features/users/controllers/users.controller.js';
+import { Roles } from '../../../../../src/features/users/enums/roles.enum.js';
+import { UserModel } from '../../../../../src/features/users/models/user.model.js';
 import { testCtx } from '../../../../utils/it-request-context.js';
 import { setupIntegrationTest } from '../../../../utils/setup-integration-test.js';
 import { UsersControllerTestSeeder } from './seed.js';

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
-import { AuthController } from 'app/api/controllers/auth.controller.js';
+import { AuthController } from '../../../../src/features/auth/controllers/auth.controller.js';
 
 const refreshTokenRepositoryMock = {
   getEntityManager: () => ({

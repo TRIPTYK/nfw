@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { expect, test } from 'vitest';
-import { Roles } from 'app/api/enums/roles.enum.js';
-import { UserResourceAuthorizerImpl } from 'app/api/resources/user/authorizer.js';
-import { UserModel } from 'app/database/models/user.model.js';
+import { Roles } from '../../../../src/features/users/enums/roles.enum.js';
+import { UserModel } from '../../../../src/features/users/models/user.model.js';
+import { UserResourceAuthorizerImpl } from '../../../../src/features/users/resources/user/authorizer.js';
 
 const adminUser = new UserModel();
 adminUser.role = Roles.ADMIN;

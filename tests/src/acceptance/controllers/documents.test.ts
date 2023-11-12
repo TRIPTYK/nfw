@@ -1,10 +1,10 @@
-import type { Application } from 'app/application.js';
-import { dummyDocument } from 'app/database/seeders/test/seed.js';
-import { createFileWithManyRelationship } from 'tests/utils/create-file-with-relation.js';
-import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
 import { afterEach, beforeEach, expect, test, vitest } from 'vitest';
 import { accessTokenAdmin } from '../../../utils/access-token.js';
 import { fetchApi } from '../../../utils/config.js';
+import type { Application } from '../../../../src/application.js';
+import { setupAcceptance, teardownAcceptance } from '../../../utils/setup-acceptance-test.js';
+import { createFileWithManyRelationship } from '../../../utils/create-file-with-relation.js';
+import { dummyDocument } from '../../../../src/database/seeders/test/seed.js';
 
 let application: Application;
 

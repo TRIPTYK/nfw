@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import 'reflect-metadata';
 import { expect, test, vi, afterEach, beforeEach, afterAll } from 'vitest';
-import type { LoggerService } from '../../../../src/api/services/logger.service.js';
-import { LoggerServiceImpl } from '../../../../src/api/services/logger.service.js';
+import type { LoggerService } from '../../../../src/services/logger.service.js';
+import { LoggerServiceImpl } from '../../../../src/services/logger.service.js';
 
 let loggerService: LoggerService;
 

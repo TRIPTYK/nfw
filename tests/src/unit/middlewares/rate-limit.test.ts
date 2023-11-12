@@ -1,7 +1,7 @@
 import KoaRatelimit from 'koa-ratelimit';
 import 'reflect-metadata';
 import { afterEach, expect, test, vi } from 'vitest';
-import { createRateLimitMiddleware } from '../../../../src/api/middlewares/rate-limit.middleware.js';
+import { createRateLimitMiddleware } from '../../../../src/middlewares/rate-limit.middleware.js';
 
 const configService = {
   get: vi.fn(),

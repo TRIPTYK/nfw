@@ -1,14 +1,14 @@
 import { MikroORM } from '@mikro-orm/core';
 import { container } from '@triptyk/nfw-core';
 import { afterAll, beforeAll, expect, vi } from 'vitest';
-import { DocumentsController } from 'app/api/controllers/documents.controller.js';
-import { Roles } from 'app/api/enums/roles.enum.js';
-import { UserModel } from 'app/database/models/user.model.js';
 import { testCtx } from '../../../../utils/it-request-context.js';
 import { setupIntegrationTest } from '../../../../utils/setup-integration-test.js';
 import { unlink } from 'fs/promises';
-import { MimeTypes } from 'app/api/enums/mime-type.enum.js';
-import { deleteDummyDocument, DocumentsControllerTestSeeder, dummyDocument } from 'app/database/seeders/test/seed.js';
+import { DocumentsControllerTestSeeder, dummyDocument, deleteDummyDocument } from '../../../../../src/database/seeders/test/seed.js';
+import { DocumentsController } from '../../../../../src/features/users/controllers/documents.controller.js';
+import { MimeTypes } from '../../../../../src/features/users/enums/mime-type.enum.js';
+import { Roles } from '../../../../../src/features/users/enums/roles.enum.js';
+import { UserModel } from '../../../../../src/features/users/models/user.model.js';
 
 let documentsController: DocumentsController;
 

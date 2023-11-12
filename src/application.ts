@@ -1,25 +1,25 @@
 /* eslint-disable import/first */
 import 'reflect-metadata';
 import { container, inject, singleton } from '@triptyk/nfw-core';
-import { ConfigurationServiceImpl } from './api/services/configuration.service.js';
+import { ConfigurationServiceImpl } from './services/configuration.service.js';
 import KoaQS from 'koa-qs';
 import Koa from 'koa';
-import { MainArea } from './api/areas/main.area.js';
+import { MainArea } from './areas/main.area.js';
 import helmet from 'koa-helmet';
 import cors from '@koa/cors';
 import { koaBody } from 'koa-body';
 import { requestContext } from '@triptyk/nfw-mikro-orm';
 import { createApplication, resolveMiddlewareInstance } from '@triptyk/nfw-http';
 import type { Server } from 'http';
-import { LoggerServiceImpl } from './api/services/logger.service.js';
-import type { LoggerService } from './api/services/logger.service.js';
+import { LoggerServiceImpl } from './services/logger.service.js';
+import type { LoggerService } from './services/logger.service.js';
 import { DatabaseConnectionImpl } from './database/connection.js';
-import { LogMiddleware } from './api/middlewares/log.middleware.js';
-import { DefaultErrorHandler } from './api/error-handler/default.error-handler.js';
-import { createRateLimitMiddleware } from './api/middlewares/rate-limit.middleware.js';
-import { BadRequestError } from './api/errors/web/bad-request.js';
-import { PayloadTooLargeError } from './api/errors/web/payload-too-large.js';
-import { setupRegistry } from './api/resources/registry.js';
+import { LogMiddleware } from './middlewares/log.middleware.js';
+import { DefaultErrorHandler } from './error-handler/default.error-handler.js';
+import { createRateLimitMiddleware } from './middlewares/rate-limit.middleware.js';
+import { BadRequestError } from './errors/bad-request.js';
+import { PayloadTooLargeError } from './errors/payload-too-large.js';
+import { setupRegistry } from './features/users/resources/registry.js';
 import { ResourcesRegistryImpl } from '@triptyk/nfw-resources';
 
 @singleton()

@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { container } from '@triptyk/nfw-core';
-import { Application } from 'app/application.js';
-import { DatabaseConnectionImpl } from 'app/database/connection.js';
-import { DatabaseSeeder } from 'app/database/seeders/test/test.seeder.js';
+import { Application } from '../../src/application.js';
+import { DatabaseConnectionImpl } from '../../src/database/connection.js';
+import { DatabaseSeeder } from '../../src/database/seeders/test/test.seeder.js';
 
 export async function setupAcceptance () {
   const application = container.resolve(Application);

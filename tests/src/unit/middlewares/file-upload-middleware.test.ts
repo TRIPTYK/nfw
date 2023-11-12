@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { vi, it, expect, afterAll, vitest } from 'vitest';
-import { createFileUploadMiddleware } from '../../../../src/api/middlewares/file-upload.middleware.js';
+import { createFileUploadMiddleware } from '../../../../src/middlewares/file-upload.middleware.js';
 import * as KoaBody from 'koa-body';
-import { createBadRequestError } from 'app/api/errors/web/bad-request.js';
+import { createBadRequestError } from '../../../../src/errors/bad-request.js';
 
 vi.mock('koa-body', () => ({
   koaBody: vi.fn(() => vi.fn())

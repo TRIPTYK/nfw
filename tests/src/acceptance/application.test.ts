@@ -1,7 +1,7 @@
-import type { Application } from 'app/application.js';
 import fetch from 'node-fetch';
-import { teardownAcceptance, setupAcceptance } from 'tests/utils/setup-acceptance-test.js';
 import { test, expect, beforeAll, afterAll } from 'vitest';
+import { setupAcceptance, teardownAcceptance } from '../../utils/setup-acceptance-test.js';
+import type { Application } from '../../../src/application.js';
 
 let application: Application;
 

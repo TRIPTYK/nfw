@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { expect, test, vi } from 'vitest';
 import { ValidationError } from 'yup';
-import { DefaultErrorHandler } from '../../../../src/api/error-handler/default.error-handler.js';
-import { WebError } from '../../../../src/api/errors/web/web-error.js';
+import { DefaultErrorHandler } from '../../../../src/error-handler/default.error-handler.js';
+import { WebError } from '../../../../src/errors/web-error.js';
 
 const loggerService = {
   info: vi.fn(),

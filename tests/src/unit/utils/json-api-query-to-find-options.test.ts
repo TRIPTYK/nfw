@@ -1,7 +1,7 @@
 import type { FindOptions } from '@mikro-orm/core';
 import type { JsonApiQuery } from '@triptyk/nfw-resources';
 import { expect, test } from 'vitest';
-import { jsonApiQueryToFindOptions } from '../../../../src/api/utils/query/json-api-query-to-find-options.js';
+import { jsonApiQueryToFindOptions } from '../../../../src/utils/query/json-api-query-to-find-options.js';
 
 test('jsonApiQueryToMikroORM', () => {
   const query: JsonApiQuery = {

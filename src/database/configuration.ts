@@ -1,5 +1,5 @@
 import type { Options } from '@mikro-orm/core';
-import type { ConfigurationService, Env } from '../api/services/configuration.service.js';
+import type { ConfigurationService, Env } from '../services/configuration.service.js';
 
 export function getConfiguration (configurationService: ConfigurationService<Env>) {
   return {
@@ -11,7 +11,7 @@ export function getConfiguration (configurationService: ConfigurationService<Env
       snapshot: false,
       path: 'src/database/migrations/'
     },
-    entities: ['src/database/models'],
+    entities: ['src/**/*.model.ts'],
     dynamicImportProvider: id => import(id),
     dbName: configurationService.get('DATABASE_NAME'),
     host: configurationService.get('DATABASE_HOST'),

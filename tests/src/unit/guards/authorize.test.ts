@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { beforeEach, expect, test } from 'vitest';
-import { Roles } from '../../../../src/api/enums/roles.enum.js';
-import { AuthorizeGuard } from '../../../../src/api/guards/authorize.guard.js';
+import { Roles } from '../../../../src/features/users/enums/roles.enum.js';
+import { AuthorizeGuard } from '../../../../src/guards/authorize.guard.js';
 
 let guard: AuthorizeGuard;
 

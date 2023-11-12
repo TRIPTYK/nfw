@@ -1,9 +1,9 @@
 import type { EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
-import { Roles } from '../../../api/enums/roles.enum.js';
-import { DocumentFactory } from '../../factories/document.factory.js';
-import { UserFactory } from '../../factories/user.factory.js';
-import { RefreshTokenFactory } from '../../factories/refresh-token.factory.js';
+import { Roles } from '../../../features/users/enums/roles.enum.js';
+import { DocumentFactory } from '../../../features/users/factories/document.factory.js';
+import { UserFactory } from '../../../features/users/factories/user.factory.js';
+import { RefreshTokenFactory } from '../../../features/users/factories/refresh-token.factory.js';
 import { DocumentsControllerTestSeeder } from './seed.js';
 
 /**

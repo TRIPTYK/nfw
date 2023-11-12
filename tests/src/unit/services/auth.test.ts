@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { expect, test, vi, beforeEach, afterAll, beforeAll } from 'vitest';
 import { hash } from 'bcrypt';
-import { AuthService } from '../../../../src/api/services/auth.service.js';
+import { AuthService } from '../../../../src/features/auth/services/auth.service.js';
 
 let service: AuthService;
 

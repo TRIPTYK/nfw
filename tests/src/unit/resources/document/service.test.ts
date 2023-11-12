@@ -1,7 +1,7 @@
-import { mockedEntityRepository } from 'tests/mocks/repository.js';
 import { expect, test, beforeEach, describe, it } from 'vitest';
-import { DocumentResourceServiceImpl } from '../../../../../src/api/resources/documents/service.js';
-import { DocumentModel } from '../../../../../src/database/models/document.model.js';
+import { DocumentResourceServiceImpl } from '../../../../../src/features/users/resources/documents/service.js';
+import { DocumentModel } from '../../../../../src/features/users/models/document.model.js';
+import { mockedEntityRepository } from '../../../../mocks/repository.js';
 
 let documentResourceService: DocumentResourceServiceImpl;
 const document = new DocumentModel();

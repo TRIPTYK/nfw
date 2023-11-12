@@ -1,20 +1,22 @@
+/* eslint-disable import/first */
 import 'reflect-metadata';
-import { mockedORMImport } from 'tests/mocks/orm-core.js';
+import { mockedORMImport } from '../../../mocks/orm-core.js';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { UsersController } from 'app/api/controllers/users.controller.js';
-import { ForbiddenError } from 'app/api/errors/web/forbidden.js';
-import { UserModel } from 'app/database/models/user.model.js';
-import { mockedAuthorizer } from 'tests/mocks/authorizer.js';
-import { mockedResourceService } from 'tests/mocks/resource-service.js';
-import { mockedSerializer } from 'tests/mocks/serializer.js';
+
+vi.mock('@mikro-orm/core', async () => await mockedORMImport());
+
+import { UsersController } from '../../../../src/features/users/controllers/users.controller.js';
+import { UserModel } from '../../../../src/features/users/models/user.model.js';
+import { mockedAuthorizer } from '../../../mocks/authorizer.js';
+import { mockedResourceService } from '../../../mocks/resource-service.js';
+import { mockedSerializer } from '../../../mocks/serializer.js';
+import { ForbiddenError } from '../../../../src/errors/forbidden.js';
 
 const usersService = mockedResourceService;
 const serializer = mockedSerializer;
 const authorizer = mockedAuthorizer;
 
 let controller: UsersController;
-
-vi.mock('@mikro-orm/core', async () => await mockedORMImport());
 
 beforeEach(() => {
   controller = new UsersController(

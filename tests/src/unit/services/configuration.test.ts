@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import type { ConfigurationService } from '../../../../src/api/services/configuration.service.js';
-import { ConfigurationServiceImpl } from '../../../../src/api/services/configuration.service.js';
+import type { ConfigurationService } from '../../../../src/services/configuration.service.js';
+import { ConfigurationServiceImpl } from '../../../../src/services/configuration.service.js';
 import * as exports from 'ts-dotenv';
-import { ConfigurationNotLoadedError } from '../../../../src/api/errors/configuration-not-loaded.js';
+import { ConfigurationNotLoadedError } from '../../../../src/errors/configuration-not-loaded.js';
 
 let configurationService: ConfigurationService<{}>;
 

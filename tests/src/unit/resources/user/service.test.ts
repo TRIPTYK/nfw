@@ -1,7 +1,7 @@
 import { expect, test, beforeEach } from 'vitest';
-import type { UserResourceService } from '../../../../../src/api/resources/user/service.js';
-import { UserResourceServiceImpl } from '../../../../../src/api/resources/user/service.js';
-import { UserModel } from '../../../../../src/database/models/user.model.js';
+import type { UserResourceService } from '../../../../../src/features/users/resources/user/service.js';
+import { UserResourceServiceImpl } from '../../../../../src/features/users/resources/user/service.js';
+import { UserModel } from '../../../../../src/features/users/models/user.model.js';
 import { mockedEntityRepository } from '../../../../mocks/repository.js';
 
 let userResourceService: UserResourceService;

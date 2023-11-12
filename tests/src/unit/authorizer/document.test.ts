@@ -1,10 +1,10 @@
 import type { EntityData } from '@mikro-orm/core';
 import 'reflect-metadata';
 import { describe, expect, it } from 'vitest';
-import { Roles } from '../../../../src/api/enums/roles.enum.js';
-import { DocumentResourceAuthorizerImpl } from '../../../../src/api/resources/documents/authorizer.js';
-import { DocumentModel } from '../../../../src/database/models/document.model.js';
-import { UserModel } from '../../../../src/database/models/user.model.js';
+import { Roles } from '../../../../src/features/users/enums/roles.enum.js';
+import { DocumentResourceAuthorizerImpl } from '../../../../src/features/users/resources/documents/authorizer.js';
+import { DocumentModel } from '../../../../src/features/users/models/document.model.js';
+import { UserModel } from '../../../../src/features/users/models/user.model.js';
 
 const adminUser = new UserModel();
 adminUser.role = Roles.ADMIN;
