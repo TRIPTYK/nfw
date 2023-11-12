@@ -18,5 +18,8 @@ function spawnOrFail(command) {
   }
 }
 
+if (process.env.CI) {
+  spawnOrFail("pnpm lint");
+}
 spawnOrFail("pnpm mikro-orm:cli migration:fresh");
 spawnOrFail(`pnpm vitest --watch=false ${args.join("  ")}`);

@@ -9,15 +9,20 @@ const terminalOptions = {
   stdio: "inherit",
 };
 
-const command = `nodemon ${
+function spawnOrFail(command) {
+  const result = spawnSync(command, terminalOptions);
+  if (result.status !== 0) {
+    process.exit(result.status);
+  }
+}
+
+const command = `nodemon  ${
   DEBUG ? "--inspect" : ""
 } --watch './src/**/*.ts' --exec 'node --loader ts-node/esm' ./src/application.bootstrap.ts`;
 
-console.log(command);
-
 if (REFRESH) {
-  spawnSync("pnpm mikro-orm:cli migration:fresh", terminalOptions);
-  spawnSync("pnpm mikro-orm:cli seeder:run", terminalOptions);
+  spawnOrFail("pnpm mikro-orm:cli migration:fresh");
+  spawnOrFail("pnpm mikro-orm:cli seeder:run");
 }
 
-spawnSync(command, terminalOptions);
+spawnOrFail(command);
