@@ -9,13 +9,19 @@ import { DocumentsController } from '../../../../../src/features/users/controlle
 import { MimeTypes } from '../../../../../src/features/users/enums/mime-type.enum.js';
 import { Roles } from '../../../../../src/features/users/enums/roles.enum.js';
 import { UserModel } from '../../../../../src/features/users/models/user.model.js';
+import type { Application } from '../../../../../src/application.js';
 
+let application: Application;
 let documentsController: DocumentsController;
 
 beforeAll(async () => {
-  await setupIntegrationTest(DocumentsControllerTestSeeder);
+  application = await setupIntegrationTest(DocumentsControllerTestSeeder);
   documentsController = container.resolve(DocumentsController);
 })
+
+afterAll(async () => {
+  await application.stop();
+});
 
 function createAdminUser () {
   const adminUser = new UserModel();

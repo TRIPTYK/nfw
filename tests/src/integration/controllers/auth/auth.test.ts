@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { container } from '@triptyk/nfw-core';
-import { beforeAll, expect } from 'vitest';
+import { afterAll, beforeAll, expect } from 'vitest';
 
 import { MikroORM } from '@mikro-orm/core';
 import { AuthControllerTestSeeder } from './seed.js';
@@ -9,10 +9,17 @@ import { testCtx } from '../../../../utils/it-request-context.js';
 import { AuthController } from '../../../../../src/features/auth/controllers/auth.controller.js';
 import { DatabaseConnectionImpl } from '../../../../../src/database/connection.js';
 import { RefreshTokenModel } from '../../../../../src/features/auth/models/refresh-token.model.js';
+import type { Application } from '../../../../../src/application.js';
+
+let application: Application;
 
 beforeAll(async () => {
-  await setupIntegrationTest(AuthControllerTestSeeder);
+  application = await setupIntegrationTest(AuthControllerTestSeeder);
 })
+
+afterAll(async () => {
+  await application.stop();
+});
 
 testCtx('Login creates a refresh token', () => container.resolve(MikroORM), async () => {
   const authController = container.resolve(AuthController);
