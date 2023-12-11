@@ -1,16 +1,12 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   '@faker-js/faker':
     specifier: ~8.2.0
     version: 8.2.0
   '@koa/cors':
-    specifier: ~4.0.0
-    version: 4.0.0
+    specifier: ~5.0.0
+    version: 5.0.0
   '@mikro-orm/cli':
     specifier: ~5.9.3
     version: 5.9.3(@mikro-orm/migrations@5.9.3)(@mikro-orm/postgresql@5.9.3)(@mikro-orm/seeder@5.9.3)(pg@8.11.3)
@@ -625,8 +621,8 @@ packages:
       spark-md5: 3.0.2
     dev: true
 
-  /@koa/cors@4.0.0:
-    resolution: {integrity: sha512-Y4RrbvGTlAaa04DBoPBWJqDR5gPj32OOz827ULXfgB1F7piD1MB/zwn8JR2LAnvdILhxUbXbkXGWuNVsFuVFCQ==}
+  /@koa/cors@5.0.0:
+    resolution: {integrity: sha512-x/iUDjcS90W69PryLDIMgFyV21YLTnG9zOpPXS7Bkt2b8AsY3zZsIpOLBkYr9fBcF3HbkKaER5hOBZLfpLgYNw==}
     engines: {node: '>= 14.0.0'}
     dependencies:
       vary: 1.1.2
@@ -5408,3 +5404,7 @@ packages:
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     dev: false
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
